@@ -4,7 +4,7 @@
     import { StoreKey } from '$lib/types';
     import type { AssignmentsStore } from '$lib/stores/assignments.svelte';
     import AssignmentTable from '$lib/components/tables/AssignmentTable.svelte';
-    import EditModal from '$lib/components/EditModal.svelte';
+    import AssignmentModal from '$lib/components/modals/AssignmentModal.svelte';
 
     const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
 
@@ -85,13 +85,17 @@
 {#if loading}
 	<p>Cargando TPs...</p>
 {:else}
-    <AssignmentTable assignments={assignmentsStore.items} onEdit={startEdit} onDelete={deleteAssignment} />
+    <AssignmentTable
+		assignments={assignmentsStore.items}
+		onEdit={startEdit}
+		onDelete={deleteAssignment}
+	/>
 {/if}
 
-<EditModal 
+<AssignmentModal 
     isOpen={editModalOpen} 
-    title="Editar TP" 
-    value={editingAssignment?.title || ''} 
-    onSave={saveEdit} 
+    mode="edit" 
+    assignment={editingAssignment} 
+    onSave={(title) => saveEdit(title)} 
     onClose={() => editModalOpen = false} 
 />

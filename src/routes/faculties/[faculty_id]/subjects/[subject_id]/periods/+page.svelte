@@ -4,7 +4,7 @@
     import { StoreKey } from '$lib/types';
     import type { PeriodsStore } from '$lib/stores/periods.svelte';
 	import PeriodTable from '$lib/components/tables/PeriodTable.svelte';
-    import PeriodEditModal from '$lib/components/PeriodEditModal.svelte';
+    import PeriodEditModal from '$lib/components/modals/PeriodEditModal.svelte';
 
     const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
 

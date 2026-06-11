@@ -4,7 +4,7 @@
     import { StoreKey } from '$lib/types';
     import type { StudentsStore } from '$lib/stores/students.svelte';
     import StudentTable from '$lib/components/tables/StudentTable.svelte';
-    import EditModal from '$lib/components/EditModal.svelte';
+    import StudentModal from '$lib/components/modals/StudentModal.svelte';
 
     const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
 
@@ -104,10 +104,10 @@
     <StudentTable students={studentsStore.items} onEdit={startEdit} onDelete={deleteStudent} />
 {/if}
 
-<EditModal 
+<StudentModal 
     isOpen={editModalOpen} 
-    title="Editar Alumno" 
-    value={editingStudent?.name || ''} 
-    onSave={saveEdit} 
+    mode="edit" 
+    student={editingStudent} 
+    onSave={(name, externalId) => saveEdit(name)} 
     onClose={() => editModalOpen = false} 
 />

@@ -1,15 +1,11 @@
 <script lang="ts">
-	import { onMount, getContext } from 'svelte';
+	import { onMount } from 'svelte';
     import { page } from '$app/state';
-    import { StoreKey } from '$lib/types';
     import { facultiesStore } from '$lib/stores/faculties.svelte';
     import { subjectsStore } from '$lib/stores/subjects.svelte';
 	import GuardWrapper from '$lib/components/GuardWrapper.svelte';
     import SubjectTable from '$lib/components/SubjectTable.svelte';
-    import EditModal from '$lib/components/EditModal.svelte';
-
-    
-    
+    import SubjectModal from '$lib/components/modals/SubjectModal.svelte';
 
 	let newSubjectName = $state('');
 	let loading = $state(true);
@@ -98,10 +94,10 @@
     {/if}
 </GuardWrapper>
 
-<EditModal 
+<SubjectModal 
     isOpen={editModalOpen} 
-    title="Editar Materia" 
-    value={editingSubject?.name || ''} 
-    onSave={saveEdit} 
+    mode="edit" 
+    subject={editingSubject} 
+    onSave={(name) => saveEdit(name)} 
     onClose={() => editModalOpen = false} 
 />

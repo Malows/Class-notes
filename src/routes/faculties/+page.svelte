@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
-
+    
     import { t } from '$lib/i18n/config';
     import { StoreKey } from '$lib/types';
-    
-	import CommonPage from '$lib/components/layout/CommonPage.svelte';
+    import type { Faculty } from '$lib/types';
     import type { FacultiesStore } from '$lib/stores/faculties.svelte';
+	
+    import CommonPage from '$lib/components/layout/CommonPage.svelte';
     import FacultyTable from '$lib/components/tables/FacultyTable.svelte';
-    import EditModal from '$lib/components/EditModal.svelte';
-
-    
+    import FacultyModal from '$lib/components/modals/FacultyModal.svelte';
+    import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
 
     const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
 
-	let newFacultyName = $state('');
 	let loading = $state(true);
-    let editModalOpen = $state(false);
-    let editingFaculty = $state<any>(null);
+    type ModalMode = 'create' | 'edit' | 'delete' | null;
+    let modalMode = $state<ModalMode>(null);
+    let activeFaculty = $state<Faculty | null>(null);
 
 	async function load() {
 		try {
@@ -28,70 +28,75 @@
 		}
 	}
 
-	async function create() {
-		if (!newFacultyName) return;
-		try {
-			await facultiesStore.create(newFacultyName);
-			newFacultyName = '';
-		} catch (e) {
-			alert(e);
-		}
-	}
-
-    function startEdit(faculty: any) {
-        editingFaculty = faculty;
-        editModalOpen = true;
-    }
-
-    async function saveEdit(newName: string | number) {
-        if (!editingFaculty) return;
+    async function handleSave(name: string, id?: number) {
         try {
-            await facultiesStore.updateItem(editingFaculty.id, String(newName));
-            editModalOpen = false;
+            if (modalMode === 'create') {
+                await facultiesStore.create(name);
+            } else if (modalMode === 'edit' && id) {
+                await facultiesStore.updateItem(id, name);
+            }
+            modalMode = null;
+            activeFaculty = null;
         } catch (e) {
             alert(e);
         }
     }
 
-    async function deleteFaculty(id: number) {
-        if (!confirm($t('faculties.confirm_delete'))) return;
+    async function handleDelete() {
+        if (!activeFaculty) return;
         try {
-            await facultiesStore.deleteItem(id);
+            await facultiesStore.deleteItem(activeFaculty.id);
+            modalMode = null;
+            activeFaculty = null;
         } catch (e) {
             alert(e);
         }
+    }
+
+    function openCreate() {
+        modalMode = 'create';
+        activeFaculty = null;
+    }
+
+    function openEdit(faculty: Faculty) {
+        modalMode = 'edit';
+        activeFaculty = faculty;
+    }
+
+    function openDelete(faculty: Faculty) {
+        modalMode = 'delete';
+        activeFaculty = faculty;
     }
 
 	onMount(load);
 </script>
 
 <CommonPage title={$t('faculties.title')}>
-<div class="row">
-	<div class="col-12 col">
-		<div class="card">
-			<div class="card-body">
-				<h4 class="card-title">{$t('faculties.new_faculty')}</h4>
-				<div class="form-group">
-					<label for="name">{$t('faculties.faculty_name_label')}</label>
-					<input type="text" id="name" bind:value={newFacultyName} placeholder={$t('faculties.faculty_placeholder')} class="input-block">
-				</div>
-				<button class="paper-btn btn-primary" onclick={create}>{$t('faculties.add')}</button>
-			</div>
-		</div>
-	</div>
-</div>
+    {#snippet extra()}
+        <button class="paper-btn btn-primary-outline" onclick={openCreate}>
+            + {$t('faculties.add')}
+        </button>
+    {/snippet}
 
-{#if loading}
-	<p>{$t('faculties.loading')}</p>
-{:else}
-    <FacultyTable faculties={facultiesStore.items} onEdit={startEdit} onDelete={deleteFaculty} />
-{/if}
+    {#if loading}
+        <p>{$t('faculties.loading')}</p>
+    {:else}
+        <FacultyTable faculties={facultiesStore.items} onEdit={openEdit} onDelete={openDelete} />
+    {/if}
 
-<EditModal 
-    isOpen={editModalOpen} 
-    title={$t('faculties.edit_title')} 
-    value={editingFaculty?.name || ''} 
-    onSave={saveEdit} 
-    onClose={() => editModalOpen = false} 
-/>
+    <FacultyModal 
+        isOpen={modalMode === 'create' || modalMode === 'edit'}
+        mode={modalMode === 'create' ? 'create' : 'edit'}
+        faculty={activeFaculty}
+        onSave={handleSave}
+        onClose={() => modalMode = null}
+    />
+
+    <ConfirmDialog 
+        isOpen={modalMode === 'delete'}
+        title={$t('faculties.confirm_delete_title')}
+        message={$t('faculties.confirm_delete_message', { name: activeFaculty?.name || '' })}
+        onConfirm={handleDelete}
+        onClose={() => modalMode = null}
+    />
 </CommonPage>

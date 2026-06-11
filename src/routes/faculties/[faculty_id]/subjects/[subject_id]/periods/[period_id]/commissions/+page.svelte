@@ -6,7 +6,7 @@
     import type { PeriodsStore } from '$lib/stores/periods.svelte';
 	import GuardWrapper from '$lib/components/GuardWrapper.svelte';
 	import CommissionTable from '$lib/components/tables/CommissionTable.svelte';
-    import EditModal from '$lib/components/EditModal.svelte';
+    import CommissionModal from '$lib/components/modals/CommissionModal.svelte';
 
     const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
     const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
@@ -109,10 +109,10 @@
     {/if}
 </GuardWrapper>
 
-<EditModal 
+<CommissionModal 
     isOpen={editModalOpen} 
-    title="Editar Comisión" 
-    value={editingCommission?.name || ''} 
-    onSave={saveEdit} 
+    mode="edit" 
+    commission={editingCommission} 
+    onSave={(name) => saveEdit(name)} 
     onClose={() => editModalOpen = false} 
 />

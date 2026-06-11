@@ -1,0 +1,10 @@
+{
+  "title": "Faculty Management",
+  "new_faculty": "New Faculty",
+  "faculty_name_label": "Faculty name:",
+  "faculty_placeholder": "e.g. Faculty of Engineering",
+  "add": "Add",
+  "loading": "Loading faculties...",
+  "edit_title": "Edit Faculty",
+  "confirm_delete": "Delete faculty?"
+}

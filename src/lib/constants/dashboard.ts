@@ -1,0 +1,1 @@
+export const APPROVAL_RATE_THRESHOLD = 70;

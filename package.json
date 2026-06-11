@@ -1,0 +1,42 @@
+{
+  "name": "frontend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:i18n": "tsx scripts/validate-i18n-keys.ts",
+    "dev": "vite dev",
+    "build": "pnpm validate:i18n && vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "oxlint .",
+    "format": "oxfmt --write ."
+  },
+  "dependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "better-sqlite3": "^12.10.0",
+    "papercss": "^1.9.2",
+    "sveltekit-i18n": "^2.4.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-node": "^5.5.4",
+    "@sveltejs/kit": "^2.57.0",
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
+    "@types/node": "^24.12.0",
+    "@vitest/coverage-v8": "4.1.8",
+    "jsdom": "^29.1.1",
+    "oxfmt": "^0.53.0",
+    "oxlint": "^1.68.0",
+    "svelte": "^5.55.2",
+    "svelte-check": "^4.4.6",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.7",
+    "vitest": "^4.1.8"
+  }
+}

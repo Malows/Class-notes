@@ -1,0 +1,15 @@
+{
+  "welcome": "Welcome",
+  "lead": "Academic dashboard.",
+  "title": "📊 Academic Summary",
+  "loading": "Loading statistics...",
+  "no_data": "Not enough data to show statistics.",
+  "total_students": "Total Students",
+  "subjects": "Subjects",
+  "approval_rate": "Approval Rate",
+  "deliveries": "Deliveries",
+  "pending_title": "Pending Corrections",
+  "pending_loading": "Loading pending...",
+  "pending_empty": "🎉 All up to date! No pending corrections.",
+  "go": "Go"
+}

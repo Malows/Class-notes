@@ -1,0 +1,15 @@
+{
+  "welcome": "Bienvenido",
+  "lead": "Panel de control académico.",
+  "title": "📊 Resumen Académico",
+  "loading": "Cargando estadísticas...",
+  "no_data": "No hay datos suficientes para mostrar estadísticas.",
+  "total_students": "Total Alumnos",
+  "subjects": "Materias",
+  "approval_rate": "Tasa Aprobación",
+  "deliveries": "Entregas",
+  "pending_title": "Pendientes de Corrección",
+  "pending_loading": "Cargando pendientes...",
+  "pending_empty": "🎉 ¡Todo al día! No hay pendientes.",
+  "go": "Ir"
+}

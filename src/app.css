@@ -1,0 +1,46 @@
+/* Global Sketchy Design System */
+:root {
+  /* --background-body: #f9f9f9;
+    --on-background: #1a1c1c; */
+  --primary: #2b2a28;
+  --secondary: #005db8;
+  --border-color: #41403e;
+  --muted-color: #6c757d; /* Darkened for AA */
+  --warning-bg: #d4c252;
+  --warning-text: #5a4f00; /* Darker for better contrast */
+  --sketch-border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  --shadow-offset: 4px;
+}
+
+.dark {
+  /* --background-body: #1a1c1c;
+    --on-background: #f9f9f9; */
+  --primary: #e5e2df;
+  --secondary: #aac7ff;
+  --border-color: #fff;
+  --muted-color: #adb5bd; /* Lightened for AA */
+  --warning-bg: #d4c252;
+  --warning-text: #fff;
+}
+
+main {
+  margin: 0;
+  min-height: 100vh;
+  /* background-color: var(--background-body); */
+  /* color: var(--on-background); */
+}
+
+/* Sketchy Utilities */
+.sketch-border {
+  border: 2px solid var(--border-color);
+  border-radius: var(--sketch-border-radius);
+}
+
+.sketch-shadow {
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--border-color);
+}
+
+.sketch-shadow-hover:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px var(--border-color);
+}

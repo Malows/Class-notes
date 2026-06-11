@@ -1,0 +1,10 @@
+{
+  "title": "Gestión de Facultades",
+  "new_faculty": "Nueva Facultad",
+  "faculty_name_label": "Nombre de la Facultad:",
+  "faculty_placeholder": "Ej: Facultad de Ingeniería",
+  "add": "Agregar",
+  "loading": "Cargando facultades...",
+  "edit_title": "Editar Facultad",
+  "confirm_delete": "¿Borrar facultad?"
+}

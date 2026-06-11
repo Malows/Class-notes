@@ -1,0 +1,11 @@
+{
+  "new_title": "New Student",
+  "edit_title": "Edit Student",
+  "name_label": "Student Name",
+  "external_id_label": "ID / Student Number",
+  "placeholder": "e.g. John Doe",
+  "external_id_placeholder": "e.g. 12345",
+  "save": "Save",
+  "create": "Create",
+  "cancel": "Cancel"
+}

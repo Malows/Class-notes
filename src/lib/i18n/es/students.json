@@ -1,0 +1,11 @@
+{
+  "new_title": "Nuevo Estudiante",
+  "edit_title": "Editar Estudiante",
+  "name_label": "Nombre del Estudiante",
+  "external_id_label": "Legajo / ID",
+  "placeholder": "Ej: Juan Pérez",
+  "external_id_placeholder": "Ej: 12345",
+  "save": "Guardar",
+  "create": "Crear",
+  "cancel": "Cancelar"
+}

@@ -1,0 +1,9 @@
+{
+  "new_title": "Nueva Materia",
+  "edit_title": "Editar Materia",
+  "name_label": "Nombre de la Materia",
+  "placeholder": "Ej: Programación I",
+  "save": "Guardar",
+  "create": "Crear",
+  "cancel": "Cancelar"
+}

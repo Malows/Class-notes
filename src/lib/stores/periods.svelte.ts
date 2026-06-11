@@ -6,6 +6,9 @@ export class PeriodsStore {
 
   constructor(private service = periodService) {}
 
+  // O(1) lookup cached
+  map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+
   async load(subjectId?: number) {
     this.items = await this.service.getAll(subjectId);
   }

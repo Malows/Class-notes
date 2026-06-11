@@ -7,6 +7,9 @@ export class CommissionsStore {
 
   constructor(private service = commissionService) {}
 
+  // O(1) lookup cached
+  map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+
   async load() {
     if (this.loaded) return;
     this.items = await this.service.getAll();

@@ -44,10 +44,10 @@ export class NavStore {
     if (pId && periodsStore.items.length === 0) periodsStore.load(sId);
     if (cId && !commissionsStore.loaded) commissionsStore.load();
 
-    const faculty = facultiesStore.items.find((f) => f.id === fId);
-    const subject = subjectsStore.items.find((s) => s.id === sId);
-    const period = periodsStore.items.find((p) => p.id === pId);
-    const commission = commissionsStore.items.find((c) => c.id === cId);
+    const faculty = facultiesStore.map.get(fId);
+    const subject = subjectsStore.map.get(sId);
+    const period = periodsStore.map.get(pId);
+    const commission = commissionsStore.map.get(cId);
 
     return {
       facultyId: fId,

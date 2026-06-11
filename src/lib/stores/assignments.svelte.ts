@@ -7,6 +7,9 @@ export class AssignmentsStore {
 
   constructor(private service = assignmentService) {}
 
+  // O(1) lookup cached
+  map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+
   async load(periodId?: number) {
     this.items = await this.service.getAll(periodId);
     this.loaded = true;

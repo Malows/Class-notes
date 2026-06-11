@@ -5,11 +5,15 @@
 </script>
 
 <nav class="navbar header-nav">
-    <div class="nav-brand">
-        <h3><a href="/">{$t('layout.brand')}</a></h3>
+    <div class="nav-left">
+        <div class="nav-brand">
+            <h3><a href="/">{$t('layout.brand')}</a></h3>
+        </div>
+        <div class="nav-breadcrumbs">
+            <Breadcrumbs />
+        </div>
     </div>
     <div class="nav-actions">
-        <Breadcrumbs />
         <div class="collapsible toggle-button">
         <input id="collapsible1" type="checkbox" name="collapsible1">
         <label for="collapsible1">
@@ -30,6 +34,27 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 0;
+    }
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .nav-brand h3 {
+        margin: 0;
+    }
+
+    .nav-breadcrumbs {
+        display: flex;
+        align-items: center;
+    }
+
+    @media (max-width: 600px) {
+        .nav-breadcrumbs {
+            display: none;
+        }
     }
 
     .nav-actions {

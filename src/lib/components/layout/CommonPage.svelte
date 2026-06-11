@@ -1,9 +1,10 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
 
-    let { title, lead, children } = $props<{
+    let { title, lead, extra, children } = $props<{
         title?: string;
         lead?: string;
+        extra?: Snippet;
         children?: () => Snippet[] | string;
     }>();
 </script>
@@ -12,6 +13,9 @@
     {#if title}
         <header class="common-page__header">
             <h1 class="common-page__title">{title}</h1>
+            {#if extra}
+                {@render extra()}
+            {/if}
         </header>
         {#if lead}
         <p class="common-page__lead">{lead}</p>

@@ -21,3 +21,13 @@
         </li>
     {/each}
 </ul>
+
+<style>
+    .breadcrumb a {
+        color: white;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: none;
+    }
+</style>

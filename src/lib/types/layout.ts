@@ -3,3 +3,5 @@ export type Breadcrumb = {
   href: string;
   label?: string;
 };
+
+export type ModalMode = "create" | "edit" | "delete" | null;

@@ -31,7 +31,7 @@
 <style>
 	.paper {
 		margin: 0;
-        height: clamp(100dvh, 100vh, 100dvh);
+        min-height: 100dvh;
         display: flex;
         flex-direction: column;
 	}

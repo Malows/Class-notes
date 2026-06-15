@@ -11,8 +11,8 @@
 
     let { delivery, onSave, onPrev, onNext, onSkip }: Props = $props();
     
-    // Create a local state copy
-    let d = $state({ ...delivery });
+    // Create a local state copy, initialized empty to avoid prop snapshot warning
+    let d = $state({} as Delivery);
 
     // Sync local state when external delivery prop changes
     $effect(() => {

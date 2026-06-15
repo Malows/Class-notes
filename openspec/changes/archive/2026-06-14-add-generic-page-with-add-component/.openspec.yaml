@@ -1,0 +1,4 @@
+name: add-generic-page-with-add-component
+status: DRAFT
+created_at: 2026-06-14
+description: Standardize page layouts with creation buttons using a reusable PageWithAdd component.

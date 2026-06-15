@@ -1,8 +1,10 @@
 {
+  "title": "Subject Management",
   "new_title": "New Subject",
   "edit_title": "Edit Subject",
   "name_label": "Subject Name",
   "placeholder": "e.g. Programming I",
+  "loading": "Loading subjects...",
   "save": "Save",
   "create": "Create",
   "cancel": "Cancel"

@@ -9,6 +9,7 @@ export class SubjectsStore {
 
   // O(1) lookup cached
   map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+  byFaculty = $derived.by(() => Map.groupBy(this.items, (s) => s.faculty_id));
 
   async load() {
     if (this.loaded) return;

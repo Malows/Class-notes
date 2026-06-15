@@ -1,10 +1,10 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
 
-    let { children }: { children: Snippet } = $props();
+    let { children, class: className }: { children: Snippet, class?: string } = $props();
 </script>
 
-<div class="sketch-border sketch-shadow p-stack-md bg-surface-container-lowest">
+<div class="sketch-border sketch-shadow p-stack-md bg-surface-container-lowest {className}">
     {@render children()}
 </div>
 

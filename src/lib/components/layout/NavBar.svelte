@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { t } from '$lib/i18n/config';
+    
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-    import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+    import Breadcrumbs from '$lib/components/layout/Breadcrumbs.svelte';
 </script>
 
 <nav class="navbar header-nav">

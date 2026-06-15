@@ -9,6 +9,7 @@
         assignments: Assignment[];
         onDelete: (id: number) => void;
     }
+
     let { assignments, onDelete }: Props = $props();
 </script>
 
@@ -20,7 +21,9 @@
     {#snippet row(a)}
         <td>{a.title}</td>
         <td>
-            <Button onclick={() => onDelete(a.id)}>{$t('layout.remove')}</Button>
+            <div class="row flex-right gap-2">
+                <Button onclick={() => onDelete(a.id)}>{$t('layout.remove')}</Button>
+            </div>
         </td>
     {/snippet}
 </ResponsiveTable>

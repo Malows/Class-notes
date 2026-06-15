@@ -1,18 +1,18 @@
-<script lang="ts">
+<script lang="ts" generics="T">
     import type { Snippet } from 'svelte';
     import Card from './Card.svelte';
 
-    interface Props<T> {
+    interface Props {
         items: T[];
         header: Snippet;
         row: Snippet<[T]>;
     }
 
-    let { items, header, row }: Props<any> = $props();
+    let { items, header, row }: Props = $props();
 </script>
 
 <!-- Desktop Table -->
-<table class="table-hover hidden md:block">
+<table class="table-hover hidden md:table">
     <thead>
         <tr>
             {@render header()}
@@ -33,9 +33,9 @@
 </table>
 
 <!-- Mobile Cards -->
-<div class="md:hidden space-y-2">
+<div class="md:hidden">
     {#each items as item}
-        <Card>
+        <Card class="margin-top-small">
             {@render row(item)}
         </Card>
     {/each}
@@ -43,3 +43,19 @@
         <Card>No hay datos disponibles.</Card>
     {/if}
 </div>
+
+<style lang="scss">
+    .hidden {
+        display: none;
+    }
+
+    @media (min-width: 768px) {
+        .md\:hidden {
+            display: none;
+        }
+
+        .md\:table {
+            display: table;
+        }
+    }
+</style>

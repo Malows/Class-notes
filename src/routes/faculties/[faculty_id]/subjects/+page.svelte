@@ -1,25 +1,41 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, getContext } from 'svelte';
+    
+    import { ModalManager } from '$lib/composables/useModal.svelte';
+    import { t } from '$lib/i18n/config';
+    import { StoreKey } from '$lib/types';
+    import type { Subject } from '$lib/types';
     import { page } from '$app/state';
-    import { facultiesStore } from '$lib/stores/faculties.svelte';
-    import { subjectsStore } from '$lib/stores/subjects.svelte';
-	import GuardWrapper from '$lib/components/GuardWrapper.svelte';
+	import { FacultiesStore } from '$lib/stores/faculties.svelte';
+    import { SubjectsStore } from '$lib/stores/subjects.svelte';
+
+    import GuardWrapper from '$lib/components/GuardWrapper.svelte';
     import SubjectTable from '$lib/components/SubjectTable.svelte';
     import SubjectModal from '$lib/components/modals/SubjectModal.svelte';
+    import PageWithAdd from '$lib/components/layout/PageWithAdd.svelte';
+    import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
 
-	let newSubjectName = $state('');
-	let loading = $state(true);
-    let editModalOpen = $state(false);
-    let editingSubject = $state<any>(null);
-
+    const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
+    const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
     const facultyID = Number(page.params.faculty_id);
 
-	async function loadData() {
+    let loading = $state(true);
+
+    const modal = new ModalManager<Subject>();
+
+	async function load() {
 		try {
-			await Promise.all([
-				facultiesStore.load(),
-				subjectsStore.load()
-			]);
+            const p = [];
+
+            if (!facultiesStore.map.has(facultyID)) {
+                p.push(facultiesStore.load());
+            }
+            if (!subjectsStore.map.has(facultyID)) {
+                p.push(subjectsStore.load());
+            }
+            if (p.length > 0) {
+                await Promise.all(p);
+            }
 		} catch (e) {
 			console.error(e);
 		} finally {
@@ -27,77 +43,60 @@
 		}
 	}
 
-	async function createSubject() {
-		if (!newSubjectName) return;
-		try {
-			await subjectsStore.create(facultyID, newSubjectName);
-			newSubjectName = '';
-		} catch (e) {
-			alert(e);
-		}
-	}
-
-    function startEdit(subject: any) {
-        editingSubject = subject;
-        editModalOpen = true;
-    }
-
-    async function saveEdit(newName: string) {
-        if (!editingSubject) return;
+        async function handleSave(name: string, id?: number) {
         try {
-            await subjectsStore.updateItem(editingSubject.id, newName);
-            editModalOpen = false;
+            if (modal.isCreate) {
+                await subjectsStore.create(facultyID, name);
+            } else if (modal.isEdit && id) {
+                await subjectsStore.updateItem(id, name);
+            }
+            modal.close();
         } catch (e) {
             alert(e);
         }
     }
 
-    async function deleteSubject(id: number) {
-        if (!confirm('¿Borrar materia?')) return;
+    async function handleDelete() {
+        if (!modal.target) return;
         try {
-            await subjectsStore.deleteItem(id);
+            await subjectsStore.deleteItem(modal.target.id);
+            modal.close();
         } catch (e) {
             alert(e);
         }
     }
 
-	onMount(loadData);
+	onMount(load);
 </script>
 
-<h2>Gestión de Materias</h2>
+<PageWithAdd title={t('subjects.title')} onAdd={modal.openCreate}>
 
-<GuardWrapper 
-    condition={facultiesStore.items.some(f => f.id === facultyID)} 
-    message="La facultad seleccionada no existe o no pudo ser cargada." 
-    linkHref="/faculties" 
-    linkText="Volver a facultades"
->
-    <div class="row">
-        <div class="col-12 col">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Nueva Materia</h4>
-                    <div class="form-group">
-                        <label for="name">Nombre de la Materia:</label>
-                        <input type="text" id="name" bind:value={newSubjectName} placeholder="Ej: Análisis Matemático I" class="input-block">
-                    </div>
-                    <button class="paper-btn btn-primary" onclick={createSubject}>Agregar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <GuardWrapper 
+        condition={facultiesStore.map.has(facultyID)} 
+        message="La facultad seleccionada no existe o no pudo ser cargada." 
+        linkHref="/faculties" 
+        linkText="Volver a facultades"
+    >
+        {#if loading}
+            <p>{t('subjects.loading')}</p>
+        {:else}
+            <SubjectTable subjects={subjectsStore.byFaculty.get(facultyID) || []} onEdit={modal.openEdit} onDelete={modal.openDelete} />
+        {/if}
+    </GuardWrapper>
 
-    {#if loading}
-        <p>Cargando materias...</p>
-    {:else}
-        <SubjectTable subjects={subjectsStore.items.filter(s => s.faculty_id === facultyID)} onEdit={startEdit} onDelete={deleteSubject} />
-    {/if}
-</GuardWrapper>
+    <SubjectModal 
+        isOpen={modal.isCreate || modal.isEdit} 
+        mode={modal.mode === 'create' ? 'create' : 'edit'} 
+        subject={modal.target} 
+        onSave={handleSave} 
+        onClose={() => modal.close()} 
+    />
 
-<SubjectModal 
-    isOpen={editModalOpen} 
-    mode="edit" 
-    subject={editingSubject} 
-    onSave={(name) => saveEdit(name)} 
-    onClose={() => editModalOpen = false} 
-/>
+    <ConfirmDialog 
+        isOpen={modal.isDelete}
+        title={$t('subjects.confirm_delete_title')}
+        message={$t('subjects.confirm_delete_message', { name: modal.target?.name || '' })}
+        onConfirm={handleDelete}
+        onClose={() => modal.close()}
+    />
+</PageWithAdd>

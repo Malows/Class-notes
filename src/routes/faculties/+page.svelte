@@ -3,10 +3,10 @@
     
     import { t } from '$lib/i18n/config';
     import { StoreKey } from '$lib/types';
-    import type { Faculty } from '$lib/types';
+    import type { Faculty, ModalMode } from '$lib/types';
     import type { FacultiesStore } from '$lib/stores/faculties.svelte';
 	
-    import CommonPage from '$lib/components/layout/CommonPage.svelte';
+    import PageWithAdd from '$lib/components/layout/PageWithAdd.svelte';
     import FacultyTable from '$lib/components/tables/FacultyTable.svelte';
     import FacultyModal from '$lib/components/modals/FacultyModal.svelte';
     import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
@@ -14,7 +14,6 @@
     const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
 
 	let loading = $state(true);
-    type ModalMode = 'create' | 'edit' | 'delete' | null;
     let modalMode = $state<ModalMode>(null);
     let activeFaculty = $state<Faculty | null>(null);
 
@@ -71,13 +70,7 @@
 	onMount(load);
 </script>
 
-<CommonPage title={$t('faculties.title')}>
-    {#snippet extra()}
-        <button class="paper-btn btn-primary-outline" onclick={openCreate}>
-            + {$t('faculties.add')}
-        </button>
-    {/snippet}
-
+<PageWithAdd title={$t('faculties.title')} onAdd={openCreate}>
     {#if loading}
         <p>{$t('faculties.loading')}</p>
     {:else}
@@ -99,4 +92,4 @@
         onConfirm={handleDelete}
         onClose={() => modalMode = null}
     />
-</CommonPage>
+</PageWithAdd>

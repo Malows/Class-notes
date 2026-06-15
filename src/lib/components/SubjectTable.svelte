@@ -6,7 +6,7 @@
     interface Props {
         subjects: Subject[];
         onEdit: (s: Subject) => void;
-        onDelete: (id: number) => void;
+        onDelete: (s: Subject) => void;
     }
     let { subjects, onEdit, onDelete }: Props = $props();
 </script>
@@ -31,7 +31,7 @@
                     <td>
                         <Button href="/faculties/{subject.faculty_id}/subjects/{subject.id}/periods">Ver periodos</Button>
                         <Button onclick={() => onEdit(subject)}>Editar</Button>
-                        <Button onclick={() => onDelete(subject.id)}>Borrar</Button>
+                        <Button onclick={() => onDelete(subject)}>Borrar</Button>
                     </td>
                 </tr>
             {/each}
@@ -47,7 +47,7 @@
                 <div class="flex gap-2 mt-2">
                     <Button href="/faculties/{subject.faculty_id}/subjects/{subject.id}/periods">Ver</Button>
                     <Button onclick={() => onEdit(subject)}>Editar</Button>
-                    <Button onclick={() => onDelete(subject.id)}>Borrar</Button>
+                    <Button onclick={() => onDelete(subject)}>Borrar</Button>
                 </div>
             </Card>
         {/each}

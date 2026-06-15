@@ -24,7 +24,7 @@
 
 <style>
     .breadcrumb a {
-        color: white;
+        color: var(--primary);
     }
 
     .breadcrumb a:hover {

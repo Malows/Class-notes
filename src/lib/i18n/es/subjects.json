@@ -1,8 +1,10 @@
 {
+  "title": "Gestión de Materias",
   "new_title": "Nueva Materia",
   "edit_title": "Editar Materia",
   "name_label": "Nombre de la Materia",
   "placeholder": "Ej: Programación I",
+  "loading": "Cargando materias...",
   "save": "Guardar",
   "create": "Crear",
   "cancel": "Cancelar"

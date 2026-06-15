@@ -44,3 +44,6 @@ main {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0px 0px var(--border-color);
 }
+.gap-2 {
+  gap: 0.5rem;
+}

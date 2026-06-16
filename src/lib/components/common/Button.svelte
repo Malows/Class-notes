@@ -25,3 +25,15 @@
         {@render children?.()}
     </button>
 {/if}
+
+<style>
+    a.sketch-border {
+        text-decoration: none !important;
+        color: var(--on-primary, #fff) !important;
+        box-sizing: border-box;
+    }
+
+    :global(.dark) a.sketch-border {
+        color: var(--on-primary, #1a1c1c) !important;
+    }
+</style>

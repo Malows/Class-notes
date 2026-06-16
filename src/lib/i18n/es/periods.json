@@ -6,5 +6,13 @@
   "placeholder_year": "Ej: 2024",
   "save": "Guardar",
   "create": "Crear",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "manage_periods_title": "Gestionar Periodos",
+  "new_period_card_title": "Nuevo Periodo Lectivo",
+  "first_semester": "1º Cuatrimestre",
+  "second_semester": "2º Cuatrimestre",
+  "create_period": "Crear Periodo",
+  "loading_periods": "Cargando periodos...",
+  "confirm_delete": "¿Borrar periodo?",
+  "period_not_found": "El periodo seleccionado no existe o no pudo ser cargado."
 }

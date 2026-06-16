@@ -35,7 +35,15 @@
                 {onPrev}
                 {onNext}
                 {onSkip}
+                gradeTestId="correction-grade-input"
+                approvedTestId="correction-approved-checkbox"
+                commentsTestId="correction-comments-textarea"
+                submitTestId="modal-save-btn"
             />
         {/if}
     {/snippet}
+
+    {#snippet footer()}
+        <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">{$t('common.cancel')}</button>
+    {#/snippet}
 </DialogBase>

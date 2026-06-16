@@ -6,5 +6,7 @@
   "add": "Agregar",
   "loading": "Cargando facultades...",
   "edit_title": "Editar Facultad",
-  "confirm_delete": "¿Borrar facultad?"
+  "confirm_delete": "¿Borrar facultad?",
+  "not_found_message": "La facultad seleccionada no existe o no pudo ser cargada.",
+  "back_to_faculties": "Volver a facultades"
 }

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
 	import { page } from '$app/state';
+    
+    import { t } from '$lib/i18n/config';
     import { StoreKey } from '$lib/types';
     import type { CommissionsStore } from '$lib/stores/commissions.svelte';
     import type { PeriodsStore } from '$lib/stores/periods.svelte';
@@ -60,7 +62,7 @@
     }
 
     async function deleteCommission(id: number) {
-        if (!confirm('¿Borrar comisión?')) return;
+        if (!confirm($t('commissions.confirm_delete'))) return;
         try {
             await commissionsStore.deleteItem(id);
         } catch (e) {
@@ -71,32 +73,32 @@
 	onMount(loadData);
 </script>
 
-<h2>Comisiones del Periodo</h2>
-<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods" class="paper-btn btn-small">« Volver a Periodos</a></p>
+<h2>{$t('commissions.manage_commissions_title')}</h2>
+<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods" class="paper-btn btn-small">{$t('layout.back_to_periods')}</a></p>
 
 <GuardWrapper 
     condition={periodsStore.items.some(p => p.id === periodID)} 
-    message="El periodo seleccionado no existe o no pudo ser cargado." 
+    message={$t('periods.period_not_found')} 
     linkHref="/faculties/{facultyID}/subjects/{subjectID}/periods" 
-    linkText="Volver a periodos"
+    linkText={$t('layout.back_to_periods')}
 >
     <div class="row">
         <div class="col-12 col">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Nueva Comisión</h4>
+                    <h4 class="card-title">{$t('commissions.new_title')}</h4>
                     <div class="form-group">
-                        <label for="name">Nombre de la Comisión:</label>
-                        <input type="text" id="name" bind:value={newCommissionName} placeholder="Ej: Comisión A" class="input-block">
+                        <label for="name">{$t('commissions.name_label')}:</label>
+                        <input type="text" id="name" bind:value={newCommissionName} placeholder={$t('commissions.placeholder')} class="input-block">
                     </div>
-                    <button class="paper-btn btn-primary" onclick={createCommission}>Crear Comisión</button>
+                    <button class="paper-btn btn-primary" onclick={createCommission}>{$t('commissions.create_commission')}</button>
                 </div>
             </div>
         </div>
     </div>
 
     {#if loading}
-        <p>Cargando comisiones...</p>
+        <p>{$t('commissions.loading_commissions')}</p>
     {:else}
         <CommissionTable 
             commissions={commissionsStore.items.filter(c => c.period_id === periodID)} 

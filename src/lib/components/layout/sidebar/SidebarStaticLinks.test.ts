@@ -1,6 +1,7 @@
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach } from "vitest";
 import SidebarStaticLinks from "./SidebarStaticLinks.svelte";
+import { loadTranslations } from "$lib/i18n/config";
 
 let component: ReturnType<typeof mount>;
 afterEach(() => {
@@ -8,7 +9,8 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
-test("Links renderizan", () => {
+test("Links renderizan", async () => {
+  await loadTranslations("en", "/");
   component = mount(SidebarStaticLinks, {
     target: document.body,
     props: { isCollapsed: false },

@@ -28,7 +28,7 @@
     {/snippet}
     
     {#snippet footer()}
-        <button class="paper-btn" onclick={onClose}>{cancelText}</button>
-        <button class="btn-danger" onclick={onConfirm}>{confirmText}</button>
+        <button class="paper-btn" onclick={onClose} data-test-id="confirm-dialog-cancel-btn">{cancelText}</button>
+        <button class="btn-danger" onclick={onConfirm} data-test-id="confirm-dialog-confirm-btn">{confirmText}</button>
     {/snippet}
 </DialogBase>

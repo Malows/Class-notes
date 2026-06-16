@@ -21,18 +21,18 @@
 
 <ResponsiveTable items={faculties}>
     {#snippet header()}
-        <th>{$t('layout.id')}</th>
-        <th>{$t('layout.name')}</th>
-        <th>{$t('layout.actions')}</th>
+        <th data-test-id="table-header-id">{$t('layout.id')}</th>
+        <th data-test-id="table-header-name">{$t('layout.name')}</th>
+        <th data-test-id="table-header-actions">{$t('layout.actions')}</th>
     {/snippet}
     {#snippet row(f)}
-        <td>{f.id}</td>
-        <td>{f.name}</td>
+        <td data-test-id="faculty-id-{f.id}">{f.id}</td>
+        <td data-test-id="faculty-name-{f.id}">{f.name}</td>
         <td>
             <div class="row flex-right gap-2">
-                <Button onclick={() => goToFaculty(f)}>{$t('layout.view_subjects')}</Button>
-                <Button onclick={() => onEdit(f)}>{$t('layout.edit')}</Button>
-                <Button onclick={() => onDelete(f)}>{$t('layout.delete')}</Button>
+                <Button onclick={() => goToFaculty(f)} data-test-id="view-subjects-btn-{f.id}">{$t('layout.view_subjects')}</Button>
+                <Button onclick={() => onEdit(f)} data-test-id="edit-btn-{f.id}">{$t('layout.edit')}</Button>
+                <Button onclick={() => onDelete(f)} data-test-id="delete-btn-{f.id}">{$t('layout.delete')}</Button>
             </div>
         </td>
     {/snippet}

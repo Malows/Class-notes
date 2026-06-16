@@ -5,5 +5,13 @@
   "placeholder": "Ej: Tarde",
   "save": "Guardar",
   "create": "Crear",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "confirm_delete": "¿Borrar comisión?",
+  "manage_commissions_title": "Comisiones del Periodo",
+  "create_commission": "Crear Comisión",
+  "loading_commissions": "Cargando comisiones...",
+  "commission_overview_title": "Resumen de Comisión",
+  "loading_info": "Cargando información...",
+  "legend": "Leyenda:",
+  "legend_text": "V: Aprobado | R: Desaprobado | -: Pendiente | ⚠️: Sospecha IA | 🤖: Certeza IA"
 }

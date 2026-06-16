@@ -40,6 +40,7 @@
                 bind:value={name} 
                 placeholder={$t('students.placeholder')} 
                 class="input-block"
+                data-test-id="student-name-input"
             >
         </div>
         <div class="form-group">
@@ -50,14 +51,16 @@
                 bind:value={externalId} 
                 placeholder={$t('students.external_id_placeholder')} 
                 class="input-block"
+                data-test-id="student-external-id-input"
             >
         </div>
     {/snippet}
 
     {#snippet footer()}
-        <button class="paper-btn" onclick={onClose}>{$t('common.cancel')}</button>
+        <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}>{$t('common.cancel')}</button>
         <button 
             class="paper-btn btn-primary" 
+            data-test-id="submit-btn"
             onclick={() => onSave(name, externalId, student?.id)}
         >
             {mode === 'create' ? $t('common.create') : $t('common.save')}

@@ -34,20 +34,21 @@
     {:else}
         <div class="row">
             <div class="col-6 col">
-                <StatItem label={$t('dashboard.total_students')} value={stats.totalStudents} />
+                <StatItem label={$t('dashboard.total_students')} value={stats.totalStudents} data-test-id="total-students-stat" />
             </div>
             <div class="col-6 col">
-                <StatItem label={$t('dashboard.subjects')} value={stats.totalSubjects} />
+                <StatItem label={$t('dashboard.subjects')} value={stats.totalSubjects} data-test-id="total-subjects-stat" />
             </div>
             <div class="col-6 col">
                 <StatItem 
                     label={$t('dashboard.approval_rate')} 
                     value={`${stats.approvalRate}%`} 
                     badge={stats.approvalRate > APPROVAL_RATE_THRESHOLD ? 'success' : 'warning'} 
+                    data-test-id="approval-rate-stat"
                 />
             </div>
             <div class="col-6 col">
-                <StatItem label={$t('dashboard.deliveries')} value={stats.totalDeliveries} />
+                <StatItem label={$t('dashboard.deliveries')} value={stats.totalDeliveries} data-test-id="total-deliveries-stat" />
             </div>
         </div>
     {/if}

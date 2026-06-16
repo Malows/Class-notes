@@ -20,11 +20,11 @@
         <th>{$t('layout.actions')}</th>
     {/snippet}
     {#snippet row(s)}
-        <td>{s.name}</td>
+        <td data-test-id="student-name-{s.id}">{s.name}</td>
         <td>
             <div class="row flex-right gap-2">
-                <Button onclick={() => onEdit(s)}>{$t('layout.edit')}</Button>
-                <Button onclick={() => onDelete(s.id)}>{$t('layout.delete')}</Button>
+                <Button data-test-id="edit-btn-{s.id}" onclick={() => onEdit(s)}>{$t('layout.edit')}</Button>
+                <Button data-test-id="delete-btn-{s.id}" onclick={() => onDelete(s.id)}>{$t('layout.delete')}</Button>
             </div>
         </td>
     {/snippet}

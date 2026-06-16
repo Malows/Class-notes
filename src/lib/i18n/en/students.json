@@ -7,5 +7,12 @@
   "external_id_placeholder": "e.g. 12345",
   "save": "Save",
   "create": "Create",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "confirm_delete": "Delete student?",
+  "manage_students_title": "Student Management",
+  "upload_students_title": "Roster Students",
+  "paste_list_label": "Paste roster (one name per line):",
+  "single_name_label": "Or a single name:",
+  "save_students_btn": "Save Students",
+  "loading_students": "Loading students..."
 }

@@ -3,11 +3,12 @@
         label: string;
         value: string | number;
         badge?: string;
+        'data-test-id'?: string;
     }
-    let { label, value, badge }: Props = $props();
+    let { label, value, badge, 'data-test-id': testId }: Props = $props();
 </script>
 
-<div class="stat-item">
+<div class="stat-item" data-test-id={testId}>
     <strong>{label}:</strong>
     <span class={badge ? `badge ${badge}` : ''}>{value}</span>
 </div>

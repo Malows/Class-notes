@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
+    
+    import { t } from '$lib/i18n/config';
 	import { overviewService } from '$lib/services/overview.service';
 	import type { OverviewData } from '$lib/types';
 	import OverviewTable from '$lib/components/OverviewTable.svelte';
@@ -26,11 +28,11 @@
 	onMount(loadData);
 </script>
 
-<h2>Overview de Comisión</h2>
-<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions" class="paper-btn btn-small">« Volver a Comisiones</a></p>
+<h2>{$t('commissions.commission_overview_title')}</h2>
+<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions" class="paper-btn btn-small">{$t('layout.back_to_commissions')}</a></p>
 
 {#if loading}
-	<p>Cargando información...</p>
+	<p>{$t('commissions.loading_info')}</p>
 {:else if data}
 	<div style="overflow-x: auto;">
 		<OverviewTable 
@@ -42,6 +44,6 @@
         />
 	</div>
 	<p>
-		<small><b>Leyenda:</b> V: Aprobado | R: Desaprobado | -: Pendiente | ⚠️: Sospecha IA | 🤖: Certeza IA</small>
+		<small><b>{$t('commissions.legend')}</b> {$t('commissions.legend_text')}</small>
 	</p>
 {/if}

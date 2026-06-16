@@ -4,6 +4,7 @@
   "menu_close": "Close menu",
   "quick_access": "Quick access",
   "faculties": "Faculties",
+  "faculty": "Faculty",
   "dashboard": "Dashboard",
   "brand": "Class Notes",
   "dark": "Dark",
@@ -15,6 +16,7 @@
   "year": "Year",
   "semester": "Semester",
   "students": "Students",
+  "student": "Student",
   "overview": "Overview",
   "students_label": "Students",
   "home": "Home",
@@ -29,5 +31,8 @@
   "correct": "Correct",
   "subjects": "Subjects",
   "periods": "Periods",
-  "commissions": "Commissions"
+  "commissions": "Commissions",
+  "back_to_subjects": "« Back to subjects",
+  "back_to_periods": "« Back to periods",
+  "back_to_commissions": "« Back to commissions"
 }

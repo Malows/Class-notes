@@ -6,5 +6,13 @@
   "placeholder_year": "e.g. 2024",
   "save": "Save",
   "create": "Create",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "manage_periods_title": "Manage Periods",
+  "new_period_card_title": "New Academic Period",
+  "first_semester": "1st Semester",
+  "second_semester": "2nd Semester",
+  "create_period": "Create Period",
+  "loading_periods": "Loading periods...",
+  "confirm_delete": "Delete period?",
+  "period_not_found": "The selected period does not exist or could not be loaded."
 }

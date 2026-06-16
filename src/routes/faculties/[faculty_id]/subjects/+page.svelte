@@ -69,16 +69,16 @@
 	onMount(load);
 </script>
 
-<PageWithAdd title={t('subjects.title')} onAdd={modal.openCreate}>
+<PageWithAdd title={$t('subjects.title')} onAdd={modal.openCreate}>
 
     <GuardWrapper 
         condition={facultiesStore.map.has(facultyID)} 
-        message="La facultad seleccionada no existe o no pudo ser cargada." 
+        message={$t('faculties.not_found_message')} 
         linkHref="/faculties" 
-        linkText="Volver a facultades"
+        linkText={$t('faculties.back_to_faculties')}
     >
         {#if loading}
-            <p>{t('subjects.loading')}</p>
+            <p>{$t('subjects.loading')}</p>
         {:else}
             <SubjectTable subjects={subjectsStore.byFaculty.get(facultyID) || []} onEdit={modal.openEdit} onDelete={modal.openDelete} />
         {/if}

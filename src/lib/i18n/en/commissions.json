@@ -5,5 +5,13 @@
   "placeholder": "e.g. Afternoon",
   "save": "Save",
   "create": "Create",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "confirm_delete": "Delete commission?",
+  "manage_commissions_title": "Period's Commissions",
+  "create_commission": "Create Commission",
+  "loading_commissions": "Loading commissions...",
+  "commission_overview_title": "Commission Overview",
+  "loading_info": "Loading information...",
+  "legend": "Legend:",
+  "legend_text": "V: Approved | R: Rejected | -: Pending | ⚠️: AI Suspected | 🤖: AI Confirmed"
 }

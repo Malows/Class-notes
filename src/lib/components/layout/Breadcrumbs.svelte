@@ -10,13 +10,13 @@
     );
 </script>
 
-<ul class="breadcrumb">
+<ul class="breadcrumb" data-test-id="breadcrumbs">
     {#each breadcrumbs as crumb, i}
-        <li>
+        <li data-test-id="breadcrumb-step-{i}">
             {#if i === breadcrumbs.length - 1}
-                {crumb.label}
+                <span data-test-id="breadcrumb-text-{i}">{crumb.label}</span>
             {:else}
-                <a href={crumb.href}>{crumb.label}</a>
+                <a href={crumb.href} data-test-id="breadcrumb-link-{i}">{crumb.label}</a>
             {/if}
         </li>
     {/each}

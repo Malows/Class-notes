@@ -7,5 +7,12 @@
   "external_id_placeholder": "Ej: 12345",
   "save": "Guardar",
   "create": "Crear",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "confirm_delete": "¿Borrar alumno?",
+  "manage_students_title": "Gestión de Alumnos",
+  "upload_students_title": "Carga de Alumnos",
+  "paste_list_label": "Pegar lista (un nombre por línea):",
+  "single_name_label": "O un solo nombre:",
+  "save_students_btn": "Guardar Alumnos",
+  "loading_students": "Cargando alumnos..."
 }

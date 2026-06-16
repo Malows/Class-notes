@@ -5,5 +5,9 @@
   "placeholder": "Ej: Trabajo Práctico 1",
   "save": "Guardar",
   "create": "Crear",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "confirm_delete": "¿Borrar TP?",
+  "manage_assignments_title": "Definir Trabajos Prácticos",
+  "add_assignment": "Agregar TP",
+  "loading_assignments": "Cargando TPs..."
 }

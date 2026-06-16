@@ -14,7 +14,7 @@
 </script>
 
 {#if isOpen}
-  <div class="modal" transition:fade={{ duration: 200 }}>
+  <div class="modal" transition:fade={{ duration: 200 }} data-test-id="modal-container">
     <div 
       class="modal-bg" 
       onclick={onClose} 
@@ -22,9 +22,10 @@
       role="button" 
       tabindex="-1" 
       aria-label="Close modal"
+      data-test-id="modal-backdrop"
     ></div>
-    <div class="modal-body" transition:fly={{ y: 20, duration: 300 }}>
-      <button class="btn-close" onclick={onClose} aria-label="Close">&times;</button>
+    <div class="modal-body" transition:fly={{ y: 20, duration: 300 }} data-test-id="modal-body">
+      <button class="btn-close" onclick={onClose} aria-label="Close" data-test-id="modal-close-btn">&times;</button>
       <h4 class="modal-title">{title}</h4>
       
       <div class="modal-text">
@@ -56,11 +57,21 @@
     height: 100%;
   }
 
+  .modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1 !important;
+  }
+
   .modal-body {
     max-width: 500px;
     width: 90%;
     margin: auto !important;
-    position: static !important;
+    position: relative !important;
+    z-index: 2 !important;
     transform: none !important;
     left: auto !important;
     top: auto !important;

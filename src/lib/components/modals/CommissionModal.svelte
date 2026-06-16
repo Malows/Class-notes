@@ -38,15 +38,17 @@
                 bind:value={name} 
                 placeholder={$t('commissions.placeholder')} 
                 class="input-block"
+                data-test-id="commission-name-input"
             >
         </div>
     {/snippet}
 
     {#snippet footer()}
-        <button class="paper-btn" onclick={onClose}>{$t('common.cancel')}</button>
+        <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">{$t('common.cancel')}</button>
         <button 
             class="paper-btn btn-primary" 
             onclick={() => onSave(name, commission?.id)}
+            data-test-id="modal-save-btn"
         >
             {mode === 'create' ? $t('common.create') : $t('common.save')}
         </button>

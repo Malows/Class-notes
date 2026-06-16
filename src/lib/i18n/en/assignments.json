@@ -5,5 +5,9 @@
   "placeholder": "e.g. Assignment 1",
   "save": "Save",
   "create": "Create",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "confirm_delete": "Delete TP?",
+  "manage_assignments_title": "Define Assignments",
+  "add_assignment": "Add TP",
+  "loading_assignments": "Loading TPs..."
 }

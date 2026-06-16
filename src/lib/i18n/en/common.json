@@ -4,5 +4,7 @@
   "create": "Create",
   "add": "Add",
   "edit": "Edit",
-  "delete": "Delete"
+  "delete": "Delete",
+  "of": "of",
+  "loading": "Loading..."
 }

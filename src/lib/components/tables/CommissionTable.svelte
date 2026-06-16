@@ -33,14 +33,14 @@
         <th>{$t('layout.actions')}</th>
     {/snippet}
     {#snippet row(c)}
-        <td>{c.name}</td>
+        <td data-test-id="commission-name-{c.id}">{c.name}</td>
         <td>{c.student_count}</td>
         <td>
             <div class="row flex-right gap-2">
-                <Button onclick={() => goToStudents(c)}>{$t('layout.students_list')}</Button>
-                <Button onclick={() => goToOverview(c)}>{$t('layout.overview')}</Button>
-                <Button onclick={() => onEdit(c)}>{$t('layout.edit')}</Button>
-                <Button onclick={() => onDelete(c.id)}>{$t('layout.delete')}</Button>
+                <Button data-test-id="view-students-btn-{c.id}" onclick={() => goToStudents(c)}>{$t('layout.students_list')}</Button>
+                <Button data-test-id="view-overview-btn-{c.id}" onclick={() => goToOverview(c)}>{$t('layout.overview')}</Button>
+                <Button data-test-id="edit-btn-{c.id}" onclick={() => onEdit(c)}>{$t('layout.edit')}</Button>
+                <Button data-test-id="delete-btn-{c.id}" onclick={() => onDelete(c.id)}>{$t('layout.delete')}</Button>
             </div>
         </td>
     {/snippet}

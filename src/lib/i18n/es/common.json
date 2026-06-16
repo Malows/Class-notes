@@ -4,5 +4,7 @@
   "create": "Crear",
   "add": "Agregar",
   "edit": "Editar",
-  "delete": "Borrar"
+  "delete": "Borrar",
+  "of": "de",
+  "loading": "Cargando..."
 }

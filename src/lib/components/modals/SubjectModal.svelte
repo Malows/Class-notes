@@ -36,14 +36,16 @@
                 bind:value={name} 
                 placeholder={$t('subjects.placeholder')} 
                 class="input-block"
+                data-test-id="subject-name-input"
             >
         </div>
     {/snippet}
 
     {#snippet footer()}
-        <button class="paper-btn" onclick={onClose}>{$t('common.cancel')}</button>
+        <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}>{$t('common.cancel')}</button>
         <button 
             class="paper-btn btn-primary" 
+            data-test-id="submit-btn"
             onclick={() => onSave(name, subject?.id)}
         >
             {mode === 'create' ? $t('common.create') : $t('common.save')}

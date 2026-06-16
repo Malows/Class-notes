@@ -18,7 +18,7 @@
 
 <CommonPage {title}>
     {#snippet extra()}
-        <button class="paper-btn btn-primary-outline" onclick={onAdd}>
+        <button data-test-id="add-btn" class="paper-btn btn-primary-outline" onclick={onAdd}>
             + {$t(addLabelKey)}
         </button>
     {/snippet}

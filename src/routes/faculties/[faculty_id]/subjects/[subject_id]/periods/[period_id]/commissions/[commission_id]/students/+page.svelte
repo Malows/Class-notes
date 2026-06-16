@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
 	import { page } from '$app/state';
+    
+    import { t } from '$lib/i18n/config';
     import { StoreKey } from '$lib/types';
     import type { StudentsStore } from '$lib/stores/students.svelte';
     import StudentTable from '$lib/components/tables/StudentTable.svelte';
@@ -65,7 +67,7 @@
     }
 
 	async function deleteStudent(id: number) {
-		if (!confirm('¿Borrar alumno?')) return;
+		if (!confirm($t('students.confirm_delete'))) return;
 		try {
 			await studentsStore.deleteItem(id);
 		} catch (e) {
@@ -76,30 +78,30 @@
 	onMount(loadData);
 </script>
 
-<h2>Gestión de Alumnos</h2>
-<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions" class="paper-btn btn-small">« Volver a Comisiones</a></p>
+<h2>{$t('students.manage_students_title')}</h2>
+<p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions" class="paper-btn btn-small">{$t('layout.back_to_commissions')}</a></p>
 
 <div class="row">
 	<div class="col-12 col">
 		<div class="card">
 			<div class="card-body">
-				<h4 class="card-title">Carga de Alumnos</h4>
+				<h4 class="card-title">{$t('students.upload_students_title')}</h4>
 				<div class="form-group">
-					<label for="names">Pegar lista (un nombre por línea):</label>
+					<label for="names">{$t('students.paste_list_label')}</label>
 					<textarea id="names" bind:value={namesList} rows="5" class="input-block"></textarea>
 				</div>
 				<div class="form-group">
-					<label for="single">O un solo nombre:</label>
+					<label for="single">{$t('students.single_name_label')}</label>
 					<input type="text" id="single" bind:value={singleName} class="input-block">
 				</div>
-				<button class="paper-btn btn-primary" onclick={saveStudents}>Guardar Alumnos</button>
+				<button class="paper-btn btn-primary" onclick={saveStudents}>{$t('students.save_students_btn')}</button>
 			</div>
 		</div>
 	</div>
 </div>
 
 {#if loading}
-	<p>Cargando alumnos...</p>
+	<p>{$t('students.loading_students')}</p>
 {:else}
     <StudentTable students={studentsStore.items} onEdit={startEdit} onDelete={deleteStudent} />
 {/if}

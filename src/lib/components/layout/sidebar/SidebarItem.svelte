@@ -10,7 +10,7 @@
     let { title, href, isCollapsed, icon, active } : Props = $props();
 </script>
 
-<a href={href} title={title} class:active={active}>
+<a href={href} title={title} class:active={active} data-test-id="sidebar-item-{title.toLowerCase().trim().replace(/\s+/g, '-')}">
     {isCollapsed ? icon : title}
 </a>
 

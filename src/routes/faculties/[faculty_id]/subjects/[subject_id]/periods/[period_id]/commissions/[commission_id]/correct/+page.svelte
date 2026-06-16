@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import { page } from '$app/state';
     import { goto } from '$app/navigation';
+    
+    import { t } from '$lib/i18n/config';
     import { assignmentService } from '$lib/services/assignment.service';
     import { correctionService } from '$lib/services/correction.service';
     import { studentService } from '$lib/services/student.service';
@@ -83,11 +85,11 @@
     onMount(loadData);
 </script>
 
-<h2>Corregir {assignment?.title || 'TP'}</h2>
-<p>Alumno: {students[currentIndex]?.name || '...'} ({currentIndex + 1} de {students.length})</p>
+<h2>{$t('layout.correct')} {assignment?.title || 'TP'}</h2>
+<p>{$t('layout.student')}: {students[currentIndex]?.name || '...'} ({currentIndex + 1} {$t('common.of')} {students.length})</p>
 
 {#if loading}
-    <p>Cargando...</p>
+    <p>{$t('common.loading')}</p>
 {:else if delivery}
     <DeliveryForm 
         {delivery} 

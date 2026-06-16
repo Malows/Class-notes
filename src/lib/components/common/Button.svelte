@@ -1,33 +1,27 @@
 <script lang="ts">
-    import type { HTMLButtonAttributes } from 'svelte/elements';
+    import type { HTMLButtonAttributes, HTMLAnchorAttributes } from 'svelte/elements';
     
     import { goto } from "$app/navigation"
 
-    interface Props extends HTMLButtonAttributes {
-        href?: string;
-        onclick?: () => void;
-    }
+    type Props = 
+        | (HTMLButtonAttributes & { href?: never; onclick?: () => void })
+        | (HTMLAnchorAttributes & { href: string; onclick?: () => void });
 
-    let { href, onclick, children, ...rest }: Props = $props();
+    let { href, onclick, children, ...rest } = $props() as any;
 
-    function handleHref() {
-        if (!href) return;
-        if (href.startsWith('http')) {
-            window.open(href, '_blank');
-        } else {
-            goto(href);
-        }
-    }
-
-    function handleClick() {
+    function handleClick(event: MouseEvent) {
         if (onclick) {
             onclick();
-        } else {
-            handleHref();
         }
     }
 </script>
 
-<button class="sketch-border sketch-shadow-hover px-4 py-2 bg-primary text-on-primary" onclick={handleClick} {...rest}>
-    {@render children?.()}
-</button>
+{#if href}
+    <a {href} class="sketch-border sketch-shadow-hover px-4 py-2 bg-primary text-on-primary inline-block text-center" onclick={handleClick} {...rest}>
+        {@render children?.()}
+    </a>
+{:else}
+    <button class="sketch-border sketch-shadow-hover px-4 py-2 bg-primary text-on-primary" onclick={handleClick} {...rest}>
+        {@render children?.()}
+    </button>
+{/if}

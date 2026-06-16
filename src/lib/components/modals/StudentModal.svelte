@@ -59,7 +59,7 @@
     {#snippet footer()}
         <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}>{$t('common.cancel')}</button>
         <button 
-            class="paper-btn btn-primary" 
+            class="paper-btn btn-secondary" 
             data-test-id="submit-btn"
             onclick={() => onSave(name, externalId, student?.id)}
         >

@@ -46,7 +46,7 @@
     {#snippet footer()}
         <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">{$t('common.cancel')}</button>
         <button 
-            class="paper-btn btn-primary" 
+            class="paper-btn btn-secondary" 
             onclick={() => onSave(name, commission?.id)}
             data-test-id="modal-save-btn"
         >

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
-    
+
     import { ModalManager } from '$lib/composables/useModal.svelte';
     import { t } from '$lib/i18n/config';
     import { StoreKey } from '$lib/types';
@@ -69,7 +69,7 @@
 	onMount(load);
 </script>
 
-<PageWithAdd title={$t('subjects.title')} onAdd={modal.openCreate}>
+<PageWithAdd title={$t('subjects.title')} onAdd={() => modal.openCreate()}>
 
     <GuardWrapper 
         condition={facultiesStore.map.has(facultyID)} 
@@ -80,19 +80,19 @@
         {#if loading}
             <p>{$t('subjects.loading')}</p>
         {:else}
-            <SubjectTable subjects={subjectsStore.byFaculty.get(facultyID) || []} onEdit={modal.openEdit} onDelete={modal.openDelete} />
+            <SubjectTable subjects={subjectsStore.byFaculty.get(facultyID) || []} onEdit={(s) => modal.openEdit(s)} onDelete={(s) => modal.openDelete(s)} />
         {/if}
     </GuardWrapper>
 
-    <SubjectModal 
-        isOpen={modal.isCreate || modal.isEdit} 
-        mode={modal.mode === 'create' ? 'create' : 'edit'} 
-        subject={modal.target} 
-        onSave={handleSave} 
-        onClose={() => modal.close()} 
+    <SubjectModal
+        isOpen={modal.isCreate || modal.isEdit}
+        mode={modal.mode === 'create' ? 'create' : 'edit'}
+        subject={modal.target}
+        onSave={handleSave}
+        onClose={() => modal.close()}
     />
 
-    <ConfirmDialog 
+    <ConfirmDialog
         isOpen={modal.isDelete}
         title={$t('subjects.confirm_delete_title')}
         message={$t('subjects.confirm_delete_message', { name: modal.target?.name || '' })}

@@ -9,5 +9,5 @@
   "create": "Crear",
   "cancel": "Cancelar",
   "confirm_delete_title": "Borrar Materia",
-  "confirm_delete_message": "¿Está seguro que desea borrar la materia {name}?"
+  "confirm_delete_message": "¿Está seguro que desea borrar la materia {{name}}?"
 }

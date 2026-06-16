@@ -8,7 +8,7 @@
   "edit_title": "Editar Facultad",
   "confirm_delete": "¿Borrar facultad?",
   "confirm_delete_title": "Borrar Facultad",
-  "confirm_delete_message": "¿Está seguro que desea borrar la facultad {name}?",
+  "confirm_delete_message": "¿Está seguro que desea borrar la facultad {{name}}?",
   "not_found_message": "La facultad seleccionada no existe o no pudo ser cargada.",
   "back_to_faculties": "Volver a facultades"
 }

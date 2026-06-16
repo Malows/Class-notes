@@ -14,5 +14,7 @@
   "create_period": "Crear Periodo",
   "loading_periods": "Cargando periodos...",
   "confirm_delete": "¿Borrar periodo?",
+  "confirm_delete_title": "Borrar Periodo Lectivo",
+  "confirm_delete_message": "¿Está seguro que desea borrar el periodo lectivo {{year}} ({{semester}}º Cuatrimestre)?",
   "period_not_found": "El periodo seleccionado no existe o no pudo ser cargado."
 }

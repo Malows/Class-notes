@@ -4,19 +4,21 @@
 
 	import { t } from '$lib/i18n/config';
 	import { StoreKey } from '$lib/types';
+    import { ModalManager } from '$lib/composables/useModal.svelte';
+	import type { Period } from '$lib/types';
 	import type { PeriodsStore } from '$lib/stores/periods.svelte';
 
 	import PeriodTable from '$lib/components/tables/PeriodTable.svelte';
 	import PeriodEditModal from '$lib/components/modals/PeriodEditModal.svelte';
+    import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
 
 	const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
-
 
 	let newYear = $state(new Date().getFullYear());
 	let newSemester = $state(1);
 	let loading = $state(true);
-    let editModalOpen = $state(false);
-    let editingPeriod = $state<any>(null);
+
+    const modal = new ModalManager<Period>();
 
     const facultyID = Number(page.params.faculty_id);
 	const subjectID = Number(page.params.subject_id);
@@ -39,24 +41,20 @@
 		}
 	}
 
-    function startEdit(period: any) {
-        editingPeriod = period;
-        editModalOpen = true;
-    }
-
     async function saveEdit(id: number, year: number, semester: number) {
         try {
             await periodsStore.updateItem(id, year, semester);
-            editModalOpen = false;
+            modal.close();
         } catch (e) {
             alert(e);
         }
     }
 
-    async function deletePeriod(id: number) {
-        if (!confirm($t('periods.confirm_delete'))) return;
+    async function handleDelete() {
+        if (!modal.target) return;
         try {
-            await periodsStore.deleteItem(id);
+            await periodsStore.deleteItem(modal.target.id);
+            modal.close();
         } catch (e) {
             alert(e);
         }
@@ -103,14 +101,22 @@
         periods={periodsStore.items} 
         facultyId={facultyID} 
         subjectId={subjectID} 
-        onEdit={startEdit} 
-        onDelete={deletePeriod} 
+        onEdit={(p) => modal.openEdit(p)} 
+        onDelete={(p) => modal.openDelete(p)} 
     />
 {/if}
 
 <PeriodEditModal 
-    isOpen={editModalOpen} 
-    period={editingPeriod} 
+    isOpen={modal.isEdit} 
+    period={modal.target} 
     onSave={saveEdit} 
-    onClose={() => editModalOpen = false} 
+    onClose={() => modal.close()} 
+/>
+
+<ConfirmDialog 
+    isOpen={modal.isDelete}
+    title={$t('periods.confirm_delete_title')}
+    message={$t('periods.confirm_delete_message', { year: modal.target?.year || '', semester: modal.target?.semester || '' })}
+    onConfirm={handleDelete}
+    onClose={() => modal.close()}
 />

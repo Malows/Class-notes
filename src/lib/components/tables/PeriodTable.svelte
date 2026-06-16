@@ -11,7 +11,7 @@
         facultyId: number;
         subjectId: number;
         onEdit: (p: Period) => void;
-        onDelete: (id: number) => void;
+        onDelete: (p: Period) => void;
     }
 
     let { periods, facultyId, subjectId, onEdit, onDelete }: Props = $props();
@@ -27,19 +27,19 @@
 
 <ResponsiveTable items={periods}>
     {#snippet header()}
-        <th>{$t('layout.year')}</th>
-        <th>{$t('layout.semester')}</th>
-        <th>{$t('layout.actions')}</th>
+        <th data-test-id="table-header-year">{$t('layout.year')}</th>
+        <th data-test-id="table-header-semester">{$t('layout.semester')}</th>
+        <th data-test-id="table-header-actions">{$t('layout.actions')}</th>
     {/snippet}
     {#snippet row(p)}
-        <td data-test-id="period-name-{p.id}">{p.year}</td>
-        <td>{p.semester}º</td>
+        <td data-test-id="period-year-{p.id}">{p.year}</td>
+        <td data-test-id="period-semester-{p.id}">{p.semester}º</td>
         <td>
             <div class="row flex-right gap-2">
                 <Button data-test-id="view-commissions-btn-{p.id}" onclick={() => goToCommissions(p)}>{$t('layout.commissions')}</Button>
                 <Button data-test-id="view-assignments-btn-{p.id}" onclick={() => goToAssignments(p)}>{$t('layout.define_tps')}</Button>
                 <Button data-test-id="edit-btn-{p.id}" onclick={() => onEdit(p)}>{$t('layout.edit')}</Button>
-                <Button data-test-id="delete-btn-{p.id}" onclick={() => onDelete(p.id)}>{$t('layout.delete')}</Button>
+                <Button data-test-id="delete-btn-{p.id}" onclick={() => onDelete(p)}>{$t('layout.delete')}</Button>
             </div>
         </td>
     {/snippet}

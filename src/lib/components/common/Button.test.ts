@@ -1,15 +1,21 @@
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach, vi } from "vitest";
+import { goto } from "$app/navigation";
 import ButtonWrapper from "./ButtonWrapper.svelte";
+
+vi.mock("$app/navigation", () => ({
+  goto: vi.fn(),
+}));
 
 let component: ReturnType<typeof mount>;
 
 afterEach(() => {
   if (component) unmount(component);
   document.body.innerHTML = "";
+  vi.clearAllMocks();
 });
 
-test("Button renderizado como link", () => {
+test("Button con href ejecuta goto", () => {
   component = mount(ButtonWrapper, {
     target: document.body,
     props: {
@@ -20,13 +26,15 @@ test("Button renderizado como link", () => {
 
   flushSync();
 
-  const a = document.body.querySelector("a");
-  expect(a).toBeTruthy();
-  expect(a?.getAttribute("href")).toBe("/test");
-  expect(a?.textContent).toContain("Test Link");
+  const button = document.body.querySelector("button");
+  expect(button).toBeTruthy();
+  expect(button?.textContent).toContain("Test Link");
+  
+  button?.click();
+  expect(goto).toHaveBeenCalledWith("/test");
 });
 
-test("Button renderizado como botón con click", () => {
+test("Button ejecuta onclick al hacer click", () => {
   const clickSpy = vi.fn();
   component = mount(ButtonWrapper, {
     target: document.body,

@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { HTMLButtonAttributes } from 'svelte/elements';
-    
+
     import { goto } from "$app/navigation"
 
     interface Props extends HTMLButtonAttributes {
@@ -33,10 +33,10 @@
     }
 </script>
 
-<button 
+<button
     type="button"
-    class="sketch-border sketch-shadow-hover px-4 py-2 bg-primary text-on-primary" 
-    onclick={handleClick} 
+    class="sketch-border sketch-shadow-hover px-4 py-2 bg-primary text-on-primary"
+    onclick={handleClick}
     {...rest}
 >
     {@render children?.()}

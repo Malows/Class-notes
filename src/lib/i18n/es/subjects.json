@@ -7,5 +7,7 @@
   "loading": "Cargando materias...",
   "save": "Guardar",
   "create": "Crear",
-  "cancel": "Cancelar"
+  "cancel": "Cancelar",
+  "confirm_delete_title": "Borrar Materia",
+  "confirm_delete_message": "¿Está seguro que desea borrar la materia {name}?"
 }

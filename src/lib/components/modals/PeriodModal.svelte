@@ -7,26 +7,27 @@
 
     interface Props {
         isOpen: boolean;
+        mode: 'create' | 'edit';
         period: Period | null;
-        onSave: (id: number, year: number, semester: number) => void;
+        onSave: (year: number, semester: number, id?: number) => void;
         onClose: () => void;
     }
-    let { isOpen, period, onSave, onClose }: Props = $props();
+    let { isOpen, mode, period, onSave, onClose }: Props = $props();
     
     let year = $state(new Date().getFullYear());
     let semester = $state(1);
 
     $effect(() => {
-        if (period) {
-            year = period.year;
-            semester = period.semester;
+        if (isOpen) {
+            year = mode === 'edit' && period ? period.year : new Date().getFullYear();
+            semester = mode === 'edit' && period ? period.semester : 1;
         }
     });
 </script>
 
 <DialogBase 
     {isOpen} 
-    title={period ? $t('periods.edit_title') : $t('periods.new_period')} 
+    title={mode === 'create' ? $t('periods.new_title') : $t('periods.edit_title')} 
     onClose={onClose}
 >
     {#snippet children()}
@@ -48,9 +49,9 @@
         <button 
             class="paper-btn btn-secondary" 
             data-test-id="submit-btn"
-            onclick={() => period && onSave(period.id, Number(year), Number(semester))}
+            onclick={() => onSave(Number(year), Number(semester), period?.id)}
         >
-            {$t('common.save')}
+            {mode === 'create' ? $t('common.create') : $t('common.save')}
         </button>
     {/snippet}
 </DialogBase>

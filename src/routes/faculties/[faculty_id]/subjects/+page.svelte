@@ -70,6 +70,7 @@
 </script>
 
 <PageWithAdd title={$t('subjects.title')} onAdd={() => modal.openCreate()}>
+    <p><a href="/faculties" class="paper-btn btn-small">{$t('faculties.back_to_faculties')}</a></p>
 
     <GuardWrapper 
         condition={facultiesStore.map.has(facultyID)} 

@@ -71,6 +71,8 @@
 </script>
 
 <PageWithAdd title={$t('faculties.title')} onAdd={openCreate}>
+    <p><a href="/" class="paper-btn btn-small">{$t('layout.back_to_dashboard')}</a></p>
+
     {#if loading}
         <p>{$t('faculties.loading')}</p>
     {:else}

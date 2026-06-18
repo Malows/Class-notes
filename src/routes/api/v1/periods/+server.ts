@@ -1,9 +1,12 @@
 import { periodRepository } from "$lib/server/repositories/period.repository";
 import { json } from "@sveltejs/kit";
 
-export async function GET() {
+export async function GET({ url }) {
   try {
-    const periods = periodRepository.getAll();
+    const subjectID = url.searchParams.get("subject_id")
+      ? Number(url.searchParams.get("subject_id"))
+      : undefined;
+    const periods = periodRepository.getAll(subjectID);
     return json({ data: periods });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

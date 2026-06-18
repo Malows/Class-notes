@@ -54,7 +54,7 @@
     <button class="btn-close" onclick={onClose} aria-label="Close" data-test-id="modal-close-btn"
       >&times;</button
     >
-    <h4 class="modal-title">{title}</h4>
+    <h3 class="modal-title">{title}</h3>
 
     <div class="modal-text" data-test-id="modal-body">
       {@render children()}

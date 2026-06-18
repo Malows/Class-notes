@@ -3,10 +3,10 @@
   import { navStore } from "$lib/stores/nav.svelte";
 
   const breadcrumbs = $derived(
-    navStore.breadcrumbs.map((crumb) => ({
-      ...crumb,
-      label: $t(crumb.key),
-    })),
+      navStore.breadcrumbs.map((crumb) => ({
+          ...crumb,
+          label: crumb.isRaw ? crumb.key : $t(crumb.key),
+      }))
   );
 </script>
 

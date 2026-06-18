@@ -70,6 +70,7 @@ export class NavStore {
       crumbs.push({
         key: ctx.facultyName,
         href: `/faculties/${ctx.facultyId}`,
+        isRaw: true,
       });
     } else if (page.url.pathname.startsWith("/faculties")) {
       crumbs.push({ key: "layout.faculties", href: "/faculties" });
@@ -80,6 +81,7 @@ export class NavStore {
       crumbs.push({
         key: ctx.subjectName,
         href: `${fPath}/subjects/${ctx.subjectId}`,
+        isRaw: true,
       });
     } else if (page.url.pathname.includes("/subjects")) {
       crumbs.push({ key: "layout.subjects", href: "/subjects" });
@@ -90,6 +92,7 @@ export class NavStore {
       crumbs.push({
         key: ctx.periodName,
         href: `${sPath}/periods/${ctx.periodId}`,
+        isRaw: true,
       });
     }
 
@@ -98,6 +101,7 @@ export class NavStore {
       crumbs.push({
         key: ctx.commissionName,
         href: `${pPath}/commissions/${ctx.commissionId}`,
+        isRaw: true,
       });
     }
 

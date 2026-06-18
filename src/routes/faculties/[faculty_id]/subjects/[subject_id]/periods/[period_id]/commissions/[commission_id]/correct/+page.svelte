@@ -84,6 +84,10 @@
   onMount(loadData);
 </script>
 
+<svelte:head>
+  <title>{$t("layout.correct")} - {$t("layout.brand")}</title>
+</svelte:head>
+
 <h2>{$t("layout.correct")} {assignment?.title || "TP"}</h2>
 <p>
   {$t("layout.student")}: {students[currentIndex]?.name || "..."} ({currentIndex + 1}

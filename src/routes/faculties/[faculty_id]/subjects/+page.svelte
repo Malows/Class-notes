@@ -68,6 +68,10 @@
   onMount(load);
 </script>
 
+<svelte:head>
+  <title>{$t("subjects.title")} - {$t("layout.brand")}</title>
+</svelte:head>
+
 <PageWithAdd title={$t("subjects.title")} onAdd={() => modal.openCreate()}>
   <div>
     <Button href="/faculties" class="btn-small">

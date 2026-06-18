@@ -1,7 +1,15 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "printWidth": 100,
-  "sortImports": true,
+  "sortImports.groups": [
+    "builtin",
+    "external",
+    ["internal", "subpath"],
+    ["parent", "sibling", "index"],
+    "style",
+    "unknown"
+  ],
+  "sortImports.newlinesBetween": "always",
   "svelte": true,
   "ignorePatterns": []
 }

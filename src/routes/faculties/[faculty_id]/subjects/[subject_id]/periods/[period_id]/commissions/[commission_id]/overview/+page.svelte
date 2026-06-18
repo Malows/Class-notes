@@ -27,6 +27,10 @@
   onMount(loadData);
 </script>
 
+<svelte:head>
+  <title>{$t("commissions.commission_overview_title")} - {$t("layout.brand")}</title>
+</svelte:head>
+
 <h2>{$t("commissions.commission_overview_title")}</h2>
 <p>
   <a

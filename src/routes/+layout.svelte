@@ -1,13 +1,29 @@
 <script lang="ts">
   import "papercss/dist/paper.min.css";
   import "../app.css";
+  
+  import { locale, t } from "$lib/i18n/config";
   import ClassNoteFooter from "$lib/components/layout/ClassNoteFooter.svelte";
   import NavBar from "$lib/components/layout/NavBar.svelte";
   import Sidebar from "$lib/components/layout/sidebar/Sidebar.svelte";
   import { initStoreContext } from "$lib/stores/context-initializer";
+
   let { children } = $props();
   initStoreContext();
+
+  // Dynamic document language synchronization for accessibility (a11y)
+  $effect(() => {
+    if (typeof document !== "undefined" && $locale) {
+      document.documentElement.lang = $locale;
+    }
+  });
 </script>
+
+<svelte:head>
+  <title>{$t("layout.brand")} - {$t("layout.dashboard")}</title>
+  <meta name="description" content="Class Notes - A robust and accessible academic management system to organize faculties, subjects, periods, and student grading with a sketchy aesthetic." />
+  <meta name="robots" content="index, follow" />
+</svelte:head>
 
 <div class="paper">
   <div class="container-fluid">

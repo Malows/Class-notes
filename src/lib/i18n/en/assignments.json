@@ -7,6 +7,8 @@
   "create": "Create",
   "cancel": "Cancel",
   "confirm_delete": "Delete TP?",
+  "confirm_delete_title": "Delete Assignment",
+  "confirm_delete_message": "Are you sure you want to delete the assignment {{title}}?",
   "manage_assignments_title": "Define Assignments",
   "add_assignment": "Add TP",
   "loading_assignments": "Loading TPs..."

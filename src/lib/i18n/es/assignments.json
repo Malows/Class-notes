@@ -7,6 +7,8 @@
   "create": "Crear",
   "cancel": "Cancelar",
   "confirm_delete": "¿Borrar TP?",
+  "confirm_delete_title": "Borrar Trabajo Práctico",
+  "confirm_delete_message": "¿Está seguro que desea borrar el trabajo práctico {{title}}?",
   "manage_assignments_title": "Definir Trabajos Prácticos",
   "add_assignment": "Agregar TP",
   "loading_assignments": "Cargando TPs..."

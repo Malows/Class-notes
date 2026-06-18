@@ -1,125 +1,97 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import StudentModal from "$lib/components/modals/StudentModal.svelte";
-  import StudentTable from "$lib/components/tables/StudentTable.svelte";
-  import { t } from "$lib/i18n/config";
-  import type { StudentsStore } from "$lib/stores/students.svelte";
-  import { StoreKey } from "$lib/types";
-  import { onMount, getContext } from "svelte";
+	import { onMount, getContext } from 'svelte';
+	import { page } from '$app/state';
+    
+    import { t } from '$lib/i18n/config';
+    import { StoreKey } from '$lib/types';
+    import { ModalManager } from '$lib/composables/useModal.svelte';
+    import type { Student } from '$lib/types';
+    import type { StudentsStore } from '$lib/stores/students.svelte';
 
-  const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
+    import StudentTable from '$lib/components/tables/StudentTable.svelte';
+    import StudentModal from '$lib/components/modals/StudentModal.svelte';
+    import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
+    import PageWithAdd from '$lib/components/layout/PageWithAdd.svelte';
 
-  let namesList = $state("");
-  let singleName = $state("");
-  let loading = $state(true);
-  let editModalOpen = $state(false);
-  let editingStudent = $state<any>(null);
+    const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
 
-  const facultyID = Number(page.params.faculty_id);
-  const subjectID = Number(page.params.subject_id);
-  const periodID = Number(page.params.period_id);
-  const commissionID = Number(page.params.commission_id);
+	let loading = $state(true);
 
-  async function loadData() {
-    try {
-      await studentsStore.load(commissionID);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      loading = false;
+    const modal = new ModalManager<Student>();
+
+    const facultyID = Number(page.params.faculty_id);
+    const subjectID = Number(page.params.subject_id);
+    const periodID = Number(page.params.period_id);
+	const commissionID = Number(page.params.commission_id);
+
+	async function loadData() {
+		try {
+			await studentsStore.load(commissionID);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function handleSave(name: string, externalId: string, id?: number, bulkNames?: string[]) {
+		try {
+            if (bulkNames) {
+                await studentsStore.create(commissionID, bulkNames);
+            } else if (id) {
+                await studentsStore.updateItem(id, name);
+            } else {
+                await studentsStore.create(commissionID, [name]);
+            }
+            modal.close();
+		} catch (e) {
+			alert(e);
+		}
+	}
+
+    async function handleDelete() {
+        if (!modal.target) return;
+        try {
+            await studentsStore.deleteItem(modal.target.id);
+            modal.close();
+        } catch (e) {
+            alert(e);
+        }
     }
-  }
 
-  async function saveStudents() {
-    const namesToAdd: string[] = [];
-    if (singleName.trim()) namesToAdd.push(singleName.trim());
-    if (namesList.trim()) {
-      namesList.split("\n").forEach((n) => {
-        if (n.trim()) namesToAdd.push(n.trim());
-      });
-    }
-
-    if (namesToAdd.length === 0) return;
-
-    try {
-      await studentsStore.create(commissionID, namesToAdd);
-      singleName = "";
-      namesList = "";
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  function startEdit(student: any) {
-    editingStudent = student;
-    editModalOpen = true;
-  }
-
-  async function saveEdit(newName: string) {
-    if (!editingStudent) return;
-    try {
-      await studentsStore.updateItem(editingStudent.id, String(newName));
-      editModalOpen = false;
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  async function deleteStudent(id: number) {
-    if (!confirm($t("students.confirm_delete"))) return;
-    try {
-      await studentsStore.deleteItem(id);
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  onMount(loadData);
+	onMount(loadData);
 </script>
 
-<h2>{$t("students.manage_students_title")}</h2>
-<p>
-  <a
-    href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions"
-    class="paper-btn btn-small">{$t("layout.back_to_commissions")}</a
-  >
-</p>
+<svelte:head>
+  <title>{$t("students.manage_students_title")} - {$t("layout.brand")}</title>
+</svelte:head>
 
-<div class="row">
-  <div class="col-12 col">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">{$t("students.upload_students_title")}</h4>
-        <div class="form-group">
-          <label for="names">{$t("students.paste_list_label")}</label>
-          <textarea id="names" bind:value={namesList} rows="5" class="input-block"></textarea>
-        </div>
-        <div class="form-group">
-          <label for="single">{$t("students.single_name_label")}</label>
-          <input type="text" id="single" bind:value={singleName} class="input-block" />
-        </div>
-        <button class="paper-btn btn-primary" onclick={saveStudents}
-          >{$t("students.save_students_btn")}</button
-        >
-      </div>
-    </div>
-  </div>
-</div>
+<PageWithAdd title={$t('students.manage_students_title')} onAdd={() => modal.openCreate()}>
+    <p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions" class="paper-btn btn-small">{$t('layout.back_to_commissions')}</a></p>
 
-{#if loading}
-  <p>{$t("students.loading_students")}</p>
-{:else}
-  <StudentTable
-    students={studentsStore.items}
-    onEdit={startEdit}
-    onDelete={(student) => deleteStudent(student.id)}
-  />
-{/if}
+    {#if loading}
+        <p>{$t('students.loading_students')}</p>
+    {:else}
+        <StudentTable 
+            students={studentsStore.items} 
+            onEdit={(student) => modal.openEdit(student)} 
+            onDelete={(student) => modal.openDelete(student)} 
+        />
+    {/if}
 
-<StudentModal
-  isOpen={editModalOpen}
-  mode="edit"
-  student={editingStudent}
-  onSave={(name, externalId) => saveEdit(name)}
-  onClose={() => (editModalOpen = false)}
-/>
+    <StudentModal 
+        isOpen={modal.isCreate || modal.isEdit} 
+        mode={modal.mode === 'create' ? 'create' : 'edit'}
+        student={modal.target} 
+        onSave={handleSave} 
+        onClose={() => modal.close()} 
+    />
+
+    <ConfirmDialog 
+        isOpen={modal.isDelete}
+        title={$t('students.confirm_delete_title')}
+        message={$t('students.confirm_delete_message', { name: modal.target?.name || '' })}
+        onConfirm={handleDelete}
+        onClose={() => modal.close()}
+    />
+</PageWithAdd>

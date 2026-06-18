@@ -1,114 +1,106 @@
 <script lang="ts">
-  import { page } from "$app/state";
-  import AssignmentModal from "$lib/components/modals/AssignmentModal.svelte";
-  import AssignmentTable from "$lib/components/tables/AssignmentTable.svelte";
-  import { t } from "$lib/i18n/config";
-  import type { AssignmentsStore } from "$lib/stores/assignments.svelte";
-  import { StoreKey } from "$lib/types";
-  import { onMount, getContext } from "svelte";
+	import { onMount, getContext } from 'svelte';
+	import { page } from '$app/state';
+    
+    import { t } from '$lib/i18n/config';
+    import { StoreKey } from '$lib/types';
+    import { ModalManager } from '$lib/composables/useModal.svelte';
+    import type { Assignment } from '$lib/types';
+    import type { AssignmentsStore } from '$lib/stores/assignments.svelte';
+    import type { PeriodsStore } from '$lib/stores/periods.svelte';
+	import GuardWrapper from '$lib/components/GuardWrapper.svelte';
+    import AssignmentTable from '$lib/components/tables/AssignmentTable.svelte';
+    import AssignmentModal from '$lib/components/modals/AssignmentModal.svelte';
+    import ConfirmDialog from '$lib/components/common/ConfirmDialog.svelte';
+    import PageWithAdd from '$lib/components/layout/PageWithAdd.svelte';
 
-  const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
+    const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
+    const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
 
-  let newTitle = $state("");
-  let loading = $state(true);
-  let editModalOpen = $state(false);
-  let editingAssignment = $state<any>(null);
+	let loading = $state(true);
 
-  const facultyID = Number(page.params.faculty_id);
-  const subjectID = Number(page.params.subject_id);
-  const periodID = Number(page.params.period_id);
+    const modal = new ModalManager<Assignment>();
 
-  async function loadData() {
-    try {
-      await assignmentsStore.load(periodID);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      loading = false;
+    const facultyID = Number(page.params.faculty_id);
+    const subjectID = Number(page.params.subject_id);
+	const periodID = Number(page.params.period_id);
+
+	async function loadData() {
+		try {
+			await Promise.all([
+                periodsStore.load(subjectID),
+                assignmentsStore.load(periodID)
+            ]);
+		} catch (e) {
+			console.error(e);
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function handleSave(title: string, id?: number) {
+		try {
+            if (id) {
+                await assignmentsStore.updateItem(id, title);
+            } else {
+                await assignmentsStore.create(periodID, title);
+            }
+            modal.close();
+		} catch (e) {
+			alert(e);
+		}
+	}
+
+    async function handleDelete() {
+        if (!modal.target) return;
+        try {
+            await assignmentsStore.deleteItem(modal.target.id);
+            modal.close();
+        } catch (e) {
+            alert(e);
+        }
     }
-  }
 
-  async function createAssignment() {
-    if (!newTitle) return;
-    try {
-      await assignmentsStore.create(periodID, newTitle);
-      newTitle = "";
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  function startEdit(assignment: any) {
-    editingAssignment = assignment;
-    editModalOpen = true;
-  }
-
-  async function saveEdit(newTitle: string) {
-    if (!editingAssignment) return;
-    try {
-      await assignmentsStore.updateItem(editingAssignment.id, String(newTitle));
-      editModalOpen = false;
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  async function deleteAssignment(id: number) {
-    if (!confirm($t("assignments.confirm_delete"))) return;
-    try {
-      await assignmentsStore.deleteItem(id);
-    } catch (e) {
-      alert(e);
-    }
-  }
-
-  onMount(loadData);
+	onMount(loadData);
 </script>
 
-<h2>{$t("assignments.manage_assignments_title")}</h2>
-<p>
-  <a href="/faculties/{facultyID}/subjects/{subjectID}/periods" class="paper-btn btn-small"
-    >{$t("layout.back_to_periods")}</a
-  >
-</p>
+<svelte:head>
+  <title>{$t("assignments.manage_assignments_title")} - {$t("layout.brand")}</title>
+</svelte:head>
 
-<div class="row">
-  <div class="col-12 col">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">{$t("assignments.new_title")}</h4>
-        <div class="form-group">
-          <label for="title">{$t("assignments.title_label")}:</label>
-          <input
-            type="text"
-            id="title"
-            bind:value={newTitle}
-            placeholder={$t("assignments.placeholder")}
-            class="input-block"
-          />
-        </div>
-        <button class="paper-btn btn-primary" onclick={createAssignment}
-          >{$t("assignments.add_assignment")}</button
-        >
-      </div>
-    </div>
-  </div>
-</div>
+<PageWithAdd title={$t('assignments.manage_assignments_title')} onAdd={() => modal.openCreate()}>
+    <p><a href="/faculties/{facultyID}/subjects/{subjectID}/periods" class="paper-btn btn-small">{$t('layout.back_to_periods')}</a></p>
 
-{#if loading}
-  <p>{$t("assignments.loading_assignments")}</p>
-{:else}
-  <AssignmentTable
-    assignments={assignmentsStore.items}
-    onEdit={startEdit}
-    onDelete={(assignment) => deleteAssignment(assignment.id)}
-  />
-{/if}
+    <GuardWrapper 
+        condition={periodsStore.items.some(p => p.id === periodID)} 
+        message={$t('periods.period_not_found')} 
+        linkHref="/faculties/{facultyID}/subjects/{subjectID}/periods" 
+        linkText={$t('layout.back_to_periods')}
+    >
+        {#if loading}
+            <p>{$t('assignments.loading_assignments')}</p>
+        {:else}
+            <AssignmentTable
+                assignments={assignmentsStore.items}
+                onEdit={(assignment) => modal.openEdit(assignment)}
+                onDelete={(assignment) => modal.openDelete(assignment)}
+            />
+        {/if}
+    </GuardWrapper>
 
-<AssignmentModal
-  isOpen={editModalOpen}
-  mode="edit"
-  assignment={editingAssignment}
-  onSave={(title) => saveEdit(title)}
-  onClose={() => (editModalOpen = false)}
-/>
+    <AssignmentModal 
+        isOpen={modal.isCreate || modal.isEdit} 
+        mode={modal.mode === 'create' ? 'create' : 'edit'}
+        assignment={modal.target} 
+        onSave={handleSave} 
+        onClose={() => modal.close()} 
+    />
+
+    <ConfirmDialog 
+        isOpen={modal.isDelete}
+        title={$t('assignments.confirm_delete_title')}
+        message={$t('assignments.confirm_delete_message', { title: modal.target?.title || '' })}
+        onConfirm={handleDelete}
+        onClose={() => modal.close()}
+    />
+</PageWithAdd>

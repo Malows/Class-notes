@@ -1,16 +1,17 @@
 <script lang="ts">
-  import ResponsiveTable from "$lib/components/common/ResponsiveTable.svelte";
   import { t } from "$lib/i18n/config";
   import type { Assignment } from "$lib/types";
 
+  import ResponsiveTable from "$lib/components/common/ResponsiveTable.svelte";
   import AssignmentRow from "./rows/AssignmentRow.svelte";
 
   interface Props {
     assignments: Assignment[];
+    onEdit: (assignment: Assignment) => void;
     onDelete: (assignment: Assignment) => void;
   }
 
-  let { assignments, onDelete }: Props = $props();
+  let { assignments, onEdit, onDelete }: Props = $props();
 </script>
 
 <ResponsiveTable items={assignments}>
@@ -19,6 +20,6 @@
     <th>{$t("layout.actions")}</th>
   {/snippet}
   {#snippet row(assignment)}
-    <AssignmentRow {assignment} {onDelete} />
+    <AssignmentRow {assignment} {onEdit} {onDelete} />
   {/snippet}
 </ResponsiveTable>

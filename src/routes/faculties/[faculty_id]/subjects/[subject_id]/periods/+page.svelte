@@ -56,6 +56,10 @@
   onMount(loadData);
 </script>
 
+<svelte:head>
+  <title>{$t("periods.manage_periods_title")} - {$t("layout.brand")}</title>
+</svelte:head>
+
 <PageWithAdd title={$t("periods.manage_periods_title")} onAdd={() => modal.openCreate()}>
   <p>
     <a href="/faculties/{facultyID}/subjects" class="paper-btn btn-small"

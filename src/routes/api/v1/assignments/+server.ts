@@ -1,9 +1,12 @@
 import { assignmentRepository } from "$lib/server/repositories/assignment.repository";
 import { json } from "@sveltejs/kit";
 
-export async function GET() {
+export async function GET({ url }) {
   try {
-    const assignments = assignmentRepository.getAll();
+    const periodID = url.searchParams.get("period_id")
+      ? Number(url.searchParams.get("period_id"))
+      : undefined;
+    const assignments = assignmentRepository.getAll(periodID);
     return json({ data: assignments });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

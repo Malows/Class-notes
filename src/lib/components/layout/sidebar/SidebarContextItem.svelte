@@ -18,13 +18,19 @@
 
 <style>
   li {
-    margin-bottom: 0.25rem;
+    /* margin-bottom: 0.25rem; */
     font-size: 0.9rem;
-    border-radius: 4px;
+    /* border-radius: 4px; */
+  }
+
+  li::before {
+    display: none;
   }
 
   li.active {
-    background: var(--border-color);
+    border-bottom-left-radius: 15px 3px;
+    border-bottom-right-radius: 15px 5px;
+    border-bottom: solid 2px var(--border-color);
   }
 
   li.active a {
@@ -39,6 +45,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    background-image: none;
   }
 
   li.collapsed {

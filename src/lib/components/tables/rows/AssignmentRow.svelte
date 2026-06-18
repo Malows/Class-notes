@@ -17,10 +17,10 @@
 <td>
   <div class="row flex-right gap-2">
     <Button testId="edit-btn-{assignment.id}" onclick={() => onEdit(assignment)} withHover>
-      {$t("layout.edit")}
+      {$t("common.edit")}
     </Button>
     <Button testId="delete-btn-{assignment.id}" onclick={() => onDelete(assignment)} withHover>
-      {$t("layout.remove")}
+      {$t("common.remove")}
     </Button>
   </div>
 </td>

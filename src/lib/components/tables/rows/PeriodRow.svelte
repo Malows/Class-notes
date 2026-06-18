@@ -29,10 +29,10 @@
       {$t("layout.define_tps")}
     </Button>
     <Button testId="edit-btn-{period.id}" withHover onclick={() => onEdit(period)}>
-      {$t("layout.edit")}
+      {$t("common.edit")}
     </Button>
     <Button testId="delete-btn-{period.id}" withHover onclick={() => onDelete(period)}>
-      {$t("layout.delete")}
+      {$t("common.delete")}
     </Button>
   </div>
 </td>

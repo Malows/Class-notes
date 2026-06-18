@@ -24,10 +24,10 @@
       {$t("layout.view_subjects")}
     </Button>
     <Button onclick={() => onEdit(faculty)} testId="edit-btn-{faculty.id}" withHover>
-      {$t("layout.edit")}
+      {$t("common.edit")}
     </Button>
     <Button onclick={() => onDelete(faculty)} testId="delete-btn-{faculty.id}" withHover>
-      {$t("layout.delete")}
+      {$t("common.delete")}
     </Button>
   </div>
 </td>

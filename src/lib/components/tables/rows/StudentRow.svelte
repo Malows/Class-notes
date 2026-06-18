@@ -16,10 +16,10 @@
 <td>
   <div class="row flex-right gap-2">
     <Button testId="edit-btn-{student.id}" onclick={() => onEdit(student)} withHover>
-      {$t("layout.edit")}
+      {$t("common.edit")}
     </Button>
     <Button testId="delete-btn-{student.id}" onclick={() => onDelete(student)} withHover>
-      {$t("layout.delete")}
+      {$t("common.delete")}
     </Button>
   </div>
 </td>

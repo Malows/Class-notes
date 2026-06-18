@@ -31,10 +31,10 @@
       {$t("layout.overview")}
     </Button>
     <Button testId="edit-btn-{commission.id}" withHover onclick={() => onEdit(commission)}>
-      {$t("layout.edit")}
+      {$t("common.edit")}
     </Button>
     <Button testId="delete-btn-{commission.id}" withHover onclick={() => onDelete(commission)}>
-      {$t("layout.delete")}
+      {$t("common.delete")}
     </Button>
   </div>
 </td>

@@ -5,9 +5,6 @@
   "name_label": "Nombre de la Materia",
   "placeholder": "Ej: Programación I",
   "loading": "Cargando materias...",
-  "save": "Guardar",
-  "create": "Crear",
-  "cancel": "Cancelar",
   "confirm_delete_title": "Borrar Materia",
   "confirm_delete_message": "¿Está seguro que desea borrar la materia {{name}}?"
 }

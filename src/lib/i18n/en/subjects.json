@@ -5,9 +5,6 @@
   "name_label": "Subject Name",
   "placeholder": "e.g. Programming I",
   "loading": "Loading subjects...",
-  "save": "Save",
-  "create": "Create",
-  "cancel": "Cancel",
   "confirm_delete_title": "Delete Subject",
   "confirm_delete_message": "Are you sure you want to delete the subject {{name}}?"
 }

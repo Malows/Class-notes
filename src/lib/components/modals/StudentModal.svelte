@@ -49,17 +49,21 @@
   {#snippet children()}
     {#if mode === "create"}
       <div class="row flex-center gap-2 mb-1" style="margin-bottom: 1.5rem;">
-        <button 
-          type="button" 
-          class="paper-btn btn-small {activeTab === 'single' ? 'btn-secondary' : 'btn-secondary-outline'}" 
-          onclick={() => activeTab = "single"}
+        <button
+          type="button"
+          class="paper-btn btn-small {activeTab === 'single'
+            ? 'btn-secondary'
+            : 'btn-secondary-outline'}"
+          onclick={() => (activeTab = "single")}
         >
           {$t("students.single_name_label")}
         </button>
-        <button 
-          type="button" 
-          class="paper-btn btn-small {activeTab === 'bulk' ? 'btn-secondary' : 'btn-secondary-outline'}" 
-          onclick={() => activeTab = "bulk"}
+        <button
+          type="button"
+          class="paper-btn btn-small {activeTab === 'bulk'
+            ? 'btn-secondary'
+            : 'btn-secondary-outline'}"
+          onclick={() => (activeTab = "bulk")}
         >
           {$t("students.upload_students_title")}
         </button>
@@ -107,11 +111,7 @@
     <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}
       >{$t("common.cancel")}</button
     >
-    <button
-      class="paper-btn btn-secondary"
-      data-test-id="submit-btn"
-      onclick={handleSaveClick}
-    >
+    <button class="paper-btn btn-secondary" data-test-id="submit-btn" onclick={handleSaveClick}>
       {mode === "create" ? $t("common.create") : $t("common.save")}
     </button>
   {/snippet}

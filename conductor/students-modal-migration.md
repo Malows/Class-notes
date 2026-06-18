@@ -1,9 +1,11 @@
 # Students Modal & PageWithAdd Migration Plan
 
 ## Objective
+
 Standardize the **Students** list page to use SvelteKit's adaptive `<PageWithAdd>` container and a unifed, highly responsive `<StudentModal>` Svelte component. This refactoring unifies both single-student creation/editing and bulk roster copy-pasting inside a single, elegant modal layout, while introducing `<ConfirmDialog>` for deletion confirmation and ensuring E2E testing tag consistency.
 
 ## Key Files & Context
+
 - **Students Page**:
   - `src/routes/faculties/[faculty_id]/subjects/[subject_id]/periods/[period_id]/commissions/[commission_id]/students/+page.svelte`
 - **Student Modal**:

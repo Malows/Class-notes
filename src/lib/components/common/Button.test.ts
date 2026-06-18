@@ -1,19 +1,13 @@
-import { goto } from "$app/navigation";
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach, vi } from "vitest";
 
 import ButtonWrapper from "./ButtonWrapper.svelte";
-
-vi.mock("$app/navigation", () => ({
-  goto: vi.fn(),
-}));
 
 let component: ReturnType<typeof mount>;
 
 afterEach(() => {
   if (component) unmount(component);
   document.body.innerHTML = "";
-  vi.clearAllMocks();
 });
 
 test("Button con href renderiza un link", () => {

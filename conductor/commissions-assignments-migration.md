@@ -1,9 +1,11 @@
 # Commissions & Assignments Modal Migration Plan
 
 ## Objective
+
 Standardize both the **Commissions** and **Assignments** routes to match the unifed, modular pattern used on the faculties, subjects, and periods pages. This involves replacing their inline creation forms with modal-driven forms, wrapping the pages with `<PageWithAdd>`, integrating the reactive `ModalManager`, and introducing `<ConfirmDialog>` for handling deletions.
 
 ## Key Files & Context
+
 - **Commissions**:
   - `src/routes/faculties/[faculty_id]/subjects/[subject_id]/periods/[period_id]/commissions/+page.svelte`
   - `src/lib/i18n/es/commissions.json` & `en/commissions.json`
@@ -41,6 +43,7 @@ Standardize both the **Commissions** and **Assignments** routes to match the uni
    - Render `<AssignmentModal>` and `<ConfirmDialog>` at the bottom of the page.
 
 ## Verification & Testing
+
 1. Run `pnpm test run` to ensure all 78 tests pass successfully.
 2. Run `pnpm build` to verify SvelteKit app compilations.
 3. Keep all files modified on disk but completely unstaged/uncommitted as directed.

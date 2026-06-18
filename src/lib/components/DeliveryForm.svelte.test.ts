@@ -1,6 +1,6 @@
+import DeliveryForm from "$lib/components/DeliveryForm.svelte";
 import { render, screen, fireEvent } from "@testing-library/svelte";
 import { expect, test, vi } from "vitest";
-import DeliveryForm from "$lib/components/DeliveryForm.svelte";
 
 test("DeliveryForm renders and saves", async () => {
   const delivery = {

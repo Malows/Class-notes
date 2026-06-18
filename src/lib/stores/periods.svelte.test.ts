@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
 import { PeriodsStore } from "./periods.svelte";
 
 describe("PeriodsStore", () => {

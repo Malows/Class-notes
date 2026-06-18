@@ -1,9 +1,10 @@
 import { page } from "$app/state";
-import { facultiesStore } from "./faculties.svelte";
-import { subjectsStore } from "./subjects.svelte";
-import { periodsStore } from "./periods.svelte";
-import { commissionsStore } from "./commissions.svelte";
 import type { Breadcrumb } from "$lib/types/layout";
+
+import { commissionsStore } from "./commissions.svelte";
+import { facultiesStore } from "./faculties.svelte";
+import { periodsStore } from "./periods.svelte";
+import { subjectsStore } from "./subjects.svelte";
 
 export interface NavContext {
   facultyId?: number;
@@ -66,26 +67,38 @@ export class NavStore {
     const crumbs: Breadcrumb[] = [{ key: "layout.home", href: "/" }];
 
     if (ctx.facultyId && ctx.facultyName) {
-      crumbs.push({ key: ctx.facultyName, href: `/faculties/${ctx.facultyId}` });
+      crumbs.push({
+        key: ctx.facultyName,
+        href: `/faculties/${ctx.facultyId}`,
+      });
     } else if (page.url.pathname.startsWith("/faculties")) {
       crumbs.push({ key: "layout.faculties", href: "/faculties" });
     }
 
     if (ctx.subjectId && ctx.subjectName) {
       const fPath = ctx.facultyId ? `/faculties/${ctx.facultyId}` : "";
-      crumbs.push({ key: ctx.subjectName, href: `${fPath}/subjects/${ctx.subjectId}` });
+      crumbs.push({
+        key: ctx.subjectName,
+        href: `${fPath}/subjects/${ctx.subjectId}`,
+      });
     } else if (page.url.pathname.includes("/subjects")) {
       crumbs.push({ key: "layout.subjects", href: "/subjects" });
     }
 
     if (ctx.periodId && ctx.periodName) {
       const sPath = ctx.subjectId ? `/subjects/${ctx.subjectId}` : "";
-      crumbs.push({ key: ctx.periodName, href: `${sPath}/periods/${ctx.periodId}` });
+      crumbs.push({
+        key: ctx.periodName,
+        href: `${sPath}/periods/${ctx.periodId}`,
+      });
     }
 
     if (ctx.commissionId && ctx.commissionName) {
       const pPath = ctx.periodId ? `/periods/${ctx.periodId}` : "";
-      crumbs.push({ key: ctx.commissionName, href: `${pPath}/commissions/${ctx.commissionId}` });
+      crumbs.push({
+        key: ctx.commissionName,
+        href: `${pPath}/commissions/${ctx.commissionId}`,
+      });
     }
 
     if (page.url.pathname.endsWith("/overview"))

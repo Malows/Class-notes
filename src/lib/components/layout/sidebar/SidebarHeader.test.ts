@@ -1,5 +1,6 @@
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach, vi } from "vitest";
+
 import SidebarHeader from "./SidebarHeader.svelte";
 
 let component: ReturnType<typeof mount>;

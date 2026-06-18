@@ -1,5 +1,5 @@
-import { json } from "@sveltejs/kit";
 import { commissionRepository } from "$lib/server/repositories/commission.repository";
+import { json } from "@sveltejs/kit";
 
 export async function PUT({ params, request }) {
   try {

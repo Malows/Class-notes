@@ -1,6 +1,7 @@
+import { goto } from "$app/navigation";
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach, vi } from "vitest";
-import { goto } from "$app/navigation";
+
 import ButtonWrapper from "./ButtonWrapper.svelte";
 
 vi.mock("$app/navigation", () => ({
@@ -15,7 +16,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-test("Button con href ejecuta goto", () => {
+test("Button con href renderiza un link", () => {
   component = mount(ButtonWrapper, {
     target: document.body,
     props: {
@@ -26,12 +27,10 @@ test("Button con href ejecuta goto", () => {
 
   flushSync();
 
-  const button = document.body.querySelector("button");
-  expect(button).toBeTruthy();
-  expect(button?.textContent).toContain("Test Link");
-  
-  button?.click();
-  expect(goto).toHaveBeenCalledWith("/test");
+  const link = document.body.querySelector("a");
+  expect(link).toBeTruthy();
+  expect(link?.getAttribute("href")).toBe("/test");
+  expect(link?.textContent).toContain("Test Link");
 });
 
 test("Button ejecuta onclick al hacer click", () => {

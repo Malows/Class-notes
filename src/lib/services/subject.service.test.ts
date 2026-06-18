@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { subjectService } from "./subject.service";
+
 import { apiFetch } from "../api";
+import { subjectService } from "./subject.service";
 
 vi.mock("../api", () => ({
   apiFetch: vi.fn(),

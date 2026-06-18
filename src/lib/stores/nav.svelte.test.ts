@@ -1,5 +1,6 @@
-import { expect, test } from "vitest";
 import { loadTranslations } from "$lib/i18n/config";
+import { expect, test } from "vitest";
+
 import { navStore } from "./nav.svelte";
 
 test("navStore.breadcrumbs exposes translation keys without throwing", async () => {

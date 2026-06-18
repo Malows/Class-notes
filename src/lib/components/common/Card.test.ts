@@ -1,5 +1,6 @@
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach } from "vitest";
+
 import CardWrapper from "./CardWrapper.svelte";
 
 let component: ReturnType<typeof mount>;

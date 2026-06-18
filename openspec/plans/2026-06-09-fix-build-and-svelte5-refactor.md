@@ -136,12 +136,12 @@ Expected: PASS
 
 ```svelte
 <script lang="ts">
-    import type { Snippet } from 'svelte';
-    let { children }: { children: Snippet } = $props();
+  import type { Snippet } from "svelte";
+  let { children }: { children: Snippet } = $props();
 </script>
 
 <div class="sketch-border sketch-shadow p-stack-md bg-surface-container-lowest">
-    {@render children()}
+  {@render children()}
 </div>
 ```
 

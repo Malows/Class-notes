@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+
 import { StudentsStore } from "./students.svelte";
 
 describe("StudentsStore", () => {
@@ -36,7 +37,12 @@ describe("StudentsStore", () => {
 
   it("should update a student", async () => {
     store.items = [{ id: 1, commission_id: 1, name: "Student A", external_id: "" }];
-    const updated = { id: 1, commission_id: 1, name: "Student A Updated", external_id: "" };
+    const updated = {
+      id: 1,
+      commission_id: 1,
+      name: "Student A Updated",
+      external_id: "",
+    };
     mockService.update.mockResolvedValue(updated);
 
     await store.updateItem(1, "Student A Updated");

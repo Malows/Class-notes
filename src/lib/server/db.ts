@@ -9,14 +9,20 @@ const db = new Database("class-notes.db", { verbose: console.log });
 db.pragma("foreign_keys = ON");
 db.pragma("journal_mode = WAL");
 
-const isDev = process.env.NODE_ENV === "development" || (typeof import.meta !== "undefined" && import.meta.env?.DEV);
+const isDev =
+  process.env.NODE_ENV === "development" ||
+  (typeof import.meta !== "undefined" && import.meta.env?.DEV);
 
 if (isDev) {
   // Check if the database is empty (does not have a faculties table)
-  const tableCheck = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='faculties'").get();
+  const tableCheck = db
+    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='faculties'")
+    .get();
 
   if (!tableCheck) {
-    console.log("Database 'class-notes.db' is empty. Creating schema and inserting seed data in development mode...");
+    console.log(
+      "Database 'class-notes.db' is empty. Creating schema and inserting seed data in development mode...",
+    );
     createSchema(db);
     insertSeed(db);
     console.log("Database initialized successfully!");

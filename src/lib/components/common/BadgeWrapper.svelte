@@ -1,7 +1,5 @@
 <script>
-    import Badge from './Badge.svelte';
+  import Badge from "./Badge.svelte";
 </script>
 
-<Badge>
-    Test Badge
-</Badge>
+<Badge>Test Badge</Badge>

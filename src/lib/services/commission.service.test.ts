@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
-import { commissionService } from "./commission.service";
+
 import { apiFetch } from "../api";
+import { commissionService } from "./commission.service";
 
 vi.mock("../api", () => ({
   apiFetch: vi.fn(),

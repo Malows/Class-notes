@@ -1,6 +1,7 @@
+import { loadTranslations } from "$lib/i18n/config";
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach } from "vitest";
-import { loadTranslations } from "$lib/i18n/config";
+
 import ClassNoteFooter from "./ClassNoteFooter.svelte";
 
 let component: ReturnType<typeof mount>;

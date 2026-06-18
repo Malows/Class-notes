@@ -1,6 +1,6 @@
 import { apiFetch } from "../api";
-import type { Student } from "../types";
 import { CreateStudentsSchema } from "../schemas/dto.schema";
+import type { Student } from "../types";
 
 export const studentService = {
   getAll: (commission_id?: number) => {

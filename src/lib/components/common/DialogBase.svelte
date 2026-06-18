@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-  import type { Snippet } from 'svelte';
+  import type { Snippet } from "svelte";
+  import { fade } from "svelte/transition";
 
   interface Props {
     isOpen: boolean;
@@ -43,7 +43,7 @@
 {#if isOpen}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-  <dialog 
+  <dialog
     bind:this={dialogElement}
     onclose={handleClose}
     onclick={handleBackdropClick}
@@ -51,9 +51,11 @@
     class="modal-body native-dialog"
     data-test-id="modal-container"
   >
-    <button class="btn-close" onclick={onClose} aria-label="Close" data-test-id="modal-close-btn">&times;</button>
+    <button class="btn-close" onclick={onClose} aria-label="Close" data-test-id="modal-close-btn"
+      >&times;</button
+    >
     <h4 class="modal-title">{title}</h4>
-    
+
     <div class="modal-text" data-test-id="modal-body">
       {@render children()}
     </div>

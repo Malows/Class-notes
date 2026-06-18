@@ -3,16 +3,24 @@ import type { Database } from "better-sqlite3";
 export function insertSeed(db: Database): void {
   const transaction = db.transaction(() => {
     // Facultades
-    db.prepare("INSERT INTO faculties (id, name) VALUES (1, 'Facultad de Ingeniería'), (2, 'Facultad de Ciencias Exactas')").run();
+    db.prepare(
+      "INSERT INTO faculties (id, name) VALUES (1, 'Facultad de Ingeniería'), (2, 'Facultad de Ciencias Exactas')",
+    ).run();
 
     // Materias
-    db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (1, 1, 'Álgebra Lineal'), (2, 1, 'Análisis Matemático I'), (3, 2, 'Física General I')").run();
+    db.prepare(
+      "INSERT INTO subjects (id, faculty_id, name) VALUES (1, 1, 'Álgebra Lineal'), (2, 1, 'Análisis Matemático I'), (3, 2, 'Física General I')",
+    ).run();
 
     // Períodos (Ej: Año 2026, 1er Cuatrimestre)
-    db.prepare("INSERT INTO periods (id, subject_id, year, semester) VALUES (1, 1, 2026, 1), (2, 2, 2026, 1), (3, 3, 2026, 1)").run();
+    db.prepare(
+      "INSERT INTO periods (id, subject_id, year, semester) VALUES (1, 1, 2026, 1), (2, 2, 2026, 1), (3, 3, 2026, 1)",
+    ).run();
 
     // Comisiones
-    db.prepare("INSERT INTO commissions (id, period_id, name) VALUES (1, 1, 'Comisión A'), (2, 1, 'Comisión B'), (3, 2, 'Comisión Única')").run();
+    db.prepare(
+      "INSERT INTO commissions (id, period_id, name) VALUES (1, 1, 'Comisión A'), (2, 1, 'Comisión B'), (3, 2, 'Comisión Única')",
+    ).run();
 
     // Estudiantes
     db.prepare(`

@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { VALIDATION_KEYS } from "$lib/constants";
+import { z } from "zod";
 
 export const CreateFacultySchema = z.object({
   name: z.string().min(1, VALIDATION_KEYS.NAME_REQUIRED),

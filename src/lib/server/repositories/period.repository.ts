@@ -1,5 +1,6 @@
-import db from "../db";
 import type { Period } from "$lib/types";
+
+import db from "../db";
 
 export interface PeriodRepository {
   getAll(subjectID?: number): Period[];

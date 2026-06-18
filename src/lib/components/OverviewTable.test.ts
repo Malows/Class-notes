@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/svelte";
 import { expect, test } from "vitest";
+
 import OverviewTable from "./OverviewTable.svelte";
 
 test("OverviewTable renders data", () => {

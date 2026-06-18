@@ -1,5 +1,6 @@
-import db from "../db";
 import type { Student } from "$lib/types";
+
+import db from "../db";
 
 export interface StudentRepository {
   getAll(commissionID?: number): Student[];

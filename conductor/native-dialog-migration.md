@@ -1,9 +1,11 @@
 # Native Dialog Migration
 
 ## Objective
+
 Refactor the custom modal implementation in `DialogBase.svelte` to use the native HTML `<dialog>` element. This will provide native accessibility, focus trapping, top-layer stacking, and `Escape` key handling out of the box, while perfectly preserving the project's signature "sketchy" hand-drawn aesthetic.
 
 ## Key Files & Context
+
 - `src/lib/components/common/DialogBase.svelte`: The central modal wrapper component.
 
 ## Implementation Steps
@@ -31,10 +33,11 @@ Refactor the custom modal implementation in `DialogBase.svelte` to use the nativ
    - Reset native dialog defaults that might interfere with PaperCSS (e.g., resetting default browser borders or margins).
 
 ## Verification & Testing
+
 1. **Interactive Verification**: Run `pnpm dev` and manually open a modal (e.g., Faculty or Subject modal).
-2. **Behavioral Checks**: 
+2. **Behavioral Checks**:
    - Verify that pressing `Escape` closes the modal natively.
    - Verify that clicking the dark backdrop closes the modal.
-   - Verify that clicking inside inputs or buttons does *not* close the modal.
+   - Verify that clicking inside inputs or buttons does _not_ close the modal.
 3. **Visual Checks**: Ensure the modal retains its sketchy border, shadow, and transitions.
 4. **Test Suite**: Run `pnpm test run` to ensure all 71 unit tests continue to pass with the new DOM structure.

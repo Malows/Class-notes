@@ -1,5 +1,6 @@
-import db from "../db";
 import type { Delivery, OverviewDataDTO, Assignment, StudentGridRowDTO } from "$lib/types"; // Assuming OverviewDataDTO is in types
+
+import db from "../db";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;
@@ -67,7 +68,10 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     const studentsStmt = db.prepare(
       "SELECT id, name FROM students WHERE commission_id = ? AND deletedAt IS NULL ORDER BY name",
     );
-    const students = studentsStmt.all(commissionID) as { id: number; name: string }[];
+    const students = studentsStmt.all(commissionID) as {
+      id: number;
+      name: string;
+    }[];
 
     const deliveriesStmt = db.prepare(
       "SELECT assignment_id, student_id, is_delivered, is_approved, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",

@@ -87,11 +87,15 @@ for (const file of codeFiles) {
 
     // Check if the requested key exists in defined translations
     if (!definedEnKeys.has(requestedKey)) {
-      console.error(`Error: Translation key "${requestedKey}" is requested in "${file}" but is not defined in the English i18n JSON files.`);
+      console.error(
+        `Error: Translation key "${requestedKey}" is requested in "${file}" but is not defined in the English i18n JSON files.`,
+      );
       error = true;
     }
     if (!definedEsKeys.has(requestedKey)) {
-      console.error(`Error: Translation key "${requestedKey}" is requested in "${file}" but is not defined in the Spanish i18n JSON files.`);
+      console.error(
+        `Error: Translation key "${requestedKey}" is requested in "${file}" but is not defined in the Spanish i18n JSON files.`,
+      );
       error = true;
     }
   }

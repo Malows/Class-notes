@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Delivery } from "$lib/types";
+  import { DeliveryWorkflowStatus, type Delivery } from "$lib/types";
 
   interface Props {
     delivery: Delivery;
@@ -34,7 +34,10 @@
 
   // Sync local state when external delivery prop changes
   $effect(() => {
-    d = { ...delivery };
+    d = {
+      ...delivery,
+      workflow_status: delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED,
+    };
   });
 
   // Use random suffix for IDs to ensure uniqueness
@@ -48,7 +51,13 @@
         <input
           type="checkbox"
           id="is_delivered-{idSuffix}"
-          bind:checked={d.is_delivered}
+          checked={d.workflow_status !== DeliveryWorkflowStatus.NOT_DICTATED}
+          onchange={(event) => {
+            const checked = event.currentTarget.checked;
+            d.workflow_status = checked
+              ? DeliveryWorkflowStatus.WAITING_FOR_STUDENTS
+              : DeliveryWorkflowStatus.NOT_DICTATED;
+          }}
           data-test-id={deliveredTestId}
         />
         <span>¿Entregó el trabajo?</span>
@@ -63,7 +72,10 @@
           id="approved-yes-{idSuffix}"
           name="approved-{idSuffix}"
           value={true}
-          bind:group={d.is_approved}
+          checked={d.workflow_status === DeliveryWorkflowStatus.APPROVED}
+          onchange={() => {
+            d.workflow_status = DeliveryWorkflowStatus.APPROVED;
+          }}
           data-test-id={approvedTestId}
         />
         <span>Aprobado</span>
@@ -74,7 +86,10 @@
           id="approved-no-{idSuffix}"
           name="approved-{idSuffix}"
           value={false}
-          bind:group={d.is_approved}
+          checked={d.workflow_status === DeliveryWorkflowStatus.REJECTED}
+          onchange={() => {
+            d.workflow_status = DeliveryWorkflowStatus.REJECTED;
+          }}
           data-test-id={approvedTestId}
         />
         <span>No Aprobado</span>

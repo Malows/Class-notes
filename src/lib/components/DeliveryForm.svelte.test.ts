@@ -6,8 +6,7 @@ test("DeliveryForm renders and saves", async () => {
   const delivery = {
     assignment_id: 1,
     student_id: 1,
-    is_delivered: false,
-    is_approved: false,
+    workflow_status: "NOT_DICTATED",
     grade: 0,
     ai_level: 0,
     comments: "",

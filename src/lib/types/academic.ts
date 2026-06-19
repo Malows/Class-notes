@@ -24,4 +24,5 @@ export interface Assignment {
   id: number;
   period_id: number;
   title: string;
+  subtitle?: string;
 }

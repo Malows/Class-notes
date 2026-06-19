@@ -12,7 +12,7 @@ export interface AssignmentRepository {
 
 class AssignmentRepositoryImpl implements AssignmentRepository {
   getAll(periodID?: number): Assignment[] {
-    let query = "SELECT id, period_id, title FROM assignments WHERE deletedAt IS NULL";
+    let query = "SELECT id, period_id, title, subtitle FROM assignments WHERE deletedAt IS NULL";
     const params: number[] = [];
     if (periodID) {
       query += " AND period_id = ?";
@@ -24,31 +24,33 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
 
   create(periodID: number, title: string): Assignment {
     const stmt = db.prepare(
-      "INSERT INTO assignments (period_id, title) VALUES (?, ?) RETURNING id, period_id, title",
+      "INSERT INTO assignments (period_id, title) VALUES (?, ?) RETURNING id, period_id, title, subtitle",
     );
     return stmt.get(periodID, title) as Assignment;
   }
 
   update(id: number, title: string): Assignment {
     const stmt = db.prepare(
-      "UPDATE assignments SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, title",
+      "UPDATE assignments SET title = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, title, subtitle",
     );
     return stmt.get(title, id) as Assignment;
   }
 
   copy(sourcePeriodID: number, targetPeriodID: number): void {
     const selectStmt = db.prepare(
-      "SELECT title FROM assignments WHERE period_id = ? AND deletedAt IS NULL",
+      "SELECT title, subtitle FROM assignments WHERE period_id = ? AND deletedAt IS NULL",
     );
-    const titles = selectStmt.all(sourcePeriodID) as { title: string }[];
+    const assignmentsToCopy = selectStmt.all(sourcePeriodID) as { title: string; subtitle?: string | null }[];
 
-    const insertStmt = db.prepare("INSERT INTO assignments (period_id, title) VALUES (?, ?)");
+    const insertStmt = db.prepare(
+      "INSERT INTO assignments (period_id, title, subtitle) VALUES (?, ?, ?)",
+    );
     const insertMany = db.transaction((assignmentsToInsert) => {
       for (const assignment of assignmentsToInsert) {
-        insertStmt.run(targetPeriodID, assignment.title);
+        insertStmt.run(targetPeriodID, assignment.title, assignment.subtitle ?? null);
       }
     });
-    insertMany(titles);
+    insertMany(assignmentsToCopy);
   }
 
   delete(id: number): void {

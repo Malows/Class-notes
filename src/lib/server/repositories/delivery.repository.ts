@@ -1,4 +1,10 @@
-import type { Delivery, OverviewDataDTO, Assignment, StudentGridRowDTO } from "$lib/types"; // Assuming OverviewDataDTO is in types
+import type {
+  Assignment,
+  Delivery,
+  OverviewData,
+  StudentGridRowDTO,
+} from "$lib/types";
+import { DeliveryWorkflowStatus } from "$lib/types";
 
 import db from "../db";
 
@@ -6,14 +12,15 @@ export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;
   getAllByCommission(commissionID: number): Delivery[];
   save(delivery: Delivery): void;
-  getOverviewData(commissionID: number): OverviewDataDTO;
+  getOverviewData(commissionID: number): OverviewData;
   getPendingSummary(): any[];
+  getGlobalStats(): any;
 }
 
 class DeliveryRepositoryImpl implements DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null {
     const stmt = db.prepare(
-      "SELECT assignment_id, student_id, is_delivered, is_approved, grade, ai_level, comments FROM deliveries WHERE assignment_id = ? AND student_id = ? AND deletedAt IS NULL",
+      "SELECT assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments FROM deliveries WHERE assignment_id = ? AND student_id = ? AND deletedAt IS NULL",
     );
     return stmt.get(assignmentID, studentID) as Delivery | null;
   }
@@ -25,6 +32,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
                 d.student_id,
                 d.is_delivered,
                 d.is_approved,
+                d.workflow_status,
                 d.grade,
                 d.ai_level,
                 d.comments
@@ -37,31 +45,37 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
 
   save(delivery: Delivery): void {
     const stmt = db.prepare(`
-            INSERT INTO deliveries (assignment_id, student_id, is_delivered, is_approved, grade, ai_level, comments)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO deliveries (assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(assignment_id, student_id) DO UPDATE SET
                 is_delivered = EXCLUDED.is_delivered,
                 is_approved = EXCLUDED.is_approved,
+                workflow_status = EXCLUDED.workflow_status,
                 grade = EXCLUDED.grade,
                 ai_level = EXCLUDED.ai_level,
                 comments = EXCLUDED.comments,
                 updatedAt = CURRENT_TIMESTAMP,
                 deletedAt = NULL
         `);
+    const workflowStatus = delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED;
+    const isDelivered = workflowStatus !== DeliveryWorkflowStatus.NOT_DICTATED;
+    const isApproved = workflowStatus === DeliveryWorkflowStatus.APPROVED;
+
     stmt.run(
       delivery.assignment_id,
       delivery.student_id,
-      delivery.is_delivered ? 1 : 0,
-      delivery.is_approved ? 1 : 0,
+      isDelivered ? 1 : 0,
+      isApproved ? 1 : 0,
+      workflowStatus,
       delivery.grade,
       delivery.ai_level,
       delivery.comments,
     );
   }
 
-  getOverviewData(commissionID: number): OverviewDataDTO {
+  getOverviewData(commissionID: number): OverviewData {
     const assignmentsStmt = db.prepare(
-      "SELECT id, title FROM assignments WHERE deletedAt IS NULL AND period_id IN (SELECT id FROM periods WHERE subject_id IN (SELECT subject_id FROM commissions WHERE id = ?)) ORDER BY id",
+      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id IN (SELECT id FROM periods WHERE subject_id IN (SELECT subject_id FROM commissions WHERE id = ?)) ORDER BY id",
     );
     const assignments = assignmentsStmt.all(commissionID) as Assignment[];
 
@@ -74,7 +88,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     }[];
 
     const deliveriesStmt = db.prepare(
-      "SELECT assignment_id, student_id, is_delivered, is_approved, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
+      "SELECT assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
     );
     const deliveries = deliveriesStmt.all(commissionID) as Delivery[];
 
@@ -87,6 +101,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
             student_id: s.id,
             is_delivered: false,
             is_approved: false,
+            workflow_status: DeliveryWorkflowStatus.NOT_DICTATED,
             grade: 0,
             ai_level: 0,
             comments: "",
@@ -105,7 +120,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
 
   getPendingSummary(): any[] {
     const stmt = db.prepare(`
-        SELECT 
+        SELECT
             c.id as commission_id,
             c.name as commission_name,
             sub.name as subject_name,
@@ -113,10 +128,10 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
             sub.id as subject_id,
             p.id as period_id,
             COUNT(s.id) - (
-                SELECT COUNT(*) 
-                FROM deliveries d 
-                JOIN students s2 ON d.student_id = s2.id 
-                WHERE s2.commission_id = c.id AND d.is_delivered = 1 AND d.deletedAt IS NULL
+                SELECT COUNT(*)
+                FROM deliveries d
+                JOIN students s2 ON d.student_id = s2.id
+                WHERE s2.commission_id = c.id AND d.workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS') AND d.deletedAt IS NULL
             ) as pending_count
         FROM commissions c
         JOIN periods p ON c.period_id = p.id
@@ -139,10 +154,10 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       "SELECT COUNT(*) as count FROM subjects WHERE deletedAt IS NULL",
     );
     const totalDeliveriesStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND is_delivered = 1",
+      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS')",
     );
     const approvedDeliveriesStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND is_delivered = 1 AND is_approved = 1",
+      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND workflow_status = 'APPROVED'",
     );
 
     const totalStudents = (totalStudentsStmt.get() as any).count;

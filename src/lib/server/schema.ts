@@ -56,6 +56,7 @@ export function createSchema(db: Database): void {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       period_id INTEGER NOT NULL,
       title TEXT NOT NULL,
+      subtitle TEXT DEFAULT NULL,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       deletedAt DATETIME DEFAULT NULL,
@@ -65,8 +66,9 @@ export function createSchema(db: Database): void {
     CREATE TABLE IF NOT EXISTS deliveries (
       assignment_id INTEGER NOT NULL,
       student_id INTEGER NOT NULL,
-      is_delivered INTEGER DEFAULT 0,
-      is_approved INTEGER DEFAULT 0,
+      workflow_status TEXT NOT NULL DEFAULT 'NOT_DICTATED' CHECK (
+        workflow_status IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS', 'WAITING_FOR_CORRECTION', 'APPROVED', 'REJECTED')
+      ),
       grade REAL DEFAULT 0,
       ai_level INTEGER DEFAULT 0,
       comments TEXT DEFAULT NULL,

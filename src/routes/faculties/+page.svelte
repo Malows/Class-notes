@@ -3,7 +3,7 @@
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
   import FacultyModal from "$lib/components/modals/FacultyModal.svelte";
-  import FacultyTable from "$lib/components/tables/FacultyTable.svelte";
+  import FacultyTable from "$lib/components/grids/tables/FacultyTable.svelte";
   import { ModalManager } from "$lib/composables/useModal.svelte";
   import { t } from "$lib/i18n/config";
   import type { FacultiesStore } from "$lib/stores/faculties.svelte";

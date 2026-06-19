@@ -8,7 +8,7 @@
   import type { Student } from "$lib/types";
   import type { StudentsStore } from "$lib/stores/students.svelte";
 
-  import StudentTable from "$lib/components/tables/StudentTable.svelte";
+  import StudentTable from "$lib/components/grids/tables/StudentTable.svelte";
   import StudentModal from "$lib/components/modals/StudentModal.svelte";
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";

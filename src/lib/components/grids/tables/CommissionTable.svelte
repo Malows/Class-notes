@@ -3,7 +3,7 @@
   import { t } from "$lib/i18n/config";
   import type { Commission } from "$lib/types";
 
-  import CommissionRow from "./rows/CommissionRow.svelte";
+  import CommissionRow from "../rows/CommissionRow.svelte";
 
   interface Props {
     commissions: Commission[];

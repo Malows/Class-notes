@@ -3,7 +3,7 @@
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
   import PeriodModal from "$lib/components/modals/PeriodModal.svelte";
-  import PeriodTable from "$lib/components/tables/PeriodTable.svelte";
+  import PeriodTable from "$lib/components/grids/tables/PeriodTable.svelte";
   import { ModalManager } from "$lib/composables/useModal.svelte";
   import { t } from "$lib/i18n/config";
   import type { PeriodsStore } from "$lib/stores/periods.svelte";

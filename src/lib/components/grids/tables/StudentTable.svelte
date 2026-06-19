@@ -3,7 +3,7 @@
   import { t } from "$lib/i18n/config";
   import type { Student } from "$lib/types";
 
-  import StudentRow from "./rows/StudentRow.svelte";
+  import StudentRow from "../rows/StudentRow.svelte";
 
   interface Props {
     students: Student[];

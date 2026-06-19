@@ -9,7 +9,7 @@
   import type { CommissionsStore } from "$lib/stores/commissions.svelte";
   import type { PeriodsStore } from "$lib/stores/periods.svelte";
   import GuardWrapper from "$lib/components/GuardWrapper.svelte";
-  import CommissionTable from "$lib/components/tables/CommissionTable.svelte";
+  import CommissionTable from "$lib/components/grids/tables/CommissionTable.svelte";
   import CommissionModal from "$lib/components/modals/CommissionModal.svelte";
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";

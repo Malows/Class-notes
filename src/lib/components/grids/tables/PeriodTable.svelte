@@ -3,7 +3,7 @@
   import { t } from "$lib/i18n/config";
   import type { Period } from "$lib/types";
 
-  import PeriodRow from "./rows/PeriodRow.svelte";
+  import PeriodRow from "../rows/PeriodRow.svelte";
 
   interface Props {
     periods: Period[];

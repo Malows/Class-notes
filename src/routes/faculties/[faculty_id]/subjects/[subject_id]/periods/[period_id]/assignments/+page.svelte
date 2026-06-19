@@ -9,7 +9,7 @@
   import type { AssignmentsStore } from "$lib/stores/assignments.svelte";
   import type { PeriodsStore } from "$lib/stores/periods.svelte";
   import GuardWrapper from "$lib/components/GuardWrapper.svelte";
-  import AssignmentTable from "$lib/components/tables/AssignmentTable.svelte";
+  import AssignmentTable from "$lib/components/grids/tables/AssignmentTable.svelte";
   import AssignmentModal from "$lib/components/modals/AssignmentModal.svelte";
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";

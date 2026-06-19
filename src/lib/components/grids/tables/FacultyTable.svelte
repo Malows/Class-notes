@@ -3,7 +3,7 @@
   import { t } from "$lib/i18n/config";
   import type { Faculty } from "$lib/types";
 
-  import FacultyRow from "./rows/FacultyRow.svelte";
+  import FacultyRow from "../rows/FacultyRow.svelte";
 
   interface Props {
     faculties: Faculty[];

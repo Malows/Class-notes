@@ -5,7 +5,7 @@
   import GuardWrapper from "$lib/components/GuardWrapper.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
   import SubjectModal from "$lib/components/modals/SubjectModal.svelte";
-  import SubjectTable from "$lib/components/tables/SubjectTable.svelte";
+  import SubjectTable from "$lib/components/grids/tables/SubjectTable.svelte";
   import { ModalManager } from "$lib/composables/useModal.svelte";
   import { t } from "$lib/i18n/config";
   import { FacultiesStore } from "$lib/stores/faculties.svelte";

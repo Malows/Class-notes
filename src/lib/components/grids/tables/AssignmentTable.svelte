@@ -3,7 +3,7 @@
   import type { Assignment } from "$lib/types";
 
   import ResponsiveTable from "$lib/components/common/ResponsiveTable.svelte";
-  import AssignmentRow from "./rows/AssignmentRow.svelte";
+  import AssignmentRow from "../rows/AssignmentRow.svelte";
 
   interface Props {
     assignments: Assignment[];

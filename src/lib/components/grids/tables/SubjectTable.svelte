@@ -3,7 +3,7 @@
   import { t } from "$lib/i18n/config";
   import type { Subject } from "$lib/types";
 
-  import SubjectRow from "./rows/SubjectRow.svelte";
+  import SubjectRow from "../rows/SubjectRow.svelte";
 
   interface Props {
     subjects: Subject[];

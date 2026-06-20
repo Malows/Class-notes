@@ -13,8 +13,6 @@ describe("overview components", () => {
     const pendingDelivery = getOverviewDeliveryStatus({
       assignment_id: 1,
       student_id: 1,
-      is_delivered: false,
-      is_approved: false,
       grade: 0,
       ai_level: 0,
       comments: "",
@@ -24,8 +22,6 @@ describe("overview components", () => {
     const pendingCorrection = getOverviewDeliveryStatus({
       assignment_id: 1,
       student_id: 1,
-      is_delivered: true,
-      is_approved: false,
       grade: 0,
       ai_level: 0,
       comments: "",
@@ -37,16 +33,13 @@ describe("overview components", () => {
   });
 
   test("OverviewCell renders approved state and AI icon", () => {
-    render(
-      OverviewCell,
-      {
-        href: "/correct",
-        status: "approved",
-        aiLevel: 2,
-        label: "approved",
-        testId: "approved-cell",
-      },
-    );
+    render(OverviewCell, {
+      href: "/correct",
+      status: "approved",
+      aiLevel: 2,
+      label: "approved",
+      testId: "approved-cell",
+    });
 
     const cell = screen.getByText("🤖").closest("a");
     expect(cell).toHaveAttribute("href", "/correct");
@@ -59,34 +52,29 @@ describe("overview components", () => {
       {
         assignment_id: 1,
         student_id: 7,
-        is_delivered: true,
-        is_approved: true,
         grade: 10,
         ai_level: 0,
         comments: "",
+        workflow_status: DeliveryWorkflowStatus.APPROVED,
       },
       {
         assignment_id: 2,
         student_id: 7,
-        is_delivered: false,
-        is_approved: false,
         grade: 0,
         ai_level: 0,
         comments: "",
+        workflow_status: DeliveryWorkflowStatus.NOT_DICTATED,
       },
     ];
 
-    render(
-      OverviewRow,
-      {
-        name: "A very long student name that should ellipsize",
-        deliveries,
-        facultyId: 1,
-        subjectId: 2,
-        periodId: 3,
-        commissionId: 4,
-      },
-    );
+    render(OverviewRow, {
+      name: "A very long student name that should ellipsize",
+      deliveries,
+      facultyId: 1,
+      subjectId: 2,
+      periodId: 3,
+      commissionId: 4,
+    });
 
     expect(screen.getByText("A very long student name that should ellipsize")).toBeInTheDocument();
     expect(screen.getByText("✅")).toBeInTheDocument();
@@ -103,27 +91,23 @@ describe("overview components", () => {
           {
             assignment_id: 1,
             student_id: 1,
-            is_delivered: true,
-            is_approved: true,
             grade: 10,
             ai_level: 0,
             comments: "",
+            workflow_status: DeliveryWorkflowStatus.APPROVED,
           },
         ],
       },
     ];
 
-    render(
-      OverviewGrid,
-      {
-        assignments,
-        grid,
-        facultyId: 1,
-        subjectId: 2,
-        periodId: 3,
-        commissionId: 4,
-      },
-    );
+    render(OverviewGrid, {
+      assignments,
+      grid,
+      facultyId: 1,
+      subjectId: 2,
+      periodId: 3,
+      commissionId: 4,
+    });
 
     expect(screen.getByText("Students")).toBeInTheDocument();
     expect(screen.getByText("TP1")).toBeInTheDocument();

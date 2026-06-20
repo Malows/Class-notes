@@ -9,17 +9,20 @@
     assignments: Assignment[];
     onEdit: (assignment: Assignment) => void;
     onDelete: (assignment: Assignment) => void;
+    onBulkUpdate?: (assignment: Assignment) => void;
   }
 
-  let { assignments, onEdit, onDelete }: Props = $props();
+  let { assignments, onEdit, onDelete, onBulkUpdate = () => {} }: Props = $props();
 </script>
 
 <ResponsiveTable items={assignments}>
   {#snippet header()}
     <th>{$t("layout.title")}</th>
+    <th>{$t("layout.subtitle")}</th>
+    <th>{$t("layout.status")}</th>
     <th>{$t("layout.actions")}</th>
   {/snippet}
   {#snippet row(assignment)}
-    <AssignmentRow {assignment} {onEdit} {onDelete} />
+    <AssignmentRow {assignment} {onEdit} {onDelete} {onBulkUpdate} />
   {/snippet}
 </ResponsiveTable>

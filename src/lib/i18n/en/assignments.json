@@ -8,5 +8,19 @@
   "confirm_delete_message": "Are you sure you want to delete the assignment {{title}}?",
   "manage_assignments_title": "Define Assignments",
   "add_assignment": "Add TP",
-  "loading_assignments": "Loading TPs..."
+  "loading_assignments": "Loading TPs...",
+  "subtitle_label": "Subtitle / Topic",
+  "subtitle_placeholder": "e.g. Vector Spaces",
+  "workflow_status_label": "Initial Workflow Status",
+  "workflow_status": {
+    "not_dictated": "Not dictated",
+    "waiting_for_students": "Waiting for submissions",
+    "waiting_for_correction": "Waiting for grading"
+  },
+  "advance_status_title": "Advance Status",
+  "advance_status_message": "Are you sure you want to advance the assignment status from '{{current}}' to '{{next}}'? This will also update the status of all associated submissions.",
+  "copy_previous_title": "Copy Assignments",
+  "copy_previous_message": "This will copy all assignments from the previous period. Please verify that commissions and students for this period are fully loaded, as this will automatically generate submission records for each student. Do you want to continue?",
+  "copy_previous_btn": "Copy Assignments from Previous Period",
+  "warning_alert": "Creating or copying assignments will automatically generate submission sheets for all students enrolled in this period."
 }

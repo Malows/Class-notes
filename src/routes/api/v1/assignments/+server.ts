@@ -15,8 +15,8 @@ export async function GET({ url }) {
 
 export async function POST({ request }) {
   try {
-    const { period_id, title } = await request.json();
-    const newAssignment = assignmentRepository.create(period_id, title);
+    const { period_id, title, subtitle, workflow_status } = await request.json();
+    const newAssignment = assignmentRepository.create(period_id, title, subtitle, workflow_status);
     return json({ data: newAssignment }, { status: 201 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

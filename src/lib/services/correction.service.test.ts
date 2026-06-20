@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 
 import { apiFetch } from "../api";
+import { DeliveryWorkflowStatus } from "../types";
 import { correctionService } from "./correction.service";
 
 vi.mock("../api", () => ({
@@ -17,11 +18,10 @@ describe("correctionService", () => {
     const delivery = {
       assignment_id: 1,
       student_id: 1,
-      is_delivered: true,
-      is_approved: true,
       grade: 10,
       ai_level: 0,
       comments: "OK",
+      workflow_status: DeliveryWorkflowStatus.APPROVED,
     };
     await correctionService.save(delivery);
     expect(apiFetch).toHaveBeenCalledWith(

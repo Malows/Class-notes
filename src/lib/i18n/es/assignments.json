@@ -8,5 +8,19 @@
   "confirm_delete_message": "¿Está seguro que desea borrar el trabajo práctico {{title}}?",
   "manage_assignments_title": "Definir Trabajos Prácticos",
   "add_assignment": "Agregar TP",
-  "loading_assignments": "Cargando TPs..."
+  "loading_assignments": "Cargando TPs...",
+  "subtitle_label": "Subtítulo / Tema",
+  "subtitle_placeholder": "Ej: Espacios Vectoriales",
+  "workflow_status_label": "Estado inicial del flujo",
+  "workflow_status": {
+    "not_dictated": "No dictado",
+    "waiting_for_students": "Esperando entregas",
+    "waiting_for_correction": "Esperando corrección"
+  },
+  "advance_status_title": "Avanzar Estado",
+  "advance_status_message": "¿Está seguro que desea avanzar el estado del trabajo práctico de '{{current}}' a '{{next}}'? Esta acción también actualizará el estado de todas las entregas asociadas.",
+  "copy_previous_title": "Copiar Trabajos Prácticos",
+  "copy_previous_message": "Se copiarán todos los trabajos prácticos del período anterior. Asegúrese de que las comisiones y alumnos de este período ya estén cargados, ya que esto generará automáticamente los registros de entrega para cada estudiante. ¿Desea continuar?",
+  "copy_previous_btn": "Copiar TPs de Período Anterior",
+  "warning_alert": "Al crear o copiar trabajos prácticos, se generarán automáticamente las planillas de entregas para todos los estudiantes inscriptos en este período."
 }

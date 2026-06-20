@@ -7,5 +7,6 @@
   "delete": "Borrar",
   "remove": "Eliminar",
   "of": "de",
-  "loading": "Cargando..."
+  "loading": "Cargando...",
+  "bulk_update": "Avanzar Estado"
 }

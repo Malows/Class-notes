@@ -20,3 +20,25 @@ export interface Delivery {
   comments: string;
   workflow_status: DeliveryWorkflowStatus;
 }
+
+export enum OverviewDeliveryStatus {
+  APPROVED = "approved",
+  REJECTED = "rejected",
+  PENDING_CORRECTION = "pending_correction",
+  PENDING_DELIVERY = "pending_delivery",
+}
+
+export function getOverviewDeliveryStatus(delivery: Delivery): OverviewDeliveryStatus {
+  switch (delivery.workflow_status) {
+    case DeliveryWorkflowStatus.APPROVED:
+      return OverviewDeliveryStatus.APPROVED;
+    case DeliveryWorkflowStatus.REJECTED:
+      return OverviewDeliveryStatus.REJECTED;
+    case DeliveryWorkflowStatus.WAITING_FOR_CORRECTION:
+      return OverviewDeliveryStatus.PENDING_CORRECTION;
+    case DeliveryWorkflowStatus.WAITING_FOR_STUDENTS:
+    case DeliveryWorkflowStatus.NOT_DICTATED:
+    default:
+      return OverviewDeliveryStatus.PENDING_DELIVERY;
+  }
+}

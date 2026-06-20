@@ -13,6 +13,8 @@
   "id": "ID",
   "name": "Name",
   "title": "Title",
+  "subtitle": "Subtitle",
+  "status": "Status",
   "actions": "Actions",
   "year": "Year",
   "semester": "Semester",

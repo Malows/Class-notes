@@ -4,8 +4,8 @@ import { json } from "@sveltejs/kit";
 export async function PUT({ params, request }) {
   try {
     const id = Number(params.id);
-    const { title } = await request.json();
-    const updatedAssignment = assignmentRepository.update(id, title);
+    const { title, subtitle } = await request.json();
+    const updatedAssignment = assignmentRepository.update(id, title, subtitle);
     if (!updatedAssignment) {
       return json({ error: "Assignment not found" }, { status: 404 });
     }

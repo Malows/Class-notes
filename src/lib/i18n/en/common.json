@@ -7,5 +7,6 @@
   "delete": "Delete",
   "remove": "Remove",
   "of": "of",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "bulk_update": "Advance Status"
 }

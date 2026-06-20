@@ -20,9 +20,16 @@ export interface Commission {
   name: string;
   student_count: number;
 }
+export enum AssignmentWorkflowStatus {
+  NOT_DICTATED = "NOT_DICTATED",
+  WAITING_FOR_STUDENTS = "WAITING_FOR_STUDENTS",
+  WAITING_FOR_CORRECTION = "WAITING_FOR_CORRECTION",
+}
+
 export interface Assignment {
   id: number;
   period_id: number;
   title: string;
   subtitle?: string;
+  workflow_status?: AssignmentWorkflowStatus;
 }

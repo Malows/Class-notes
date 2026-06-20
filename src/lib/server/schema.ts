@@ -57,6 +57,9 @@ export function createSchema(db: Database): void {
       period_id INTEGER NOT NULL,
       title TEXT NOT NULL,
       subtitle TEXT DEFAULT NULL,
+      workflow_status TEXT NOT NULL DEFAULT 'NOT_DICTATED' CHECK (
+        workflow_status IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS', 'WAITING_FOR_CORRECTION')
+      ),
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       deletedAt DATETIME DEFAULT NULL,

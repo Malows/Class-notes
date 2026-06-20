@@ -1,9 +1,4 @@
-import type {
-  Assignment,
-  Delivery,
-  OverviewData,
-  StudentGridRowDTO,
-} from "$lib/types";
+import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/types";
 import { DeliveryWorkflowStatus } from "$lib/types";
 
 import db from "../db";
@@ -20,7 +15,7 @@ export interface DeliveryRepository {
 class DeliveryRepositoryImpl implements DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null {
     const stmt = db.prepare(
-      "SELECT assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments FROM deliveries WHERE assignment_id = ? AND student_id = ? AND deletedAt IS NULL",
+      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE assignment_id = ? AND student_id = ? AND deletedAt IS NULL",
     );
     return stmt.get(assignmentID, studentID) as Delivery | null;
   }
@@ -30,8 +25,6 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
             SELECT
                 d.assignment_id,
                 d.student_id,
-                d.is_delivered,
-                d.is_approved,
                 d.workflow_status,
                 d.grade,
                 d.ai_level,
@@ -45,11 +38,9 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
 
   save(delivery: Delivery): void {
     const stmt = db.prepare(`
-            INSERT INTO deliveries (assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(assignment_id, student_id) DO UPDATE SET
-                is_delivered = EXCLUDED.is_delivered,
-                is_approved = EXCLUDED.is_approved,
                 workflow_status = EXCLUDED.workflow_status,
                 grade = EXCLUDED.grade,
                 ai_level = EXCLUDED.ai_level,
@@ -58,14 +49,10 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
                 deletedAt = NULL
         `);
     const workflowStatus = delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED;
-    const isDelivered = workflowStatus !== DeliveryWorkflowStatus.NOT_DICTATED;
-    const isApproved = workflowStatus === DeliveryWorkflowStatus.APPROVED;
 
     stmt.run(
       delivery.assignment_id,
       delivery.student_id,
-      isDelivered ? 1 : 0,
-      isApproved ? 1 : 0,
       workflowStatus,
       delivery.grade,
       delivery.ai_level,
@@ -88,7 +75,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     }[];
 
     const deliveriesStmt = db.prepare(
-      "SELECT assignment_id, student_id, is_delivered, is_approved, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
+      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
     );
     const deliveries = deliveriesStmt.all(commissionID) as Delivery[];
 
@@ -99,8 +86,6 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
           delivery || {
             assignment_id: a.id,
             student_id: s.id,
-            is_delivered: false,
-            is_approved: false,
             workflow_status: DeliveryWorkflowStatus.NOT_DICTATED,
             grade: 0,
             ai_level: 0,

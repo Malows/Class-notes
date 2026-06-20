@@ -8,14 +8,29 @@
     assignment: Assignment;
     onEdit: (assignment: Assignment) => void;
     onDelete: (assignment: Assignment) => void;
+    onBulkUpdate: (assignment: Assignment) => void;
   }
 
-  let { assignment, onEdit, onDelete }: Props = $props();
+  let { assignment, onEdit, onDelete, onBulkUpdate }: Props = $props();
 </script>
 
 <td data-test-id="assignment-title-{assignment.id}">{assignment.title}</td>
+<td>{assignment.subtitle ?? ""}</td>
+<td
+  >{assignment.workflow_status
+    ? $t(`assignments.workflow_status.${assignment.workflow_status.toLowerCase()}`)
+    : ""}</td
+>
 <td>
   <div class="row flex-right gap-2">
+    <Button
+      testId="bulk-update-btn-{assignment.id}"
+      onclick={() => onBulkUpdate(assignment)}
+      withHover
+      disabled={assignment.workflow_status === "WAITING_FOR_CORRECTION"}
+    >
+      {$t("common.bulk_update")}
+    </Button>
     <Button testId="edit-btn-{assignment.id}" onclick={() => onEdit(assignment)} withHover>
       {$t("common.edit")}
     </Button>

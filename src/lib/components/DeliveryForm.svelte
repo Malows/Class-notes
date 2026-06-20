@@ -51,12 +51,13 @@
         <input
           type="checkbox"
           id="is_delivered-{idSuffix}"
-          checked={d.workflow_status !== DeliveryWorkflowStatus.NOT_DICTATED}
+          checked={d.workflow_status !== DeliveryWorkflowStatus.NOT_DICTATED &&
+            d.workflow_status !== DeliveryWorkflowStatus.WAITING_FOR_STUDENTS}
           onchange={(event) => {
             const checked = event.currentTarget.checked;
             d.workflow_status = checked
-              ? DeliveryWorkflowStatus.WAITING_FOR_STUDENTS
-              : DeliveryWorkflowStatus.NOT_DICTATED;
+              ? DeliveryWorkflowStatus.WAITING_FOR_CORRECTION
+              : DeliveryWorkflowStatus.WAITING_FOR_STUDENTS;
           }}
           data-test-id={deliveredTestId}
         />

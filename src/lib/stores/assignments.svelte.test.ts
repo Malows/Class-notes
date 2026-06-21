@@ -45,6 +45,29 @@ describe("AssignmentsStore", () => {
     expect(store.items[0].title).toBe("Assignment A Updated");
   });
 
+  it("should update status and cascade to items", async () => {
+    store.items = [
+      { id: 1, period_id: 1, title: "Assignment A", workflow_status: "NOT_DICTATED" as any },
+    ];
+    mockService.updateStatus = vi.fn().mockResolvedValue(undefined);
+
+    await store.updateStatus(1, "WAITING_FOR_STUDENTS");
+
+    expect(store.items[0].workflow_status).toBe("WAITING_FOR_STUDENTS");
+    expect(mockService.updateStatus).toHaveBeenCalledWith(1, "WAITING_FOR_STUDENTS");
+  });
+
+  it("should copy assignments and reload them", async () => {
+    mockService.copy.mockResolvedValue(undefined);
+    mockService.getAll.mockResolvedValue([{ id: 10, period_id: 2, title: "Copied A" }]);
+
+    await store.copy(1, 2);
+
+    expect(mockService.copy).toHaveBeenCalledWith(1, 2);
+    expect(store.items).toHaveLength(1);
+    expect(store.items[0].title).toBe("Copied A");
+  });
+
   it("should delete an assignment", async () => {
     store.items = [{ id: 1, period_id: 1, title: "Assignment A" }];
     mockService.delete.mockResolvedValue(undefined);

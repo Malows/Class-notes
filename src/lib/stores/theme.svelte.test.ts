@@ -43,4 +43,25 @@ describe("ThemeStore", () => {
       expect(document.documentElement.classList.contains("dark")).toBe(false);
     }
   });
+
+  it("initializes locale and alternates flags on toggleLanguage", () => {
+    const store = new ThemeStore();
+    // Default initial locale is en
+    expect(store.currentLocale).toBe("en");
+    expect(store.esFlag).toBe("🇦🇷"); // Default even (0) count is 🇦🇷
+
+    // Toggle 1: en -> es (click count 1 -> odd -> Colombia 🇨🇴)
+    store.toggleLanguage();
+    expect(store.currentLocale).toBe("es");
+    expect(store.esFlag).toBe("🇨🇴");
+
+    // Toggle 2: es -> en
+    store.toggleLanguage();
+    expect(store.currentLocale).toBe("en");
+
+    // Toggle 3: en -> es (click count 2 -> even -> Argentina 🇦🇷)
+    store.toggleLanguage();
+    expect(store.currentLocale).toBe("es");
+    expect(store.esFlag).toBe("🇦🇷");
+  });
 });

@@ -28,12 +28,14 @@ Build an interactive, keyboard-accessible language selector in the navigation ba
 ## Implementation Steps
 
 ### Step 1: Update the +layout.ts Loader
+
 1. Update `load` to inspect `localStorage` first:
    - If `localStorage.getItem("preferred-locale")` exists, use it as `initLocale`.
    - If not, fall back to `navigator.language` split-codes ("es" or "en").
    - Handle server-side safe checks (check if `typeof window !== "undefined"` or `typeof localStorage !== "undefined"`).
 
 ### Step 2: Implement Selector Component in NavBar
+
 1. Design the selector inside `NavBar.svelte`:
    - Bind a click handler that calls Sveltekit-i18n's exported reactive `locale.set("es" | "en")` and updates `localStorage.setItem("preferred-locale", value)`.
    - Style the button to fit the hand-drawn paper aesthetic (e.g., using small paper-style toggles).

@@ -26,12 +26,14 @@ Design and integrate a fully accessible, hand-drawn "Sketchy Toast" notification
 ## Implementation Steps
 
 ### Step 1: Create Svelte 5 Notification Store
+
 1. Create `src/lib/stores/notifications.svelte.ts`:
    - Declare a reactive array `$state<Toast[]>([])`.
    - Export methods: `addSuccess(message)`, `addError(message)`, `addWarning(message)`, and `dismiss(id)`.
    - Ensure a unique ID generation scheme for each toast.
 
 ### Step 2: Implement components
+
 1. Create `<Toast>` component using sketchy borders (`sketch-border`, `sketch-shadow`) and accessible markup:
    - Inject matching theme colors (e.g., success color vs `--warning-bg`).
    - Add close button with `aria-label`.
@@ -40,6 +42,7 @@ Design and integrate a fully accessible, hand-drawn "Sketchy Toast" notification
 3. Mount `<ToastContainer />` inside the global layout file `src/routes/+layout.svelte`.
 
 ### Step 3: Replace `alert()` Triggers
+
 1. Search and replace standard `alert()` calls inside Svelte page routes with calls to `notificationStore.addError(message)`.
 
 ## Verification & Testing

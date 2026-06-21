@@ -32,12 +32,14 @@ To comply with WCAG 2.1 AA and ensure "First World Class" accessibility, all val
 ## Implementation Steps
 
 ### Step 1: Create Validation Utility
+
 1. Create a helper or composable `src/lib/composables/useFormValidation.ts` to manage form validation state:
    - Accept a Zod schema.
    - Maintain a Svelte 5 reactive `$state` object of field errors (e.g. `errors: Record<string, string>`).
    - Export a `validate(data: unknown)` function that returns a boolean, populates/clears the reactive errors state, and dynamically focuses the first invalid element on the page using standard DOM selectors (e.g. `document.getElementById`).
 
 ### Step 2: Apply to AssignmentModal & Other Modals
+
 1. Refactor `AssignmentModal.svelte` (and other modals subsequently):
    - Import `CreateAssignmentSchema` from `dto.schema.ts`.
    - Replace manual empty-string validation with the `useFormValidation` validator.

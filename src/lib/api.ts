@@ -9,11 +9,21 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
     },
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
-    throw new Error(result.error || DEFAULT_ERROR_MESSAGE);
+    let errorMessage = DEFAULT_ERROR_MESSAGE;
+    try {
+      const result = await response.json();
+      errorMessage = result.error || DEFAULT_ERROR_MESSAGE;
+    } catch {
+      // Best effort to parse error
+    }
+    throw new Error(errorMessage);
   }
 
+  if (response.status === 204) {
+    return {} as T;
+  }
+
+  const result = await response.json();
   return result.data as T;
 }

@@ -1,9 +1,10 @@
 import Database from "better-sqlite3";
+import { DATABASE_NAME } from "$env/static/private";
 
 import { createSchema } from "./schema";
 import { insertSeed } from "./seed";
 
-const db = new Database("class-notes.db", { verbose: console.log });
+const db = new Database(DATABASE_NAME || "class-notes.db", { verbose: console.log });
 
 // Enable foreign keys and WAL mode for better concurrency
 db.pragma("foreign_keys = ON");

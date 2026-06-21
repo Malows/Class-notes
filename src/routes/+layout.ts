@@ -8,14 +8,25 @@ export const load = async ({ url }) => {
   const { pathname } = url;
   let initLocale = "en";
 
-  if (typeof navigator !== "undefined") {
-    const browserLang = navigator.language.split("-")[0]; // e.g., "es-ES" -> "es"
+  if (typeof localStorage !== "undefined") {
+    const saved = localStorage.getItem("preferred-locale");
+    if (saved === "es" || saved === "en") {
+      initLocale = saved;
+    } else if (typeof navigator !== "undefined") {
+      const browserLang = navigator.language.split("-")[0];
+      if (browserLang === "es") {
+        initLocale = "es";
+      }
+    }
+  } else if (typeof navigator !== "undefined") {
+    const browserLang = navigator.language.split("-")[0];
     if (browserLang === "es") {
       initLocale = "es";
     }
-    console.log(`[i18n] Detected browser language: "${navigator.language}", setting locale to: "${initLocale}"`);
-  } else {
-    console.log(`[i18n] Navigator is undefined (non-browser environment), defaulting locale to: "${initLocale}"`);
+  }
+
+  if (typeof window !== "undefined") {
+    console.log(`[i18n] Initializing translations. Chosen locale: "${initLocale}". (Preferred saved: "${typeof localStorage !== "undefined" ? localStorage.getItem("preferred-locale") : null}", Browser default: "${typeof navigator !== "undefined" ? navigator.language : null}")`);
   }
 
   await loadTranslations(initLocale, pathname);

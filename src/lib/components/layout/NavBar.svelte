@@ -1,7 +1,15 @@
 <script lang="ts">
   import Breadcrumbs from "$lib/components/layout/Breadcrumbs.svelte";
   import ThemeToggle from "$lib/components/ThemeToggle.svelte";
-  import { t } from "$lib/i18n/config";
+  import { locale, t } from "$lib/i18n/config";
+
+  function toggleLanguage() {
+    const next = $locale === "en" ? "es" : "en";
+    locale.set(next);
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("preferred-locale", next);
+    }
+  }
 </script>
 
 <nav class="navbar header-nav" data-test-id="navbar">
@@ -24,6 +32,15 @@
         <div class="bar3"></div>
       </label>
       <div class="collapsible-body">
+        <button
+          class="paper-btn btn-small"
+          onclick={toggleLanguage}
+          aria-label={$locale === "en" ? "Cambiar idioma a Español" : "Change language to English"}
+          data-test-id="language-toggle-btn"
+          style="margin-right: 0.5rem;"
+        >
+          {$locale === "en" ? "🇪🇸 Español" : "🇬🇧 English"}
+        </button>
         <ThemeToggle />
       </div>
     </div>

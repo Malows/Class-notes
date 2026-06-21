@@ -31,16 +31,12 @@
   }
 
   async function handleSave(year: number, semester: number, id?: number) {
-    try {
-      if (id) {
-        await periodsStore.updateItem(id, year, semester);
-      } else {
-        await periodsStore.create(subjectID, year, semester);
-      }
-      modal.close();
-    } catch (e) {
-      alert(e);
+    if (id) {
+      await periodsStore.updateItem(id, year, semester);
+    } else {
+      await periodsStore.create(subjectID, year, semester);
     }
+    modal.close();
   }
 
   async function handleDelete() {

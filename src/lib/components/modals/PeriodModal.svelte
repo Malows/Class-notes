@@ -17,6 +17,7 @@
 
   let year = $state(new Date().getFullYear());
   let semester = $state(1);
+  let serverError = $state<string | null>(null);
 
   const validator = useFormValidation(CreatePeriodSchema);
 
@@ -25,17 +26,31 @@
       year = mode === "edit" && period ? period.year : new Date().getFullYear();
       semester = mode === "edit" && period ? period.semester : 1;
       validator.clear();
+      serverError = null;
     }
   });
 
-  function handleSaveClick() {
+  async function handleSaveClick() {
+    serverError = null;
     const isValid = validator.validate({
       subject_id: period?.subject_id || 1, // Satisfies schema requirements
       year: Number(year),
       semester: Number(semester),
     });
     if (isValid) {
-      onSave(Number(year), Number(semester), period?.id);
+      try {
+        await onSave(Number(year), Number(semester), period?.id);
+      } catch (e: any) {
+        if (e.message && e.message.includes("already exists")) {
+          serverError = "periods.error_already_exists";
+        } else {
+          serverError = e.message;
+        }
+        // A11y: Shift focus programmatically to the error span so screen readers announce it
+        setTimeout(() => {
+          document.getElementById("error-period-server")?.focus();
+        }, 0);
+      }
     }
   }
 </script>
@@ -85,8 +100,13 @@
       <ErrorSpan
         message={validator.errors.semester}
         id="error-period-semester"
-        testId="period-semester-error"
+        testId="error-period-semester"
       />
+    </div>
+    
+    <!-- Tabindex -1 allows focus shifts on span for screen-reader alert speech -->
+    <div tabindex="-1" id="error-period-server" style="outline: none;">
+      <ErrorSpan message={serverError} id="server-period-error-span" testId="period-server-error" />
     </div>
   {/snippet}
 

@@ -11,6 +11,9 @@ export async function PUT({ params, request }) {
     }
     return json({ data: updatedPeriod });
   } catch (error: any) {
+    if (error.message === "Period already exists for this subject") {
+      return json({ error: error.message }, { status: 409 });
+    }
     return json({ error: error.message }, { status: 500 });
   }
 }

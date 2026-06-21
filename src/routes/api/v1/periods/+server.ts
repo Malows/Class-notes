@@ -19,6 +19,9 @@ export async function POST({ request }) {
     const newPeriod = periodRepository.create(subject_id, year, semester);
     return json({ data: newPeriod }, { status: 201 });
   } catch (error: any) {
+    if (error.message === "Period already exists for this subject") {
+      return json({ error: error.message }, { status: 409 });
+    }
     return json({ error: error.message }, { status: 500 });
   }
 }

@@ -23,6 +23,13 @@ class PeriodRepositoryImpl implements PeriodRepository {
   }
 
   create(subject_id: number, year: number, semester: number): Period {
+    const checkStmt = db.prepare(
+      "SELECT id FROM periods WHERE subject_id = ? AND year = ? AND semester = ? AND deletedAt IS NULL"
+    );
+    if (checkStmt.get(subject_id, year, semester)) {
+      throw new Error("Period already exists for this subject");
+    }
+
     const stmt = db.prepare(
       "INSERT INTO periods (subject_id, year, semester) VALUES (?, ?, ?) RETURNING id, subject_id, year, semester",
     );
@@ -34,6 +41,13 @@ class PeriodRepositoryImpl implements PeriodRepository {
   }
 
   update(id: number, year: number, semester: number): Period {
+    const checkStmt = db.prepare(
+      "SELECT id FROM periods WHERE subject_id = (SELECT subject_id FROM periods WHERE id = ?) AND year = ? AND semester = ? AND id != ? AND deletedAt IS NULL"
+    );
+    if (checkStmt.get(id, year, semester, id)) {
+      throw new Error("Period already exists for this subject");
+    }
+
     const stmt = db.prepare(
       "UPDATE periods SET year = ?, semester = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, subject_id, year, semester",
     );

@@ -82,5 +82,9 @@ export function createSchema(db: Database): void {
       FOREIGN KEY(assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
       FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE
     );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_periods_subject_year_semester_active 
+    ON periods(subject_id, year, semester) 
+    WHERE deletedAt IS NULL;
   `);
 }

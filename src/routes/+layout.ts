@@ -26,7 +26,9 @@ export const load = async ({ url }) => {
   }
 
   if (typeof window !== "undefined") {
-    console.log(`[i18n] Initializing translations. Chosen locale: "${initLocale}". (Preferred saved: "${typeof localStorage !== "undefined" ? localStorage.getItem("preferred-locale") : null}", Browser default: "${typeof navigator !== "undefined" ? navigator.language : null}")`);
+    console.log(
+      `[i18n] Initializing translations. Chosen locale: "${initLocale}". (Preferred saved: "${typeof localStorage !== "undefined" ? localStorage.getItem("preferred-locale") : null}", Browser default: "${typeof navigator !== "undefined" ? navigator.language : null}")`,
+    );
   }
 
   await loadTranslations(initLocale, pathname);

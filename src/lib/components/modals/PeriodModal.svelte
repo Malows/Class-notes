@@ -103,7 +103,7 @@
         testId="error-period-semester"
       />
     </div>
-    
+
     <!-- Tabindex -1 allows focus shifts on span for screen-reader alert speech -->
     <div tabindex="-1" id="error-period-server" style="outline: none;">
       <ErrorSpan message={serverError} id="server-period-error-span" testId="period-server-error" />

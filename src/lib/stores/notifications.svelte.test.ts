@@ -19,7 +19,7 @@ describe("NotificationsStore", () => {
         message: "Success message",
         type: "success",
         autoDismiss: true,
-      })
+      }),
     );
 
     // Fast-forward time to trigger auto-dismissal
@@ -35,7 +35,7 @@ describe("NotificationsStore", () => {
         message: "Error message",
         type: "error",
         autoDismiss: false,
-      })
+      }),
     );
 
     vi.advanceTimersByTime(10000);
@@ -50,7 +50,7 @@ describe("NotificationsStore", () => {
         message: "Warning message",
         type: "warning",
         autoDismiss: false,
-      })
+      }),
     );
 
     vi.advanceTimersByTime(10000);

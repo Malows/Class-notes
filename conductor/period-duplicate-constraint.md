@@ -10,28 +10,31 @@ Prevent duplicate periods from being registered for the same subject/year/semest
 - **Period Repository**: `src/lib/server/repositories/period.repository.ts`
 - **Period Page**: `src/routes/faculties/[faculty_id]/subjects/[subject_id]/periods/+page.svelte`
 - **Period Modal**: `src/lib/components/modals/PeriodModal.svelte`
-- **Translations**: 
+- **Translations**:
   - `src/lib/i18n/es/periods.json`
   - `src/lib/i18n/en/periods.json`
 
 ## Architectural Design
 
 ### 1. Database-Level Unique Constraint
+
 To protect the data layer against concurrent insertion anomalies or external scripting errors, we will define a partial SQLite unique index. This index is scoped to exclude soft-deleted periods, allowing users to re-create a previously deleted period for the same year/semester:
 
 ```sql
-CREATE UNIQUE INDEX IF NOT EXISTS idx_periods_subject_year_semester_active 
-ON periods(subject_id, year, semester) 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_periods_subject_year_semester_active
+ON periods(subject_id, year, semester)
 WHERE deletedAt IS NULL;
 ```
 
 ### 2. Repository Layer Pre-checks
+
 The `PeriodRepositoryImpl` will proactively verify uniqueness during `create` and `update` queries. This intercepts errors before SQLite attempts a write transaction, throwing clean domain-specific errors.
 
 - **On Create**:
+
   ```typescript
   const checkStmt = db.prepare(
-    "SELECT id FROM periods WHERE subject_id = ? AND year = ? AND semester = ? AND deletedAt IS NULL"
+    "SELECT id FROM periods WHERE subject_id = ? AND year = ? AND semester = ? AND deletedAt IS NULL",
   );
   if (checkStmt.get(subject_id, year, semester)) {
     throw new Error("Period already exists for this subject");
@@ -41,7 +44,7 @@ The `PeriodRepositoryImpl` will proactively verify uniqueness during `create` an
 - **On Update**:
   ```typescript
   const checkStmt = db.prepare(
-    "SELECT id FROM periods WHERE subject_id = (SELECT subject_id FROM periods WHERE id = ?) AND year = ? AND semester = ? AND id != ? AND deletedAt IS NULL"
+    "SELECT id FROM periods WHERE subject_id = (SELECT subject_id FROM periods WHERE id = ?) AND year = ? AND semester = ? AND id != ? AND deletedAt IS NULL",
   );
   if (checkStmt.get(id, year, semester, id)) {
     throw new Error("Period already exists for this subject");
@@ -49,6 +52,7 @@ The `PeriodRepositoryImpl` will proactively verify uniqueness during `create` an
   ```
 
 ### 3. Application Layer & UI Error Interception
+
 The `PeriodModal` will capture backend errors, map them to i18n localization codes, and display them within the modal dialog.
 
 - **Localizations**:

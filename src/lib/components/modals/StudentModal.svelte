@@ -1,8 +1,10 @@
 <script lang="ts">
   import { t } from "$lib/i18n/config";
   import type { Student } from "$lib/types";
-
   import DialogBase from "../common/DialogBase.svelte";
+  import ErrorSpan from "../common/ErrorSpan.svelte";
+  import { useFormValidation } from "$lib/composables/useFormValidation.svelte";
+  import { CreateStudentsSchema } from "$lib/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;
@@ -19,12 +21,15 @@
   let bulkNames = $state("");
   let activeTab = $state<"single" | "bulk">("single");
 
+  const validator = useFormValidation(CreateStudentsSchema);
+
   $effect(() => {
     if (isOpen) {
       name = mode === "edit" && student ? student.name : "";
       externalId = mode === "edit" && student ? student.external_id : "";
       bulkNames = "";
       activeTab = "single";
+      validator.clear();
     }
   });
 
@@ -34,9 +39,21 @@
         .split("\n")
         .map((n) => n.trim())
         .filter((n) => n.length > 0);
-      onSave("", "", undefined, names);
+      const isValid = validator.validate({
+        commission_id: student?.commission_id || 1,
+        names,
+      });
+      if (isValid) {
+        onSave("", "", undefined, names);
+      }
     } else {
-      onSave(name, externalId, student?.id);
+      const isValid = validator.validate({
+        commission_id: student?.commission_id || 1,
+        names: [name],
+      });
+      if (isValid) {
+        onSave(name, externalId, student?.id);
+      }
     }
   }
 </script>
@@ -54,7 +71,10 @@
           class="paper-btn btn-small {activeTab === 'single'
             ? 'btn-secondary'
             : 'btn-secondary-outline'}"
-          onclick={() => (activeTab = "single")}
+          onclick={() => {
+            activeTab = "single";
+            validator.clear();
+          }}
         >
           {$t("students.single_name_label")}
         </button>
@@ -63,7 +83,10 @@
           class="paper-btn btn-small {activeTab === 'bulk'
             ? 'btn-secondary'
             : 'btn-secondary-outline'}"
-          onclick={() => (activeTab = "bulk")}
+          onclick={() => {
+            activeTab = "bulk";
+            validator.clear();
+          }}
         >
           {$t("students.upload_students_title")}
         </button>
@@ -79,7 +102,21 @@
           bind:value={name}
           placeholder={$t("students.placeholder")}
           class="input-block"
+          aria-invalid={!!(validator.errors["names.0"] || validator.errors.names)}
+          aria-describedby={validator.errors["names.0"] || validator.errors.names
+            ? "error-student-name"
+            : undefined}
+          oninput={() => {
+            if (validator.errors["names.0"] || validator.errors.names) {
+              validator.clear();
+            }
+          }}
           data-test-id="student-name-input"
+        />
+        <ErrorSpan
+          message={validator.errors["names.0"] || validator.errors.names}
+          id="error-student-name"
+          testId="student-name-error"
         />
       </div>
       <div class="form-group">
@@ -101,8 +138,18 @@
           bind:value={bulkNames}
           rows="5"
           class="input-block"
+          aria-invalid={!!validator.errors.names}
+          aria-describedby={validator.errors.names ? "error-student-bulk" : undefined}
+          oninput={() => {
+            if (validator.errors.names) validator.errors.names = "";
+          }}
           data-test-id="student-bulk-textarea"
         ></textarea>
+        <ErrorSpan
+          message={validator.errors.names}
+          id="error-student-bulk"
+          testId="student-bulk-error"
+        />
       </div>
     {/if}
   {/snippet}

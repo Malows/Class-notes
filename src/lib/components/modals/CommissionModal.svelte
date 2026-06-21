@@ -1,8 +1,10 @@
 <script lang="ts">
   import { t } from "$lib/i18n/config";
   import type { Commission } from "$lib/types";
-
   import DialogBase from "../common/DialogBase.svelte";
+  import ErrorSpan from "../common/ErrorSpan.svelte";
+  import { useFormValidation } from "$lib/composables/useFormValidation.svelte";
+  import { CreateCommissionSchema } from "$lib/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;
@@ -16,11 +18,24 @@
 
   let name = $state("");
 
+  const validator = useFormValidation(CreateCommissionSchema);
+
   $effect(() => {
     if (isOpen) {
       name = mode === "edit" && commission ? commission.name : "";
+      validator.clear();
     }
   });
+
+  function handleSaveClick() {
+    const isValid = validator.validate({
+      period_id: commission?.period_id || 1, // Satisfies schema requirements
+      name,
+    });
+    if (isValid) {
+      onSave(name, commission?.id);
+    }
+  }
 </script>
 
 <DialogBase
@@ -37,7 +52,17 @@
         bind:value={name}
         placeholder={$t("commissions.placeholder")}
         class="input-block"
+        aria-invalid={!!validator.errors.name}
+        aria-describedby={validator.errors.name ? "error-commission-name" : undefined}
+        oninput={() => {
+          if (validator.errors.name) validator.errors.name = "";
+        }}
         data-test-id="commission-name-input"
+      />
+      <ErrorSpan
+        message={validator.errors.name}
+        id="error-commission-name"
+        testId="commission-name-error"
       />
     </div>
   {/snippet}
@@ -46,11 +71,7 @@
     <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn"
       >{$t("common.cancel")}</button
     >
-    <button
-      class="paper-btn btn-secondary"
-      onclick={() => onSave(name, commission?.id)}
-      data-test-id="modal-save-btn"
-    >
+    <button class="paper-btn btn-secondary" onclick={handleSaveClick} data-test-id="modal-save-btn">
       {mode === "create" ? $t("common.create") : $t("common.save")}
     </button>
   {/snippet}

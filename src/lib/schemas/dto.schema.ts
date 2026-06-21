@@ -12,8 +12,11 @@ export const CreateSubjectSchema = z.object({
 
 export const CreatePeriodSchema = z.object({
   subject_id: z.number().min(1, VALIDATION_KEYS.SUBJECT_ID_REQUIRED),
-  year: z.number().min(2000),
-  semester: z.number().min(1).max(2),
+  year: z.number().min(2000, VALIDATION_KEYS.YEAR_MIN),
+  semester: z
+    .number()
+    .min(1, VALIDATION_KEYS.SEMESTER_RANGE)
+    .max(2, VALIDATION_KEYS.SEMESTER_RANGE),
 });
 
 export const CreateCommissionSchema = z.object({

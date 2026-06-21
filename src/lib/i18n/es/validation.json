@@ -7,5 +7,7 @@
   "at_least_one_name_required": "Al menos un nombre requerido",
   "title_required": "Título requerido",
   "source_period_id_required": "ID de período de origen requerido",
-  "target_period_id_required": "ID de período de destino requerido"
+  "target_period_id_required": "ID de período de destino requerido",
+  "year_min": "El año debe ser igual o mayor a 2000",
+  "semester_range": "El cuatrimestre debe ser 1 o 2"
 }

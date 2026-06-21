@@ -7,5 +7,7 @@
   "at_least_one_name_required": "At least one name required",
   "title_required": "Title required",
   "source_period_id_required": "Source period ID required",
-  "target_period_id_required": "Target period ID required"
+  "target_period_id_required": "Target period ID required",
+  "year_min": "Year must be 2000 or greater",
+  "semester_range": "Semester must be 1 or 2"
 }

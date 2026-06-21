@@ -2,6 +2,9 @@
   import { t } from "$lib/i18n/config";
   import type { Assignment } from "$lib/types";
   import DialogBase from "../common/DialogBase.svelte";
+  import ErrorSpan from "../common/ErrorSpan.svelte";
+  import { useFormValidation } from "$lib/composables/useFormValidation.svelte";
+  import { CreateAssignmentSchema } from "$lib/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;
@@ -17,6 +20,8 @@
   let subtitle = $state("");
   let workflowStatus = $state("NOT_DICTATED");
 
+  const validator = useFormValidation(CreateAssignmentSchema);
+
   $effect(() => {
     if (isOpen) {
       title = mode === "edit" && assignment ? assignment.title : "";
@@ -28,8 +33,19 @@
         mode === "edit" && assignment && "workflow_status" in assignment
           ? (assignment.workflow_status ?? "NOT_DICTATED")
           : "NOT_DICTATED";
+      validator.clear();
     }
   });
+
+  function handleSaveClick() {
+    const isValid = validator.validate({
+      period_id: assignment?.period_id || 1, // Satisfies period_id requirements for the schema
+      title,
+    });
+    if (isValid) {
+      onSave(title, subtitle, workflowStatus, assignment?.id);
+    }
+  }
 </script>
 
 <DialogBase
@@ -54,7 +70,17 @@
         bind:value={title}
         placeholder={$t("assignments.placeholder")}
         class="input-block"
+        aria-invalid={!!validator.errors.title}
+        aria-describedby={validator.errors.title ? "error-assignment-title" : undefined}
+        oninput={() => {
+          if (validator.errors.title) validator.errors.title = "";
+        }}
         data-test-id="assignment-title-input"
+      />
+      <ErrorSpan
+        message={validator.errors.title}
+        id="error-assignment-title"
+        testId="assignment-title-error"
       />
     </div>
     <div class="form-group">
@@ -91,11 +117,7 @@
     <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">
       {$t("common.cancel")}
     </button>
-    <button
-      class="paper-btn btn-secondary"
-      onclick={() => onSave(title, subtitle, workflowStatus, assignment?.id)}
-      data-test-id="modal-save-btn"
-    >
+    <button class="paper-btn btn-secondary" onclick={handleSaveClick} data-test-id="modal-save-btn">
       {mode === "create" ? $t("common.create") : $t("common.save")}
     </button>
   {/snippet}

@@ -8,4 +8,6 @@ export const VALIDATION_KEYS = {
   TITLE_REQUIRED: "validation.title_required",
   SOURCE_PERIOD_ID_REQUIRED: "validation.source_period_id_required",
   TARGET_PERIOD_ID_REQUIRED: "validation.target_period_id_required",
+  YEAR_MIN: "validation.year_min",
+  SEMESTER_RANGE: "validation.semester_range",
 };

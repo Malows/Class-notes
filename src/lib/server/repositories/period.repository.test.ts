@@ -30,4 +30,17 @@ describe("periodRepository integration tests", () => {
       periodRepository.update(p2.id, 2031, 1);
     }).toThrow("Period already exists for this subject");
   });
+
+  it("retrieves all active periods for a subject and soft-deletes a period", () => {
+    const first = periodRepository.create(1, 2035, 1);
+    createdIds.push(first.id);
+
+    const list = periodRepository.getAll(1);
+    expect(list.length).toBeGreaterThan(0);
+    expect(list.some((p) => p.id === first.id)).toBe(true);
+
+    periodRepository.delete(first.id);
+    const updatedList = periodRepository.getAll(1);
+    expect(updatedList.some((p) => p.id === first.id)).toBe(false);
+  });
 });

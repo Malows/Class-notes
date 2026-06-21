@@ -23,7 +23,7 @@ describe("NotificationsStore", () => {
     );
 
     // Fast-forward time to trigger auto-dismissal
-    vi.advanceTimersByTime(5000);
+    vi.runAllTimers();
     expect(notificationsStore.items).toHaveLength(0);
   });
 

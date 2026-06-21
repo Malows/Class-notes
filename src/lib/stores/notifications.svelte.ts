@@ -12,7 +12,7 @@ export class NotificationsStore {
   addSuccess(message: string) {
     const id = this.nextId++;
     this.items.push({ id, message, type: "success", autoDismiss: true });
-    setTimeout(() => this.dismiss(id), 5000);
+    setTimeout(() => this.dismiss(id), 500000);
   }
 
   addError(message: string) {

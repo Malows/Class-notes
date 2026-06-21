@@ -6,17 +6,36 @@
     onDismiss: (id: number) => void;
   }
   let { toast, onDismiss }: Props = $props();
+
+  const bgClasses = {
+    success: "background-success",
+    warning: "background-warning",
+    error: "background-danger",
+  };
+
+  const borderClasses = {
+    success: "border-success",
+    warning: "border-warning",
+    error: "border-danger",
+  };
+
+  const borderNumber = $derived(Math.floor(Math.random() * 6) + 1);
 </script>
 
 <div
-  class="card toast-card toast-{toast.type}"
+  class="toast-card toast-{toast.type} {bgClasses[toast.type]} border-{borderNumber} {borderClasses[
+    toast.type
+  ]}"
   role={toast.type === "error" ? "alert" : "status"}
   aria-live={toast.type === "error" ? "assertive" : "polite"}
 >
   <div class="card-body toast-body">
     <p class="toast-text">{toast.message}</p>
     <button
-      class="paper-btn btn-small btn-close"
+      class="btn-small btn-close"
+      class:btn-success={toast.type === "success"}
+      class:btn-warning={toast.type === "warning"}
+      class:btn-danger={toast.type === "error"}
       onclick={() => onDismiss(toast.id)}
       aria-label="Cerrar notificación"
     >
@@ -31,7 +50,6 @@
     max-width: 400px;
     margin-bottom: 0.5rem;
     box-shadow: 4px 4px 0px 0px var(--border-color);
-    border-radius: 4px;
     transition: all 0.2s ease-out;
   }
 
@@ -59,8 +77,12 @@
     background: transparent;
   }
 
-  /* Success Semantic Colors */
-  .toast-success {
+  .btn-close:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* .toast-success {
     background-color: #f0fdf4;
     border: 2px solid #16a34a;
     color: #166534;
@@ -71,7 +93,6 @@
     color: #bbf7d0;
   }
 
-  /* Error Semantic Colors */
   .toast-error {
     background-color: #fef2f2;
     border: 2px solid #dc2626;
@@ -83,7 +104,6 @@
     color: #fecaca;
   }
 
-  /* Warning Semantic Colors */
   .toast-warning {
     background-color: #fefce8;
     border: 2px solid #ca8a04;
@@ -93,5 +113,5 @@
     background-color: #422006;
     border: 2px solid #eab308;
     color: #fef08a;
-  }
+  } */
 </style>

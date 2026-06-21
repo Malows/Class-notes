@@ -1,24 +1,14 @@
 import { page } from "$app/state";
 import type { Breadcrumb } from "$lib/types/layout";
 
-import { commissionsStore } from "./commissions.svelte";
-import { facultiesStore } from "./faculties.svelte";
-import { periodsStore } from "./periods.svelte";
-import { subjectsStore } from "./subjects.svelte";
-
 export interface NavContext {
   facultyId?: number;
   subjectId?: number;
   periodId?: number;
   commissionId?: number;
-  facultyName?: string;
-  subjectName?: string;
-  periodName?: string;
-  commissionName?: string;
 }
 
 export class NavStore {
-  // Usamos $derived para que se recalcule automáticamente cuando page o stores cambien
   context = $derived.by(() => {
     const params = page.params;
     const fId = params.faculty_id ? Number(params.faculty_id) : undefined;
@@ -38,77 +28,71 @@ export class NavStore {
         ? Number(params.id)
         : undefined;
 
-    // Disparar carga de datos si es necesario (efectos secundarios en $derived.by)
-    // Nota: esto es un patrón aceptable en Svelte 5 para sincronización de datos
-    if (fId && !facultiesStore.loaded) facultiesStore.load();
-    if (sId && !subjectsStore.loaded) subjectsStore.load();
-    if (pId && periodsStore.items.length === 0) periodsStore.load(sId);
-    if (cId && !commissionsStore.loaded) commissionsStore.load();
-
-    const faculty = facultiesStore.map.get(fId);
-    const subject = subjectsStore.map.get(sId);
-    const period = periodsStore.map.get(pId);
-    const commission = commissionsStore.map.get(cId);
-
     return {
       facultyId: fId,
       subjectId: sId,
       periodId: pId,
       commissionId: cId,
-      facultyName: faculty?.name,
-      subjectName: subject?.name,
-      periodName: period ? `${period.year} - ${period.semester}º` : undefined,
-      commissionName: commission?.name,
     };
   });
 
   get breadcrumbs(): Breadcrumb[] {
     const ctx = this.context;
     const crumbs: Breadcrumb[] = [{ key: "layout.home", href: "/" }];
+    const pathname = page.url.pathname;
 
-    if (ctx.facultyId && ctx.facultyName) {
-      crumbs.push({
-        key: ctx.facultyName,
-        href: `/faculties/${ctx.facultyId}`,
-        isRaw: true,
-      });
-    } else if (page.url.pathname.startsWith("/faculties")) {
+    // 1. Faculties Index / Selected Faculty subpath
+    if (pathname.includes("/faculties")) {
       crumbs.push({ key: "layout.faculties", href: "/faculties" });
     }
 
-    if (ctx.subjectId && ctx.subjectName) {
-      const fPath = ctx.facultyId ? `/faculties/${ctx.facultyId}` : "";
-      crumbs.push({
-        key: ctx.subjectName,
-        href: `${fPath}/subjects/${ctx.subjectId}`,
-        isRaw: true,
-      });
-    } else if (page.url.pathname.includes("/subjects")) {
-      crumbs.push({ key: "layout.subjects", href: "/subjects" });
+    // 2. Selected Subject subpath
+    if (pathname.includes("/subjects") && ctx.facultyId) {
+      crumbs.push({ key: "layout.subjects", href: `/faculties/${ctx.facultyId}/subjects` });
     }
 
-    if (ctx.periodId && ctx.periodName) {
-      const sPath = ctx.subjectId ? `/subjects/${ctx.subjectId}` : "";
+    // 3. Selected Period subpath
+    if (pathname.includes("/periods") && ctx.facultyId && ctx.subjectId) {
       crumbs.push({
-        key: ctx.periodName,
-        href: `${sPath}/periods/${ctx.periodId}`,
-        isRaw: true,
+        key: "layout.periods",
+        href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods`,
       });
     }
 
-    if (ctx.commissionId && ctx.commissionName) {
-      const pPath = ctx.periodId ? `/periods/${ctx.periodId}` : "";
-      crumbs.push({
-        key: ctx.commissionName,
-        href: `${pPath}/commissions/${ctx.commissionId}`,
-        isRaw: true,
-      });
+    // 4. Selected Commission / Assignments subpaths
+    if (ctx.facultyId && ctx.subjectId && ctx.periodId) {
+      if (pathname.includes("/commissions")) {
+        crumbs.push({
+          key: "layout.commissions",
+          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions`,
+        });
+      }
+      if (pathname.includes("/assignments")) {
+        crumbs.push({
+          key: "layout.define_tps",
+          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/assignments`,
+        });
+      }
     }
 
-    if (page.url.pathname.endsWith("/overview"))
-      crumbs.push({ key: "layout.overview", href: page.url.pathname });
-    if (page.url.pathname.endsWith("/students"))
-      crumbs.push({ key: "layout.students_label", href: page.url.pathname });
+    // 5. Subpages inside commissions (Overview, Students, Correct)
+    if (ctx.facultyId && ctx.subjectId && ctx.periodId && ctx.commissionId) {
+      if (pathname.includes("/overview")) {
+        crumbs.push({
+          key: "layout.overview",
+          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions/${ctx.commissionId}/overview`,
+        });
+      }
+      if (pathname.includes("/students")) {
+        crumbs.push({
+          key: "layout.students_label",
+          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions/${ctx.commissionId}/students`,
+        });
+      }
+      if (pathname.includes("/correct")) {
+        crumbs.push({ key: "layout.correct", href: pathname });
+      }
+    }
 
     return crumbs;
   }

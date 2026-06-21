@@ -3,8 +3,8 @@
   import { themeStore } from "$lib/stores/theme.svelte";
 </script>
 
-<button class="paper-btn btn-small" onclick={themeStore.toggle}>
-  {themeStore.current === "light" ? `🌙 ${$t("layout.dark")}` : `☀️ ${$t("layout.light")}`}
+<button class="paper-btn btn-small" onclick={themeStore.toggleTheme}>
+  {themeStore.currentTheme === "light" ? `☀️ ${$t("layout.light")}` : `🌙 ${$t("layout.dark")}`}
 </button>
 
 <style>

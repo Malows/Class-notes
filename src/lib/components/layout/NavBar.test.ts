@@ -19,7 +19,7 @@ test("NavBar renderiza marca y tema", async () => {
   expect(document.body.querySelector("button")).toBeTruthy();
 });
 
-test("NavBar renderiza el selector de idioma y responde al clic", async () => {
+test("NavBar renderiza el selector de idioma y responde al clic alternando banderas", async () => {
   await loadTranslations("en", "/");
   let currentLocale = "";
   const unsubscribe = locale.subscribe((val) => {
@@ -33,16 +33,33 @@ test("NavBar renderiza el selector de idioma y responde al clic", async () => {
     '[data-test-id="language-toggle-btn"]',
   ) as HTMLButtonElement;
   expect(toggleBtn).toBeTruthy();
-  expect(toggleBtn.textContent?.trim()).toContain("Español");
 
-  // Trigger click to toggle from English ("en") to Spanish ("es")
+  // Inverted logic: If in English, the button displays English!
+  expect(toggleBtn.textContent?.trim()).toContain("English");
+
+  // First click: English -> Spanish (Click count increments to 1: odd -> Colombia 🇨🇴)
   await fireEvent.click(toggleBtn);
-
-  // Wait for the async sveltekit-i18n translation loaders to complete
   await new Promise((resolve) => setTimeout(resolve, 100));
   flushSync();
 
   expect(currentLocale).toBe("es");
+  expect(toggleBtn.textContent?.trim()).toContain("🇨🇴 Español");
+
+  // Second click: Spanish -> English
+  await fireEvent.click(toggleBtn);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  flushSync();
+
+  expect(currentLocale).toBe("en");
+  expect(toggleBtn.textContent?.trim()).toContain("English");
+
+  // Third click: English -> Spanish (Click count increments to 2: even -> Argentina 🇦🇷)
+  await fireEvent.click(toggleBtn);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  flushSync();
+
+  expect(currentLocale).toBe("es");
+  expect(toggleBtn.textContent?.trim()).toContain("🇦🇷 Español");
 
   unsubscribe();
 });

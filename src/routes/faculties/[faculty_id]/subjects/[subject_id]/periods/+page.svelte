@@ -32,19 +32,14 @@
   }
 
   async function handleSave(year: number, semester: number, id?: number) {
-    try {
-      if (id) {
-        await periodsStore.updateItem(id, year, semester);
-        notificationsStore.addSuccess("Período actualizado con éxito");
-      } else {
-        await periodsStore.create(subjectID, year, semester);
-        notificationsStore.addSuccess("Período creado con éxito");
-      }
-      modal.close();
-    } catch (e: any) {
-      // Throw back so PeriodModal's local try-catch can intercept and show error in modal
-      throw e;
+    if (id) {
+      await periodsStore.updateItem(id, year, semester);
+      notificationsStore.addSuccess("Período actualizado con éxito");
+    } else {
+      await periodsStore.create(subjectID, year, semester);
+      notificationsStore.addSuccess("Período creado con éxito");
     }
+    modal.close();
   }
 
   async function handleDelete() {

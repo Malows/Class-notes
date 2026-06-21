@@ -7,6 +7,7 @@
   import NavBar from "$lib/components/layout/NavBar.svelte";
   import Sidebar from "$lib/components/layout/sidebar/Sidebar.svelte";
   import { initStoreContext } from "$lib/stores/context-initializer";
+  import ToastContainer from "$lib/components/common/ToastContainer.svelte";
 
   let { children } = $props();
   initStoreContext();
@@ -31,6 +32,7 @@
 <div class="paper">
   <div class="container-fluid">
     <NavBar />
+    <ToastContainer />
 
     <div class="layout-body">
       <Sidebar />

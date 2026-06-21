@@ -8,6 +8,7 @@
   import { studentService } from "$lib/services/student.service";
   import type { Delivery, Student, Assignment } from "$lib/types";
   import { onMount } from "svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   let students = $state<Student[]>([]);
   let assignment = $state<Assignment | null>(null);
@@ -54,14 +55,15 @@
   async function saveDelivery(d: Delivery) {
     try {
       await correctionService.save(d);
+      notificationsStore.addSuccess("Corrección guardada con éxito");
       if (mode === "single" || currentIndex === students.length - 1) {
         goto(`${baseUrl}/overview`);
       } else {
         currentIndex++;
         await loadDelivery();
       }
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

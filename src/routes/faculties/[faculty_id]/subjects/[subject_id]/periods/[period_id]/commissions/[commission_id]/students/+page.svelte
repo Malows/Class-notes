@@ -12,6 +12,7 @@
   import StudentModal from "$lib/components/modals/StudentModal.svelte";
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
 
@@ -38,14 +39,17 @@
     try {
       if (bulkNames) {
         await studentsStore.create(commissionID, bulkNames);
+        notificationsStore.addSuccess("Alumnos cargados con éxito");
       } else if (id) {
         await studentsStore.updateItem(id, name);
+        notificationsStore.addSuccess("Alumno actualizado con éxito");
       } else {
         await studentsStore.create(commissionID, [name]);
+        notificationsStore.addSuccess("Alumno creado con éxito");
       }
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -53,9 +57,10 @@
     if (!modal.target) return;
     try {
       await studentsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Alumno eliminado con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

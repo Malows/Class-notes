@@ -10,6 +10,7 @@
   import { StoreKey } from "$lib/types";
   import type { Faculty } from "$lib/types";
   import { onMount, getContext } from "svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
 
@@ -30,12 +31,14 @@
     try {
       if (modal.mode === "create") {
         await facultiesStore.create(name);
+        notificationsStore.addSuccess("Facultad creada con éxito");
       } else if (modal.mode === "edit" && id) {
         await facultiesStore.updateItem(id, name);
+        notificationsStore.addSuccess("Facultad actualizada con éxito");
       }
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -43,9 +46,10 @@
     if (!modal.target) return;
     try {
       await facultiesStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Facultad eliminada con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

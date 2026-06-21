@@ -13,6 +13,7 @@
   import CommissionModal from "$lib/components/modals/CommissionModal.svelte";
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
@@ -39,12 +40,14 @@
     try {
       if (id) {
         await commissionsStore.updateItem(id, name);
+        notificationsStore.addSuccess("Comisión actualizada con éxito");
       } else {
         await commissionsStore.create(periodID, name);
+        notificationsStore.addSuccess("Comisión creada con éxito");
       }
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -52,9 +55,10 @@
     if (!modal.target) return;
     try {
       await commissionsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Comisión eliminada con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

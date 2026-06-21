@@ -13,6 +13,7 @@
   import { StoreKey } from "$lib/types";
   import type { Subject } from "$lib/types";
   import { onMount, getContext } from "svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
@@ -46,12 +47,14 @@
     try {
       if (modal.isCreate) {
         await subjectsStore.create(facultyID, name);
+        notificationsStore.addSuccess("Materia creada con éxito");
       } else if (modal.isEdit && id) {
         await subjectsStore.updateItem(id, name);
+        notificationsStore.addSuccess("Materia actualizada con éxito");
       }
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -59,9 +62,10 @@
     if (!modal.target) return;
     try {
       await subjectsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Materia eliminada con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

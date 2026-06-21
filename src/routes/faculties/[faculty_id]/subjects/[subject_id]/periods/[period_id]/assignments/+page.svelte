@@ -14,6 +14,7 @@
   import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
   import DialogBase from "$lib/components/common/DialogBase.svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
@@ -69,12 +70,14 @@
     try {
       if (id) {
         await assignmentsStore.updateItem(id, title, subtitle);
+        notificationsStore.addSuccess("Trabajo práctico actualizado con éxito");
       } else {
         await assignmentsStore.create(periodID, title, subtitle, workflowStatus);
+        notificationsStore.addSuccess("Trabajo práctico creado con éxito");
       }
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -82,9 +85,10 @@
     if (!modal.target) return;
     try {
       await assignmentsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Trabajo práctico eliminado con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -105,10 +109,11 @@
     if (!next) return;
     try {
       await assignmentsStore.updateStatus(advanceTarget.id, next);
+      notificationsStore.addSuccess("Estado avanzado con éxito");
       isAdvanceModalOpen = false;
       advanceTarget = null;
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -116,9 +121,10 @@
     if (!previousPeriod) return;
     try {
       await assignmentsStore.copy(previousPeriod.id, periodID);
+      notificationsStore.addSuccess("Trabajos prácticos copiados con éxito");
       isCopyModalOpen = false;
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

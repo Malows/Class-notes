@@ -10,6 +10,7 @@
   import { StoreKey } from "$lib/types";
   import type { Period } from "$lib/types";
   import { onMount, getContext } from "svelte";
+  import { notificationsStore } from "$lib/stores/notifications.svelte";
 
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
 
@@ -31,21 +32,29 @@
   }
 
   async function handleSave(year: number, semester: number, id?: number) {
-    if (id) {
-      await periodsStore.updateItem(id, year, semester);
-    } else {
-      await periodsStore.create(subjectID, year, semester);
+    try {
+      if (id) {
+        await periodsStore.updateItem(id, year, semester);
+        notificationsStore.addSuccess("Período actualizado con éxito");
+      } else {
+        await periodsStore.create(subjectID, year, semester);
+        notificationsStore.addSuccess("Período creado con éxito");
+      }
+      modal.close();
+    } catch (e: any) {
+      // Throw back so PeriodModal's local try-catch can intercept and show error in modal
+      throw e;
     }
-    modal.close();
   }
 
   async function handleDelete() {
     if (!modal.target) return;
     try {
       await periodsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Período eliminado con éxito");
       modal.close();
-    } catch (e) {
-      alert(e);
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
     }
   }
 

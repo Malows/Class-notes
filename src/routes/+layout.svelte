@@ -4,7 +4,7 @@
 
   import { locale, t } from "$lib/i18n/config";
   import ClassNoteFooter from "$lib/components/layout/ClassNoteFooter.svelte";
-  import NavBar from "$lib/components/layout/NavBar.svelte";
+  import NavBar from "$lib/components/layout/navbar/NavBar.svelte";
   import Sidebar from "$lib/components/layout/sidebar/Sidebar.svelte";
   import { initStoreContext } from "$lib/stores/context-initializer";
   import ToastContainer from "$lib/components/common/ToastContainer.svelte";

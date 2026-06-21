@@ -34,8 +34,8 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   ) as HTMLButtonElement;
   expect(toggleBtn).toBeTruthy();
 
-  // Inverted logic: If in English, the button displays English!
-  expect(toggleBtn.textContent?.trim()).toContain("English");
+  // Inverted logic: If in English, the button displays only the UK flag!
+  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
 
   // First click: English -> Spanish (Click count increments to 1: odd -> Colombia 🇨🇴)
   await fireEvent.click(toggleBtn);
@@ -43,7 +43,7 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toContain("🇨🇴 Español");
+  expect(toggleBtn.textContent?.trim()).toBe("🇨🇴");
 
   // Second click: Spanish -> English
   await fireEvent.click(toggleBtn);
@@ -51,7 +51,7 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   flushSync();
 
   expect(currentLocale).toBe("en");
-  expect(toggleBtn.textContent?.trim()).toContain("English");
+  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
 
   // Third click: English -> Spanish (Click count increments to 2: even -> Argentina 🇦🇷)
   await fireEvent.click(toggleBtn);
@@ -59,7 +59,7 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toContain("🇦🇷 Español");
+  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷");
 
   unsubscribe();
 });

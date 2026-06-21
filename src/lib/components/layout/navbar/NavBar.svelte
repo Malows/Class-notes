@@ -1,6 +1,7 @@
 <script lang="ts">
-  import Breadcrumbs from "$lib/components/layout/Breadcrumbs.svelte";
-  import ThemeToggle from "$lib/components/ThemeToggle.svelte";
+  import Breadcrumbs from "$lib/components/layout/navbar/Breadcrumbs.svelte";
+  import ThemeToggle from "$lib/components/layout/navbar/ThemeToggle.svelte";
+  import LanguageToggle from "$lib/components/layout/navbar/LanguageToggle.svelte";
   import { locale, t } from "$lib/i18n/config";
   import { themeStore } from "$lib/stores/theme.svelte";
 </script>
@@ -25,15 +26,7 @@
         <div class="bar3"></div>
       </label>
       <div class="collapsible-body">
-        <button
-          class="paper-btn btn-small"
-          onclick={themeStore.toggleLanguage}
-          aria-label={$locale === "es" ? "Idioma Español" : "Language English"}
-          data-test-id="language-toggle-btn"
-          style="margin-right: 0.5rem;"
-        >
-          {$locale === "es" ? `${themeStore.esFlag} Español` : "🇬🇧 English"}
-        </button>
+        <LanguageToggle />
         <ThemeToggle />
       </div>
     </div>

@@ -24,6 +24,17 @@ describe("studentService", () => {
     );
   });
 
+  it("update calls apiFetch with PUT", async () => {
+    await studentService.update(1, "Updated Name");
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/students/1",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ name: "Updated Name" }),
+      }),
+    );
+  });
+
   it("delete calls apiFetch with DELETE", async () => {
     await studentService.delete(1);
     expect(apiFetch).toHaveBeenCalledWith(

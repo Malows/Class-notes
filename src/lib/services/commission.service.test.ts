@@ -23,4 +23,25 @@ describe("commissionService", () => {
       }),
     );
   });
+
+  it("update calls apiFetch with PUT", async () => {
+    await commissionService.update(1, "New Name");
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/commissions/1",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ name: "New Name" }),
+      }),
+    );
+  });
+
+  it("delete calls apiFetch with DELETE", async () => {
+    await commissionService.delete(1);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/commissions/1",
+      expect.objectContaining({
+        method: "DELETE",
+      }),
+    );
+  });
 });

@@ -23,4 +23,25 @@ describe("periodService", () => {
       }),
     );
   });
+
+  it("update calls apiFetch with PUT", async () => {
+    await periodService.update(1, 2027, 2);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/periods/1",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ year: 2027, semester: 2 }),
+      }),
+    );
+  });
+
+  it("delete calls apiFetch with DELETE", async () => {
+    await periodService.delete(1);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/periods/1",
+      expect.objectContaining({
+        method: "DELETE",
+      }),
+    );
+  });
 });

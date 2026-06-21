@@ -23,4 +23,25 @@ describe("subjectService", () => {
       }),
     );
   });
+
+  it("update calls apiFetch with PUT", async () => {
+    await subjectService.update(1, "New Name");
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/subjects/1",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ name: "New Name" }),
+      }),
+    );
+  });
+
+  it("delete calls apiFetch with DELETE", async () => {
+    await subjectService.delete(1);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/subjects/1",
+      expect.objectContaining({
+        method: "DELETE",
+      }),
+    );
+  });
 });

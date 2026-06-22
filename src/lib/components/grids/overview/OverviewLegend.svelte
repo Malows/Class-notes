@@ -7,6 +7,7 @@
     class="paper-btn btn-small popover"
     data-popover-content="Approved ✓  • Rejected ✗  • Pending –  • AI warning ⚠️/🤖"
     data-popover-position="bottom"
+    data-test-id="overview-legend-popover-btn"
   >
     {$t("commissions.legend")}
   </button>

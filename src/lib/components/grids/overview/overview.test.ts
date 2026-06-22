@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/svelte";
+import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
 import OverviewCell from "./OverviewCell.svelte";
@@ -7,6 +7,8 @@ import OverviewGrid from "./OverviewGrid.svelte";
 import OverviewLegend from "./OverviewLegend.svelte";
 import OverviewRow from "./OverviewRow.svelte";
 import { DeliveryWorkflowStatus, getOverviewDeliveryStatus } from "$lib/types";
+
+configure({ testIdAttribute: "data-test-id" });
 
 describe("overview components", () => {
   test("getOverviewDeliveryStatus maps workflow states to overview statuses", () => {
@@ -41,10 +43,11 @@ describe("overview components", () => {
       testId: "approved-cell",
     });
 
-    const cell = screen.getByText("🤖").closest("a");
+    const cell = screen.getByTestId("approved-cell");
     expect(cell).toHaveAttribute("href", "/correct");
     expect(cell).toHaveClass("btn-success");
     expect(cell).toHaveAttribute("aria-label", "approved");
+    expect(cell.textContent?.trim()).toBe("🤖");
   });
 
   test("OverviewRow renders the student name and delivery cells", () => {
@@ -76,9 +79,18 @@ describe("overview components", () => {
       commissionId: 4,
     });
 
-    expect(screen.getByText("A very long student name that should ellipsize")).toBeInTheDocument();
-    expect(screen.getByText("✅")).toBeInTheDocument();
-    expect(screen.getByText("-")).toBeInTheDocument();
+    const nameEl = screen.getByTestId("overview-row-student-name");
+    expect(nameEl).toBeInTheDocument();
+    expect(nameEl.textContent).toBe("A very long student name that should ellipsize");
+
+    const cell1 = screen.getByTestId("delivery-cell-7-1");
+    const cell2 = screen.getByTestId("delivery-cell-7-2");
+
+    expect(cell1).toBeInTheDocument();
+    expect(cell1.textContent?.trim()).toBe("✅");
+
+    expect(cell2).toBeInTheDocument();
+    expect(cell2.textContent?.trim()).toBe("-");
   });
 
   test("OverviewGrid renders assignment headers and student rows", () => {
@@ -109,16 +121,21 @@ describe("overview components", () => {
       commissionId: 4,
     });
 
-    expect(screen.getByText("Students")).toBeInTheDocument();
-    expect(screen.getByText("T1")).toBeInTheDocument();
-    expect(screen.getByText("Student A")).toBeInTheDocument();
-    expect(screen.getByText("✏️")).toBeInTheDocument();
+    // Verify OverviewHeader and OverviewRow exist by their respective test IDs
+    expect(screen.getByTestId("overview-header")).toBeInTheDocument();
+    expect(screen.getByTestId("overview-header-students-title")).toBeInTheDocument();
+    expect(screen.getByTestId("overview-header-assignment-title-1")).toBeInTheDocument();
+    expect(screen.getByTestId("correct-assignment-btn-1")).toBeInTheDocument();
+
+    expect(screen.getByTestId("overview-row")).toBeInTheDocument();
+    expect(screen.getByTestId("overview-row-student-name")).toBeInTheDocument();
+    expect(screen.getByTestId("delivery-cell-1-1")).toBeInTheDocument();
   });
 
   test("OverviewLegend renders the popover trigger", () => {
     render(OverviewLegend, { title: "Legend" });
 
-    const button = screen.getByRole("button");
+    const button = screen.getByTestId("overview-legend-popover-btn");
     expect(button).toBeInTheDocument();
     expect(button).toHaveAttribute("data-popover-position", "bottom");
     expect(button).toHaveAttribute("data-popover-content");

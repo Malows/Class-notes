@@ -1,7 +1,9 @@
 import DeliveryForm from "$lib/components/DeliveryForm.svelte";
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, screen, fireEvent, configure } from "@testing-library/svelte";
 import { expect, test, vi } from "vitest";
 import { flushSync } from "svelte";
+
+configure({ testIdAttribute: "data-test-id" });
 
 test("DeliveryForm renders and saves", async () => {
   const delivery = {
@@ -16,7 +18,7 @@ test("DeliveryForm renders and saves", async () => {
 
   render(DeliveryForm, { delivery, onSave });
 
-  const saveButton = screen.getByText("GUARDAR");
+  const saveButton = screen.getByTestId("delivery-submit-btn");
   await fireEvent.click(saveButton);
 
   expect(onSave).toHaveBeenCalled();
@@ -35,50 +37,53 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   const onPrev = vi.fn();
   const onSkip = vi.fn();
 
-  const { container } = render(DeliveryForm, { delivery, onSave, onPrev, onSkip });
+  render(DeliveryForm, { delivery, onSave, onPrev, onSkip });
   flushSync();
 
   // Test checkbox toggle (NOT_DICTATED -> checked -> WAITING_FOR_CORRECTION)
-  const isDeliveredCheckbox = container.querySelector('input[type="checkbox"]') as HTMLInputElement;
+  const isDeliveredCheckbox = screen.getByTestId("delivery-delivered-checkbox") as HTMLInputElement;
   expect(isDeliveredCheckbox).toBeTruthy();
   expect(isDeliveredCheckbox.checked).toBe(false);
 
   await fireEvent.click(isDeliveredCheckbox);
   flushSync();
 
-  // Test radio buttons (Approved)
-  const approvedRadio = container.querySelector('input[value="true"]') as HTMLInputElement;
-  expect(approvedRadio).toBeTruthy();
+  // Test radio buttons (Approved vs Rejected)
+  const approvedRadioOptions = screen.getAllByTestId(
+    "delivery-approved-checkbox",
+  ) as HTMLInputElement[];
+  expect(approvedRadioOptions).toHaveLength(2);
+
+  const approvedRadio = approvedRadioOptions[0]; // value === true
+  const rejectedRadio = approvedRadioOptions[1]; // value === false
+
   await fireEvent.click(approvedRadio);
   flushSync();
 
-  // Test radio buttons (Rejected)
-  const rejectedRadio = container.querySelector('input[value="false"]') as HTMLInputElement;
-  expect(rejectedRadio).toBeTruthy();
   await fireEvent.click(rejectedRadio);
   flushSync();
 
   // Test grade text input
-  const gradeInput = container.querySelector('input[type="number"]') as HTMLInputElement;
+  const gradeInput = screen.getByTestId("delivery-grade-input") as HTMLInputElement;
   expect(gradeInput).toBeTruthy();
   await fireEvent.input(gradeInput, { target: { value: "9.5" } });
   flushSync();
 
   // Test ai level select
-  const aiSelect = container.querySelector("select") as HTMLSelectElement;
+  const aiSelect = screen.getByTestId("delivery-ai-level-select") as HTMLSelectElement;
   expect(aiSelect).toBeTruthy();
   await fireEvent.change(aiSelect, { target: { value: "2" } });
   flushSync();
 
   // Test comments textarea
-  const textarea = container.querySelector("textarea") as HTMLTextAreaElement;
+  const textarea = screen.getByTestId("delivery-comments-textarea") as HTMLTextAreaElement;
   expect(textarea).toBeTruthy();
   await fireEvent.input(textarea, { target: { value: "Excellent work!" } });
   flushSync();
 
   // Test navigation buttons
-  const prevButton = screen.getByText("« Anterior");
-  const skipButton = screen.getByText("Saltar »");
+  const prevButton = screen.getByTestId("delivery-prev-btn");
+  const skipButton = screen.getByTestId("delivery-skip-btn");
   expect(prevButton).toBeTruthy();
   expect(skipButton).toBeTruthy();
 
@@ -89,7 +94,7 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   expect(onSkip).toHaveBeenCalled();
 
   // Finally, trigger Save and assert that the gathered model has the correct values
-  const saveButton = screen.getByText("GUARDAR");
+  const saveButton = screen.getByTestId("delivery-submit-btn");
   await fireEvent.click(saveButton);
   flushSync();
 

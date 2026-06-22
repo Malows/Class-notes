@@ -28,9 +28,10 @@
   ]}"
   role={toast.type === "error" ? "alert" : "status"}
   aria-live={toast.type === "error" ? "assertive" : "polite"}
+  data-test-id={`toast-card-${toast.id}`}
 >
   <div class="card-body toast-body">
-    <p class="toast-text">{toast.message}</p>
+    <p class="toast-text" data-test-id={`toast-text-${toast.id}`}>{toast.message}</p>
     <button
       class="btn-small btn-close"
       class:btn-success={toast.type === "success"}
@@ -38,6 +39,7 @@
       class:btn-danger={toast.type === "error"}
       onclick={() => onDismiss(toast.id)}
       aria-label="Cerrar notificación"
+      data-test-id={`toast-close-btn-${toast.id}`}
     >
       ×
     </button>

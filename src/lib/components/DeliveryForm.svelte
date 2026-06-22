@@ -13,6 +13,8 @@
     submitTestId?: string;
     deliveredTestId?: string;
     aiLevelTestId?: string;
+    prevTestId?: string;
+    skipTestId?: string;
   }
 
   let {
@@ -27,6 +29,8 @@
     submitTestId = "delivery-submit-btn",
     deliveredTestId = "delivery-delivered-checkbox",
     aiLevelTestId = "delivery-ai-level-select",
+    prevTestId = "delivery-prev-btn",
+    skipTestId = "delivery-skip-btn",
   }: Props = $props();
 
   // Create a local state copy, initialized empty to avoid prop snapshot warning
@@ -133,7 +137,9 @@
     <hr />
     <div class="row">
       <div class="col-4 col">
-        {#if onPrev}<button class="paper-btn btn-block" onclick={onPrev}>« Anterior</button>{/if}
+        {#if onPrev}<button class="paper-btn btn-block" onclick={onPrev} data-test-id={prevTestId}
+            >« Anterior</button
+          >{/if}
       </div>
       <div class="col-4 col">
         <button
@@ -143,7 +149,9 @@
         >
       </div>
       <div class="col-4 col">
-        {#if onSkip}<button class="paper-btn btn-block" onclick={onSkip}>Saltar »</button>{/if}
+        {#if onSkip}<button class="paper-btn btn-block" onclick={onSkip} data-test-id={skipTestId}
+            >Saltar »</button
+          >{/if}
       </div>
     </div>
   </div>

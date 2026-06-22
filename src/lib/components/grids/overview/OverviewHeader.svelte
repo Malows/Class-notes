@@ -34,7 +34,9 @@
 
 <div class="overview-header" data-test-id="overview-header">
   <div class="overview-header__students">
-    <div class="overview-header__students-title">Students</div>
+    <div class="overview-header__students-title" data-test-id="overview-header-students-title">
+      Students
+    </div>
     <div class="overview-header__students-empty"></div>
   </div>
 
@@ -47,6 +49,7 @@
             ? `${assignment.title} — ${assignment.subtitle}`
             : assignment.title}
           data-popover-position="top"
+          data-test-id={`overview-header-assignment-title-${assignment.id}`}
         >
           {abbreviateTitle(assignment.title)}
         </span>

@@ -1,8 +1,10 @@
 import "@testing-library/jest-dom/vitest";
-import { render, screen } from "@testing-library/svelte";
+import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
 import OverviewHeader from "./OverviewHeader.svelte";
+
+configure({ testIdAttribute: "data-test-id" });
 
 describe("OverviewHeader Component", () => {
   test("renders students label and dynamic abbreviated assignment columns with pencil emoji links and popovers", () => {
@@ -20,40 +22,46 @@ describe("OverviewHeader Component", () => {
       commissionId: 4,
     });
 
-    // Verify Row 1: Left column
-    expect(screen.getByText("Students")).toBeInTheDocument();
+    // Verify Row 1: Left column by test id
+    const studentsTitle = screen.getByTestId("overview-header-students-title");
+    expect(studentsTitle).toBeInTheDocument();
+    expect(studentsTitle.textContent).toBe("Students");
 
-    // Verify Row 1: Right columns with abbreviations
+    // Verify Row 1: Right columns with abbreviations by test ids
     // "Lab 1" -> "L1"
-    const l1Header = screen.getByText("L1");
+    const l1Header = screen.getByTestId("overview-header-assignment-title-10");
     expect(l1Header).toBeInTheDocument();
     expect(l1Header).toHaveClass("popover");
     expect(l1Header).toHaveAttribute("data-popover-content", "Lab 1");
     expect(l1Header).toHaveAttribute("data-popover-position", "top");
+    expect(l1Header.textContent?.trim()).toBe("L1");
 
     // "Lab Exercise 12" -> "LE12" (with subtitle "Physics II")
-    const le12Header = screen.getByText("LE12");
+    const le12Header = screen.getByTestId("overview-header-assignment-title-20");
     expect(le12Header).toBeInTheDocument();
     expect(le12Header).toHaveAttribute("data-popover-content", "Lab Exercise 12 — Physics II");
+    expect(le12Header.textContent?.trim()).toBe("LE12");
 
     // "Discrete Mathematics" -> "DM"
-    const dmHeader = screen.getByText("DM");
+    const dmHeader = screen.getByTestId("overview-header-assignment-title-30");
     expect(dmHeader).toBeInTheDocument();
     expect(dmHeader).toHaveAttribute("data-popover-content", "Discrete Mathematics");
+    expect(dmHeader.textContent?.trim()).toBe("DM");
 
     // Verify Row 2: Right columns (✏️ links with exact href parameters)
-    const links = screen.getAllByText("✏️");
-    expect(links).toHaveLength(3);
+    const link1 = screen.getByTestId("correct-assignment-btn-10");
+    const link2 = screen.getByTestId("correct-assignment-btn-20");
+    const link3 = screen.getByTestId("correct-assignment-btn-30");
 
-    expect(links[0].closest("a")).toHaveAttribute(
+    expect(link1).toHaveAttribute(
       "href",
       "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=10",
     );
-    expect(links[1].closest("a")).toHaveAttribute(
+    expect(link2).toHaveAttribute(
       "href",
       "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=20",
     );
-    expect(links[2].closest("a")).toHaveAttribute(
+    expect(link3).toHaveAttribute(
       "href",
       "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=30",
     );

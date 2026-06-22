@@ -15,7 +15,7 @@
 </script>
 
 <div class="overview-row" data-test-id="overview-row">
-  <div class="overview-row__name" title={name}>{name}</div>
+  <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
   <div class="overview-row__cells">
     {#each deliveries as delivery}
       <OverviewCell

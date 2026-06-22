@@ -1,6 +1,8 @@
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, screen, fireEvent, configure } from "@testing-library/svelte";
 import { expect, test, vi } from "vitest";
 import Toast from "./Toast.svelte";
+
+configure({ testIdAttribute: "data-test-id" });
 
 test("Toast renders message and dismiss button", () => {
   const mockOnDismiss = vi.fn();
@@ -13,8 +15,10 @@ test("Toast renders message and dismiss button", () => {
 
   render(Toast, { toast: mockToast, onDismiss: mockOnDismiss });
 
-  expect(screen.getByText("Test toast alert message")).toBeDefined();
-  const closeBtn = screen.getByRole("button", { name: "Cerrar notificación" });
+  expect(screen.getByTestId("toast-text-42")).toBeDefined();
+  expect(screen.getByTestId("toast-text-42").textContent).toBe("Test toast alert message");
+
+  const closeBtn = screen.getByTestId("toast-close-btn-42");
   expect(closeBtn).toBeDefined();
 
   fireEvent.click(closeBtn);
@@ -29,11 +33,11 @@ test("Toast renders with status role for success type", () => {
     autoDismiss: true,
   };
 
-  const { container } = render(Toast, { toast: mockToast, onDismiss: vi.fn() });
-  const card = container.querySelector(".toast-card");
+  render(Toast, { toast: mockToast, onDismiss: vi.fn() });
+  const card = screen.getByTestId("toast-card-1");
   expect(card).toBeTruthy();
-  expect(card?.getAttribute("role")).toBe("status");
-  expect(card?.getAttribute("aria-live")).toBe("polite");
+  expect(card.getAttribute("role")).toBe("status");
+  expect(card.getAttribute("aria-live")).toBe("polite");
 });
 
 test("Toast renders with alert role for error type", () => {
@@ -44,9 +48,9 @@ test("Toast renders with alert role for error type", () => {
     autoDismiss: false,
   };
 
-  const { container } = render(Toast, { toast: mockToast, onDismiss: vi.fn() });
-  const card = container.querySelector(".toast-card");
+  render(Toast, { toast: mockToast, onDismiss: vi.fn() });
+  const card = screen.getByTestId("toast-card-2");
   expect(card).toBeTruthy();
-  expect(card?.getAttribute("role")).toBe("alert");
-  expect(card?.getAttribute("aria-live")).toBe("assertive");
+  expect(card.getAttribute("role")).toBe("alert");
+  expect(card.getAttribute("aria-live")).toBe("assertive");
 });

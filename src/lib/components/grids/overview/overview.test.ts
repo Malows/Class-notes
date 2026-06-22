@@ -82,7 +82,7 @@ describe("overview components", () => {
   });
 
   test("OverviewGrid renders assignment headers and student rows", () => {
-    const assignments = [{ id: 1, period_id: 1, title: "TP1" }];
+    const assignments = [{ id: 1, period_id: 1, title: "T 1" }];
     const grid = [
       {
         id: 1,
@@ -110,7 +110,7 @@ describe("overview components", () => {
     });
 
     expect(screen.getByText("Students")).toBeInTheDocument();
-    expect(screen.getByText("TP1")).toBeInTheDocument();
+    expect(screen.getByText("T1")).toBeInTheDocument();
     expect(screen.getByText("Student A")).toBeInTheDocument();
     expect(screen.getByText("✏️")).toBeInTheDocument();
   });

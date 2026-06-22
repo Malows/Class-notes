@@ -10,6 +10,26 @@
   }
 
   let { assignments, facultyId, subjectId, periodId, commissionId }: Props = $props();
+
+  // Rules:
+  // - Split title by words.
+  // - If a word is a number, it stays complete.
+  // - Otherwise, take its first letter capitalised.
+  // - Concatenate everything.
+  function abbreviateTitle(title: string): string {
+    if (!title) return "";
+    return title
+      .split(/\s+/)
+      .filter((word) => word.length > 0)
+      .map((word) => {
+        const isNum = /^\d+$/.test(word);
+        if (isNum) {
+          return word;
+        }
+        return word.charAt(0).toUpperCase();
+      })
+      .join("");
+  }
 </script>
 
 <div class="overview-header" data-test-id="overview-header">
@@ -22,11 +42,11 @@
     {#each assignments as assignment}
       <div class="overview-header__assignment">
         <span class="overview-header__assignment-title" title={assignment.title}>
-          {assignment.title}
+          {abbreviateTitle(assignment.title)}
         </span>
         <a
           href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
-          class="paper-btn btn-small overview-header__correct-btn"
+          class="paper-btn overview-header__correct-btn"
           data-test-id={`correct-assignment-btn-${assignment.id}`}
           aria-label={`Correct ${assignment.title}`}
         >
@@ -49,7 +69,7 @@
 
   .overview-header__students {
     display: grid;
-    grid-template-rows: 2rem 2rem;
+    grid-template-rows: 2rem 2.8rem;
     align-items: center;
   }
 
@@ -72,7 +92,7 @@
 
   .overview-header__assignment {
     display: grid;
-    grid-template-rows: 2rem 2rem;
+    grid-template-rows: 2rem 2.8rem;
     align-items: center;
     justify-items: center;
     text-align: center;
@@ -89,14 +109,23 @@
   }
 
   .overview-header__correct-btn {
-    padding: 0.1rem 0.3rem !important;
-    font-size: 0.8rem !important;
-    margin: 0 !important;
-    display: inline-flex;
+    aspect-ratio: 1 / 1;
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.8rem;
-    height: 1.8rem;
+    min-height: 2.8rem;
+    min-width: 2.8rem;
+    max-height: 2.8rem;
+    max-width: 2.8rem;
+    padding: 0 !important;
+    margin: 0 !important;
     cursor: pointer;
+    background-image: none;
+    transition: transform 0.15s ease;
+    line-height: 1;
+  }
+
+  .overview-header__correct-btn:hover {
+    transform: scale(1.05);
   }
 </style>

@@ -41,7 +41,13 @@
   <div class="overview-header__assignments">
     {#each assignments as assignment}
       <div class="overview-header__assignment">
-        <span class="overview-header__assignment-title" title={assignment.title}>
+        <span
+          class="overview-header__assignment-title popover"
+          data-popover-content={assignment.subtitle
+            ? `${assignment.title} — ${assignment.subtitle}`
+            : assignment.title}
+          data-popover-position="top"
+        >
           {abbreviateTitle(assignment.title)}
         </span>
         <a
@@ -106,6 +112,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
+    cursor: help;
   }
 
   .overview-header__correct-btn {

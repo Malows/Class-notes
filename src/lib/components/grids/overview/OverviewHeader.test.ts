@@ -5,11 +5,11 @@ import { describe, expect, test } from "vitest";
 import OverviewHeader from "./OverviewHeader.svelte";
 
 describe("OverviewHeader Component", () => {
-  test("renders students label and dynamic abbreviated assignment columns with pencil emoji links", () => {
+  test("renders students label and dynamic abbreviated assignment columns with pencil emoji links and popovers", () => {
     const assignments = [
-      { id: 10, period_id: 1, title: "Lab 1" },
-      { id: 20, period_id: 1, title: "Lab Exercise 12" },
-      { id: 30, period_id: 1, title: "Discrete Mathematics" },
+      { id: 10, period_id: 1, title: "Lab 1", subtitle: "" },
+      { id: 20, period_id: 1, title: "Lab Exercise 12", subtitle: "Physics II" },
+      { id: 30, period_id: 1, title: "Discrete Mathematics", subtitle: undefined },
     ];
 
     render(OverviewHeader, {
@@ -25,11 +25,21 @@ describe("OverviewHeader Component", () => {
 
     // Verify Row 1: Right columns with abbreviations
     // "Lab 1" -> "L1"
-    expect(screen.getByText("L1")).toBeInTheDocument();
-    // "Lab Exercise 12" -> "LE12"
-    expect(screen.getByText("LE12")).toBeInTheDocument();
+    const l1Header = screen.getByText("L1");
+    expect(l1Header).toBeInTheDocument();
+    expect(l1Header).toHaveClass("popover");
+    expect(l1Header).toHaveAttribute("data-popover-content", "Lab 1");
+    expect(l1Header).toHaveAttribute("data-popover-position", "top");
+
+    // "Lab Exercise 12" -> "LE12" (with subtitle "Physics II")
+    const le12Header = screen.getByText("LE12");
+    expect(le12Header).toBeInTheDocument();
+    expect(le12Header).toHaveAttribute("data-popover-content", "Lab Exercise 12 — Physics II");
+
     // "Discrete Mathematics" -> "DM"
-    expect(screen.getByText("DM")).toBeInTheDocument();
+    const dmHeader = screen.getByText("DM");
+    expect(dmHeader).toBeInTheDocument();
+    expect(dmHeader).toHaveAttribute("data-popover-content", "Discrete Mathematics");
 
     // Verify Row 2: Right columns (✏️ links with exact href parameters)
     const links = screen.getAllByText("✏️");

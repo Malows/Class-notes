@@ -18,6 +18,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
       query += " AND p.subject_id = ?";
       params.push(subjectID);
     }
+    query += " ORDER BY p.year DESC, p.semester DESC";
     const stmt = db.prepare(query);
     return stmt.all(params) as Period[];
   }

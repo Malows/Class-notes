@@ -43,4 +43,21 @@ describe("periodRepository integration tests", () => {
     const updatedList = periodRepository.getAll(1);
     expect(updatedList.some((p) => p.id === first.id)).toBe(false);
   });
+
+  it("retrieves periods sorted in descending order by year and semester", () => {
+    const p1 = periodRepository.create(1, 2038, 1);
+    const p2 = periodRepository.create(1, 2039, 2);
+    const p3 = periodRepository.create(1, 2039, 1);
+    createdIds.push(p1.id, p2.id, p3.id);
+
+    const list = periodRepository.getAll(1);
+
+    // Filter to only our newly created periods to assert their relative sorting order
+    const relative = list.filter((p) => [p1.id, p2.id, p3.id].includes(p.id));
+
+    // We expect descending order: 2039-2 (p2) -> 2039-1 (p3) -> 2038-1 (p1)
+    expect(relative[0].id).toBe(p2.id);
+    expect(relative[1].id).toBe(p3.id);
+    expect(relative[2].id).toBe(p1.id);
+  });
 });

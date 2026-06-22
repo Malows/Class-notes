@@ -30,6 +30,11 @@
       })
       .join("");
   }
+
+  // Format combined title and subtitle for popover tooltip
+  function getPopoverText(assignment: Assignment): string {
+    return assignment.subtitle ? `${assignment.title} — ${assignment.subtitle}` : assignment.title;
+  }
 </script>
 
 <div class="overview-header" data-test-id="overview-header">
@@ -44,19 +49,16 @@
     {#each assignments as assignment}
       <div class="overview-header__assignment">
         <span
-          class="overview-header__assignment-title popover"
-          data-popover-content={assignment.subtitle
-            ? `${assignment.title} — ${assignment.subtitle}`
-            : assignment.title}
-          data-popover-position="top"
-          data-test-id={`overview-header-assignment-title-${assignment.id}`}
+          class="overview-header__assignment-title"
+          popover-top={getPopoverText(assignment)}
+          data-test-id="overview-header-assignment-title-{assignment.id}"
         >
           {abbreviateTitle(assignment.title)}
         </span>
         <a
           href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
           class="paper-btn overview-header__correct-btn"
-          data-test-id={`correct-assignment-btn-${assignment.id}`}
+          data-test-id="correct-assignment-btn-{assignment.id}"
           aria-label={`Correct ${assignment.title}`}
         >
           ✏️

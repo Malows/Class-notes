@@ -31,21 +31,19 @@ describe("OverviewHeader Component", () => {
     // "Lab 1" -> "L1"
     const l1Header = screen.getByTestId("overview-header-assignment-title-10");
     expect(l1Header).toBeInTheDocument();
-    expect(l1Header).toHaveClass("popover");
-    expect(l1Header).toHaveAttribute("data-popover-content", "Lab 1");
-    expect(l1Header).toHaveAttribute("data-popover-position", "top");
+    expect(l1Header).toHaveAttribute("popover-top", "Lab 1");
     expect(l1Header.textContent?.trim()).toBe("L1");
 
     // "Lab Exercise 12" -> "LE12" (with subtitle "Physics II")
     const le12Header = screen.getByTestId("overview-header-assignment-title-20");
     expect(le12Header).toBeInTheDocument();
-    expect(le12Header).toHaveAttribute("data-popover-content", "Lab Exercise 12 — Physics II");
+    expect(le12Header).toHaveAttribute("popover-top", "Lab Exercise 12 — Physics II");
     expect(le12Header.textContent?.trim()).toBe("LE12");
 
     // "Discrete Mathematics" -> "DM"
     const dmHeader = screen.getByTestId("overview-header-assignment-title-30");
     expect(dmHeader).toBeInTheDocument();
-    expect(dmHeader).toHaveAttribute("data-popover-content", "Discrete Mathematics");
+    expect(dmHeader).toHaveAttribute("popover-top", "Discrete Mathematics");
     expect(dmHeader.textContent?.trim()).toBe("DM");
 
     // Verify Row 2: Right columns (✏️ links with exact href parameters)

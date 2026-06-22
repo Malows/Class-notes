@@ -112,7 +112,7 @@ describe("overview components", () => {
     expect(screen.getByText("Students")).toBeInTheDocument();
     expect(screen.getByText("TP1")).toBeInTheDocument();
     expect(screen.getByText("Student A")).toBeInTheDocument();
-    expect(screen.getByText("Correct")).toBeInTheDocument();
+    expect(screen.getByText("✏️")).toBeInTheDocument();
   });
 
   test("OverviewLegend renders the popover trigger", () => {

@@ -1,8 +1,8 @@
 <script lang="ts">
   import OverviewRow from "$lib/components/grids/overview/OverviewRow.svelte";
   import OverviewHeader from "./OverviewHeader.svelte";
-  import Button from "$lib/components/common/Button.svelte";
-  import { t } from "$lib/i18n/config";
+  import OverviewEmptyAssignments from "./OverviewEmptyAssignments.svelte";
+  import OverviewEmptyStudents from "./OverviewEmptyStudents.svelte";
   import type { Assignment } from "$lib/types/academic";
   import type { StudentGridRowDTO } from "$lib/types/dto";
 
@@ -19,45 +19,9 @@
 </script>
 
 {#if assignments.length === 0}
-  <div class="card margin-top-lg" data-test-id="empty-assignments-card">
-    <div class="card-body text-center">
-      <h4 class="card-title">{$t("commissions.no_assignments_message")} ✏️</h4>
-      <div class="margin-top-md">
-        <Button
-          href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/assignments"
-          class="btn-secondary"
-          testId="empty-assignments-cta"
-        >
-          {$t("commissions.define_assignments_cta")}
-        </Button>
-      </div>
-    </div>
-  </div>
+  <OverviewEmptyAssignments {facultyId} {subjectId} {periodId} />
 {:else if grid.length === 0}
-  <div class="card margin-top-lg" data-test-id="empty-students-card">
-    <div class="card-body text-center">
-      <h4 class="card-title">{$t("commissions.no_students_message")} 👤</h4>
-      <div class="margin-top-md">
-        {#if commissionId > 0}
-          <Button
-            href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/students"
-            class="btn-secondary"
-            testId="empty-students-cta"
-          >
-            {$t("commissions.enroll_students_cta")}
-          </Button>
-        {:else}
-          <Button
-            href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions"
-            class="btn-secondary"
-            testId="empty-commissions-cta"
-          >
-            {$t("commissions.define_commissions_cta")}
-          </Button>
-        {/if}
-      </div>
-    </div>
-  </div>
+  <OverviewEmptyStudents {facultyId} {subjectId} {periodId} {commissionId} />
 {:else}
   <div
     class="overview-grid"
@@ -89,14 +53,5 @@
     width: 100%;
     overflow-x: auto;
     padding-bottom: 0.5rem;
-  }
-  .margin-top-lg {
-    margin-top: 1.5rem;
-  }
-  .margin-top-md {
-    margin-top: 1rem;
-  }
-  .text-center {
-    text-align: center;
   }
 </style>

@@ -31,11 +31,9 @@
       .join("");
   }
 
-  // Format combined title and subtitle for popover tooltip
-  function getPopoverText(assignment: Assignment): string {
-    return assignment.subtitle
-      ? `${assignment.title} — ${assignment.subtitle}`
-      : assignment.title;
+  // Format combined title and subtitle for standard HTML hover tooltip
+  function getFullTitle(assignment: Assignment): string {
+    return assignment.subtitle ? `${assignment.title} — ${assignment.subtitle}` : assignment.title;
   }
 </script>
 
@@ -52,12 +50,10 @@
       <div class="overview-header__assignment">
         <span
           class="overview-header__assignment-title"
-          popover-top={getPopoverText(assignment)}
+          title={getFullTitle(assignment)}
           data-test-id="overview-header-assignment-title-{assignment.id}"
         >
-          <span class="overview-header__assignment-text">
-            {abbreviateTitle(assignment.title)}
-          </span>
+          {abbreviateTitle(assignment.title)}
         </span>
         <a
           href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
@@ -117,14 +113,6 @@
   .overview-header__assignment-title {
     font-size: 0.8rem;
     font-weight: 600;
-    width: 100%;
-    cursor: help;
-    position: relative;
-    display: block;
-  }
-
-  .overview-header__assignment-text {
-    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

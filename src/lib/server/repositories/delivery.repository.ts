@@ -7,7 +7,8 @@ export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;
   getAllByCommission(commissionID: number): Delivery[];
   save(delivery: Delivery): void;
-  getOverviewData(commissionID: number): OverviewData;
+  getCommissionOverviewData(commissionID: number): OverviewData;
+  getSubjectOverviewData(subjectID: number): OverviewData;
   getPendingSummary(): any[];
   getGlobalStats(): any;
 }
@@ -60,9 +61,9 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     );
   }
 
-  getOverviewData(commissionID: number): OverviewData {
+  getCommissionOverviewData(commissionID: number): OverviewData {
     const assignmentsStmt = db.prepare(
-      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id IN (SELECT id FROM periods WHERE subject_id IN (SELECT subject_id FROM commissions WHERE id = ?)) ORDER BY id",
+      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id = (SELECT period_id FROM commissions WHERE id = ?) ORDER BY id",
     );
     const assignments = assignmentsStmt.all(commissionID) as Assignment[];
 
@@ -78,6 +79,49 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
     );
     const deliveries = deliveriesStmt.all(commissionID) as Delivery[];
+
+    const grid: StudentGridRowDTO[] = students.map((s) => {
+      const studentDeliveries = assignments.map((a) => {
+        const delivery = deliveries.find((d) => d.student_id === s.id && d.assignment_id === a.id);
+        return (
+          delivery || {
+            assignment_id: a.id,
+            student_id: s.id,
+            workflow_status: DeliveryWorkflowStatus.NOT_DICTATED,
+            grade: 0,
+            ai_level: 0,
+            comments: "",
+          }
+        );
+      });
+      return {
+        id: s.id,
+        name: s.name,
+        deliveries: studentDeliveries,
+      };
+    });
+
+    return { assignments, grid };
+  }
+
+  getSubjectOverviewData(subjectID: number): OverviewData {
+    const assignmentsStmt = db.prepare(
+      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id IN (SELECT id FROM periods WHERE subject_id = ?) ORDER BY id",
+    );
+    const assignments = assignmentsStmt.all(subjectID) as Assignment[];
+
+    const studentsStmt = db.prepare(
+      "SELECT id, name FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id IN (SELECT id FROM periods WHERE subject_id = ?)) ORDER BY name",
+    );
+    const students = studentsStmt.all(subjectID) as {
+      id: number;
+      name: string;
+    }[];
+
+    const deliveriesStmt = db.prepare(
+      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id IN (SELECT id FROM periods WHERE subject_id = ?)))",
+    );
+    const deliveries = deliveriesStmt.all(subjectID) as Delivery[];
 
     const grid: StudentGridRowDTO[] = students.map((s) => {
       const studentDeliveries = assignments.map((a) => {

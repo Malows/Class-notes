@@ -21,11 +21,9 @@
     <div class="overview-header__students-empty"></div>
   </div>
 
-  <div class="overview-header__assignments">
-    {#each assignments as assignment}
-      <OverviewHeaderCell {assignment} {facultyId} {subjectId} {periodId} {commissionId} />
-    {/each}
-  </div>
+  {#each assignments as assignment}
+    <OverviewHeaderCell {assignment} {facultyId} {subjectId} {periodId} {commissionId} />
+  {/each}
 </div>
 
 <style>
@@ -33,7 +31,7 @@
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    gap: 0.75rem;
+    gap: inherit;
     padding-bottom: 0.35rem;
     border-bottom: 1px solid #ddd;
     width: 100%;
@@ -54,11 +52,5 @@
 
   .overview-header__students-empty {
     height: 100%;
-  }
-
-  .overview-header__assignments {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(2.8rem, 2.8rem));
-    gap: 0.5rem;
   }
 </style>

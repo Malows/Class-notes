@@ -16,7 +16,11 @@
   let { assignments, grid, facultyId, subjectId, periodId, commissionId }: Props = $props();
 </script>
 
-<div class="overview-grid" data-test-id="overview-grid" style="display: grid;">
+<div
+  class="overview-grid"
+  data-test-id="overview-grid"
+  style="display: grid; --cols: {assignments.length};"
+>
   <OverviewHeader {assignments} {facultyId} {subjectId} {periodId} {commissionId} />
 
   {#each grid as student}
@@ -34,7 +38,11 @@
 <style>
   .overview-grid {
     display: grid;
-    gap: 0.75rem;
+    /* First track 12rem for student name, N tracks of 2.8rem for each assignment */
+    grid-template-columns: 12rem repeat(var(--cols, 1), 2.8rem);
+    gap: 0.5rem;
     width: 100%;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
   }
 </style>

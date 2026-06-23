@@ -16,17 +16,15 @@
 
 <div class="overview-row" data-test-id="overview-row">
   <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
-  <div class="overview-row__cells">
-    {#each deliveries as delivery}
-      <OverviewCell
-        href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
-        status={getOverviewDeliveryStatus(delivery)}
-        aiLevel={delivery.ai_level}
-        label={getOverviewDeliveryStatus(delivery)}
-        testId={`delivery-cell-${delivery.student_id}-${delivery.assignment_id}`}
-      />
-    {/each}
-  </div>
+  {#each deliveries as delivery}
+    <OverviewCell
+      href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
+      status={getOverviewDeliveryStatus(delivery)}
+      aiLevel={delivery.ai_level}
+      label={getOverviewDeliveryStatus(delivery)}
+      testId={`delivery-cell-${delivery.student_id}-${delivery.assignment_id}`}
+    />
+  {/each}
 </div>
 
 <style>
@@ -34,7 +32,7 @@
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: subgrid;
-    gap: 0.75rem;
+    gap: inherit;
     align-items: center;
   }
 
@@ -43,11 +41,5 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .overview-row__cells {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(2.8rem, 2.8rem));
-    gap: 0.5rem;
   }
 </style>

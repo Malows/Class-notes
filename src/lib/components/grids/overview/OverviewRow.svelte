@@ -45,7 +45,7 @@
   }
 
   :global(.dark) .overview-row:nth-child(even) {
-    background-color: #26262d;
+    background-color: #4c4b49;
   }
 
   /* Smooth highlight hover row - highly distinguishable from the subtle zebra baseline */
@@ -54,7 +54,7 @@
   }
 
   :global(.dark) .overview-row:hover {
-    background-color: #343442 !important;
+    background-color: #5a5957 !important;
   }
 
   .overview-row__name {

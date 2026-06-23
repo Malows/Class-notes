@@ -12,5 +12,10 @@
   "commission_overview_title": "Resumen de Comisión",
   "loading_info": "Cargando información...",
   "legend": "Leyenda:",
-  "legend_text": "V: Aprobado | R: Desaprobado | -: Pendiente | ⚠️: Sospecha IA | 🤖: Certeza IA"
+  "legend_text": "V: Aprobado | R: Desaprobado | -: Pendiente | ⚠️: Sospecha IA | 🤖: Certeza IA",
+  "no_assignments_message": "Aún no se han definido Trabajos Prácticos para este periodo.",
+  "define_assignments_cta": "Definir Trabajos Prácticos",
+  "no_students_message": "Aún no hay alumnos matriculados.",
+  "enroll_students_cta": "Gestionar Alumnos",
+  "define_commissions_cta": "Gestionar Comisiones"
 }

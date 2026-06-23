@@ -140,4 +140,40 @@ describe("overview components", () => {
     expect(button).toHaveAttribute("data-popover-position", "bottom");
     expect(button).toHaveAttribute("data-popover-content");
   });
+
+  test("OverviewGrid renders empty assignments card and CTA", () => {
+    render(OverviewGrid, {
+      assignments: [],
+      grid: [],
+      facultyId: 1,
+      subjectId: 2,
+      periodId: 3,
+      commissionId: 4,
+    });
+
+    const card = screen.getByTestId("empty-assignments-card");
+    expect(card).toBeInTheDocument();
+
+    const cta = screen.getByTestId("empty-assignments-cta");
+    expect(cta).toHaveAttribute("href", "/faculties/1/subjects/2/periods/3/assignments");
+  });
+
+  test("OverviewGrid renders empty students card and CTA", () => {
+    const assignments = [{ id: 1, period_id: 3, title: "Lab 1" }];
+
+    render(OverviewGrid, {
+      assignments,
+      grid: [],
+      facultyId: 1,
+      subjectId: 2,
+      periodId: 3,
+      commissionId: 4,
+    });
+
+    const card = screen.getByTestId("empty-students-card");
+    expect(card).toBeInTheDocument();
+
+    const cta = screen.getByTestId("empty-students-cta");
+    expect(cta).toHaveAttribute("href", "/faculties/1/subjects/2/periods/3/commissions/4/students");
+  });
 });

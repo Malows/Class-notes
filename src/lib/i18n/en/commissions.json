@@ -12,5 +12,10 @@
   "commission_overview_title": "Commission Overview",
   "loading_info": "Loading information...",
   "legend": "Legend:",
-  "legend_text": "V: Approved | R: Rejected | -: Pending | ⚠️: AI Suspected | 🤖: AI Confirmed"
+  "legend_text": "V: Approved | R: Rejected | -: Pending | ⚠️: AI Suspected | 🤖: AI Confirmed",
+  "no_assignments_message": "No assignments have been defined for this period yet.",
+  "define_assignments_cta": "Define Assignments",
+  "no_students_message": "No students have been enrolled yet.",
+  "enroll_students_cta": "Manage Students",
+  "define_commissions_cta": "Manage Commissions"
 }

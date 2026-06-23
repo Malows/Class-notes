@@ -75,7 +75,7 @@
 <style>
   .overview-header {
     display: grid;
-    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+    grid-template-columns: 12rem minmax(0, 1fr);
     gap: 0.75rem;
     padding-bottom: 0.35rem;
     border-bottom: 1px solid #ddd;

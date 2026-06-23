@@ -32,7 +32,7 @@
 <style>
   .overview-row {
     display: grid;
-    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+    grid-template-columns: 12rem minmax(0, 1fr);
     gap: 0.75rem;
     align-items: center;
   }

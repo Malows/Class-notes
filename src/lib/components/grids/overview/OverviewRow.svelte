@@ -34,29 +34,27 @@
     grid-template-columns: subgrid;
     gap: inherit;
     align-items: center;
-    padding: 0.6rem 0.75rem;
+    padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     transition: background-color 0.15s ease;
   }
 
-  /* Zebra striping for even rows under the parent container */
-  /* Darker in light mode to provide solid visual distinction */
+  /* Extremely subtle zebra striping for even rows under the parent container */
   .overview-row:nth-child(even) {
-    background-color: #eef1f6;
+    background-color: #f3f4f6;
   }
 
-  /* Lighter in dark mode to float clearly over the default deep dark background */
   :global(.dark) .overview-row:nth-child(even) {
-    background-color: #2e2e38;
+    background-color: #26262d;
   }
 
-  /* Smooth highlight hover row */
+  /* Smooth highlight hover row - highly distinguishable from the subtle zebra baseline */
   .overview-row:hover {
-    background-color: #dee2e6 !important;
+    background-color: #e5e8ec !important;
   }
 
   :global(.dark) .overview-row:hover {
-    background-color: #3e3e4d !important;
+    background-color: #343442 !important;
   }
 
   .overview-row__name {

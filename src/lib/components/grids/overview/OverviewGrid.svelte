@@ -19,7 +19,7 @@
 </script>
 
 {#if assignments.length === 0}
-  <div class="card background-warning margin-top-lg" data-test-id="empty-assignments-card">
+  <div class="card margin-top-lg" data-test-id="empty-assignments-card">
     <div class="card-body text-center">
       <h4 class="card-title">{$t("commissions.no_assignments_message")} ✏️</h4>
       <div class="margin-top-md">
@@ -34,7 +34,7 @@
     </div>
   </div>
 {:else if grid.length === 0}
-  <div class="card background-warning margin-top-lg" data-test-id="empty-students-card">
+  <div class="card margin-top-lg" data-test-id="empty-students-card">
     <div class="card-body text-center">
       <h4 class="card-title">{$t("commissions.no_students_message")} 👤</h4>
       <div class="margin-top-md">

@@ -18,10 +18,10 @@
   let { assignments, grid, facultyId, subjectId, periodId, commissionId }: Props = $props();
 </script>
 
-{#if assignments.length === 0}
-  <OverviewEmptyAssignments {facultyId} {subjectId} {periodId} />
-{:else if grid.length === 0}
+{#if grid.length === 0}
   <OverviewEmptyStudents {facultyId} {subjectId} {periodId} {commissionId} />
+{:else if assignments.length === 0}
+  <OverviewEmptyAssignments {facultyId} {subjectId} {periodId} />
 {:else}
   <div
     class="overview-grid"

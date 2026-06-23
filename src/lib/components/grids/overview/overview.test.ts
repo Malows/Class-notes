@@ -144,7 +144,7 @@ describe("overview components", () => {
   test("OverviewGrid renders empty assignments card and CTA", () => {
     render(OverviewGrid, {
       assignments: [],
-      grid: [],
+      grid: [{ id: 1, name: "Student A", deliveries: [] }],
       facultyId: 1,
       subjectId: 2,
       periodId: 3,

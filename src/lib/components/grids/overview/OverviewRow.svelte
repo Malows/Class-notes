@@ -31,8 +31,9 @@
 
 <style>
   .overview-row {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 12rem minmax(0, 1fr);
+    grid-template-columns: subgrid;
     gap: 0.75rem;
     align-items: center;
   }

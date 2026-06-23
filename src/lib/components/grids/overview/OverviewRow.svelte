@@ -34,6 +34,27 @@
     grid-template-columns: subgrid;
     gap: inherit;
     align-items: center;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease;
+  }
+
+  /* Zebra striping for even rows under the parent container */
+  .overview-row:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+
+  :global(.dark) .overview-row:nth-child(even) {
+    background-color: #1e1e24;
+  }
+
+  /* Smooth highlight hover row */
+  .overview-row:hover {
+    background-color: #e9ecef !important;
+  }
+
+  :global(.dark) .overview-row:hover {
+    background-color: #2a2b36 !important;
   }
 
   .overview-row__name {

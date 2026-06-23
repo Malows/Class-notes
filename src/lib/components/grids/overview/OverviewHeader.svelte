@@ -15,10 +15,9 @@
 
 <div class="overview-header" data-test-id="overview-header">
   <div class="overview-header__students">
-    <div class="overview-header__students-title" data-test-id="overview-header-students-title">
+    <h4 class="overview-header__students-title" data-test-id="overview-header-students-title">
       Students
-    </div>
-    <div class="overview-header__students-empty"></div>
+    </h4>
   </div>
 
   {#each assignments as assignment}
@@ -32,7 +31,7 @@
     display: grid;
     grid-template-columns: subgrid;
     gap: inherit;
-    padding-bottom: 0.35rem;
+    padding: 0.35rem 0.5rem;
     border-bottom: 1px solid #ddd;
     width: 100%;
   }
@@ -46,11 +45,9 @@
   .overview-header__students-title {
     font-weight: 700;
     white-space: nowrap;
+    grid-column: 1 / -1;
+    grid-row: 1 / 2;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .overview-header__students-empty {
-    height: 100%;
   }
 </style>

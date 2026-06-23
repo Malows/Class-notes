@@ -33,7 +33,9 @@
 
   // Format combined title and subtitle for popover tooltip
   function getPopoverText(assignment: Assignment): string {
-    return assignment.subtitle ? `${assignment.title} — ${assignment.subtitle}` : assignment.title;
+    return assignment.subtitle
+      ? `${assignment.title} — ${assignment.subtitle}`
+      : assignment.title;
   }
 </script>
 
@@ -53,7 +55,9 @@
           popover-top={getPopoverText(assignment)}
           data-test-id="overview-header-assignment-title-{assignment.id}"
         >
-          {abbreviateTitle(assignment.title)}
+          <span class="overview-header__assignment-text">
+            {abbreviateTitle(assignment.title)}
+          </span>
         </span>
         <a
           href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
@@ -113,11 +117,18 @@
   .overview-header__assignment-title {
     font-size: 0.8rem;
     font-weight: 600;
+    width: 100%;
+    cursor: help;
+    position: relative;
+    display: block;
+  }
+
+  .overview-header__assignment-text {
+    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-    cursor: help;
   }
 
   .overview-header__correct-btn {

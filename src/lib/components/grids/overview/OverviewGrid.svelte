@@ -31,6 +31,7 @@
       {subjectId}
       {periodId}
       {commissionId}
+      studentCommissionId={student.commission_id}
     />
   {/each}
 </div>

@@ -50,14 +50,14 @@ describe("deliveryRepository Integration Tests", () => {
     expect(list.length).toBeGreaterThan(0);
   });
 
-  it("retrieves commission-level and subject-level overview datasets", () => {
-    // commissionId 1 belongs to period 1, subject 1
+  it("retrieves commission-level and period-level overview datasets", () => {
+    // commissionId 1 belongs to period 1
     const commOverview = deliveryRepository.getCommissionOverviewData(1);
     expect(commOverview.assignments).toBeDefined();
     expect(commOverview.grid).toBeDefined();
 
-    const subjOverview = deliveryRepository.getSubjectOverviewData(1);
-    expect(subjOverview.assignments).toBeDefined();
-    expect(subjOverview.grid).toBeDefined();
+    const periodOverview = deliveryRepository.getPeriodOverviewData(1);
+    expect(periodOverview.assignments).toBeDefined();
+    expect(periodOverview.grid).toBeDefined();
   });
 });

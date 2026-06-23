@@ -22,6 +22,9 @@
 <td data-test-id="period-semester-{period.id}">{period.semester}º</td>
 <td>
   <div class="row flex-right gap-2">
+    <Button href="{rootPath()}/overview" testId="view-overview-btn-{period.id}" withHover>
+      {$t("layout.overview")}
+    </Button>
     <Button href="{rootPath()}/commissions" testId="view-commissions-btn-{period.id}" withHover>
       {$t("layout.commissions")}
     </Button>

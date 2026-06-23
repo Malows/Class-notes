@@ -8,7 +8,7 @@ export interface DeliveryRepository {
   getAllByCommission(commissionID: number): Delivery[];
   save(delivery: Delivery): void;
   getCommissionOverviewData(commissionID: number): OverviewData;
-  getSubjectOverviewData(subjectID: number): OverviewData;
+  getPeriodOverviewData(periodID: number): OverviewData;
   getPendingSummary(): any[];
   getGlobalStats(): any;
 }
@@ -68,11 +68,12 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     const assignments = assignmentsStmt.all(commissionID) as Assignment[];
 
     const studentsStmt = db.prepare(
-      "SELECT id, name FROM students WHERE commission_id = ? AND deletedAt IS NULL ORDER BY name",
+      "SELECT id, name, commission_id FROM students WHERE commission_id = ? AND deletedAt IS NULL ORDER BY name",
     );
     const students = studentsStmt.all(commissionID) as {
       id: number;
       name: string;
+      commission_id: number;
     }[];
 
     const deliveriesStmt = db.prepare(
@@ -97,6 +98,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       return {
         id: s.id,
         name: s.name,
+        commission_id: s.commission_id,
         deliveries: studentDeliveries,
       };
     });
@@ -104,24 +106,25 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     return { assignments, grid };
   }
 
-  getSubjectOverviewData(subjectID: number): OverviewData {
+  getPeriodOverviewData(periodID: number): OverviewData {
     const assignmentsStmt = db.prepare(
-      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id IN (SELECT id FROM periods WHERE subject_id = ?) ORDER BY id",
+      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id = ? ORDER BY id",
     );
-    const assignments = assignmentsStmt.all(subjectID) as Assignment[];
+    const assignments = assignmentsStmt.all(periodID) as Assignment[];
 
     const studentsStmt = db.prepare(
-      "SELECT id, name FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id IN (SELECT id FROM periods WHERE subject_id = ?)) ORDER BY name",
+      "SELECT id, name, commission_id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id = ?) ORDER BY name",
     );
-    const students = studentsStmt.all(subjectID) as {
+    const students = studentsStmt.all(periodID) as {
       id: number;
       name: string;
+      commission_id: number;
     }[];
 
     const deliveriesStmt = db.prepare(
-      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id IN (SELECT id FROM periods WHERE subject_id = ?)))",
+      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id = ?))",
     );
-    const deliveries = deliveriesStmt.all(subjectID) as Delivery[];
+    const deliveries = deliveriesStmt.all(periodID) as Delivery[];
 
     const grid: StudentGridRowDTO[] = students.map((s) => {
       const studentDeliveries = assignments.map((a) => {
@@ -140,6 +143,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       return {
         id: s.id,
         name: s.name,
+        commission_id: s.commission_id,
         deliveries: studentDeliveries,
       };
     });

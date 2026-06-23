@@ -31,7 +31,7 @@
     display: grid;
     grid-template-columns: subgrid;
     gap: inherit;
-    padding: 0.35rem 0.5rem;
+    padding: 0.6rem 0.75rem;
     border-bottom: 1px solid #ddd;
     width: 100%;
   }

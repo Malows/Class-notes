@@ -13,7 +13,12 @@ export async function POST({ request, getClientAddress }) {
     return json({ ok: true, skipped: true, reason: "missing_env" });
   }
 
-  const body = (await request.json()) as AnalyticsRequestBody;
+  let body: AnalyticsRequestBody;
+  try {
+    body = (await request.json()) as AnalyticsRequestBody;
+  } catch {
+    return json({ error: "invalid_json" }, { status: 400 });
+  }
 
   if (!body.name) {
     return json({ error: "name is required" }, { status: 400 });

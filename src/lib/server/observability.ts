@@ -5,7 +5,11 @@ const isTrue = (value: string | undefined): boolean => value === "true";
 let sentryInitialized = false;
 
 export function isAnalyticsServerEnabled(): boolean {
-  return Boolean(process.env.PLAUSIBLE_HOST) && Boolean(process.env.PLAUSIBLE_DOMAIN);
+  return (
+    isTrue(process.env.PUBLIC_ANALYTICS_ENABLED) &&
+    Boolean(process.env.PLAUSIBLE_HOST) &&
+    Boolean(process.env.PLAUSIBLE_DOMAIN)
+  );
 }
 
 export function isSentryServerEnabled(): boolean {

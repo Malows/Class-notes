@@ -13,7 +13,13 @@ export async function POST({ request }) {
 
   initSentryServer();
 
-  const body = (await request.json()) as ErrorPayload;
+  let body: ErrorPayload;
+  try {
+    body = (await request.json()) as ErrorPayload;
+  } catch {
+    return json({ error: "invalid_json" }, { status: 400 });
+  }
+
   if (!body.message) {
     return json({ error: "message is required" }, { status: 400 });
   }

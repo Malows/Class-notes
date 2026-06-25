@@ -37,6 +37,24 @@ The project follows **Clean Architecture** principles to ensure maintainability 
 
 ## 📦 Getting Started
 
+## 📊 Observability
+
+This project supports a hybrid observability setup with client-side Sentry and server-proxied Plausible analytics.
+
+- **Client runtime errors (Sentry/GlitchTip compatible)**
+  - Enabled only when `PUBLIC_SENTRY_ENABLED="true"` and `PUBLIC_SENTRY_DSN` is set.
+  - If missing, Sentry stays disabled (no-op).
+- **Server-side business error reporting**
+  - Endpoint: `POST /api/v1/observability/error`
+  - Enabled only when `SENTRY_ENABLED="true"` and `SENTRY_DSN` is set.
+  - If missing, endpoint returns `{ ok: true, skipped: true, reason: "missing_env" }`.
+- **Analytics (Plausible via backend proxy)**
+  - Endpoint: `POST /api/v1/analytics/event`
+  - Enabled only when `PUBLIC_ANALYTICS_ENABLED="true"`, `PLAUSIBLE_HOST`, and `PLAUSIBLE_DOMAIN` are set.
+  - If missing, tracking returns no-op without breaking UX.
+
+Required environment variables are documented in `.env.example`.
+
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) (Latest LTS)

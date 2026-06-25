@@ -1,11 +1,11 @@
 import Database from "better-sqlite3";
-import { DATABASE_NAME } from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
 import { createSchema } from "./schema";
 import { insertSeed } from "./seed";
 
 const isTest = typeof process !== "undefined" && process.env.VITEST;
-const dbPath = isTest ? ":memory:" : DATABASE_NAME || "class-notes.db";
+const dbPath = isTest ? ":memory:" : env.DATABASE_NAME || "class-notes.db";
 
 const db = new Database(dbPath, { verbose: console.log });
 

@@ -1,8 +1,12 @@
 <script lang="ts">
   import "papercss/dist/paper.min.css";
   import "../app.css";
+  import { afterNavigate } from "$app/navigation";
+  import { onMount } from "svelte";
 
   import { locale, t } from "$lib/i18n/config";
+  import { initSentryClient } from "$lib/observability/sentry.client";
+  import { trackPageView } from "$lib/observability/analytics.client";
   import ClassNoteFooter from "$lib/components/layout/ClassNoteFooter.svelte";
   import NavBar from "$lib/components/layout/navbar/NavBar.svelte";
   import Sidebar from "$lib/components/layout/sidebar/Sidebar.svelte";
@@ -17,6 +21,19 @@
     if (typeof document !== "undefined" && $locale) {
       document.documentElement.lang = $locale;
     }
+  });
+
+  onMount(() => {
+    initSentryClient();
+    void trackPageView(window.location.href, document.referrer || undefined);
+  });
+
+  afterNavigate(({ to, from }) => {
+    if (!to || to.url.href === from?.url.href) {
+      return;
+    }
+
+    void trackPageView(to.url.href, from?.url.href);
   });
 </script>
 

@@ -1,4 +1,4 @@
-import type { Commission } from "$lib/types";
+import type { Commission } from "$lib/common";
 
 import db from "../db";
 

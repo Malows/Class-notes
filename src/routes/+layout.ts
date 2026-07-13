@@ -1,6 +1,6 @@
-import { loadTranslations } from "$lib/i18n/config";
+import { loadTranslations } from "$lib/common/i18n/config";
 
-export const ssr = false;
+export const ssr = true;
 export const prerender = false;
 export const trailingSlash = "always";
 

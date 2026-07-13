@@ -1,16 +1,16 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
-  import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
-  import PeriodModal from "$lib/components/modals/PeriodModal.svelte";
-  import PeriodTable from "$lib/components/grids/tables/PeriodTable.svelte";
-  import { ModalManager } from "$lib/composables/useModal.svelte";
-  import { t } from "$lib/i18n/config";
-  import type { PeriodsStore } from "$lib/stores/periods.svelte";
-  import { StoreKey } from "$lib/types";
-  import type { Period } from "$lib/types";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
+  import PeriodTable from "$lib/client/components/grids/tables/PeriodTable.svelte";
+  import { ModalManager } from "$lib/client/composables/useModal.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import { StoreKey } from "$lib/common";
+  import type { Period } from "$lib/common";
   import { onMount, getContext } from "svelte";
-  import { notificationsStore } from "$lib/stores/notifications.svelte";
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
 
@@ -83,6 +83,7 @@
     isOpen={modal.isCreate || modal.isEdit}
     mode={modal.mode === "create" ? "create" : "edit"}
     period={modal.target}
+    subjectId={subjectID}
     onSave={handleSave}
     onClose={() => modal.close()}
   />

@@ -1,4 +1,4 @@
-import type { Assignment } from "$lib/types";
+import type { Assignment } from "$lib/common";
 
 import db from "../db";
 

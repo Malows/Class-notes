@@ -2,19 +2,19 @@
   import { onMount, getContext } from "svelte";
   import { page } from "$app/state";
 
-  import { t } from "$lib/i18n/config";
-  import { StoreKey } from "$lib/types";
-  import { ModalManager } from "$lib/composables/useModal.svelte";
-  import type { Assignment } from "$lib/types";
-  import type { AssignmentsStore } from "$lib/stores/assignments.svelte";
-  import type { PeriodsStore } from "$lib/stores/periods.svelte";
-  import GuardWrapper from "$lib/components/GuardWrapper.svelte";
-  import AssignmentTable from "$lib/components/grids/tables/AssignmentTable.svelte";
-  import AssignmentModal from "$lib/components/modals/AssignmentModal.svelte";
-  import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
-  import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
-  import DialogBase from "$lib/components/common/DialogBase.svelte";
-  import { notificationsStore } from "$lib/stores/notifications.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import { ModalManager } from "$lib/client/composables/useModal.svelte";
+  import type { Assignment } from "$lib/common";
+  import type { AssignmentsStore } from "$lib/client/stores/assignments.svelte";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
+  import AssignmentTable from "$lib/client/components/grids/tables/AssignmentTable.svelte";
+  import AssignmentModal from "$lib/client/components/modals/AssignmentModal.svelte";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import DialogBase from "$lib/client/components/common/DialogBase.svelte";
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);

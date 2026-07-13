@@ -33,8 +33,8 @@ function findFiles(dir: string, extensions: string[]): string[] {
   return results;
 }
 
-const enDir = "src/lib/i18n/en";
-const esDir = "src/lib/i18n/es";
+const enDir = "src/lib/common/i18n/en";
+const esDir = "src/lib/common/i18n/es";
 
 const enFiles = readdirSync(enDir);
 

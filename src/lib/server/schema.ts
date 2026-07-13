@@ -22,13 +22,23 @@ export function createSchema(db: Database): void {
 
     CREATE TABLE IF NOT EXISTS periods (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      subject_id INTEGER NOT NULL,
       year INTEGER NOT NULL,
       semester INTEGER NOT NULL,
       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      deletedAt DATETIME DEFAULT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS subject_periods (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      subject_id INTEGER NOT NULL,
+      period_id INTEGER NOT NULL,
+      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
       deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+      FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
+      FOREIGN KEY(period_id) REFERENCES periods(id) ON DELETE CASCADE,
+      UNIQUE(subject_id, period_id)
     );
 
     CREATE TABLE IF NOT EXISTS commissions (
@@ -83,8 +93,10 @@ export function createSchema(db: Database): void {
       FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE
     );
 
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_periods_subject_year_semester_active 
-    ON periods(subject_id, year, semester) 
+    DROP INDEX IF EXISTS idx_periods_subject_year_semester_active;
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_subject_periods_subject_period_active 
+    ON subject_periods(subject_id, period_id) 
     WHERE deletedAt IS NULL;
   `);
 }

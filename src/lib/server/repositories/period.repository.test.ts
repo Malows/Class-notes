@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { periodRepository } from "./period.repository";
 import db from "../db";
 
@@ -52,12 +52,37 @@ describe("periodRepository integration tests", () => {
 
     const list = periodRepository.getAll(1);
 
-    // Filter to only our newly created periods to assert their relative sorting order
     const relative = list.filter((p) => [p1.id, p2.id, p3.id].includes(p.id));
 
-    // We expect descending order: 2039-2 (p2) -> 2039-1 (p3) -> 2038-1 (p1)
     expect(relative[0].id).toBe(p2.id);
     expect(relative[1].id).toBe(p3.id);
     expect(relative[2].id).toBe(p1.id);
+  });
+
+  it("returns active metadata for the current year and semester window", () => {
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
+    subjectStmt.run(99, 1, "Materia Metadata");
+    const period = periodRepository.create(99, 2026, 1);
+    createdIds.push(period.id);
+
+    const metadata = periodRepository.getActiveMetadata(new Date("2026-01-15T12:00:00.000Z"));
+
+    expect(metadata.periodData).toEqual({ year: 2026, term: "Cuatrimestre I" });
+    expect(metadata.subjects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "99",
+          name: "Materia Metadata",
+          href: "/faculties/1/subjects/99/periods",
+        }),
+      ]),
+    );
+  });
+
+  it("returns empty metadata when no period matches the current year and semester", () => {
+    const metadata = periodRepository.getActiveMetadata(new Date("2025-10-15T12:00:00.000Z"));
+
+    expect(metadata.periodData).toBeNull();
+    expect(metadata.subjects).toEqual([]);
   });
 });

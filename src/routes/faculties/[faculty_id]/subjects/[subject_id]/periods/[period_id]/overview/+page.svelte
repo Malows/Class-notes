@@ -1,11 +1,11 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import Button from "$lib/components/common/Button.svelte";
-  import OverviewGrid from "$lib/components/grids/overview/OverviewGrid.svelte";
-  import OverviewLegend from "$lib/components/grids/overview/OverviewLegend.svelte";
-  import { t } from "$lib/i18n/config";
-  import { overviewService } from "$lib/services/overview.service";
-  import type { OverviewData } from "$lib/types";
+  import Button from "$lib/client/components/common/Button.svelte";
+  import OverviewGrid from "$lib/client/components/grids/overview/OverviewGrid.svelte";
+  import OverviewLegend from "$lib/client/components/grids/overview/OverviewLegend.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import { overviewService } from "$lib/client/services/overview.service";
+  import type { OverviewData } from "$lib/common";
   import { onMount } from "svelte";
 
   let data = $state<OverviewData | null>(null);

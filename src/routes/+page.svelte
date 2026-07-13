@@ -1,8 +1,8 @@
 <script lang="ts">
-  import DashboardPending from "$lib/components/DashboardPending.svelte";
-  import DashboardStats from "$lib/components/DashboardStats.svelte";
-  import CommonPage from "$lib/components/layout/CommonPage.svelte";
-  import { t } from "$lib/i18n/config";
+  import DashboardPending from "$lib/client/components/DashboardPending.svelte";
+  import DashboardStats from "$lib/client/components/DashboardStats.svelte";
+  import CommonPage from "$lib/client/components/layout/CommonPage.svelte";
+  import { t } from "$lib/common/i18n/config";
 </script>
 
 <CommonPage title={$t("dashboard.welcome")} lead={$t("dashboard.lead")}>

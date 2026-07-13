@@ -1,6 +1,6 @@
 import { expect, test, vi, beforeEach } from "vitest";
 import { apiFetch } from "./api";
-import { DEFAULT_ERROR_MESSAGE } from "$lib/constants";
+import { DEFAULT_ERROR_MESSAGE } from "$lib/common/constants";
 
 beforeEach(() => {
   vi.restoreAllMocks();

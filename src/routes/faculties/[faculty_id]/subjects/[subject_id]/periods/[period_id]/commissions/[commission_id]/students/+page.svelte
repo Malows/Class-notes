@@ -2,17 +2,17 @@
   import { onMount, getContext } from "svelte";
   import { page } from "$app/state";
 
-  import { t } from "$lib/i18n/config";
-  import { StoreKey } from "$lib/types";
-  import { ModalManager } from "$lib/composables/useModal.svelte";
-  import type { Student } from "$lib/types";
-  import type { StudentsStore } from "$lib/stores/students.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import { ModalManager } from "$lib/client/composables/useModal.svelte";
+  import type { Student } from "$lib/common";
+  import type { StudentsStore } from "$lib/client/stores/students.svelte";
 
-  import StudentTable from "$lib/components/grids/tables/StudentTable.svelte";
-  import StudentModal from "$lib/components/modals/StudentModal.svelte";
-  import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
-  import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
-  import { notificationsStore } from "$lib/stores/notifications.svelte";
+  import StudentTable from "$lib/client/components/grids/tables/StudentTable.svelte";
+  import StudentModal from "$lib/client/components/modals/StudentModal.svelte";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
 

@@ -1,19 +1,19 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import Button from "$lib/components/common/Button.svelte";
-  import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
-  import GuardWrapper from "$lib/components/GuardWrapper.svelte";
-  import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
-  import SubjectModal from "$lib/components/modals/SubjectModal.svelte";
-  import SubjectTable from "$lib/components/grids/tables/SubjectTable.svelte";
-  import { ModalManager } from "$lib/composables/useModal.svelte";
-  import { t } from "$lib/i18n/config";
-  import { FacultiesStore } from "$lib/stores/faculties.svelte";
-  import { SubjectsStore } from "$lib/stores/subjects.svelte";
-  import { StoreKey } from "$lib/types";
-  import type { Subject } from "$lib/types";
+  import Button from "$lib/client/components/common/Button.svelte";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import SubjectModal from "$lib/client/components/modals/SubjectModal.svelte";
+  import SubjectTable from "$lib/client/components/grids/tables/SubjectTable.svelte";
+  import { ModalManager } from "$lib/client/composables/useModal.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
+  import { StoreKey } from "$lib/common";
+  import type { Subject } from "$lib/common";
   import { onMount, getContext } from "svelte";
-  import { notificationsStore } from "$lib/stores/notifications.svelte";
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);

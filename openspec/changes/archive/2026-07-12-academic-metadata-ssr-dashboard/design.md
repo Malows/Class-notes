@@ -5,12 +5,14 @@ The dashboard sidebar is currently driven by the existing navigation hierarchy a
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Introduce an SSR-preloaded academic metadata payload for the dashboard shell.
 - Create a metadata-backed sidebar section that prioritizes active-period subjects.
 - Preserve existing hierarchical navigation behavior when metadata is missing or empty.
 - Keep the implementation aligned with the existing service, repository, and component patterns in the app.
 
 **Non-Goals:**
+
 - Replacing the full navigation model with metadata-only behavior.
 - Introducing a new persistence layer or database schema.
 - Reworking unrelated dashboards or routes outside the sidebar context flow.

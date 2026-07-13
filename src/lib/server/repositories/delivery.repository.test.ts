@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { deliveryRepository } from "./delivery.repository";
-import { DeliveryWorkflowStatus } from "$lib/types";
+import { DeliveryWorkflowStatus } from "$lib/common";
 import db from "../db";
 
 describe("deliveryRepository Integration Tests", () => {

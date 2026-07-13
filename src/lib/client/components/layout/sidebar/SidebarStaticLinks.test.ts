@@ -1,0 +1,22 @@
+import { loadTranslations } from "$lib/common/i18n/config";
+import { mount, unmount, flushSync } from "svelte";
+import { expect, test, afterEach } from "vitest";
+
+import SidebarStaticLinks from "./SidebarStaticLinks.svelte";
+
+let component: ReturnType<typeof mount>;
+afterEach(() => {
+  if (component) unmount(component);
+  document.body.innerHTML = "";
+});
+
+test("Links renderizan", async () => {
+  await loadTranslations("en", "/");
+  component = mount(SidebarStaticLinks, {
+    target: document.body,
+    props: { isCollapsed: false },
+  });
+  flushSync();
+  expect(document.body.textContent).toContain("Dashboard");
+  expect(document.body.textContent).toContain("Periods");
+});

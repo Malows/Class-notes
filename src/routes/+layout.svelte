@@ -4,17 +4,19 @@
   import { afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
 
-  import { locale, t } from "$lib/i18n/config";
-  import { initSentryClient } from "$lib/observability/sentry.client";
-  import { trackPageView } from "$lib/observability/analytics.client";
-  import ClassNoteFooter from "$lib/components/layout/ClassNoteFooter.svelte";
-  import NavBar from "$lib/components/layout/navbar/NavBar.svelte";
-  import Sidebar from "$lib/components/layout/sidebar/Sidebar.svelte";
-  import { initStoreContext } from "$lib/stores/context-initializer";
-  import ToastContainer from "$lib/components/common/ToastContainer.svelte";
+  import { locale, t } from "$lib/common/i18n/config";
+  import { initSentryClient } from "$lib/client/observability/sentry.client.js";
+  import { trackPageView } from "$lib/client/observability/analytics.client.js";
+  import ClassNoteFooter from "$lib/client/components/layout/ClassNoteFooter.svelte";
+  import NavBar from "$lib/client/components/layout/navbar/NavBar.svelte";
+  import Sidebar from "$lib/client/components/layout/sidebar/Sidebar.svelte";
+  import { initStoreContext } from "$lib/client/stores/context-initializer";
+  import ToastContainer from "$lib/client/components/common/ToastContainer.svelte";
+  import { metadataStore } from "$lib/client/stores/metadata.svelte";
 
-  let { children } = $props();
+  let { data, children } = $props();
   initStoreContext();
+  metadataStore.initializeStore(data?.metadata ?? null);
 
   // Dynamic document language synchronization for accessibility (a11y)
   $effect(() => {

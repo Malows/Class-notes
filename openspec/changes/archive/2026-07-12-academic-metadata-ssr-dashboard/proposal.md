@@ -12,9 +12,11 @@ The dashboard sidebar currently relies on transactional navigation state and doe
 ## Capabilities
 
 ### New Capabilities
+
 - `academic-metadata-context`: Serve and surface the active academic context for the dashboard sidebar through SSR and client state.
 
 ### Modified Capabilities
+
 - `dashboard`: Extend the dashboard experience with metadata-driven context and empty-state handling.
 - `hierarchical-navigation`: Preserve and augment sidebar navigation with metadata-prioritized subject items and fallback behavior.
 

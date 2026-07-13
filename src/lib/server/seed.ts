@@ -14,7 +14,11 @@ export function insertSeed(db: Database): void {
 
     // Períodos (Ej: Año 2026, 1er Cuatrimestre)
     db.prepare(
-      "INSERT INTO periods (id, subject_id, year, semester) VALUES (1, 1, 2026, 1), (2, 2, 2026, 1), (3, 3, 2026, 1)",
+      "INSERT INTO periods (id, year, semester) VALUES (1, 2026, 1), (2, 2026, 1), (3, 2026, 1)",
+    ).run();
+
+    db.prepare(
+      "INSERT INTO subject_periods (id, subject_id, period_id) VALUES (1, 1, 1), (2, 2, 2), (3, 3, 3)",
     ).run();
 
     // Comisiones

@@ -1,4 +1,4 @@
-import type { Student } from "$lib/types";
+import type { Student } from "$lib/common";
 
 import db from "../db";
 

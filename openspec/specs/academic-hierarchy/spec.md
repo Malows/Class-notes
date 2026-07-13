@@ -3,7 +3,9 @@
 ## Purpose
 
 Define and maintain the academic structure of the system, including faculties, subjects, periods, commissions, and students, ensuring data integrity and hierarchical organization.
+
 ## Requirements
+
 ### Requirement: Faculty Management
 
 The system SHALL allow the user to create, list, and edit multiple Faculties using modal-based forms instead of inline cards.
@@ -57,4 +59,3 @@ The system SHALL allow the user to manage a list of Students for each Commission
 
 - **WHEN** the user adds a student (Name/ID) to a specific commission
 - **THEN** the student appears in the roster for that commission
-

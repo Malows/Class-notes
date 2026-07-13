@@ -1,4 +1,4 @@
-import type { Subject } from "$lib/types";
+import type { Subject } from "$lib/common";
 
 import db from "../db";
 

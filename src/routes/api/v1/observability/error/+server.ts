@@ -1,4 +1,8 @@
-import { captureServerException, initSentryServer, isSentryServerEnabled } from "$lib/server/observability";
+import {
+  captureServerException,
+  initSentryServer,
+  isSentryServerEnabled,
+} from "$lib/server/observability";
 import { json } from "@sveltejs/kit";
 
 type ErrorPayload = {

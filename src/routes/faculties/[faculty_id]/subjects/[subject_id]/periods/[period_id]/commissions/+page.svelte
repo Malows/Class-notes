@@ -2,18 +2,18 @@
   import { onMount, getContext } from "svelte";
   import { page } from "$app/state";
 
-  import { t } from "$lib/i18n/config";
-  import { StoreKey } from "$lib/types";
-  import { ModalManager } from "$lib/composables/useModal.svelte";
-  import type { Commission } from "$lib/types";
-  import type { CommissionsStore } from "$lib/stores/commissions.svelte";
-  import type { PeriodsStore } from "$lib/stores/periods.svelte";
-  import GuardWrapper from "$lib/components/GuardWrapper.svelte";
-  import CommissionTable from "$lib/components/grids/tables/CommissionTable.svelte";
-  import CommissionModal from "$lib/components/modals/CommissionModal.svelte";
-  import ConfirmDialog from "$lib/components/common/ConfirmDialog.svelte";
-  import PageWithAdd from "$lib/components/layout/PageWithAdd.svelte";
-  import { notificationsStore } from "$lib/stores/notifications.svelte";
+  import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import { ModalManager } from "$lib/client/composables/useModal.svelte";
+  import type { Commission } from "$lib/common";
+  import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
+  import CommissionTable from "$lib/client/components/grids/tables/CommissionTable.svelte";
+  import CommissionModal from "$lib/client/components/modals/CommissionModal.svelte";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);

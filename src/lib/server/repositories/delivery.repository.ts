@@ -1,5 +1,5 @@
-import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/types";
-import { DeliveryWorkflowStatus } from "$lib/types";
+import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/common";
+import { DeliveryWorkflowStatus } from "$lib/common";
 
 import db from "../db";
 
@@ -168,7 +168,8 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
             ) as pending_count
         FROM commissions c
         JOIN periods p ON c.period_id = p.id
-        JOIN subjects sub ON p.subject_id = sub.id
+        JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
+        JOIN subjects sub ON sp.subject_id = sub.id
         JOIN faculties f ON sub.faculty_id = f.id
         LEFT JOIN students s ON s.commission_id = c.id AND s.deletedAt IS NULL
         WHERE c.deletedAt IS NULL AND p.deletedAt IS NULL AND sub.deletedAt IS NULL

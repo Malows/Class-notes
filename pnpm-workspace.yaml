@@ -1,4 +1,4 @@
 allowBuilds:
-  '@sentry/cli': false
+  "@sentry/cli": false
   better-sqlite3: true
   esbuild: true

@@ -1,0 +1,47 @@
+import { describe, it, expect, vi } from "vitest";
+
+import { apiFetch } from "$lib/client/api";
+import { studentService } from "./student.service";
+
+vi.mock("$lib/client/api", () => ({
+  apiFetch: vi.fn(),
+}));
+
+describe("studentService", () => {
+  it("getAll calls apiFetch", async () => {
+    await studentService.getAll();
+    expect(apiFetch).toHaveBeenCalledWith("/students");
+  });
+
+  it("create calls apiFetch", async () => {
+    await studentService.create(1, ["S1"]);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/students",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ commission_id: 1, names: ["S1"] }),
+      }),
+    );
+  });
+
+  it("update calls apiFetch with PUT", async () => {
+    await studentService.update(1, "Updated Name");
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/students/1",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ name: "Updated Name" }),
+      }),
+    );
+  });
+
+  it("delete calls apiFetch with DELETE", async () => {
+    await studentService.delete(1);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/students/1",
+      expect.objectContaining({
+        method: "DELETE",
+      }),
+    );
+  });
+});

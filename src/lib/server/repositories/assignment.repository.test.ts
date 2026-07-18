@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { assignmentRepository } from "./assignment.repository";
-import db from "../db";
+import db from "../database/db";
 
 describe("assignmentRepository Integration Tests", () => {
   const createdIds: number[] = [];
@@ -56,8 +56,34 @@ describe("assignmentRepository Integration Tests", () => {
     expect(deliveryStatus.every((d) => d.workflow_status === "WAITING_FOR_STUDENTS")).toBe(true);
   });
 
+  it("updates assignment fields and deletes it softly", () => {
+    const assignment = assignmentRepository.create(
+      1,
+      "Temporary Assignment",
+      "Subtitle",
+      "NOT_DICTATED",
+    );
+    createdIds.push(assignment.id);
+
+    const updated = assignmentRepository.update(
+      assignment.id,
+      "Updated title",
+      "Updated subtitle",
+      "WAITING_FOR_STUDENTS",
+    );
+
+    expect(updated.title).toBe("Updated title");
+    expect(updated.subtitle).toBe("Updated subtitle");
+    expect(updated.workflow_status).toBe("WAITING_FOR_STUDENTS");
+
+    assignmentRepository.delete(assignment.id);
+    const remaining = db
+      .prepare("SELECT id FROM assignments WHERE id = ? AND deletedAt IS NULL")
+      .get(assignment.id) as { id: number } | undefined;
+    expect(remaining).toBeUndefined();
+  });
+
   it("copies assignments and generates student deliveries for target period", () => {
-    // Copy period 1 assignments to period 2
     const initialCount = db
       .prepare("SELECT COUNT(*) as cnt FROM assignments WHERE period_id = 2 AND deletedAt IS NULL")
       .get() as { cnt: number };

@@ -182,10 +182,10 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
 
   getGlobalStats(): any {
     const totalStudentsStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM students WHERE deletedAt IS NULL",
+      "SELECT COUNT(id) as count FROM students WHERE deletedAt IS NULL",
     );
     const totalSubjectsStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM subjects WHERE deletedAt IS NULL",
+      "SELECT COUNT(id) as count FROM subjects WHERE deletedAt IS NULL",
     );
     const totalDeliveriesStmt = db.prepare(
       "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS')",

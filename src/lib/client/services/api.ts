@@ -1,11 +1,21 @@
 import { DEFAULT_ERROR_MESSAGE } from "$lib/common/constants";
 
+function buildApiUrl(path: string): string {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return new URL(`/api/v1${normalizedPath}`, window.location.origin).toString();
+  }
+
+  return `http://localhost/api/v1${normalizedPath}`;
+}
+
 export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
   fetchImpl: typeof fetch = fetch,
 ): Promise<T> {
-  const response = await fetchImpl(`/api/v1${path}`, {
+  const response = await fetchImpl(buildApiUrl(path), {
     ...options,
     headers: {
       "Content-Type": "application/json",

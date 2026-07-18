@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { apiFetch } from "$lib/client/services/api";
 import { assignmentService } from "./assignment.service";
 
-vi.mock("$lib/client/api", () => ({
+vi.mock("$lib/client/services/api", () => ({
   apiFetch: vi.fn(),
 }));
 

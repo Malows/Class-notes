@@ -40,7 +40,7 @@ class CommissionRepositoryImpl implements CommissionRepository {
     if (updatedCommission) {
       // Fetch student count
       const countStmt = db.prepare(
-        "SELECT COUNT(*) as count FROM students WHERE commission_id = ? AND deletedAt IS NULL",
+        "SELECT COUNT(id) as count FROM students WHERE commission_id = ? AND deletedAt IS NULL",
       );
       updatedCommission.student_count = (countStmt.get(id) as any).count;
     }

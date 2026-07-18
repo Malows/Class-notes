@@ -1,6 +1,6 @@
 import { describe, it, expect, afterEach } from "vitest";
 import { facultyRepository } from "./faculty.repository";
-import db from "../db";
+import db from "../database/db";
 
 describe("facultyRepository Integration Tests", () => {
   const createdIds: number[] = [];

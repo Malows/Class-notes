@@ -4,7 +4,7 @@ import { apiFetch } from "$lib/client/services/api";
 import { DeliveryWorkflowStatus } from "$lib/common";
 import { correctionService } from "./correction.service";
 
-vi.mock("$lib/client/api", () => ({
+vi.mock("$lib/client/services/api", () => ({
   apiFetch: vi.fn(),
 }));
 

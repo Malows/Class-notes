@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { periodRepository } from "./period.repository";
-import db from "../db";
+import db from "../database/db";
 
 describe("periodRepository integration tests", () => {
   const createdIds: number[] = [];
@@ -84,5 +84,17 @@ describe("periodRepository integration tests", () => {
 
     expect(metadata.periodData).toBeNull();
     expect(metadata.subjects).toEqual([]);
+  });
+
+  it("updates a period with a linked subject and preserves the relationship", () => {
+    const period = periodRepository.create(1, 2040, 2);
+    createdIds.push(period.id);
+
+    const updated = periodRepository.update(period.id, 2041, 1);
+
+    expect(updated.year).toBe(2041);
+    expect(updated.semester).toBe(1);
+    expect(updated.subject_id).toBe(1);
+    expect(updated.subject_name).toBe("Álgebra Lineal");
   });
 });

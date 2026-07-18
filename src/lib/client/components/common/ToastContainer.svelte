@@ -1,5 +1,6 @@
 <script lang="ts">
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+
   import Toast from "./Toast.svelte";
 </script>
 

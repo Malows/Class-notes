@@ -1,7 +1,8 @@
 <script lang="ts">
-  import Button from "$lib/client/components/common/Button.svelte";
   import { t } from "$lib/common/i18n/config";
-  import type { Period } from "$lib/common";
+  import type { Period } from "$lib/common/types/academic";
+
+  import Button from "$lib/client/components/common/Button.svelte";
 
   interface Props {
     period: Period;

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Breadcrumbs from "$lib/client/components/layout/navbar/Breadcrumbs.svelte";
-  import ThemeToggle from "$lib/client/components/layout/navbar/ThemeToggle.svelte";
-  import LanguageToggle from "$lib/client/components/layout/navbar/LanguageToggle.svelte";
-  import { locale, t } from "$lib/common/i18n/config";
-  import { themeStore } from "$lib/client/stores/theme.svelte";
+  import { t } from "$lib/common/i18n/config";
+
+  import Breadcrumbs from "./Breadcrumbs.svelte";
+  import ThemeToggle from "./ThemeToggle.svelte";
+  import LanguageToggle from "./LanguageToggle.svelte";
 </script>
 
 <nav class="navbar header-nav" data-test-id="navbar">

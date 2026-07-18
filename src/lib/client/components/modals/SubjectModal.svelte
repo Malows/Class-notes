@@ -1,10 +1,11 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Subject } from "$lib/common";
+  import type { Subject } from "$lib/common/types/academic";
+  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
+  import { CreateSubjectSchema } from "$lib/common/schemas";
+
   import DialogBase from "../common/DialogBase.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
-  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
-  import { CreateSubjectSchema } from "$lib/common/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;

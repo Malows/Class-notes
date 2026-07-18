@@ -1,6 +1,6 @@
-import type { Commission } from "$lib/common";
+import type { Commission } from "$lib/common/types/academic";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];

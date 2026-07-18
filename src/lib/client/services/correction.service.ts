@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Delivery } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Delivery } from "$lib/common/types/student";
 
 export const correctionService = {
   get: (commission_id: number) => apiFetch<Delivery[]>(`/correct?commission_id=${commission_id}`),

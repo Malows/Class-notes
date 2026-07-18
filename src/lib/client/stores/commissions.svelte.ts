@@ -1,5 +1,5 @@
 import { commissionService } from "$lib/client/services/commission.service";
-import type { Commission } from "$lib/common";
+import type { Commission } from "$lib/common/types/academic";
 
 export class CommissionsStore {
   items = $state<Commission[]>([]);

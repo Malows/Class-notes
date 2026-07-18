@@ -1,10 +1,11 @@
 <script lang="ts">
-  import OverviewRow from "$lib/client/components/grids/overview/OverviewRow.svelte";
+  import type { Assignment } from "$lib/common/types/academic";
+  import type { StudentGridRowDTO } from "$lib/common/types/dto";
+
+  import OverviewRow from "./OverviewRow.svelte";
   import OverviewHeader from "./OverviewHeader.svelte";
   import OverviewEmptyAssignments from "./OverviewEmptyAssignments.svelte";
   import OverviewEmptyStudents from "./OverviewEmptyStudents.svelte";
-  import type { Assignment } from "$lib/types/academic";
-  import type { StudentGridRowDTO } from "$lib/types/dto";
 
   interface Props {
     assignments: Assignment[];

@@ -1,5 +1,5 @@
 import { facultyService } from "$lib/client/services/faculty.service";
-import type { Faculty } from "$lib/common";
+import type { Faculty } from "$lib/common/types/academic";
 
 export class FacultiesStore {
   items = $state<Faculty[]>([]);

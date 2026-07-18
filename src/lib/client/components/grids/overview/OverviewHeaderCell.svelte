@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Assignment } from "$lib/types/academic";
+  import type { Assignment } from "$lib/common/types/academic";
 
   interface Props {
     assignment: Assignment;

@@ -1,5 +1,6 @@
-import { deliveryRepository } from "$lib/server/repositories/delivery.repository";
 import { json } from "@sveltejs/kit";
+
+import { deliveryRepository } from "$lib/server/repositories/delivery.repository";
 
 export async function GET() {
   try {

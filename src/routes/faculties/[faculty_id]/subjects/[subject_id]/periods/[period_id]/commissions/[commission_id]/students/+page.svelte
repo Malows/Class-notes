@@ -5,7 +5,7 @@
   import { t } from "$lib/common/i18n/config";
   import { StoreKey } from "$lib/common";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import type { Student } from "$lib/common";
+  import type { Student } from "$lib/common/types/student";
   import type { StudentsStore } from "$lib/client/stores/students.svelte";
 
   import StudentTable from "$lib/client/components/grids/tables/StudentTable.svelte";

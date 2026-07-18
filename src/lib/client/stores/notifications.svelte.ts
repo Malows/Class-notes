@@ -1,9 +1,4 @@
-export interface Toast {
-  id: number;
-  message: string;
-  type: "success" | "error" | "warning";
-  autoDismiss: boolean;
-}
+import type { Toast } from "$lib/common/types/layout";
 
 export class NotificationsStore {
   items = $state<Toast[]>([]);

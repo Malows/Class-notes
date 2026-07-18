@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Assignment } from "$lib/common";
+  import type { Assignment } from "$lib/common/types/academic";
 
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import AssignmentRow from "../rows/AssignmentRow.svelte";

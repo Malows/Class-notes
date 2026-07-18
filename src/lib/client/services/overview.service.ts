@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { OverviewData, GlobalStats, PendingSummary } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { OverviewData, GlobalStats, PendingSummary } from "$lib/common/types/dashboard";
 
 export const overviewService = {
   get: (commission_id: number) =>

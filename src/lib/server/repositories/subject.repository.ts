@@ -1,6 +1,6 @@
-import type { Subject } from "$lib/common";
+import type { Subject } from "$lib/common/types/academic";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface SubjectRepository {
   getAll(): Subject[];

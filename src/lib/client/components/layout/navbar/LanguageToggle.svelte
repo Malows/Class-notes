@@ -1,5 +1,6 @@
 <script lang="ts">
   import { locale } from "$lib/common/i18n/config";
+
   import { themeStore } from "$lib/client/stores/theme.svelte";
 </script>
 

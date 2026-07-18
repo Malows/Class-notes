@@ -1,9 +1,10 @@
+import { json } from "@sveltejs/kit";
+
 import {
   captureServerException,
   initSentryServer,
   isSentryServerEnabled,
 } from "$lib/server/observability";
-import { json } from "@sveltejs/kit";
 
 type ErrorPayload = {
   message?: string;

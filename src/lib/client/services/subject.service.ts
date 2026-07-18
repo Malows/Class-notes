@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Subject } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Subject } from "$lib/common/types/academic";
 
 export const subjectService = {
   getAll: () => apiFetch<Subject[]>("/subjects"),

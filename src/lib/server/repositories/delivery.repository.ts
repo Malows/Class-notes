@@ -1,7 +1,7 @@
 import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/common";
 import { DeliveryWorkflowStatus } from "$lib/common";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;

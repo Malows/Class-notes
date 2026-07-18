@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { t } from "$lib/common/i18n/config";
   import type { Snippet } from "svelte";
+
+  import { t } from "$lib/common/i18n/config";
 
   import CommonPage from "./CommonPage.svelte";
 

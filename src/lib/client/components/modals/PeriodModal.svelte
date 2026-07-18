@@ -1,10 +1,11 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Period } from "$lib/common";
+  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
+  import { CreatePeriodSchema } from "$lib/common/schemas";
+  import type { Period } from "$lib/common/types/academic";
+
   import DialogBase from "../common/DialogBase.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
-  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
-  import { CreatePeriodSchema } from "$lib/common/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;
@@ -18,7 +19,7 @@
 
   let year = $state(new Date().getFullYear());
   let semester = $state(1);
-  let serverError = $state<string | null>(null);
+  let serverError = $state<string | undefined>();
 
   const validator = useFormValidation(CreatePeriodSchema);
 
@@ -27,12 +28,12 @@
       year = mode === "edit" && period ? period.year : new Date().getFullYear();
       semester = mode === "edit" && period ? period.semester : 1;
       validator.clear();
-      serverError = null;
+      serverError = undefined;
     }
   });
 
   async function handleSaveClick() {
-    serverError = null;
+    serverError = undefined;
     const isValid = validator.validate({
       subject_id: subjectId ?? period?.subject_id ?? 1,
       year: Number(year),

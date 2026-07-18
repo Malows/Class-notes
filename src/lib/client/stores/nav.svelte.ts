@@ -1,5 +1,5 @@
 import { page } from "$app/state";
-import type { Breadcrumb } from "$lib/common";
+import type { Breadcrumb } from "$lib/common/types/layout";
 
 export interface NavContext {
   facultyId?: number;

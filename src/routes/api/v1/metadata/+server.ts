@@ -1,5 +1,6 @@
-import { metadataService } from "$lib/server/services/metadata.service";
 import { json } from "@sveltejs/kit";
+
+import { metadataService } from "$lib/server/services/metadata.service";
 
 export async function GET() {
   try {

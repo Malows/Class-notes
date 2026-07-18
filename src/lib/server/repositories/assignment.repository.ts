@@ -1,6 +1,6 @@
-import type { Assignment } from "$lib/common";
+import type { Assignment } from "$lib/common/types/academic";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface AssignmentRepository {
   getAll(periodID?: number): Assignment[];

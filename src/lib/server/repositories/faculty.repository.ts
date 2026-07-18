@@ -1,6 +1,6 @@
-import type { Faculty } from "$lib/common";
+import type { Faculty } from "$lib/common/types/academic";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface FacultyRepository {
   getAll(): Faculty[];

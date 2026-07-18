@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
+
+  import type { Delivery, Student, Assignment } from "$lib/common";
   import { t } from "$lib/common/i18n/config";
+
+  import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
   import { assignmentService } from "$lib/client/services/assignment.service";
   import { correctionService } from "$lib/client/services/correction.service";
   import { studentService } from "$lib/client/services/student.service";
-  import type { Delivery, Student, Assignment } from "$lib/common";
-  import { onMount } from "svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   let students = $state<Student[]>([]);

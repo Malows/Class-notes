@@ -1,5 +1,6 @@
-import { periodRepository } from "$lib/server/repositories/period.repository";
 import { json } from "@sveltejs/kit";
+
+import { periodRepository } from "$lib/server/repositories/period.repository";
 
 export async function GET({ url }) {
   try {

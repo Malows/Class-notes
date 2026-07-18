@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { SaveDeliverySchema } from "./dto.schema";
+import { SaveDeliverySchema } from "./index";
 
 describe("SaveDeliverySchema", () => {
   test("accepts workflow-based delivery status without boolean flags", () => {

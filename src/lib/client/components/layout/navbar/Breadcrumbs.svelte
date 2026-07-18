@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
+
   import { navStore } from "$lib/client/stores/nav.svelte";
 
   const breadcrumbs = $derived(

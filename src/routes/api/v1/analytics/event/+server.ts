@@ -1,9 +1,10 @@
+import { json } from "@sveltejs/kit";
+
 import {
   getPlausibleDomain,
   getPlausibleEventURL,
   isAnalyticsServerEnabled,
 } from "$lib/server/observability";
-import { json } from "@sveltejs/kit";
 
 type AnalyticsRequestBody = {
   name?: string;

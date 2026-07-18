@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, configure } from "@testing-library/svelte";
 import { expect, test, vi } from "vitest";
+
 import Toast from "./Toast.svelte";
 
 configure({ testIdAttribute: "data-test-id" });

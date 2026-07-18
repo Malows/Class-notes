@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { SidebarContextLink } from "./sidebar-context";
+
   import SidebarContextItem from "./SidebarContextItem.svelte";
 
   type Props = {

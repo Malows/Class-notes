@@ -1,15 +1,17 @@
 <script lang="ts">
+  import { onMount, getContext } from "svelte";
+
+  import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import type { Faculty } from "$lib/common/types/academic";
+
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import FacultyModal from "$lib/client/components/modals/FacultyModal.svelte";
   import FacultyTable from "$lib/client/components/grids/tables/FacultyTable.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import { t } from "$lib/common/i18n/config";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
-  import { StoreKey } from "$lib/common";
-  import type { Faculty } from "$lib/common";
-  import { onMount, getContext } from "svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);

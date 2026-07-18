@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Assignment } from "$lib/common";
+  import type { Assignment } from "$lib/common/types/academic";
 
   import Button from "$lib/client/components/common/Button.svelte";
 

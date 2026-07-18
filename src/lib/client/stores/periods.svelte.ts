@@ -1,5 +1,5 @@
 import { periodService } from "$lib/client/services/period.service";
-import type { Period } from "$lib/common";
+import type { Period } from "$lib/common/types/academic";
 
 export class PeriodsStore {
   items = $state<Period[]>([]);

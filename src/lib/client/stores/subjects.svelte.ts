@@ -1,5 +1,5 @@
 import { subjectService } from "$lib/client/services/subject.service";
-import type { Subject } from "$lib/common";
+import type { Subject } from "$lib/common/types/academic";
 
 export class SubjectsStore {
   items = $state<Subject[]>([]);

@@ -1,5 +1,11 @@
 <script lang="ts">
+  import { onMount, getContext } from "svelte";
   import { page } from "$app/state";
+
+  import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import type { Subject } from "$lib/common/types/academic";
+
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
@@ -7,12 +13,8 @@
   import SubjectModal from "$lib/client/components/modals/SubjectModal.svelte";
   import SubjectTable from "$lib/client/components/grids/tables/SubjectTable.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import { t } from "$lib/common/i18n/config";
   import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
-  import { StoreKey } from "$lib/common";
-  import type { Subject } from "$lib/common";
-  import { onMount, getContext } from "svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);

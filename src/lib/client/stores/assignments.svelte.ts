@@ -1,5 +1,5 @@
 import { assignmentService } from "$lib/client/services/assignment.service";
-import type { Assignment } from "$lib/common";
+import type { Assignment } from "$lib/common/types/academic";
 
 export class AssignmentsStore {
   items = $state<Assignment[]>([]);

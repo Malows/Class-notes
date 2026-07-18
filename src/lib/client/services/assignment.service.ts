@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Assignment } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Assignment } from "$lib/common/types/academic";
 
 export const assignmentService = {
   getAll: (period_id?: number) => {

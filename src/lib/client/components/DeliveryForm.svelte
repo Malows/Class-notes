@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DeliveryWorkflowStatus, type Delivery } from "$lib/common";
+  import { DeliveryWorkflowStatus, type Delivery } from "$lib/common/types";
 
   interface Props {
     delivery: Delivery;

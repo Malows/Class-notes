@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { metadataService } from "./metadata.service";
 
-vi.mock("$lib/server/repositories/period.repository", () => ({
+vi.mock("../repositories/period.repository", () => ({
   periodRepository: {
     getActiveMetadata: vi.fn(() => ({
       periodData: { year: 2026, term: "Cuatrimestre I" },

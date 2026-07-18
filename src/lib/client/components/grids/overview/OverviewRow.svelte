@@ -1,6 +1,7 @@
 <script lang="ts">
-  import OverviewCell from "$lib/client/components/grids/overview/OverviewCell.svelte";
-  import { getOverviewDeliveryStatus, type Delivery } from "$lib/common";
+  import { getOverviewDeliveryStatus, type Delivery } from "$lib/common/types/student";
+
+  import OverviewCell from "./OverviewCell.svelte";
 
   interface Props {
     name: string;

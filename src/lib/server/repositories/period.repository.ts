@@ -1,6 +1,6 @@
 import type { MetadataContextPayload, Period } from "$lib/common";
 
-import db from "../db";
+import db from "../database/db";
 
 export interface PeriodRepository {
   getAll(subjectID?: number): Period[];

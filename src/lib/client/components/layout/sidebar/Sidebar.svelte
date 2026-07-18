@@ -1,6 +1,8 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
+
   import { commissionsStore } from "$lib/client/stores/commissions.svelte";
+  import { facultiesStore } from "$lib/client/stores/faculties.svelte";
   import { navStore } from "$lib/client/stores/nav.svelte";
   import { periodsStore } from "$lib/client/stores/periods.svelte";
   import { subjectsStore } from "$lib/client/stores/subjects.svelte";
@@ -67,9 +69,13 @@
       : [],
   );
 
-  const activeMetadataSubjects = $derived(metadataContext?.subjects?.length ? metadataSubjectItems : []);
+  const activeMetadataSubjects = $derived(
+    metadataContext?.subjects?.length ? metadataSubjectItems : [],
+  );
 
-  const hasMetadataContext = $derived(Boolean(metadataContext?.periodData || metadataContext?.subjects?.length));
+  const hasMetadataContext = $derived(
+    Boolean(metadataContext?.periodData || metadataContext?.subjects?.length),
+  );
 </script>
 
 <!-- Mobile Toggle Button -->
@@ -91,13 +97,15 @@
   <div class="sidebar-content">
     {#if activeMetadataSubjects.length > 0}
       <SidebarContextSection
-        heading={metadataContext?.periodData ? `Cuatrimestre Activo (${metadataContext.periodData.year} - ${metadataContext.periodData.term})` : "Cuatrimestre Activo"}
+        heading={metadataContext?.periodData
+          ? `Cuatrimestre Activo (${metadataContext.periodData.year} - ${metadataContext.periodData.term})`
+          : "Cuatrimestre Activo"}
         {isCollapsed}
         items={activeMetadataSubjects}
       />
     {:else if context.facultyId}
       <SidebarContextSection
-        heading={`${$t("layout.subjects")} (${context.facultyName || "..."})`}
+        heading={`${$t("layout.subjects")} (${facultiesStore.map.get(context.facultyId)?.name ?? "..."})`}
         {isCollapsed}
         items={subjectItems}
       />

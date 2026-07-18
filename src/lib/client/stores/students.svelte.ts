@@ -1,5 +1,5 @@
 import { studentService } from "$lib/client/services/student.service";
-import type { Student } from "$lib/common";
+import type { Student } from "$lib/common/types/student";
 
 export class StudentsStore {
   items = $state<Student[]>([]);

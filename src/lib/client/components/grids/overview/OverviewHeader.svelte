@@ -1,6 +1,7 @@
 <script lang="ts">
+  import type { Assignment } from "$lib/common/types/academic";
+
   import OverviewHeaderCell from "./OverviewHeaderCell.svelte";
-  import type { Assignment } from "$lib/types/academic";
 
   interface Props {
     assignments: Assignment[];

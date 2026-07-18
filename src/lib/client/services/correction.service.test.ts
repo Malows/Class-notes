@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-import { apiFetch } from "$lib/client/api";
+import { apiFetch } from "$lib/client/services/api";
 import { DeliveryWorkflowStatus } from "$lib/common";
 import { correctionService } from "./correction.service";
 

@@ -1,7 +1,8 @@
 <script lang="ts">
-  import Button from "$lib/client/components/common/Button.svelte";
   import { t } from "$lib/common/i18n/config";
-  import type { Subject } from "$lib/common";
+  import type { Subject } from "$lib/common/types/academic";
+
+  import Button from "$lib/client/components/common/Button.svelte";
 
   interface Props {
     subject: Subject;

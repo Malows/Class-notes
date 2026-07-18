@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Period } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Period } from "$lib/common/types/academic";
 
 export const periodService = {
   getAll: (subject_id?: number) => {

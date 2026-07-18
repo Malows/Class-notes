@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/sveltekit";
-import { getSentryEnvironment, isSentryClientEnabled } from "$lib/client/observability/config";
+
+import { getSentryEnvironment, isSentryClientEnabled } from "./config";
 
 let initialized = false;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Button from "$lib/client/components/common/Button.svelte";
   import { t } from "$lib/common/i18n/config";
-  import type { Commission } from "$lib/common";
+  import type { Commission } from "$lib/common/types/academic";
 
   interface Props {
     commission: Commission;

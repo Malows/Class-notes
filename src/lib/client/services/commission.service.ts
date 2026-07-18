@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Commission } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Commission } from "$lib/common/types/academic";
 
 export const commissionService = {
   getAll: () => apiFetch<Commission[]>("/commissions"),

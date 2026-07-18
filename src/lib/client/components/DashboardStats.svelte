@@ -1,10 +1,12 @@
 <script lang="ts">
-  import Card from "$lib/client/components/common/Card.svelte";
-  import StatItem from "$lib/client/components/common/StatItem.svelte";
+  import { onMount } from "svelte";
+
   import { APPROVAL_RATE_THRESHOLD } from "$lib/common/constants";
   import { t } from "$lib/common/i18n/config";
+
+  import Card from "$lib/client/components/common/Card.svelte";
+  import StatItem from "$lib/client/components/common/StatItem.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
-  import { onMount } from "svelte";
 
   let stats = $state<any>(null);
   let loading = $state(true);

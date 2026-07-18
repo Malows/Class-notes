@@ -1,6 +1,6 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Delivery } from "$lib/common";
+  import type { Delivery } from "$lib/common/types/student";
 
   import DialogBase from "../common/DialogBase.svelte";
   import DeliveryForm from "../DeliveryForm.svelte";

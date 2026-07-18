@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { OverviewDeliveryStatus } from "$lib/common";
+  import { OverviewDeliveryStatus } from "$lib/common/types/student";
 
   interface Props {
     href: string;

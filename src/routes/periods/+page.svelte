@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount, getContext } from "svelte";
+
   import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
+  import type { Period } from "$lib/common/types/academic";
+
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodTable from "$lib/client/components/grids/tables/PeriodTable.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
@@ -8,8 +12,6 @@
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
-  import { StoreKey } from "$lib/common";
-  import type { Period } from "$lib/common";
 
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
   let loading = $state(true);

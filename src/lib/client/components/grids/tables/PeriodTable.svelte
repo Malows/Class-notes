@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import { t } from "$lib/common/i18n/config";
-  import type { Period } from "$lib/common";
+  import type { Period } from "$lib/common/types/academic";
 
+  import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import PeriodRow from "../rows/PeriodRow.svelte";
 
   interface Props {

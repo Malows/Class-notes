@@ -1,6 +1,6 @@
-import { apiFetch } from "$lib/client/api";
-import { CreateStudentsSchema } from "../../common/schemas/dto.schema";
-import type { Student } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import { CreateStudentsSchema } from "../../common/schemas";
+import type { Student } from "$lib/common/types/student";
 
 export const studentService = {
   getAll: (commission_id?: number) => {

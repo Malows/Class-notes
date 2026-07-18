@@ -1,4 +1,4 @@
-import { isAnalyticsClientEnabled } from "$lib/client/observability/config";
+import { isAnalyticsClientEnabled } from "./config";
 
 type AnalyticsEventPayload = {
   name: string;

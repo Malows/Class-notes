@@ -1,10 +1,11 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
-  import type { Commission } from "$lib/common";
+  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
+  import { CreateCommissionSchema } from "$lib/common/schemas";
+  import type { Commission } from "$lib/common/types/academic";
+
   import DialogBase from "../common/DialogBase.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
-  import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
-  import { CreateCommissionSchema } from "$lib/common/schemas/dto.schema";
 
   interface Props {
     isOpen: boolean;

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { Toast as ToastType } from "$lib/client/stores/notifications.svelte";
+  import type { Toast } from "$lib/common/types/layout";
 
   interface Props {
-    toast: ToastType;
+    toast: Toast;
     onDismiss: (id: number) => void;
   }
   let { toast, onDismiss }: Props = $props();

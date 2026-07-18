@@ -1,5 +1,6 @@
-import { facultyRepository } from "$lib/server/repositories/faculty.repository";
 import { json } from "@sveltejs/kit";
+
+import { facultyRepository } from "$lib/server/repositories/faculty.repository";
 
 export async function GET() {
   try {

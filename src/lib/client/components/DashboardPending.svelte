@@ -1,8 +1,10 @@
 <script lang="ts">
-  import Card from "$lib/client/components/common/Card.svelte";
-  import { t } from "$lib/common/i18n/config";
-  import { overviewService } from "$lib/client/services/overview.service";
   import { onMount } from "svelte";
+
+  import { t } from "$lib/common/i18n/config";
+
+  import Card from "$lib/client/components/common/Card.svelte";
+  import { overviewService } from "$lib/client/services/overview.service";
 
   let pending = $state<any[]>([]);
   let loading = $state(true);

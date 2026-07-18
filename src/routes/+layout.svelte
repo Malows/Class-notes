@@ -1,10 +1,9 @@
 <script lang="ts">
-  import "papercss/dist/paper.min.css";
-  import "../app.css";
   import { afterNavigate } from "$app/navigation";
   import { onMount } from "svelte";
 
   import { locale, t } from "$lib/common/i18n/config";
+
   import { initSentryClient } from "$lib/client/observability/sentry.client.js";
   import { trackPageView } from "$lib/client/observability/analytics.client.js";
   import ClassNoteFooter from "$lib/client/components/layout/ClassNoteFooter.svelte";
@@ -14,9 +13,16 @@
   import ToastContainer from "$lib/client/components/common/ToastContainer.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
 
+  import "papercss/dist/paper.min.css";
+  import "../app.css";
+
   let { data, children } = $props();
+
   initStoreContext();
-  metadataStore.initializeStore(data?.metadata ?? null);
+
+  $effect(() => {
+    metadataStore.initializeStore(data?.metadata ?? null);
+  });
 
   // Dynamic document language synchronization for accessibility (a11y)
   $effect(() => {

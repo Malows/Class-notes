@@ -1,5 +1,6 @@
-import { commissionRepository } from "$lib/server/repositories/commission.repository";
 import { json } from "@sveltejs/kit";
+
+import { commissionRepository } from "$lib/server/repositories/commission.repository";
 
 export async function GET({ url }) {
   try {

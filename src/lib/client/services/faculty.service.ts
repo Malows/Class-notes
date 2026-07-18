@@ -1,5 +1,5 @@
-import { apiFetch } from "$lib/client/api";
-import type { Faculty } from "$lib/common";
+import { apiFetch } from "$lib/client/services/api";
+import type { Faculty } from "$lib/common/types/academic";
 
 export const facultyService = {
   getAll: () => apiFetch<Faculty[]>("/faculties"),

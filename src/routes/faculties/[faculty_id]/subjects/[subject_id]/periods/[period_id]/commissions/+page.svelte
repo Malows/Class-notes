@@ -4,8 +4,9 @@
 
   import { t } from "$lib/common/i18n/config";
   import { StoreKey } from "$lib/common";
+  import type { Commission } from "$lib/common/types/academic";
+
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import type { Commission } from "$lib/common";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";

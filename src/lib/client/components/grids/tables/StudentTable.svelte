@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import { t } from "$lib/common/i18n/config";
-  import type { Student } from "$lib/common";
+  import type { Student } from "$lib/common/types/student";
 
+  import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import StudentRow from "../rows/StudentRow.svelte";
 
   interface Props {

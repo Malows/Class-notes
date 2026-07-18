@@ -4,7 +4,7 @@ export const ssr = true;
 export const prerender = false;
 export const trailingSlash = "always";
 
-export const load = async ({ url }) => {
+export const load = async ({ url, data }) => {
   const { pathname } = url;
   let initLocale = "en";
 
@@ -32,5 +32,8 @@ export const load = async ({ url }) => {
   }
 
   await loadTranslations(initLocale, pathname);
-  return {};
+  return {
+    locale: initLocale,
+    metadata: data.metadata,
+  };
 };

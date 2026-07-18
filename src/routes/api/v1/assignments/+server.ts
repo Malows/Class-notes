@@ -1,5 +1,6 @@
-import { assignmentRepository } from "$lib/server/repositories/assignment.repository";
 import { json } from "@sveltejs/kit";
+
+import { assignmentRepository } from "$lib/server/repositories/assignment.repository";
 
 export async function GET({ url }) {
   try {

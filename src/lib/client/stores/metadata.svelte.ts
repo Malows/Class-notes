@@ -1,5 +1,5 @@
 import { metadataService } from "$lib/client/services/metadata.service";
-import type { MetadataContextPayload } from "$lib/common";
+import type { MetadataContextPayload } from "$lib/common/types/metadata";
 
 export class MetadataStore {
   context = $state<MetadataContextPayload | null>(null);

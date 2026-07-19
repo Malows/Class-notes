@@ -1,12 +1,12 @@
 import { json } from "@sveltejs/kit";
 
-import { subjectRepository } from "$lib/server/repositories/subject.repository";
+import { subjectService } from "$lib/server/services/subject.service";
 
 export async function PUT({ params, request }) {
   try {
     const id = Number(params.id);
     const { name } = await request.json();
-    const updatedSubject = subjectRepository.update(id, name);
+    const updatedSubject = subjectService.update(id, name);
     if (!updatedSubject) {
       return json({ error: "Subject not found" }, { status: 404 });
     }
@@ -19,7 +19,7 @@ export async function PUT({ params, request }) {
 export async function DELETE({ params }) {
   try {
     const id = Number(params.id);
-    subjectRepository.delete(id);
+    subjectService.delete(id);
     return new Response(null, { status: 204 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

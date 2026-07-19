@@ -1,6 +1,6 @@
 import type { MetadataContextPayload, Period } from "$lib/common";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface PeriodRepository {
   getAll(subjectID?: number): Period[];
@@ -44,20 +44,22 @@ class PeriodRepositoryImpl implements PeriodRepository {
       throw new Error("Period already exists for this subject");
     }
 
-    const insertPeriod = db.prepare(
-      "INSERT INTO periods (year, semester) VALUES (?, ?) RETURNING id, year, semester",
-    );
-    const newPeriod = insertPeriod.get(year, semester) as Period;
+    return withTransaction(db, () => {
+      const insertPeriod = db.prepare(
+        "INSERT INTO periods (year, semester) VALUES (?, ?) RETURNING id, year, semester",
+      );
+      const newPeriod = insertPeriod.get(year, semester) as Period;
 
-    const insertLink = db.prepare(
-      "INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?) RETURNING id, subject_id, period_id",
-    );
-    insertLink.get(subject_id, newPeriod.id);
+      const insertLink = db.prepare(
+        "INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?) RETURNING id, subject_id, period_id",
+      );
+      insertLink.get(subject_id, newPeriod.id);
 
-    const subjectStmt = db.prepare("SELECT name FROM subjects WHERE id = ?");
-    newPeriod.subject_id = subject_id;
-    newPeriod.subject_name = (subjectStmt.get(subject_id) as any).name;
-    return newPeriod;
+      const subjectStmt = db.prepare("SELECT name FROM subjects WHERE id = ?");
+      newPeriod.subject_id = subject_id;
+      newPeriod.subject_name = (subjectStmt.get(subject_id) as any).name;
+      return newPeriod;
+    });
   }
 
   update(id: number, year: number, semester: number): Period {

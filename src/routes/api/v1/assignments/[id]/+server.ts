@@ -1,12 +1,12 @@
 import { json } from "@sveltejs/kit";
 
-import { assignmentRepository } from "$lib/server/repositories/assignment.repository";
+import { assignmentService } from "$lib/server/services/assignment.service";
 
 export async function PUT({ params, request }) {
   try {
     const id = Number(params.id);
     const { title, subtitle } = await request.json();
-    const updatedAssignment = assignmentRepository.update(id, title, subtitle);
+    const updatedAssignment = assignmentService.update(id, title, subtitle);
     if (!updatedAssignment) {
       return json({ error: "Assignment not found" }, { status: 404 });
     }
@@ -19,7 +19,7 @@ export async function PUT({ params, request }) {
 export async function DELETE({ params }) {
   try {
     const id = Number(params.id);
-    assignmentRepository.delete(id);
+    assignmentService.delete(id);
     return new Response(null, { status: 204 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

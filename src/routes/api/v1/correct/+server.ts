@@ -1,13 +1,13 @@
 import { json } from "@sveltejs/kit";
 
-import { deliveryRepository } from "$lib/server/repositories/delivery.repository";
+import { deliveryService } from "$lib/server/services/delivery.service";
 
 export async function GET({ url }) {
   try {
     const commissionIDStr = url.searchParams.get("commission_id");
     if (commissionIDStr !== null) {
       const commissionID = Number(commissionIDStr);
-      const deliveries = deliveryRepository.getAllByCommission(commissionID);
+      const deliveries = deliveryService.getAllByCommission(commissionID);
       return json({ data: deliveries });
     }
 
@@ -16,7 +16,7 @@ export async function GET({ url }) {
     if (assignmentIDStr !== null && studentIDStr !== null) {
       const assignmentID = Number(assignmentIDStr);
       const studentID = Number(studentIDStr);
-      const delivery = deliveryRepository.getOne(assignmentID, studentID);
+      const delivery = deliveryService.getOne(assignmentID, studentID);
       return json({ data: delivery });
     }
 
@@ -29,7 +29,7 @@ export async function GET({ url }) {
 export async function POST({ request }) {
   try {
     const delivery = await request.json();
-    deliveryRepository.save(delivery);
+    deliveryService.save(delivery);
     return json({ status: "saved" }, { status: 200 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

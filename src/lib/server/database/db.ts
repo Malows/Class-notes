@@ -3,35 +3,65 @@ import { DATABASE_NAME } from "$env/static/private";
 
 import { createSchema } from "./schema";
 import { insertSeed } from "./seed";
+import { applyDrizzleMigrations } from "./migrate";
 
 const isTest = typeof process !== "undefined" && process.env.VITEST;
 const dbPath = isTest ? ":memory:" : DATABASE_NAME || "class-notes.db";
 
-const db = new Database(dbPath, { verbose: console.log });
-
-// Enable foreign keys and WAL mode for better concurrency
-db.pragma("foreign_keys = ON");
-
-if (!isTest) {
-  db.pragma("journal_mode = WAL");
+export interface DatabaseInitializationOptions {
+  isTest?: boolean;
+  shouldSeed?: boolean;
 }
 
+export function withTransaction<T>(targetDb: Database.Database, operation: () => T): T {
+  const transaction = targetDb.transaction(operation);
+  return transaction();
+}
+
+export function initializeDatabase(
+  targetDb: Database.Database,
+  options: DatabaseInitializationOptions = {},
+): { initialized: boolean } {
+  const { isTest: forceTestMode = false, shouldSeed = true } = options;
+  const isRuntimeTest = forceTestMode || isTest;
+
+  targetDb.pragma("foreign_keys = ON");
+
+  if (!isRuntimeTest) {
+    targetDb.pragma("journal_mode = WAL");
+  }
+
+  const tableCheck = targetDb
+    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='faculties'")
+    .get();
+
+  if (!tableCheck) {
+    let initializedWithMigrations = false;
+
+    try {
+      applyDrizzleMigrations(targetDb);
+      initializedWithMigrations = true;
+    } catch (error) {
+      createSchema(targetDb);
+    }
+
+    if (shouldSeed) {
+      insertSeed(targetDb);
+    }
+
+    return { initialized: true, initializedWithMigrations };
+  }
+
+  return { initialized: false };
+}
+
+const db = new Database(dbPath, { verbose: console.log });
 const isDev =
   process.env.NODE_ENV === "development" ||
   (typeof import.meta !== "undefined" && import.meta.env?.DEV);
 
 if (isDev || isTest) {
-  // Check if the database is empty (does not have a faculties table)
-  const tableCheck = db
-    .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='faculties'")
-    .get();
-
-  if (!tableCheck) {
-    console.log(`Database '${dbPath}' is empty. Creating schema and inserting seed data...`);
-    createSchema(db);
-    insertSeed(db);
-    console.log("Database initialized successfully!");
-  }
+  initializeDatabase(db, { isTest, shouldSeed: true });
 }
 
 // Example function to get all faculties (will be moved to repository)

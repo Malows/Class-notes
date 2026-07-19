@@ -1,12 +1,12 @@
 import { json } from "@sveltejs/kit";
 
-import { commissionRepository } from "$lib/server/repositories/commission.repository";
+import { commissionService } from "$lib/server/services/commission.service";
 
 export async function PUT({ params, request }) {
   try {
     const id = Number(params.id);
     const { name } = await request.json();
-    const updatedCommission = commissionRepository.update(id, name);
+    const updatedCommission = commissionService.update(id, name);
     if (!updatedCommission) {
       return json({ error: "Commission not found" }, { status: 404 });
     }
@@ -19,7 +19,7 @@ export async function PUT({ params, request }) {
 export async function DELETE({ params }) {
   try {
     const id = Number(params.id);
-    commissionRepository.delete(id);
+    commissionService.delete(id);
     return new Response(null, { status: 204 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

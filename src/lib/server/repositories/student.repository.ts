@@ -1,6 +1,6 @@
 import type { Student } from "$lib/common/types/student";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface StudentRepository {
   getAll(commissionID?: number): Student[];
@@ -23,12 +23,11 @@ class StudentRepositoryImpl implements StudentRepository {
 
   createBulk(commissionID: number, names: string[]): void {
     const insert = db.prepare("INSERT INTO students (commission_id, name) VALUES (?, ?)");
-    const insertMany = db.transaction((studentsToInsert) => {
-      for (const name of studentsToInsert) {
+    withTransaction(db, () => {
+      for (const name of names) {
         insert.run(commissionID, name);
       }
     });
-    insertMany(names);
   }
 
   update(id: number, name: string): Student {

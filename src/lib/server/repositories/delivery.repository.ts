@@ -1,7 +1,7 @@
 import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/common";
 import { DeliveryWorkflowStatus } from "$lib/common";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;
@@ -38,27 +38,30 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
   }
 
   save(delivery: Delivery): void {
-    const stmt = db.prepare(`
-            INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments)
-            VALUES (?, ?, ?, ?, ?, ?)
-            ON CONFLICT(assignment_id, student_id) DO UPDATE SET
-                workflow_status = EXCLUDED.workflow_status,
-                grade = EXCLUDED.grade,
-                ai_level = EXCLUDED.ai_level,
-                comments = EXCLUDED.comments,
-                updatedAt = CURRENT_TIMESTAMP,
-                deletedAt = NULL
-        `);
     const workflowStatus = delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED;
 
-    stmt.run(
-      delivery.assignment_id,
-      delivery.student_id,
-      workflowStatus,
-      delivery.grade,
-      delivery.ai_level,
-      delivery.comments,
-    );
+    withTransaction(db, () => {
+      const stmt = db.prepare(`
+              INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments)
+              VALUES (?, ?, ?, ?, ?, ?)
+              ON CONFLICT(assignment_id, student_id) DO UPDATE SET
+                  workflow_status = EXCLUDED.workflow_status,
+                  grade = EXCLUDED.grade,
+                  ai_level = EXCLUDED.ai_level,
+                  comments = EXCLUDED.comments,
+                  updatedAt = CURRENT_TIMESTAMP,
+                  deletedAt = NULL
+          `);
+
+      stmt.run(
+        delivery.assignment_id,
+        delivery.student_id,
+        workflowStatus,
+        delivery.grade,
+        delivery.ai_level,
+        delivery.comments,
+      );
+    });
   }
 
   getCommissionOverviewData(commissionID: number): OverviewData {

@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 
-import { deliveryRepository } from "$lib/server/repositories/delivery.repository";
+import { deliveryService } from "$lib/server/services/delivery.service";
 
 export async function GET({ url }) {
   try {
@@ -8,10 +8,10 @@ export async function GET({ url }) {
     const periodParam = url.searchParams.get("period_id");
 
     if (commissionParam) {
-      const data = deliveryRepository.getCommissionOverviewData(Number(commissionParam));
+      const data = deliveryService.getCommissionOverviewData(Number(commissionParam));
       return json({ data });
     } else if (periodParam) {
-      const data = deliveryRepository.getPeriodOverviewData(Number(periodParam));
+      const data = deliveryService.getPeriodOverviewData(Number(periodParam));
       return json({ data });
     }
 

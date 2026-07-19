@@ -1,6 +1,6 @@
 import type { Subject } from "$lib/common/types/academic";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface SubjectRepository {
   getAll(): Subject[];
@@ -18,26 +18,29 @@ class SubjectRepositoryImpl implements SubjectRepository {
   }
 
   create(faculty_id: number, name: string): Subject {
-    const stmt = db.prepare(
-      "INSERT INTO subjects (faculty_id, name) VALUES (?, ?) RETURNING id, faculty_id, name",
-    );
-    const newSubject = stmt.get(faculty_id, name) as Subject;
-    // Fetch faculty_name for the returned object
-    const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
-    newSubject.faculty_name = (facultyStmt.get(faculty_id) as any).name;
-    return newSubject;
+    return withTransaction(db, () => {
+      const stmt = db.prepare(
+        "INSERT INTO subjects (faculty_id, name) VALUES (?, ?) RETURNING id, faculty_id, name",
+      );
+      const newSubject = stmt.get(faculty_id, name) as Subject;
+      const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
+      newSubject.faculty_name = (facultyStmt.get(faculty_id) as any).name;
+      return newSubject;
+    });
   }
 
   update(id: number, name: string): Subject {
-    const stmt = db.prepare(
-      "UPDATE subjects SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, faculty_id, name",
-    );
-    const updatedSubject = stmt.get(name, id) as Subject;
-    if (updatedSubject) {
-      const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
-      updatedSubject.faculty_name = (facultyStmt.get(updatedSubject.faculty_id) as any).name;
-    }
-    return updatedSubject;
+    return withTransaction(db, () => {
+      const stmt = db.prepare(
+        "UPDATE subjects SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, faculty_id, name",
+      );
+      const updatedSubject = stmt.get(name, id) as Subject;
+      if (updatedSubject) {
+        const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
+        updatedSubject.faculty_name = (facultyStmt.get(updatedSubject.faculty_id) as any).name;
+      }
+      return updatedSubject;
+    });
   }
 
   delete(id: number): void {

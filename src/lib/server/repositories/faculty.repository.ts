@@ -1,6 +1,6 @@
 import type { Faculty } from "$lib/common/types/academic";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface FacultyRepository {
   getAll(): Faculty[];
@@ -16,15 +16,19 @@ class FacultyRepositoryImpl implements FacultyRepository {
   }
 
   create(name: string): Faculty {
-    const stmt = db.prepare("INSERT INTO faculties (name) VALUES (?) RETURNING id, name");
-    return stmt.get(name) as Faculty;
+    return withTransaction(db, () => {
+      const stmt = db.prepare("INSERT INTO faculties (name) VALUES (?) RETURNING id, name");
+      return stmt.get(name) as Faculty;
+    });
   }
 
   update(id: number, name: string): Faculty {
-    const stmt = db.prepare(
-      "UPDATE faculties SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, name",
-    );
-    return stmt.get(name, id) as Faculty;
+    return withTransaction(db, () => {
+      const stmt = db.prepare(
+        "UPDATE faculties SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, name",
+      );
+      return stmt.get(name, id) as Faculty;
+    });
   }
 
   delete(id: number): void {

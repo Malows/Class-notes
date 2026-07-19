@@ -1,12 +1,12 @@
 import { json } from "@sveltejs/kit";
 
-import { facultyRepository } from "$lib/server/repositories/faculty.repository";
+import { facultyService } from "$lib/server/services/faculty.service";
 
 export async function PUT({ params, request }) {
   try {
     const id = Number(params.id);
     const { name } = await request.json();
-    const updatedFaculty = facultyRepository.update(id, name);
+    const updatedFaculty = facultyService.update(id, name);
     if (!updatedFaculty) {
       return json({ error: "Faculty not found" }, { status: 404 });
     }
@@ -19,7 +19,7 @@ export async function PUT({ params, request }) {
 export async function DELETE({ params }) {
   try {
     const id = Number(params.id);
-    facultyRepository.delete(id);
+    facultyService.delete(id);
     return new Response(null, { status: 204 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

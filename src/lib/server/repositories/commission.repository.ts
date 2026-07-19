@@ -1,6 +1,6 @@
 import type { Commission } from "$lib/common/types/academic";
 
-import db from "../database/db";
+import db, { withTransaction } from "../database/db";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];
@@ -24,27 +24,30 @@ class CommissionRepositoryImpl implements CommissionRepository {
   }
 
   create(period_id: number, name: string): Commission {
-    const stmt = db.prepare(
-      "INSERT INTO commissions (period_id, name) VALUES (?, ?) RETURNING id, period_id, name",
-    );
-    const newCommission = stmt.get(period_id, name) as Commission;
-    newCommission.student_count = 0; // Initially no students
-    return newCommission;
+    return withTransaction(db, () => {
+      const stmt = db.prepare(
+        "INSERT INTO commissions (period_id, name) VALUES (?, ?) RETURNING id, period_id, name",
+      );
+      const newCommission = stmt.get(period_id, name) as Commission;
+      newCommission.student_count = 0; // Initially no students
+      return newCommission;
+    });
   }
 
   update(id: number, name: string): Commission {
-    const stmt = db.prepare(
-      "UPDATE commissions SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, name",
-    );
-    const updatedCommission = stmt.get(name, id) as Commission;
-    if (updatedCommission) {
-      // Fetch student count
-      const countStmt = db.prepare(
-        "SELECT COUNT(id) as count FROM students WHERE commission_id = ? AND deletedAt IS NULL",
+    return withTransaction(db, () => {
+      const stmt = db.prepare(
+        "UPDATE commissions SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, name",
       );
-      updatedCommission.student_count = (countStmt.get(id) as any).count;
-    }
-    return updatedCommission;
+      const updatedCommission = stmt.get(name, id) as Commission;
+      if (updatedCommission) {
+        const countStmt = db.prepare(
+          "SELECT COUNT(id) as count FROM students WHERE commission_id = ? AND deletedAt IS NULL",
+        );
+        updatedCommission.student_count = (countStmt.get(id) as any).count;
+      }
+      return updatedCommission;
+    });
   }
 
   delete(id: number): void {

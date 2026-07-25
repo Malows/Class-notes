@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { periodService } from "$lib/server/services/period.service";
 
-export async function GET({ url }) {
+export async function GET({ url }: { url: URL }) {
   try {
     const subjectID = url.searchParams.get("subject_id")
       ? Number(url.searchParams.get("subject_id"))
@@ -14,7 +14,7 @@ export async function GET({ url }) {
   }
 }
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   try {
     const { subject_id, year, semester } = await request.json();
     const newPeriod = periodService.create(subject_id, year, semester);

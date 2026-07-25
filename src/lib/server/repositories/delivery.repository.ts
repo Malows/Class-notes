@@ -146,7 +146,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
         student_id: deliveries.studentId,
         workflow_status: deliveries.workflowStatus,
         grade: deliveries.grade,
-        aiLevel: deliveries.aiLevel,
+        ai_level: deliveries.aiLevel,
         comments: deliveries.comments,
       })
       .from(deliveries)
@@ -213,7 +213,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
         student_id: deliveries.studentId,
         workflow_status: deliveries.workflowStatus,
         grade: deliveries.grade,
-        aiLevel: deliveries.aiLevel,
+        ai_level: deliveries.aiLevel,
         comments: deliveries.comments,
       })
       .from(deliveries)

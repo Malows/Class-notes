@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { facultyService } from "$lib/server/services/faculty.service";
 
-export async function PUT({ params, request }) {
+export async function PUT({ params, request }: { params: Record<string, string>; request: Request }) {
   try {
     const id = Number(params.id);
     const { name } = await request.json();
@@ -16,7 +16,7 @@ export async function PUT({ params, request }) {
   }
 }
 
-export async function DELETE({ params }) {
+export async function DELETE({ params }: { params: Record<string, string> }) {
   try {
     const id = Number(params.id);
     facultyService.delete(id);

@@ -27,7 +27,7 @@
     {/each}
     {#if items.length === 0}
       <tr>
-        <td colspan="100%">No hay datos disponibles.</td>
+        <td colspan={100}>No hay datos disponibles.</td>
       </tr>
     {/if}
   </tbody>

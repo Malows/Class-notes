@@ -20,7 +20,7 @@ test("AssignmentRow renders and handles onDelete", async () => {
 
   render(AssignmentRow, {
     target: tr,
-    props: { assignment, onDelete },
+    props: { assignment, onDelete, onEdit: vi.fn(), onBulkUpdate: vi.fn() },
   });
 
   expect(screen.getAllByText("Test TP")[0]).toBeDefined();

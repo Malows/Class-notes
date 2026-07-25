@@ -4,7 +4,7 @@ export const ssr = true;
 export const prerender = false;
 export const trailingSlash = "always";
 
-export const load = async ({ url, data }) => {
+export const load = async ({ url, data }: { url: URL; data: Record<string, unknown> }) => {
   const { pathname } = url;
   let initLocale = "en";
 

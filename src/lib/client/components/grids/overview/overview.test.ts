@@ -6,7 +6,7 @@ import OverviewCell from "./OverviewCell.svelte";
 import OverviewGrid from "./OverviewGrid.svelte";
 import OverviewLegend from "./OverviewLegend.svelte";
 import OverviewRow from "./OverviewRow.svelte";
-import { DeliveryWorkflowStatus, getOverviewDeliveryStatus } from "$lib/common";
+import { DeliveryWorkflowStatus, getOverviewDeliveryStatus, type OverviewDeliveryStatus } from "$lib/common";
 
 configure({ testIdAttribute: "data-test-id" });
 
@@ -37,7 +37,7 @@ describe("overview components", () => {
   test("OverviewCell renders approved state and AI icon", () => {
     render(OverviewCell, {
       href: "/correct",
-      status: "approved",
+      status: "approved" as OverviewDeliveryStatus,
       aiLevel: 2,
       label: "approved",
       testId: "approved-cell",
@@ -133,7 +133,7 @@ describe("overview components", () => {
   });
 
   test("OverviewLegend renders the popover trigger", () => {
-    render(OverviewLegend, { title: "Legend" });
+    render(OverviewLegend, { title: "Legend" } as never);
 
     const button = screen.getByTestId("overview-legend-popover-btn");
     expect(button).toBeInTheDocument();

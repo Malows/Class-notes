@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { deliveryService } from "$lib/server/services/delivery.service";
 
-export async function GET({ url }) {
+export async function GET({ url }: { url: URL }) {
   try {
     const commissionParam = url.searchParams.get("commission_id");
     const periodParam = url.searchParams.get("period_id");

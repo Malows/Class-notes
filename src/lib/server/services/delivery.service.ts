@@ -1,4 +1,4 @@
-import type { Delivery, DeliverySummary } from "$lib/common/types";
+import type { Delivery } from "$lib/common/types";
 
 import { deliveryRepository } from "../repositories/delivery.repository";
 
@@ -13,6 +13,6 @@ export const deliveryService = {
   getCommissionOverviewData: (commissionID: number) =>
     deliveryRepository.getCommissionOverviewData(commissionID),
   getPeriodOverviewData: (periodID: number) => deliveryRepository.getPeriodOverviewData(periodID),
-  getPendingSummary: (): DeliverySummary => deliveryRepository.getPendingSummary(),
+  getPendingSummary: () => deliveryRepository.getPendingSummary(),
   getGlobalStats: () => deliveryRepository.getGlobalStats(),
 };

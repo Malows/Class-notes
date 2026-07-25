@@ -21,7 +21,7 @@
   initStoreContext();
 
   $effect(() => {
-    metadataStore.initializeStore(data?.metadata ?? null);
+    metadataStore.initializeStore((data?.metadata as never) ?? null);
   });
 
   // Dynamic document language synchronization for accessibility (a11y)

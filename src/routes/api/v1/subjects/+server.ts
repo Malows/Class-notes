@@ -11,7 +11,7 @@ export async function GET() {
   }
 }
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   try {
     const { faculty_id, name } = await request.json();
     const newSubject = subjectService.create(faculty_id, name);

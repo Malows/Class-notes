@@ -90,9 +90,7 @@
   <ConfirmDialog
     isOpen={modal.mode === "delete"}
     title={$t("faculties.confirm_delete_title")}
-    message={$t("faculties.confirm_delete_message", {
-      name: modal.target?.name || "",
-    })}
+    message={$t("faculties.confirm_delete_message", { name: modal.target?.name || "" } as never)}
     onConfirm={handleDelete}
     onClose={() => modal.close()}
   />

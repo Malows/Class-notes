@@ -11,7 +11,7 @@ type ErrorPayload = {
   context?: Record<string, unknown>;
 };
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   if (!isSentryServerEnabled()) {
     return json({ ok: true, skipped: true, reason: "missing_env" });
   }

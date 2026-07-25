@@ -12,7 +12,7 @@ export const assignmentService = {
   ): Assignment => assignmentRepository.create(period_id, title, subtitle, workflow_status),
   update: (id: number, title: string, subtitle: string): Assignment =>
     assignmentRepository.update(id, title, subtitle),
-  updateStatus: (id: number, status: AssignmentWorkflowStatus): Assignment =>
+  updateStatus: (id: number, status: AssignmentWorkflowStatus): void =>
     assignmentRepository.updateStatus(id, status),
   delete: (id: number): void => {
     assignmentRepository.delete(id);

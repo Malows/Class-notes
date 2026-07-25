@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { assignmentService } from "$lib/server/services/assignment.service";
 
-export async function PUT({ params, request }) {
+export async function PUT({ params, request }: { params: Record<string, string>; request: Request }) {
   try {
     const id = Number(params.id);
     const { status } = await request.json();

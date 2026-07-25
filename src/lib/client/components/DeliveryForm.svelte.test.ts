@@ -1,3 +1,4 @@
+import type { Delivery } from "$lib/common";
 import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
 import { render, screen, fireEvent, configure } from "@testing-library/svelte";
 import { expect, test, vi } from "vitest";
@@ -6,10 +7,10 @@ import { flushSync } from "svelte";
 configure({ testIdAttribute: "data-test-id" });
 
 test("DeliveryForm renders and saves", async () => {
-  const delivery = {
+  const delivery: Delivery = {
     assignment_id: 1,
     student_id: 1,
-    workflow_status: "NOT_DICTATED",
+    workflow_status: "NOT_DICTATED" as Delivery["workflow_status"],
     grade: 0,
     ai_level: 0,
     comments: "",
@@ -25,10 +26,10 @@ test("DeliveryForm renders and saves", async () => {
 });
 
 test("DeliveryForm triggers model updates and callbacks", async () => {
-  const delivery = {
+  const delivery: Delivery = {
     assignment_id: 1,
     student_id: 1,
-    workflow_status: "NOT_DICTATED",
+    workflow_status: "NOT_DICTATED" as Delivery["workflow_status"],
     grade: 5.0,
     ai_level: 0,
     comments: "No comments",

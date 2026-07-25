@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { assignmentService } from "$lib/server/services/assignment.service";
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   try {
     const { source_period_id, target_period_id } = await request.json();
     assignmentService.copy(source_period_id, target_period_id);

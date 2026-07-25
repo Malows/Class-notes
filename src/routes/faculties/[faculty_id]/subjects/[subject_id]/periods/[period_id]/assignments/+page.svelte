@@ -195,7 +195,7 @@
   <ConfirmDialog
     isOpen={modal.isDelete}
     title={$t("assignments.confirm_delete_title")}
-    message={$t("assignments.confirm_delete_message", { title: modal.target?.title || "" })}
+    message={$t("assignments.confirm_delete_message", { title: modal.target?.title || "" } as never)}
     onConfirm={handleDelete}
     onClose={() => modal.close()}
   />
@@ -218,7 +218,7 @@
                 `assignments.workflow_status.${getNextStatus(advanceTarget.workflow_status)?.toLowerCase() || ""}`,
               )
             : "",
-        })}
+        } as never)}
       </p>
     {/snippet}
     {#snippet footer()}

@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { deliveryService } from "$lib/server/services/delivery.service";
 
-export async function GET({ url }) {
+export async function GET({ url }: { url: URL }) {
   try {
     const commissionIDStr = url.searchParams.get("commission_id");
     if (commissionIDStr !== null) {
@@ -26,7 +26,7 @@ export async function GET({ url }) {
   }
 }
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   try {
     const delivery = await request.json();
     deliveryService.save(delivery);

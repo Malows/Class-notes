@@ -13,7 +13,7 @@ type AnalyticsRequestBody = {
   props?: Record<string, string | number | boolean>;
 };
 
-export async function POST({ request, getClientAddress }) {
+export async function POST({ request, getClientAddress }: { request: Request; getClientAddress: () => string }) {
   if (!isAnalyticsServerEnabled()) {
     return json({ ok: true, skipped: true, reason: "missing_env" });
   }

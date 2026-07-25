@@ -84,7 +84,7 @@
     message={$t("periods.confirm_delete_message", {
       year: modal.target?.year || "",
       semester: modal.target?.semester || "",
-    })}
+    } as never)}
     onConfirm={handleDelete}
     onClose={() => modal.close()}
   />

@@ -58,7 +58,7 @@ export function initializeDatabase(
 }
 
 const db = new Database(dbPath, { verbose: console.log });
-export const drizzleDb = drizzle({ client: db, schema });
+export const drizzleDb = drizzle({ client: db, schema } as any);
 const isDev = Boolean(
   process.env.NODE_ENV === "development" ||
   (typeof import.meta !== "undefined" && import.meta.env?.DEV),

@@ -2,7 +2,7 @@ import { json } from "@sveltejs/kit";
 
 import { studentService } from "$lib/server/services/student.service";
 
-export async function GET({ url }) {
+export async function GET({ url }: { url: URL }) {
   try {
     const commissionID = url.searchParams.get("commission_id");
     const students = commissionID
@@ -14,7 +14,7 @@ export async function GET({ url }) {
   }
 }
 
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
   try {
     const { commission_id, names } = await request.json();
     studentService.createBulk(commission_id, names);

@@ -16,14 +16,11 @@ test("apiFetch parses successful json response and returns data", async () => {
 
   const result = await apiFetch<typeof mockData>("/test");
 
-  expect(fetchMock).toHaveBeenCalledWith(
-    expect.stringMatching(/\/api\/v1\/test$/),
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
+  expect(fetchMock).toHaveBeenCalledWith(expect.stringMatching(/\/api\/v1\/test$/), {
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
   expect(result).toEqual(mockData);
 });
 
@@ -40,16 +37,13 @@ test("apiFetch merges options and custom headers", async () => {
     headers: { "X-Custom": "Value" },
   });
 
-  expect(fetchMock).toHaveBeenCalledWith(
-    expect.stringMatching(/\/api\/v1\/test$/),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Custom": "Value",
-      },
+  expect(fetchMock).toHaveBeenCalledWith(expect.stringMatching(/\/api\/v1\/test$/), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Custom": "Value",
     },
-  );
+  });
 });
 
 test("apiFetch throws error from response body when not ok", async () => {

@@ -418,10 +418,7 @@
       "indexes": {
         "idx_subject_periods_subject_period_active": {
           "name": "idx_subject_periods_subject_period_active",
-          "columns": [
-            "subject_id",
-            "period_id"
-          ],
+          "columns": ["subject_id", "period_id"],
           "isUnique": true
         }
       },

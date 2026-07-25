@@ -4,8 +4,12 @@ import { assignmentRepository } from "../repositories/assignment.repository";
 
 export const assignmentService = {
   getAll: (periodID?: number): Assignment[] => assignmentRepository.getAll(periodID),
-  create: (period_id: number, title: string, subtitle: string, workflow_status: AssignmentWorkflowStatus): Assignment =>
-    assignmentRepository.create(period_id, title, subtitle, workflow_status),
+  create: (
+    period_id: number,
+    title: string,
+    subtitle: string,
+    workflow_status: AssignmentWorkflowStatus,
+  ): Assignment => assignmentRepository.create(period_id, title, subtitle, workflow_status),
   update: (id: number, title: string, subtitle: string): Assignment =>
     assignmentRepository.update(id, title, subtitle),
   updateStatus: (id: number, status: AssignmentWorkflowStatus): Assignment =>

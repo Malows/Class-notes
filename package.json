@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
     "validate:i18n": "tsx scripts/validate-i18n-keys.ts",
     "dev": "vite dev",
     "build": "pnpm validate:i18n && vite build",

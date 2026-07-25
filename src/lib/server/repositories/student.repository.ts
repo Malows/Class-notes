@@ -1,6 +1,8 @@
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Student } from "$lib/common/types/student";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { students } from "../database/schema.drizzle";
 
 export interface StudentRepository {
   getAll(commissionID?: number): Student[];
@@ -11,35 +13,41 @@ export interface StudentRepository {
 
 class StudentRepositoryImpl implements StudentRepository {
   getAll(commissionID?: number): Student[] {
-    let query = "SELECT id, commission_id, name FROM students WHERE deletedAt IS NULL";
-    const params: number[] = [];
+    const conditions = [isNull(students.deletedAt)];
     if (commissionID) {
-      query += " AND commission_id = ?";
-      params.push(commissionID);
+      conditions.push(eq(students.commissionId, commissionID));
     }
-    const stmt = db.prepare(query);
-    return stmt.all(params) as Student[];
+
+    return drizzleDb
+      .select({ id: students.id, commission_id: students.commissionId, name: students.name })
+      .from(students)
+      .where(and(...conditions))
+      .all() as Student[];
   }
 
   createBulk(commissionID: number, names: string[]): void {
-    const insert = db.prepare("INSERT INTO students (commission_id, name) VALUES (?, ?)");
     withTransaction(db, () => {
       for (const name of names) {
-        insert.run(commissionID, name);
+        drizzleDb.insert(students).values({ commissionId: commissionID, name }).run();
       }
     });
   }
 
   update(id: number, name: string): Student {
-    const stmt = db.prepare(
-      "UPDATE students SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, commission_id, name",
-    );
-    return stmt.get(name, id) as Student;
+    return drizzleDb
+      .update(students)
+      .set({ name, updatedAt: sql`CURRENT_TIMESTAMP` })
+      .where(and(eq(students.id, id), isNull(students.deletedAt)))
+      .returning({ id: students.id, commission_id: students.commissionId, name: students.name })
+      .get() as Student;
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE students SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(students)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(students.id, id))
+      .run();
   }
 }
 

@@ -1,11 +1,13 @@
 import Database from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import { DATABASE_NAME } from "$env/static/private";
 
 import { createSchema } from "./schema";
 import { insertSeed } from "./seed";
 import { applyDrizzleMigrations } from "./migrate";
+import * as schema from "./schema.drizzle";
 
-const isTest = typeof process !== "undefined" && process.env.VITEST;
+const isTest = !!(typeof process !== "undefined" && process.env.VITEST);
 const dbPath = isTest ? ":memory:" : DATABASE_NAME || "class-notes.db";
 
 export interface DatabaseInitializationOptions {
@@ -21,7 +23,7 @@ export function withTransaction<T>(targetDb: Database.Database, operation: () =>
 export function initializeDatabase(
   targetDb: Database.Database,
   options: DatabaseInitializationOptions = {},
-): { initialized: boolean } {
+): { initialized: boolean; initializedWithMigrations?: boolean } {
   const { isTest: forceTestMode = false, shouldSeed = true } = options;
   const isRuntimeTest = forceTestMode || isTest;
 
@@ -41,7 +43,7 @@ export function initializeDatabase(
     try {
       applyDrizzleMigrations(targetDb);
       initializedWithMigrations = true;
-    } catch (error) {
+    } catch {
       createSchema(targetDb);
     }
 
@@ -56,9 +58,11 @@ export function initializeDatabase(
 }
 
 const db = new Database(dbPath, { verbose: console.log });
-const isDev =
+export const drizzleDb = drizzle({ client: db, schema });
+const isDev = Boolean(
   process.env.NODE_ENV === "development" ||
-  (typeof import.meta !== "undefined" && import.meta.env?.DEV);
+  (typeof import.meta !== "undefined" && import.meta.env?.DEV),
+);
 
 if (isDev || isTest) {
   initializeDatabase(db, { isTest, shouldSeed: true });

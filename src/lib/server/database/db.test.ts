@@ -29,7 +29,9 @@ describe("database initialization", () => {
       ]),
     );
     expect(subjectsForeignKeys).toEqual(
-      expect.arrayContaining([expect.objectContaining({ table: "faculties", from: "faculty_id", to: "id" })]),
+      expect.arrayContaining([
+        expect.objectContaining({ table: "faculties", from: "faculty_id", to: "id" }),
+      ]),
     );
   });
 

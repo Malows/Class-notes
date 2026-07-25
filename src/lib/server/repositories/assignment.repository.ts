@@ -1,6 +1,8 @@
+import { and, eq, isNull, sql, type SQL } from "drizzle-orm";
 import type { Assignment } from "$lib/common/types/academic";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { assignments, commissions, deliveries, students } from "../database/schema.drizzle";
 
 export interface AssignmentRepository {
   getAll(periodID?: number): Assignment[];
@@ -13,15 +15,22 @@ export interface AssignmentRepository {
 
 class AssignmentRepositoryImpl implements AssignmentRepository {
   getAll(periodID?: number): Assignment[] {
-    let query =
-      "SELECT id, period_id, title, subtitle, workflow_status FROM assignments WHERE deletedAt IS NULL";
-    const params: number[] = [];
+    const conditions = [isNull(assignments.deletedAt)];
     if (periodID) {
-      query += " AND period_id = ?";
-      params.push(periodID);
+      conditions.push(eq(assignments.periodId, periodID));
     }
-    const stmt = db.prepare(query);
-    return stmt.all(params) as Assignment[];
+
+    return drizzleDb
+      .select({
+        id: assignments.id,
+        period_id: assignments.periodId,
+        title: assignments.title,
+        subtitle: assignments.subtitle,
+        workflow_status: assignments.workflowStatus,
+      })
+      .from(assignments)
+      .where(and(...conditions))
+      .all() as Assignment[];
   }
 
   create(
@@ -30,21 +39,46 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
     subtitle?: string,
     workflow_status: string = "NOT_DICTATED",
   ): Assignment {
-    const stmt = db.prepare(
-      "INSERT INTO assignments (period_id, title, subtitle, workflow_status) VALUES (?, ?, ?, ?) RETURNING id, period_id, title, subtitle, workflow_status",
-    );
     return withTransaction(db, () => {
-      const assignment = stmt.get(periodID, title, subtitle ?? null, workflow_status) as Assignment;
-      // Auto-create deliveries for all students in the period's commissions
-      const studentStmt = db.prepare(
-        "SELECT id FROM students WHERE commission_id IN (SELECT id FROM commissions WHERE period_id = ?) AND deletedAt IS NULL",
-      );
-      const students = studentStmt.all(periodID) as { id: number }[];
-      const deliveryStmt = db.prepare(
-        "INSERT INTO deliveries (assignment_id, student_id, workflow_status) VALUES (?, ?, ?) ON CONFLICT(assignment_id, student_id) DO NOTHING",
-      );
-      for (const s of students) {
-        deliveryStmt.run(assignment.id, s.id, workflow_status);
+      const assignment = drizzleDb
+        .insert(assignments)
+        .values({
+          periodId: periodID,
+          title,
+          subtitle: subtitle ?? null,
+          workflowStatus: workflow_status,
+        })
+        .returning({
+          id: assignments.id,
+          period_id: assignments.periodId,
+          title: assignments.title,
+          subtitle: assignments.subtitle,
+          workflow_status: assignments.workflowStatus,
+        })
+        .get() as Assignment;
+
+      const targetStudents = drizzleDb
+        .select({ id: students.id })
+        .from(students)
+        .innerJoin(commissions, eq(students.commissionId, commissions.id))
+        .where(
+          and(
+            eq(commissions.periodId, periodID),
+            isNull(students.deletedAt),
+            isNull(commissions.deletedAt),
+          ),
+        )
+        .all() as { id: number }[];
+
+      for (const student of targetStudents) {
+        drizzleDb
+          .insert(deliveries)
+          .values({
+            assignmentId: assignment.id,
+            studentId: student.id,
+            workflowStatus: workflow_status,
+          })
+          .run();
       }
       return assignment;
     });
@@ -52,87 +86,106 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
 
   update(id: number, title: string, subtitle?: string, workflow_status?: string): Assignment {
     return withTransaction(db, () => {
-      const fields = [];
-      const params: any[] = [];
+      const updates: Record<string, string | number | SQL<unknown> | null> = {};
       if (title !== undefined) {
-        fields.push("title = ?");
-        params.push(title);
+        updates.title = title;
       }
       if (subtitle !== undefined) {
-        fields.push("subtitle = ?");
-        params.push(subtitle);
+        updates.subtitle = subtitle;
       }
       if (workflow_status !== undefined) {
-        fields.push("workflow_status = ?");
-        params.push(workflow_status);
+        updates.workflowStatus = workflow_status;
       }
-      const setClause = fields.length
-        ? fields.join(", ") + ", updatedAt = CURRENT_TIMESTAMP"
-        : "updatedAt = CURRENT_TIMESTAMP";
-      const stmt = db.prepare(
-        `UPDATE assignments SET ${setClause} WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, title, subtitle, workflow_status`,
-      );
-      params.push(id);
-      return stmt.get(...params) as Assignment;
+      updates.updatedAt = sql`CURRENT_TIMESTAMP`;
+
+      return drizzleDb
+        .update(assignments)
+        .set(updates as any)
+        .where(and(eq(assignments.id, id), isNull(assignments.deletedAt)))
+        .returning({
+          id: assignments.id,
+          period_id: assignments.periodId,
+          title: assignments.title,
+          subtitle: assignments.subtitle,
+          workflow_status: assignments.workflowStatus,
+        })
+        .get() as Assignment;
     });
   }
 
   updateStatus(id: number, status: string): void {
-    const updateAssignmentStmt = db.prepare(
-      "UPDATE assignments SET workflow_status = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL",
-    );
-    const updateDeliveriesStmt = db.prepare(
-      "UPDATE deliveries SET workflow_status = ?, updatedAt = CURRENT_TIMESTAMP WHERE assignment_id = ? AND deletedAt IS NULL",
-    );
     withTransaction(db, () => {
-      updateAssignmentStmt.run(status, id);
-      updateDeliveriesStmt.run(status, id);
+      drizzleDb
+        .update(assignments)
+        .set({ workflowStatus: status, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(assignments.id, id), isNull(assignments.deletedAt)))
+        .run();
+
+      drizzleDb
+        .update(deliveries)
+        .set({ workflowStatus: status, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(deliveries.assignmentId, id), isNull(deliveries.deletedAt)))
+        .run();
     });
   }
 
   copy(sourcePeriodID: number, targetPeriodID: number): void {
-    const selectStmt = db.prepare(
-      "SELECT title, subtitle, workflow_status FROM assignments WHERE period_id = ? AND deletedAt IS NULL",
-    );
-    const assignmentsToCopy = selectStmt.all(sourcePeriodID) as {
-      title: string;
-      subtitle?: string | null;
-      workflow_status?: string | null;
-    }[];
+    const assignmentsToCopy = drizzleDb
+      .select({
+        title: assignments.title,
+        subtitle: assignments.subtitle,
+        workflowStatus: assignments.workflowStatus,
+      })
+      .from(assignments)
+      .where(and(eq(assignments.periodId, sourcePeriodID), isNull(assignments.deletedAt)))
+      .all() as Array<{ title: string; subtitle?: string | null; workflowStatus?: string | null }>;
 
-    const insertStmt = db.prepare(
-      "INSERT INTO assignments (period_id, title, subtitle, workflow_status) VALUES (?, ?, ?, ?) RETURNING id, workflow_status",
-    );
-
-    // Retrieve students in target period commissions
-    const studentStmt = db.prepare(
-      "SELECT id FROM students WHERE commission_id IN (SELECT id FROM commissions WHERE period_id = ?) AND deletedAt IS NULL",
-    );
-    const students = studentStmt.all(targetPeriodID) as { id: number }[];
-
-    const deliveryStmt = db.prepare(
-      "INSERT INTO deliveries (assignment_id, student_id, workflow_status) VALUES (?, ?, ?) ON CONFLICT(assignment_id, student_id) DO NOTHING",
-    );
+    const targetStudents = drizzleDb
+      .select({ id: students.id })
+      .from(students)
+      .innerJoin(commissions, eq(students.commissionId, commissions.id))
+      .where(
+        and(
+          eq(commissions.periodId, targetPeriodID),
+          isNull(students.deletedAt),
+          isNull(commissions.deletedAt),
+        ),
+      )
+      .all() as { id: number }[];
 
     withTransaction(db, () => {
       for (const assignment of assignmentsToCopy) {
-        const inserted = insertStmt.get(
-          targetPeriodID,
-          assignment.title,
-          assignment.subtitle ?? null,
-          assignment.workflow_status ?? "NOT_DICTATED",
-        ) as { id: number; workflow_status: string };
+        const inserted = drizzleDb
+          .insert(assignments)
+          .values({
+            periodId: targetPeriodID,
+            title: assignment.title,
+            subtitle: assignment.subtitle ?? null,
+            workflowStatus: assignment.workflowStatus ?? "NOT_DICTATED",
+          })
+          .returning({ id: assignments.id, workflowStatus: assignments.workflowStatus })
+          .get() as { id: number; workflowStatus: string };
 
-        for (const student of students) {
-          deliveryStmt.run(inserted.id, student.id, inserted.workflow_status);
+        for (const student of targetStudents) {
+          drizzleDb
+            .insert(deliveries)
+            .values({
+              assignmentId: inserted.id,
+              studentId: student.id,
+              workflowStatus: inserted.workflowStatus,
+            })
+            .run();
         }
       }
     });
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE assignments SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(assignments)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(assignments.id, id))
+      .run();
   }
 }
 

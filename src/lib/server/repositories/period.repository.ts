@@ -1,6 +1,8 @@
+import { and, desc, eq, isNull, ne, sql } from "drizzle-orm";
 import type { MetadataContextPayload, Period } from "$lib/common";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { periods, subjectPeriods, subjects } from "../database/schema.drizzle";
 
 export interface PeriodRepository {
   getAll(subjectID?: number): Period[];
@@ -12,112 +14,174 @@ export interface PeriodRepository {
 
 class PeriodRepositoryImpl implements PeriodRepository {
   getAll(subjectID?: number): Period[] {
-    let query = `
-      SELECT p.id, p.year, p.semester, sp.subject_id, s.name AS subject_name
-      FROM periods p
-      LEFT JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
-      LEFT JOIN subjects s ON s.id = sp.subject_id AND s.deletedAt IS NULL
-      WHERE p.deletedAt IS NULL
-    `;
-    const params: number[] = [];
+    const conditions = [isNull(periods.deletedAt)];
     if (subjectID) {
-      query += " AND sp.subject_id = ?";
-      params.push(subjectID);
+      conditions.push(eq(subjectPeriods.subjectId, subjectID));
     }
-    query += " ORDER BY p.year DESC, p.semester DESC, p.id DESC";
-    const stmt = db.prepare(query);
-    return stmt.all(params) as Period[];
+
+    return drizzleDb
+      .select({
+        id: periods.id,
+        year: periods.year,
+        semester: periods.semester,
+        subject_id: subjectPeriods.subjectId,
+        subject_name: subjects.name,
+      })
+      .from(periods)
+      .leftJoin(
+        subjectPeriods,
+        and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
+      )
+      .leftJoin(
+        subjects,
+        and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
+      )
+      .where(and(...conditions))
+      .orderBy(desc(periods.year), desc(periods.semester), desc(periods.id))
+      .all() as Period[];
   }
 
   create(subject_id: number, year: number, semester: number): Period {
-    const existingPeriod = db
-      .prepare(
-        `
-        SELECT p.id
-        FROM periods p
-        JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
-        WHERE p.year = ? AND p.semester = ? AND sp.subject_id = ? AND p.deletedAt IS NULL
-      `,
+    const existingPeriod = drizzleDb
+      .select({ id: periods.id })
+      .from(periods)
+      .innerJoin(
+        subjectPeriods,
+        and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
       )
-      .get(year, semester, subject_id) as { id: number } | undefined;
+      .where(
+        and(
+          eq(periods.year, year),
+          eq(periods.semester, semester),
+          eq(subjectPeriods.subjectId, subject_id),
+          isNull(periods.deletedAt),
+        ),
+      )
+      .get() as { id: number } | undefined;
+
     if (existingPeriod) {
       throw new Error("Period already exists for this subject");
     }
 
     return withTransaction(db, () => {
-      const insertPeriod = db.prepare(
-        "INSERT INTO periods (year, semester) VALUES (?, ?) RETURNING id, year, semester",
-      );
-      const newPeriod = insertPeriod.get(year, semester) as Period;
+      const newPeriod = drizzleDb
+        .insert(periods)
+        .values({ year, semester })
+        .returning({ id: periods.id, year: periods.year, semester: periods.semester })
+        .get() as Period;
 
-      const insertLink = db.prepare(
-        "INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?) RETURNING id, subject_id, period_id",
-      );
-      insertLink.get(subject_id, newPeriod.id);
+      drizzleDb
+        .insert(subjectPeriods)
+        .values({ subjectId: subject_id, periodId: newPeriod.id })
+        .run();
 
-      const subjectStmt = db.prepare("SELECT name FROM subjects WHERE id = ?");
+      const subjectName = drizzleDb
+        .select({ name: subjects.name })
+        .from(subjects)
+        .where(eq(subjects.id, subject_id))
+        .get() as { name: string } | undefined;
+
       newPeriod.subject_id = subject_id;
-      newPeriod.subject_name = (subjectStmt.get(subject_id) as any).name;
+      newPeriod.subject_name = subjectName?.name;
       return newPeriod;
     });
   }
 
   update(id: number, year: number, semester: number): Period {
-    const checkStmt = db.prepare(
-      `
-      SELECT p.id
-      FROM periods p
-      JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
-      WHERE p.year = ? AND p.semester = ? AND sp.subject_id = (SELECT sp2.subject_id FROM subject_periods sp2 WHERE sp2.period_id = ? AND sp2.deletedAt IS NULL LIMIT 1)
-        AND p.id != ? AND p.deletedAt IS NULL
-      `,
-    );
-    if (checkStmt.get(year, semester, id, id)) {
-      throw new Error("Period already exists for this subject");
-    }
+    const subjectLink = drizzleDb
+      .select({ subjectId: subjectPeriods.subjectId })
+      .from(subjectPeriods)
+      .where(and(eq(subjectPeriods.periodId, id), isNull(subjectPeriods.deletedAt)))
+      .orderBy(subjectPeriods.id)
+      .get() as { subjectId: number } | undefined;
 
-    const stmt = db.prepare(
-      "UPDATE periods SET year = ?, semester = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, year, semester",
-    );
-    const updatedPeriod = stmt.get(year, semester, id) as Period;
-    if (updatedPeriod) {
-      const subjectLink = db
-        .prepare(
-          "SELECT subject_id FROM subject_periods WHERE period_id = ? AND deletedAt IS NULL ORDER BY id LIMIT 1",
+    if (subjectLink) {
+      const existingPeriod = drizzleDb
+        .select({ id: periods.id })
+        .from(periods)
+        .innerJoin(
+          subjectPeriods,
+          and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
         )
-        .get(id) as { subject_id: number } | undefined;
-      if (subjectLink) {
-        const subjectStmt = db.prepare("SELECT name FROM subjects WHERE id = ?");
-        updatedPeriod.subject_id = subjectLink.subject_id;
-        updatedPeriod.subject_name = (subjectStmt.get(subjectLink.subject_id) as any).name;
+        .where(
+          and(
+            eq(periods.year, year),
+            eq(periods.semester, semester),
+            eq(subjectPeriods.subjectId, subjectLink.subjectId),
+            ne(periods.id, id),
+            isNull(periods.deletedAt),
+          ),
+        )
+        .get() as { id: number } | undefined;
+
+      if (existingPeriod) {
+        throw new Error("Period already exists for this subject");
       }
     }
-    return updatedPeriod;
+
+    return withTransaction(db, () => {
+      const updatedPeriod = drizzleDb
+        .update(periods)
+        .set({ year, semester, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(periods.id, id), isNull(periods.deletedAt)))
+        .returning({ id: periods.id, year: periods.year, semester: periods.semester })
+        .get() as Period;
+
+      if (updatedPeriod) {
+        const subjectLink = drizzleDb
+          .select({ subjectId: subjectPeriods.subjectId })
+          .from(subjectPeriods)
+          .where(and(eq(subjectPeriods.periodId, id), isNull(subjectPeriods.deletedAt)))
+          .orderBy(subjectPeriods.id)
+          .get() as { subjectId: number } | undefined;
+
+        if (subjectLink) {
+          const subjectName = drizzleDb
+            .select({ name: subjects.name })
+            .from(subjects)
+            .where(eq(subjects.id, subjectLink.subjectId))
+            .get() as { name: string } | undefined;
+
+          updatedPeriod.subject_id = subjectLink.subjectId;
+          updatedPeriod.subject_name = subjectName?.name;
+        }
+      }
+      return updatedPeriod;
+    });
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE periods SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(periods)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(periods.id, id))
+      .run();
   }
 
   getActiveMetadata(now: Date): MetadataContextPayload {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
-    const rows = db
-      .prepare(
-        `
-      SELECT p.id, p.year, p.semester, s.id AS subject_id, s.name AS subject_name, s.faculty_id
-      FROM periods p
-      JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
-      JOIN subjects s ON sp.subject_id = s.id AND s.deletedAt IS NULL
-      WHERE p.deletedAt IS NULL
-        AND p.year = ?
-        AND ((p.semester = 1 AND ? <= 1) OR (p.semester = 2 AND ? <= 2))
-      ORDER BY s.name ASC
-    `,
+    const rows = drizzleDb
+      .select({
+        id: periods.id,
+        year: periods.year,
+        semester: periods.semester,
+        subject_id: subjects.id,
+        subject_name: subjects.name,
+        faculty_id: subjects.facultyId,
+      })
+      .from(periods)
+      .innerJoin(
+        subjectPeriods,
+        and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
       )
-      .all(currentYear, currentMonth, currentMonth) as Array<{
+      .innerJoin(
+        subjects,
+        and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
+      )
+      .where(and(isNull(periods.deletedAt), eq(periods.year, currentYear)))
+      .all() as Array<{
       id: number;
       year: number;
       semester: number;
@@ -126,13 +190,17 @@ class PeriodRepositoryImpl implements PeriodRepository {
       faculty_id: number;
     }>;
 
-    if (rows.length === 0) {
+    const filteredRows = rows.filter((row) =>
+      row.semester === 1 ? currentMonth <= 1 : currentMonth <= 2,
+    );
+
+    if (filteredRows.length === 0) {
       return { periodData: null, subjects: [] };
     }
 
-    const [first] = rows;
+    const [first] = filteredRows;
     const term = first.semester === 1 ? "Cuatrimestre I" : "Cuatrimestre II";
-    const subjectItems = rows.map((row) => ({
+    const subjectItems = filteredRows.map((row) => ({
       id: String(row.subject_id),
       name: row.subject_name,
       href: `/faculties/${row.faculty_id}/subjects/${row.subject_id}/periods`,

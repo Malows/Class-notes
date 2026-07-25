@@ -1,7 +1,18 @@
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Assignment, Delivery, OverviewData, StudentGridRowDTO } from "$lib/common";
 import { DeliveryWorkflowStatus } from "$lib/common";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import {
+  assignments,
+  commissions,
+  deliveries,
+  faculties,
+  periods,
+  students,
+  subjectPeriods,
+  subjects,
+} from "../database/schema.drizzle";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;
@@ -15,78 +26,143 @@ export interface DeliveryRepository {
 
 class DeliveryRepositoryImpl implements DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null {
-    const stmt = db.prepare(
-      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE assignment_id = ? AND student_id = ? AND deletedAt IS NULL",
-    );
-    return stmt.get(assignmentID, studentID) as Delivery | null;
+    return drizzleDb
+      .select({
+        assignment_id: deliveries.assignmentId,
+        student_id: deliveries.studentId,
+        workflow_status: deliveries.workflowStatus,
+        grade: deliveries.grade,
+        ai_level: deliveries.aiLevel,
+        comments: deliveries.comments,
+      })
+      .from(deliveries)
+      .where(
+        and(
+          eq(deliveries.assignmentId, assignmentID),
+          eq(deliveries.studentId, studentID),
+          isNull(deliveries.deletedAt),
+        ),
+      )
+      .get() as Delivery | null;
   }
 
   getAllByCommission(commissionID: number): Delivery[] {
-    const stmt = db.prepare(`
-            SELECT
-                d.assignment_id,
-                d.student_id,
-                d.workflow_status,
-                d.grade,
-                d.ai_level,
-                d.comments
-            FROM deliveries d
-            JOIN students s ON d.student_id = s.id
-            WHERE s.commission_id = ? AND d.deletedAt IS NULL AND s.deletedAt IS NULL
-        `);
-    return stmt.all(commissionID) as Delivery[];
+    return drizzleDb
+      .select({
+        assignment_id: deliveries.assignmentId,
+        student_id: deliveries.studentId,
+        workflow_status: deliveries.workflowStatus,
+        grade: deliveries.grade,
+        ai_level: deliveries.aiLevel,
+        comments: deliveries.comments,
+      })
+      .from(deliveries)
+      .innerJoin(students, eq(deliveries.studentId, students.id))
+      .where(
+        and(
+          eq(students.commissionId, commissionID),
+          isNull(deliveries.deletedAt),
+          isNull(students.deletedAt),
+        ),
+      )
+      .all() as Delivery[];
   }
 
   save(delivery: Delivery): void {
     const workflowStatus = delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED;
 
     withTransaction(db, () => {
-      const stmt = db.prepare(`
-              INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments)
-              VALUES (?, ?, ?, ?, ?, ?)
-              ON CONFLICT(assignment_id, student_id) DO UPDATE SET
-                  workflow_status = EXCLUDED.workflow_status,
-                  grade = EXCLUDED.grade,
-                  ai_level = EXCLUDED.ai_level,
-                  comments = EXCLUDED.comments,
-                  updatedAt = CURRENT_TIMESTAMP,
-                  deletedAt = NULL
-          `);
+      const existing = drizzleDb
+        .select({ assignmentId: deliveries.assignmentId })
+        .from(deliveries)
+        .where(
+          and(
+            eq(deliveries.assignmentId, delivery.assignment_id),
+            eq(deliveries.studentId, delivery.student_id),
+          ),
+        )
+        .get() as { assignmentId: number } | undefined;
 
-      stmt.run(
-        delivery.assignment_id,
-        delivery.student_id,
-        workflowStatus,
-        delivery.grade,
-        delivery.ai_level,
-        delivery.comments,
-      );
+      if (existing) {
+        drizzleDb
+          .update(deliveries)
+          .set({
+            workflowStatus,
+            grade: delivery.grade,
+            aiLevel: delivery.ai_level,
+            comments: delivery.comments,
+            updatedAt: sql`CURRENT_TIMESTAMP`,
+            deletedAt: null,
+          })
+          .where(
+            and(
+              eq(deliveries.assignmentId, delivery.assignment_id),
+              eq(deliveries.studentId, delivery.student_id),
+            ),
+          )
+          .run();
+      } else {
+        drizzleDb
+          .insert(deliveries)
+          .values({
+            assignmentId: delivery.assignment_id,
+            studentId: delivery.student_id,
+            workflowStatus,
+            grade: delivery.grade,
+            aiLevel: delivery.ai_level,
+            comments: delivery.comments,
+          })
+          .run();
+      }
     });
   }
 
   getCommissionOverviewData(commissionID: number): OverviewData {
-    const assignmentsStmt = db.prepare(
-      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id = (SELECT period_id FROM commissions WHERE id = ?) ORDER BY id",
-    );
-    const assignments = assignmentsStmt.all(commissionID) as Assignment[];
+    const assignmentsRows = drizzleDb
+      .select({ id: assignments.id, title: assignments.title, subtitle: assignments.subtitle })
+      .from(assignments)
+      .where(
+        and(
+          isNull(assignments.deletedAt),
+          eq(
+            assignments.periodId,
+            sql`(SELECT period_id FROM commissions WHERE id = ${commissionID})`,
+          ),
+        ),
+      )
+      .orderBy(assignments.id)
+      .all() as Assignment[];
 
-    const studentsStmt = db.prepare(
-      "SELECT id, name, commission_id FROM students WHERE commission_id = ? AND deletedAt IS NULL ORDER BY name",
-    );
-    const students = studentsStmt.all(commissionID) as {
-      id: number;
-      name: string;
-      commission_id: number;
-    }[];
+    const studentsRows = drizzleDb
+      .select({ id: students.id, name: students.name, commission_id: students.commissionId })
+      .from(students)
+      .where(and(eq(students.commissionId, commissionID), isNull(students.deletedAt)))
+      .orderBy(students.name)
+      .all() as Array<{ id: number; name: string; commission_id: number }>;
 
-    const deliveriesStmt = db.prepare(
-      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE commission_id = ? AND deletedAt IS NULL)",
-    );
-    const deliveries = deliveriesStmt.all(commissionID) as Delivery[];
+    const deliveriesRows = drizzleDb
+      .select({
+        assignment_id: deliveries.assignmentId,
+        student_id: deliveries.studentId,
+        workflow_status: deliveries.workflowStatus,
+        grade: deliveries.grade,
+        aiLevel: deliveries.aiLevel,
+        comments: deliveries.comments,
+      })
+      .from(deliveries)
+      .where(
+        and(
+          isNull(deliveries.deletedAt),
+          sql`${deliveries.studentId} IN (SELECT id FROM students WHERE commission_id = ${commissionID} AND deletedAt IS NULL)`,
+        ),
+      )
+      .all() as Delivery[];
 
-    const grid: StudentGridRowDTO[] = students.map((s) => {
-      const studentDeliveries = assignments.map((a) => {
-        const delivery = deliveries.find((d) => d.student_id === s.id && d.assignment_id === a.id);
+    const grid: StudentGridRowDTO[] = studentsRows.map((s) => {
+      const studentDeliveries = assignmentsRows.map((a) => {
+        const delivery = deliveriesRows.find(
+          (d) => d.student_id === s.id && d.assignment_id === a.id,
+        );
         return (
           delivery || {
             assignment_id: a.id,
@@ -106,32 +182,54 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       };
     });
 
-    return { assignments, grid };
+    return { assignments: assignmentsRows, grid };
   }
 
   getPeriodOverviewData(periodID: number): OverviewData {
-    const assignmentsStmt = db.prepare(
-      "SELECT id, title, subtitle FROM assignments WHERE deletedAt IS NULL AND period_id = ? ORDER BY id",
-    );
-    const assignments = assignmentsStmt.all(periodID) as Assignment[];
+    const assignmentsRows = drizzleDb
+      .select({ id: assignments.id, title: assignments.title, subtitle: assignments.subtitle })
+      .from(assignments)
+      .where(and(isNull(assignments.deletedAt), eq(assignments.periodId, periodID)))
+      .orderBy(assignments.id)
+      .all() as Assignment[];
 
-    const studentsStmt = db.prepare(
-      "SELECT id, name, commission_id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id = ?) ORDER BY name",
-    );
-    const students = studentsStmt.all(periodID) as {
-      id: number;
-      name: string;
-      commission_id: number;
-    }[];
+    const studentsRows = drizzleDb
+      .select({ id: students.id, name: students.name, commission_id: students.commissionId })
+      .from(students)
+      .innerJoin(commissions, eq(students.commissionId, commissions.id))
+      .where(
+        and(
+          eq(commissions.periodId, periodID),
+          isNull(students.deletedAt),
+          isNull(commissions.deletedAt),
+        ),
+      )
+      .orderBy(students.name)
+      .all() as Array<{ id: number; name: string; commission_id: number }>;
 
-    const deliveriesStmt = db.prepare(
-      "SELECT assignment_id, student_id, workflow_status, grade, ai_level, comments FROM deliveries WHERE deletedAt IS NULL AND student_id IN (SELECT id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id = ?))",
-    );
-    const deliveries = deliveriesStmt.all(periodID) as Delivery[];
+    const deliveriesRows = drizzleDb
+      .select({
+        assignment_id: deliveries.assignmentId,
+        student_id: deliveries.studentId,
+        workflow_status: deliveries.workflowStatus,
+        grade: deliveries.grade,
+        aiLevel: deliveries.aiLevel,
+        comments: deliveries.comments,
+      })
+      .from(deliveries)
+      .where(
+        and(
+          isNull(deliveries.deletedAt),
+          sql`${deliveries.studentId} IN (SELECT id FROM students WHERE deletedAt IS NULL AND commission_id IN (SELECT id FROM commissions WHERE period_id = ${periodID}))`,
+        ),
+      )
+      .all() as Delivery[];
 
-    const grid: StudentGridRowDTO[] = students.map((s) => {
-      const studentDeliveries = assignments.map((a) => {
-        const delivery = deliveries.find((d) => d.student_id === s.id && d.assignment_id === a.id);
+    const grid: StudentGridRowDTO[] = studentsRows.map((s) => {
+      const studentDeliveries = assignmentsRows.map((a) => {
+        const delivery = deliveriesRows.find(
+          (d) => d.student_id === s.id && d.assignment_id === a.id,
+        );
         return (
           delivery || {
             assignment_id: a.id,
@@ -151,64 +249,89 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       };
     });
 
-    return { assignments, grid };
+    return { assignments: assignmentsRows, grid };
   }
 
   getPendingSummary(): any[] {
-    const stmt = db.prepare(`
-        SELECT
-            c.id as commission_id,
-            c.name as commission_name,
-            sub.name as subject_name,
-            f.id as faculty_id,
-            sub.id as subject_id,
-            p.id as period_id,
-            COUNT(s.id) - (
-                SELECT COUNT(*)
-                FROM deliveries d
-                JOIN students s2 ON d.student_id = s2.id
-                WHERE s2.commission_id = c.id AND d.workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS') AND d.deletedAt IS NULL
-            ) as pending_count
-        FROM commissions c
-        JOIN periods p ON c.period_id = p.id
-        JOIN subject_periods sp ON sp.period_id = p.id AND sp.deletedAt IS NULL
-        JOIN subjects sub ON sp.subject_id = sub.id
-        JOIN faculties f ON sub.faculty_id = f.id
-        LEFT JOIN students s ON s.commission_id = c.id AND s.deletedAt IS NULL
-        WHERE c.deletedAt IS NULL AND p.deletedAt IS NULL AND sub.deletedAt IS NULL
-        GROUP BY c.id
-        HAVING pending_count > 0
-        ORDER BY pending_count DESC
-    `);
-    return stmt.all();
+    const pendingCount = sql<number>`COUNT(${students.id}) - (
+      SELECT COUNT(*)
+      FROM deliveries d
+      JOIN students s2 ON d.student_id = s2.id
+      WHERE s2.commission_id = ${commissions.id}
+        AND d.workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS')
+        AND d.deletedAt IS NULL
+    )`;
+
+    return drizzleDb
+      .select({
+        commission_id: commissions.id,
+        commission_name: commissions.name,
+        subject_name: subjects.name,
+        faculty_id: faculties.id,
+        subject_id: subjects.id,
+        period_id: periods.id,
+        pending_count: pendingCount,
+      })
+      .from(commissions)
+      .innerJoin(periods, eq(commissions.periodId, periods.id))
+      .innerJoin(
+        subjectPeriods,
+        and(eq(subjectPeriods.periodId, periods.id), isNull(subjectPeriods.deletedAt)),
+      )
+      .innerJoin(
+        subjects,
+        and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
+      )
+      .innerJoin(faculties, eq(subjects.facultyId, faculties.id))
+      .leftJoin(
+        students,
+        and(eq(students.commissionId, commissions.id), isNull(students.deletedAt)),
+      )
+      .where(
+        and(isNull(commissions.deletedAt), isNull(periods.deletedAt), isNull(subjects.deletedAt)),
+      )
+      .groupBy(commissions.id)
+      .having(sql`${pendingCount} > 0`)
+      .orderBy(sql`${pendingCount} DESC`)
+      .all() as any[];
   }
 
   getGlobalStats(): any {
-    const totalStudentsStmt = db.prepare(
-      "SELECT COUNT(id) as count FROM students WHERE deletedAt IS NULL",
-    );
-    const totalSubjectsStmt = db.prepare(
-      "SELECT COUNT(id) as count FROM subjects WHERE deletedAt IS NULL",
-    );
-    const totalDeliveriesStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND workflow_status NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS')",
-    );
-    const approvedDeliveriesStmt = db.prepare(
-      "SELECT COUNT(*) as count FROM deliveries WHERE deletedAt IS NULL AND workflow_status = 'APPROVED'",
-    );
-
-    const totalStudents = (totalStudentsStmt.get() as any).count;
-    const totalSubjects = (totalSubjectsStmt.get() as any).count;
-    const totalDeliveries = (totalDeliveriesStmt.get() as any).count;
-    const approvedDeliveries = (approvedDeliveriesStmt.get() as any).count;
+    const totalStudents = drizzleDb
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(students)
+      .where(isNull(students.deletedAt))
+      .get() as { count: number };
+    const totalSubjects = drizzleDb
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(subjects)
+      .where(isNull(subjects.deletedAt))
+      .get() as { count: number };
+    const totalDeliveries = drizzleDb
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(deliveries)
+      .where(
+        and(
+          isNull(deliveries.deletedAt),
+          sql`${deliveries.workflowStatus} NOT IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS')`,
+        ),
+      )
+      .get() as { count: number };
+    const approvedDeliveries = drizzleDb
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(deliveries)
+      .where(and(isNull(deliveries.deletedAt), eq(deliveries.workflowStatus, "APPROVED")))
+      .get() as { count: number };
 
     const approvalRate =
-      totalDeliveries > 0 ? Math.round((approvedDeliveries / totalDeliveries) * 100) : 0;
+      totalDeliveries.count > 0
+        ? Math.round((approvedDeliveries.count / totalDeliveries.count) * 100)
+        : 0;
 
     return {
-      totalStudents,
-      totalSubjects,
-      totalDeliveries,
+      totalStudents: totalStudents.count,
+      totalSubjects: totalSubjects.count,
+      totalDeliveries: totalDeliveries.count,
       approvalRate,
     };
   }

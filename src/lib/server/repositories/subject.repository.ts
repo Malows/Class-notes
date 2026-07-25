@@ -1,6 +1,8 @@
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Subject } from "$lib/common/types/academic";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { faculties, subjects } from "../database/schema.drizzle";
 
 export interface SubjectRepository {
   getAll(): Subject[];
@@ -11,41 +13,65 @@ export interface SubjectRepository {
 
 class SubjectRepositoryImpl implements SubjectRepository {
   getAll(): Subject[] {
-    const stmt = db.prepare(
-      "SELECT s.id, s.faculty_id, s.name, f.name AS faculty_name FROM subjects s JOIN faculties f ON s.faculty_id = f.id WHERE s.deletedAt IS NULL AND f.deletedAt IS NULL",
-    );
-    return stmt.all() as Subject[];
+    return drizzleDb
+      .select({
+        id: subjects.id,
+        faculty_id: subjects.facultyId,
+        name: subjects.name,
+        faculty_name: faculties.name,
+      })
+      .from(subjects)
+      .innerJoin(faculties, eq(subjects.facultyId, faculties.id))
+      .where(and(isNull(subjects.deletedAt), isNull(faculties.deletedAt)))
+      .all() as Subject[];
   }
 
   create(faculty_id: number, name: string): Subject {
     return withTransaction(db, () => {
-      const stmt = db.prepare(
-        "INSERT INTO subjects (faculty_id, name) VALUES (?, ?) RETURNING id, faculty_id, name",
-      );
-      const newSubject = stmt.get(faculty_id, name) as Subject;
-      const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
-      newSubject.faculty_name = (facultyStmt.get(faculty_id) as any).name;
+      const newSubject = drizzleDb
+        .insert(subjects)
+        .values({ facultyId: faculty_id, name })
+        .returning({ id: subjects.id, faculty_id: subjects.facultyId, name: subjects.name })
+        .get() as Subject;
+
+      const facultyName = drizzleDb
+        .select({ name: faculties.name })
+        .from(faculties)
+        .where(eq(faculties.id, faculty_id))
+        .get() as { name: string };
+
+      newSubject.faculty_name = facultyName?.name ?? "";
       return newSubject;
     });
   }
 
   update(id: number, name: string): Subject {
     return withTransaction(db, () => {
-      const stmt = db.prepare(
-        "UPDATE subjects SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, faculty_id, name",
-      );
-      const updatedSubject = stmt.get(name, id) as Subject;
+      const updatedSubject = drizzleDb
+        .update(subjects)
+        .set({ name, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(subjects.id, id), isNull(subjects.deletedAt)))
+        .returning({ id: subjects.id, faculty_id: subjects.facultyId, name: subjects.name })
+        .get() as Subject;
+
       if (updatedSubject) {
-        const facultyStmt = db.prepare("SELECT name FROM faculties WHERE id = ?");
-        updatedSubject.faculty_name = (facultyStmt.get(updatedSubject.faculty_id) as any).name;
+        const facultyName = drizzleDb
+          .select({ name: faculties.name })
+          .from(faculties)
+          .where(eq(faculties.id, updatedSubject.faculty_id))
+          .get() as { name: string };
+        updatedSubject.faculty_name = facultyName?.name ?? "";
       }
       return updatedSubject;
     });
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE subjects SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(subjects)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(subjects.id, id))
+      .run();
   }
 }
 

@@ -143,7 +143,14 @@ export function insertSeed(db: Database): void {
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
-      [1, 2, "WAITING_FOR_CORRECTION", 6.0, 1, "Aprobado con lo justo. Prestar atención al uso de IA."],
+      [
+        1,
+        2,
+        "WAITING_FOR_CORRECTION",
+        6.0,
+        1,
+        "Aprobado con lo justo. Prestar atención al uso de IA.",
+      ],
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
@@ -171,7 +178,14 @@ export function insertSeed(db: Database): void {
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
-      [1, 4, "APPROVED", 7.0, 1, "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA."],
+      [
+        1,
+        4,
+        "APPROVED",
+        7.0,
+        1,
+        "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA.",
+      ],
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
@@ -183,7 +197,14 @@ export function insertSeed(db: Database): void {
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
-      [1, 8, "REJECTED", 3.0, 1, "Respuestas inconsistentes e indicios claros de copy-paste de IA."],
+      [
+        1,
+        8,
+        "REJECTED",
+        3.0,
+        1,
+        "Respuestas inconsistentes e indicios claros de copy-paste de IA.",
+      ],
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
@@ -191,7 +212,14 @@ export function insertSeed(db: Database): void {
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",
-      [2, 5, "WAITING_FOR_CORRECTION", 8.0, 2, "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT."],
+      [
+        2,
+        5,
+        "WAITING_FOR_CORRECTION",
+        8.0,
+        2,
+        "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT.",
+      ],
     );
     runSafe(
       "INSERT INTO deliveries (assignment_id, student_id, workflow_status, grade, ai_level, comments) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(assignment_id, student_id) DO UPDATE SET workflow_status = excluded.workflow_status, grade = excluded.grade, ai_level = excluded.ai_level, comments = excluded.comments",

@@ -1,6 +1,8 @@
+import { and, count, eq, isNull, sql } from "drizzle-orm";
 import type { Commission } from "$lib/common/types/academic";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { commissions, students } from "../database/schema.drizzle";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];
@@ -11,48 +13,67 @@ export interface CommissionRepository {
 
 class CommissionRepositoryImpl implements CommissionRepository {
   getAll(periodID?: number): Commission[] {
-    let query =
-      "SELECT c.id, c.period_id, c.name, COUNT(s.id) AS student_count FROM commissions c LEFT JOIN students s ON c.id = s.commission_id AND s.deletedAt IS NULL WHERE c.deletedAt IS NULL";
-    const params: number[] = [];
+    const conditions = [isNull(commissions.deletedAt)];
     if (periodID) {
-      query += " AND c.period_id = ?";
-      params.push(periodID);
+      conditions.push(eq(commissions.periodId, periodID));
     }
-    query += " GROUP BY c.id";
-    const stmt = db.prepare(query);
-    return stmt.all(params) as Commission[];
+
+    return drizzleDb
+      .select({
+        id: commissions.id,
+        period_id: commissions.periodId,
+        name: commissions.name,
+        student_count: count(students.id),
+      })
+      .from(commissions)
+      .leftJoin(
+        students,
+        and(eq(commissions.id, students.commissionId), isNull(students.deletedAt)),
+      )
+      .where(and(...conditions))
+      .groupBy(commissions.id)
+      .all() as Commission[];
   }
 
   create(period_id: number, name: string): Commission {
     return withTransaction(db, () => {
-      const stmt = db.prepare(
-        "INSERT INTO commissions (period_id, name) VALUES (?, ?) RETURNING id, period_id, name",
-      );
-      const newCommission = stmt.get(period_id, name) as Commission;
-      newCommission.student_count = 0; // Initially no students
+      const newCommission = drizzleDb
+        .insert(commissions)
+        .values({ periodId: period_id, name })
+        .returning({ id: commissions.id, period_id: commissions.periodId, name: commissions.name })
+        .get() as Commission;
+      newCommission.student_count = 0;
       return newCommission;
     });
   }
 
   update(id: number, name: string): Commission {
     return withTransaction(db, () => {
-      const stmt = db.prepare(
-        "UPDATE commissions SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, period_id, name",
-      );
-      const updatedCommission = stmt.get(name, id) as Commission;
+      const updatedCommission = drizzleDb
+        .update(commissions)
+        .set({ name, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(commissions.id, id), isNull(commissions.deletedAt)))
+        .returning({ id: commissions.id, period_id: commissions.periodId, name: commissions.name })
+        .get() as Commission;
+
       if (updatedCommission) {
-        const countStmt = db.prepare(
-          "SELECT COUNT(id) as count FROM students WHERE commission_id = ? AND deletedAt IS NULL",
-        );
-        updatedCommission.student_count = (countStmt.get(id) as any).count;
+        const countResult = drizzleDb
+          .select({ count: sql<number>`COUNT(*)` })
+          .from(students)
+          .where(and(eq(students.commissionId, id), isNull(students.deletedAt)))
+          .get() as { count: number };
+        updatedCommission.student_count = countResult?.count ?? 0;
       }
       return updatedCommission;
     });
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE commissions SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(commissions)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(commissions.id, id))
+      .run();
   }
 }
 

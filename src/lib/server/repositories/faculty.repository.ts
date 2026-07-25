@@ -1,6 +1,8 @@
+import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Faculty } from "$lib/common/types/academic";
 
-import db, { withTransaction } from "../database/db";
+import db, { drizzleDb, withTransaction } from "../database/db";
+import { faculties } from "../database/schema.drizzle";
 
 export interface FacultyRepository {
   getAll(): Faculty[];
@@ -11,29 +13,40 @@ export interface FacultyRepository {
 
 class FacultyRepositoryImpl implements FacultyRepository {
   getAll(): Faculty[] {
-    const stmt = db.prepare("SELECT id, name FROM faculties WHERE deletedAt IS NULL");
-    return stmt.all() as Faculty[];
+    return drizzleDb
+      .select({ id: faculties.id, name: faculties.name })
+      .from(faculties)
+      .where(isNull(faculties.deletedAt))
+      .all() as Faculty[];
   }
 
   create(name: string): Faculty {
     return withTransaction(db, () => {
-      const stmt = db.prepare("INSERT INTO faculties (name) VALUES (?) RETURNING id, name");
-      return stmt.get(name) as Faculty;
+      return drizzleDb
+        .insert(faculties)
+        .values({ name })
+        .returning({ id: faculties.id, name: faculties.name })
+        .get() as Faculty;
     });
   }
 
   update(id: number, name: string): Faculty {
     return withTransaction(db, () => {
-      const stmt = db.prepare(
-        "UPDATE faculties SET name = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND deletedAt IS NULL RETURNING id, name",
-      );
-      return stmt.get(name, id) as Faculty;
+      return drizzleDb
+        .update(faculties)
+        .set({ name, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .where(and(eq(faculties.id, id), isNull(faculties.deletedAt)))
+        .returning({ id: faculties.id, name: faculties.name })
+        .get() as Faculty;
     });
   }
 
   delete(id: number): void {
-    const stmt = db.prepare("UPDATE faculties SET deletedAt = CURRENT_TIMESTAMP WHERE id = ?");
-    stmt.run(id);
+    drizzleDb
+      .update(faculties)
+      .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+      .where(eq(faculties.id, id))
+      .run();
   }
 }
 

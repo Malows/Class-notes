@@ -75,14 +75,12 @@ describe("deliveryRepository Integration Tests", () => {
   it("returns pending summary data and global stats", () => {
     const insertedCommissionId = db
       .prepare("INSERT INTO commissions (period_id, name) VALUES (?, ?)")
-      .run(1, "Comisión pendiente")
-      .lastInsertRowid as number;
+      .run(1, "Comisión pendiente").lastInsertRowid as number;
     cleanupCommissions.push(insertedCommissionId);
 
     const insertedStudentId = db
       .prepare("INSERT INTO students (commission_id, name, external_id) VALUES (?, ?, ?)")
-      .run(insertedCommissionId, "Alumno pendiente", "PENDING-001")
-      .lastInsertRowid as number;
+      .run(insertedCommissionId, "Alumno pendiente", "PENDING-001").lastInsertRowid as number;
     cleanupStudents.push(insertedStudentId);
 
     const pendingSummary = deliveryRepository.getPendingSummary();

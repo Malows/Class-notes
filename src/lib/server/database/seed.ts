@@ -26,9 +26,8 @@ export function insertSeed(client: Database): void {
   const db = drizzle({ client, schema, relations } as any);
   const transaction = client.transaction(() => {
     runSafe(() => {
-      db
-        .insert(faculties)
-        .values([ { name: "Facultad de Ingeniería" }, { name: "Facultad de Ciencias Exactas" } ])
+      db.insert(faculties)
+        .values([{ name: "Facultad de Ingeniería" }, { name: "Facultad de Ciencias Exactas" }])
         .onConflictDoUpdate({
           target: faculties.id,
           set: { name: faculties.name },
@@ -37,8 +36,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(subjects)
+      db.insert(subjects)
         .values([
           { facultyId: 1, name: "Álgebra Lineal" },
           { facultyId: 1, name: "Análisis Matemático I" },
@@ -52,8 +50,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(periods)
+      db.insert(periods)
         .values([
           { id: 1, year: 2026, semester: 1 },
           { id: 2, year: 2026, semester: 1 },
@@ -67,8 +64,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(subjectPeriods)
+      db.insert(subjectPeriods)
         .values([
           { id: 1, subjectId: 1, periodId: 1 },
           { id: 2, subjectId: 2, periodId: 2 },
@@ -82,8 +78,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(commissions)
+      db.insert(commissions)
         .values([
           { id: 1, periodId: 1, name: "Comisión A" },
           { id: 2, periodId: 1, name: "Comisión B" },
@@ -97,8 +92,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(students)
+      db.insert(students)
         .values([
           { id: 1, commissionId: 1, name: "Juan Pérez", externalId: "ENG-101" },
           { id: 2, commissionId: 1, name: "María Rodríguez", externalId: "ENG-102" },
@@ -124,8 +118,7 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(assignments)
+      db.insert(assignments)
         .values([
           {
             id: 1,
@@ -176,31 +169,184 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db
-        .insert(deliveries)
+      db.insert(deliveries)
         .values([
-          { assignmentId: 1, studentId: 1, workflowStatus: "APPROVED", grade: 8.5, aiLevel: 0, comments: "Excelente planteo de los ejercicios de subespacios." },
-          { assignmentId: 1, studentId: 2, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6.0, aiLevel: 1, comments: "Aprobado con lo justo. Prestar atención al uso de IA." },
-          { assignmentId: 1, studentId: 3, workflowStatus: "REJECTED", grade: 4.0, aiLevel: 0, comments: "Faltaron resolver los puntos 3 y 4. Debe rehacer." },
-          { assignmentId: 1, studentId: 11, workflowStatus: "APPROVED", grade: 7.5, aiLevel: 2, comments: "Resuelto correctamente, pero detectamos código autogenerado." },
-          { assignmentId: 2, studentId: 1, workflowStatus: "APPROVED", grade: 9.0, aiLevel: 0, comments: "Perfecto uso de las propiedades del determinante." },
-          { assignmentId: 2, studentId: 2, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado." },
-          { assignmentId: 2, studentId: 3, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "Tema aún no dictado." },
-          { assignmentId: 2, studentId: 11, workflowStatus: "REJECTED", grade: 2.0, aiLevel: 2, comments: "Plagio descarado con IA, no supo justificar en el coloquio." },
-          { assignmentId: 1, studentId: 4, workflowStatus: "APPROVED", grade: 7.0, aiLevel: 1, comments: "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA." },
-          { assignmentId: 1, studentId: 5, workflowStatus: "APPROVED", grade: 10.0, aiLevel: 0, comments: "Trabajo perfecto y sumamente original." },
-          { assignmentId: 1, studentId: 7, workflowStatus: "WAITING_FOR_CORRECTION", grade: 0, aiLevel: 0, comments: "Pendiente de corregir." },
-          { assignmentId: 1, studentId: 8, workflowStatus: "REJECTED", grade: 3.0, aiLevel: 1, comments: "Respuestas inconsistentes e indicios claros de copy-paste de IA." },
-          { assignmentId: 2, studentId: 4, workflowStatus: "REJECTED", grade: 2.0, aiLevel: 2, comments: "Certeza absoluta de plagio/generación por IA sin edición." },
-          { assignmentId: 2, studentId: 5, workflowStatus: "WAITING_FOR_CORRECTION", grade: 8.0, aiLevel: 2, comments: "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT." },
-          { assignmentId: 2, studentId: 7, workflowStatus: "APPROVED", grade: 8.5, aiLevel: 1, comments: "Bien resuelto, con ligera ayuda de IA en los comentarios." },
-          { assignmentId: 2, studentId: 8, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado aún." },
-          { assignmentId: 3, studentId: 6, workflowStatus: "APPROVED", grade: 7.5, aiLevel: 2, comments: "Buen desarrollo, pero hay bloques de código sospechosos de IA." },
-          { assignmentId: 3, studentId: 9, workflowStatus: "APPROVED", grade: 9.0, aiLevel: 0, comments: "Excelente trabajo matemático." },
-          { assignmentId: 3, studentId: 10, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Falta entregar." },
-          { assignmentId: 5, studentId: 6, workflowStatus: "WAITING_FOR_CORRECTION", grade: 0, aiLevel: 1, comments: "Entregado a término." },
-          { assignmentId: 5, studentId: 9, workflowStatus: "REJECTED", grade: 2.0, aiLevel: 2, comments: "Fraude académico detectado mediante análisis de patrones." },
-          { assignmentId: 5, studentId: 10, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "Tema aún no dictado para este alumno." },
+          {
+            assignmentId: 1,
+            studentId: 1,
+            workflowStatus: "APPROVED",
+            grade: 8.5,
+            aiLevel: 0,
+            comments: "Excelente planteo de los ejercicios de subespacios.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 2,
+            workflowStatus: "WAITING_FOR_CORRECTION",
+            grade: 6.0,
+            aiLevel: 1,
+            comments: "Aprobado con lo justo. Prestar atención al uso de IA.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 3,
+            workflowStatus: "REJECTED",
+            grade: 4.0,
+            aiLevel: 0,
+            comments: "Faltaron resolver los puntos 3 y 4. Debe rehacer.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 11,
+            workflowStatus: "APPROVED",
+            grade: 7.5,
+            aiLevel: 2,
+            comments: "Resuelto correctamente, pero detectamos código autogenerado.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 1,
+            workflowStatus: "APPROVED",
+            grade: 9.0,
+            aiLevel: 0,
+            comments: "Perfecto uso de las propiedades del determinante.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 2,
+            workflowStatus: "WAITING_FOR_STUDENTS",
+            grade: 0,
+            aiLevel: 0,
+            comments: "No entregado.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 3,
+            workflowStatus: "NOT_DICTATED",
+            grade: 0,
+            aiLevel: 0,
+            comments: "Tema aún no dictado.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 11,
+            workflowStatus: "REJECTED",
+            grade: 2.0,
+            aiLevel: 2,
+            comments: "Plagio descarado con IA, no supo justificar en el coloquio.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 4,
+            workflowStatus: "APPROVED",
+            grade: 7.0,
+            aiLevel: 1,
+            comments: "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 5,
+            workflowStatus: "APPROVED",
+            grade: 10.0,
+            aiLevel: 0,
+            comments: "Trabajo perfecto y sumamente original.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 7,
+            workflowStatus: "WAITING_FOR_CORRECTION",
+            grade: 0,
+            aiLevel: 0,
+            comments: "Pendiente de corregir.",
+          },
+          {
+            assignmentId: 1,
+            studentId: 8,
+            workflowStatus: "REJECTED",
+            grade: 3.0,
+            aiLevel: 1,
+            comments: "Respuestas inconsistentes e indicios claros de copy-paste de IA.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 4,
+            workflowStatus: "REJECTED",
+            grade: 2.0,
+            aiLevel: 2,
+            comments: "Certeza absoluta de plagio/generación por IA sin edición.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 5,
+            workflowStatus: "WAITING_FOR_CORRECTION",
+            grade: 8.0,
+            aiLevel: 2,
+            comments: "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 7,
+            workflowStatus: "APPROVED",
+            grade: 8.5,
+            aiLevel: 1,
+            comments: "Bien resuelto, con ligera ayuda de IA en los comentarios.",
+          },
+          {
+            assignmentId: 2,
+            studentId: 8,
+            workflowStatus: "WAITING_FOR_STUDENTS",
+            grade: 0,
+            aiLevel: 0,
+            comments: "No entregado aún.",
+          },
+          {
+            assignmentId: 3,
+            studentId: 6,
+            workflowStatus: "APPROVED",
+            grade: 7.5,
+            aiLevel: 2,
+            comments: "Buen desarrollo, pero hay bloques de código sospechosos de IA.",
+          },
+          {
+            assignmentId: 3,
+            studentId: 9,
+            workflowStatus: "APPROVED",
+            grade: 9.0,
+            aiLevel: 0,
+            comments: "Excelente trabajo matemático.",
+          },
+          {
+            assignmentId: 3,
+            studentId: 10,
+            workflowStatus: "WAITING_FOR_STUDENTS",
+            grade: 0,
+            aiLevel: 0,
+            comments: "Falta entregar.",
+          },
+          {
+            assignmentId: 5,
+            studentId: 6,
+            workflowStatus: "WAITING_FOR_CORRECTION",
+            grade: 0,
+            aiLevel: 1,
+            comments: "Entregado a término.",
+          },
+          {
+            assignmentId: 5,
+            studentId: 9,
+            workflowStatus: "REJECTED",
+            grade: 2.0,
+            aiLevel: 2,
+            comments: "Fraude académico detectado mediante análisis de patrones.",
+          },
+          {
+            assignmentId: 5,
+            studentId: 10,
+            workflowStatus: "NOT_DICTATED",
+            grade: 0,
+            aiLevel: 0,
+            comments: "Tema aún no dictado para este alumno.",
+          },
         ])
         .onConflictDoUpdate({
           target: [deliveries.assignmentId, deliveries.studentId],

@@ -6,7 +6,11 @@ import OverviewCell from "./OverviewCell.svelte";
 import OverviewGrid from "./OverviewGrid.svelte";
 import OverviewLegend from "./OverviewLegend.svelte";
 import OverviewRow from "./OverviewRow.svelte";
-import { DeliveryWorkflowStatus, getOverviewDeliveryStatus, type OverviewDeliveryStatus } from "$lib/common";
+import {
+  DeliveryWorkflowStatus,
+  getOverviewDeliveryStatus,
+  type OverviewDeliveryStatus,
+} from "$lib/common";
 
 configure({ testIdAttribute: "data-test-id" });
 

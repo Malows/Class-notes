@@ -2,7 +2,13 @@ import { json } from "@sveltejs/kit";
 
 import { facultyService } from "$lib/server/services/faculty.service";
 
-export async function PUT({ params, request }: { params: Record<string, string>; request: Request }) {
+export async function PUT({
+  params,
+  request,
+}: {
+  params: Record<string, string>;
+  request: Request;
+}) {
   try {
     const id = Number(params.id);
     const { name } = await request.json();

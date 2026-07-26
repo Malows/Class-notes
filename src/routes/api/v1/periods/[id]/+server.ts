@@ -2,7 +2,13 @@ import { json } from "@sveltejs/kit";
 
 import { periodService } from "$lib/server/services/period.service";
 
-export async function PUT({ params, request }: { params: Record<string, string>; request: Request }) {
+export async function PUT({
+  params,
+  request,
+}: {
+  params: Record<string, string>;
+  request: Request;
+}) {
   try {
     const id = Number(params.id);
     const { year, semester } = await request.json();

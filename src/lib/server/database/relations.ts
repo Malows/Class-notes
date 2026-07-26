@@ -2,9 +2,7 @@ import { defineRelations } from "drizzle-orm";
 
 import * as schema from "./schema";
 
-export const relations = defineRelations(
-  schema,
-  (r) => ({
+export const relations = defineRelations(schema, (r) => ({
   faculties: {
     subjects: r.many.subjects({ from: r.faculties.id, to: r.subjects.facultyId }),
   },

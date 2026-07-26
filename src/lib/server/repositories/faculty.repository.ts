@@ -2,7 +2,7 @@ import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Faculty } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { faculties } from "../database/schema.drizzle";
+import { faculties } from "../database/schema";
 
 export interface FacultyRepository {
   getAll(): Faculty[];

@@ -12,7 +12,7 @@ import {
   students,
   subjectPeriods,
   subjects,
-} from "../database/schema.drizzle";
+} from "../database/schema";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, studentID: number): Delivery | null;

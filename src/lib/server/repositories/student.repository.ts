@@ -2,7 +2,7 @@ import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Student } from "$lib/common/types/student";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { students } from "../database/schema.drizzle";
+import { students } from "../database/schema";
 
 export interface StudentRepository {
   getAll(commissionID?: number): Student[];

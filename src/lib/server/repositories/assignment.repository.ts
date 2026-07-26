@@ -2,7 +2,7 @@ import { and, eq, isNull, sql, type SQL } from "drizzle-orm";
 import type { Assignment } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { assignments, commissions, deliveries, students } from "../database/schema.drizzle";
+import { assignments, commissions, deliveries, students } from "../database/schema";
 
 export interface AssignmentRepository {
   getAll(periodID?: number): Assignment[];

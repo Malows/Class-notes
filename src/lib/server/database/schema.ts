@@ -1,102 +1,109 @@
-import type { Database } from "better-sqlite3";
+import { sqliteTable, text, integer, uniqueIndex, primaryKey } from "drizzle-orm/sqlite-core";
 
-export function createSchema(db: Database): void {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS faculties (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL
-    );
+export const faculties = sqliteTable("faculties", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS subjects (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      faculty_id INTEGER NOT NULL,
-      name TEXT NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(faculty_id) REFERENCES faculties(id) ON DELETE CASCADE
-    );
+export const subjects = sqliteTable("subjects", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  facultyId: integer("faculty_id", { mode: "number" })
+    .notNull()
+    .references(() => faculties.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS periods (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      year INTEGER NOT NULL,
-      semester INTEGER NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL
-    );
+export const periods = sqliteTable("periods", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  year: integer("year").notNull(),
+  semester: integer("semester").notNull(),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS subject_periods (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      subject_id INTEGER NOT NULL,
-      period_id INTEGER NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
-      FOREIGN KEY(period_id) REFERENCES periods(id) ON DELETE CASCADE,
-      UNIQUE(subject_id, period_id)
-    );
+export const subjectPeriods = sqliteTable(
+  "subject_periods",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    subjectId: integer("subject_id", { mode: "number" })
+      .notNull()
+      .references(() => subjects.id, { onDelete: "cascade" }),
+    periodId: integer("period_id", { mode: "number" })
+      .notNull()
+      .references(() => periods.id, { onDelete: "cascade" }),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    uniqueSubjectPeriodActive: uniqueIndex("idx_subject_periods_subject_period_active").on(
+      table.subjectId,
+      table.periodId,
+    ),
+  }),
+);
 
-    CREATE TABLE IF NOT EXISTS commissions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      period_id INTEGER NOT NULL,
-      name TEXT NOT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(period_id) REFERENCES periods(id) ON DELETE CASCADE
-    );
+export const commissions = sqliteTable("commissions", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  periodId: integer("period_id", { mode: "number" })
+    .notNull()
+    .references(() => periods.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS students (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      commission_id INTEGER NOT NULL,
-      name TEXT NOT NULL,
-      external_id TEXT DEFAULT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(commission_id) REFERENCES commissions(id) ON DELETE CASCADE
-    );
+export const students = sqliteTable("students", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  commissionId: integer("commission_id", { mode: "number" })
+    .notNull()
+    .references(() => commissions.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  externalId: text("external_id"),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS assignments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      period_id INTEGER NOT NULL,
-      title TEXT NOT NULL,
-      subtitle TEXT DEFAULT NULL,
-      workflow_status TEXT NOT NULL DEFAULT 'NOT_DICTATED' CHECK (
-        workflow_status IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS', 'WAITING_FOR_CORRECTION')
-      ),
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      FOREIGN KEY(period_id) REFERENCES periods(id) ON DELETE CASCADE
-    );
+export const assignments = sqliteTable("assignments", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  periodId: integer("period_id", { mode: "number" })
+    .notNull()
+    .references(() => periods.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  workflowStatus: text("workflow_status").notNull().default("NOT_DICTATED"),
+  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+  deletedAt: text("deletedAt", { mode: "text" }),
+});
 
-    CREATE TABLE IF NOT EXISTS deliveries (
-      assignment_id INTEGER NOT NULL,
-      student_id INTEGER NOT NULL,
-      workflow_status TEXT NOT NULL DEFAULT 'NOT_DICTATED' CHECK (
-        workflow_status IN ('NOT_DICTATED', 'WAITING_FOR_STUDENTS', 'WAITING_FOR_CORRECTION', 'APPROVED', 'REJECTED')
-      ),
-      grade REAL DEFAULT 0,
-      ai_level INTEGER DEFAULT 0,
-      comments TEXT DEFAULT NULL,
-      createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-      deletedAt DATETIME DEFAULT NULL,
-      PRIMARY KEY(assignment_id, student_id),
-      FOREIGN KEY(assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
-      FOREIGN KEY(student_id) REFERENCES students(id) ON DELETE CASCADE
-    );
-
-    DROP INDEX IF EXISTS idx_periods_subject_year_semester_active;
-
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_subject_periods_subject_period_active 
-    ON subject_periods(subject_id, period_id) 
-    WHERE deletedAt IS NULL;
-  `);
-}
+export const deliveries = sqliteTable(
+  "deliveries",
+  {
+    assignmentId: integer("assignment_id", { mode: "number" })
+      .notNull()
+      .references(() => assignments.id, { onDelete: "cascade" }),
+    studentId: integer("student_id", { mode: "number" })
+      .notNull()
+      .references(() => students.id, { onDelete: "cascade" }),
+    workflowStatus: text("workflow_status").notNull().default("NOT_DICTATED"),
+    grade: integer("grade", { mode: "number" }).default(0),
+    aiLevel: integer("ai_level", { mode: "number" }).default(0),
+    comments: text("comments"),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.assignmentId, table.studentId] }),
+  }),
+);

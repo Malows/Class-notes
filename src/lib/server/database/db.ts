@@ -2,10 +2,10 @@ import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { DATABASE_NAME } from "$env/static/private";
 
-import { createSchema } from "./schema";
 import { insertSeed } from "./seed";
 import { applyDrizzleMigrations } from "./migrate";
-import * as schema from "./schema.drizzle";
+import * as schema from "./schema";
+import { relations } from "./relations";
 
 const isTest = !!(typeof process !== "undefined" && process.env.VITEST);
 const dbPath = isTest ? ":memory:" : DATABASE_NAME || "class-notes.db";
@@ -43,8 +43,8 @@ export function initializeDatabase(
     try {
       applyDrizzleMigrations(targetDb);
       initializedWithMigrations = true;
-    } catch {
-      createSchema(targetDb);
+    } catch (error: Error | unknown) {
+      console.error("Error applying migrations, falling back to schema creation:", error);
     }
 
     if (shouldSeed) {
@@ -58,7 +58,7 @@ export function initializeDatabase(
 }
 
 const db = new Database(dbPath, { verbose: console.log });
-export const drizzleDb = drizzle({ client: db, schema } as any);
+export const drizzleDb = drizzle({ client: db, schema, relations } as any);
 const isDev = Boolean(
   process.env.NODE_ENV === "development" ||
   (typeof import.meta !== "undefined" && import.meta.env?.DEV),

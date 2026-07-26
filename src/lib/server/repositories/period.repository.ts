@@ -2,7 +2,7 @@ import { and, desc, eq, isNull, ne, sql } from "drizzle-orm";
 import type { MetadataContextPayload, Period } from "$lib/common";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { periods, subjectPeriods, subjects } from "../database/schema.drizzle";
+import { periods, subjectPeriods, subjects } from "../database/schema";
 
 export interface PeriodRepository {
   getAll(subjectID?: number): Period[];

@@ -2,7 +2,7 @@ import { and, eq, isNull, sql } from "drizzle-orm";
 import type { Subject } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { faculties, subjects } from "../database/schema.drizzle";
+import { faculties, subjects } from "../database/schema";
 
 export interface SubjectRepository {
   getAll(): Subject[];

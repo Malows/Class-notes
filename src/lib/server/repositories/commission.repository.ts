@@ -2,7 +2,7 @@ import { and, count, eq, isNull, sql } from "drizzle-orm";
 import type { Commission } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { commissions, students } from "../database/schema.drizzle";
+import { commissions, students } from "../database/schema";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];

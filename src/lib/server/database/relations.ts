@@ -8,6 +8,7 @@ export const relations = defineRelations(schema, (r) => ({
   },
   subjects: {
     faculty: r.one.faculties({ from: r.subjects.facultyId, to: r.faculties.id }),
+    commissions: r.many.commissions({ from: r.subjects.id, to: r.commissions.subjectId }),
     subjectPeriods: r.many.subjectPeriods({ from: r.subjects.id, to: r.subjectPeriods.subjectId }),
   },
   periods: {
@@ -21,6 +22,7 @@ export const relations = defineRelations(schema, (r) => ({
   },
   commissions: {
     period: r.one.periods({ from: r.commissions.periodId, to: r.periods.id }),
+    subject: r.one.subjects({ from: r.commissions.subjectId, to: r.subjects.id }),
     students: r.many.students({ from: r.commissions.id, to: r.students.commissionId }),
   },
   students: {

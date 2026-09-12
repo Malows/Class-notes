@@ -9,7 +9,7 @@
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
-  import PeriodTable from "$lib/client/components/grids/tables/PeriodTable.svelte";
+  import SubjectPeriodTable from "$lib/client/components/grids/tables/SubjectPeriodTable.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
@@ -72,7 +72,7 @@
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>
   {:else}
-    <PeriodTable
+    <SubjectPeriodTable
       periods={periodsStore.items}
       facultyId={facultyID}
       subjectId={subjectID}

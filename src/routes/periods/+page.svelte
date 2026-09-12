@@ -5,6 +5,7 @@
   import { StoreKey } from "$lib/common";
   import type { Period } from "$lib/common/types/academic";
 
+  import Button from "$lib/client/components/common/Button.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodTable from "$lib/client/components/grids/tables/PeriodTable.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
@@ -57,6 +58,12 @@
 </svelte:head>
 
 <PageWithAdd title={$t("periods.manage_periods_title")} onAdd={() => modal.openCreate()}>
+  <div>
+    <Button href="/" testId="back-to-dashboard-btn" class="btn-small">
+      {$t("layout.back_to_dashboard")}
+    </Button>
+  </div>
+
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>
   {:else}

@@ -13,6 +13,22 @@ describe("subjectService", () => {
     expect(apiFetch).toHaveBeenCalledWith("/subjects");
   });
 
+  it("getByPeriod calls apiFetch with period endpoint", async () => {
+    await subjectService.getByPeriod(7);
+    expect(apiFetch).toHaveBeenCalledWith("/periods/7/subjects");
+  });
+
+  it("syncByPeriod calls apiFetch with PUT payload", async () => {
+    await subjectService.syncByPeriod(7, [1, 2, 3]);
+    expect(apiFetch).toHaveBeenCalledWith(
+      "/periods/7/subjects",
+      expect.objectContaining({
+        method: "PUT",
+        body: JSON.stringify({ subject_ids: [1, 2, 3] }),
+      }),
+    );
+  });
+
   it("create calls apiFetch with payload", async () => {
     await subjectService.create(1, "Subject");
     expect(apiFetch).toHaveBeenCalledWith(

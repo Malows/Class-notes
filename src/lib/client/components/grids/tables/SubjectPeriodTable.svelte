@@ -3,7 +3,7 @@
   import type { Period } from "$lib/common/types/academic";
 
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
-  import PeriodRow from "../rows/PeriodRow.svelte";
+  import SubjectPeriodRow from "../rows/SubjectPeriodRow.svelte";
 
   interface Props {
     periods: Period[];
@@ -23,6 +23,6 @@
     <th data-test-id="table-header-actions">{$t("layout.actions")}</th>
   {/snippet}
   {#snippet row(period)}
-    <PeriodRow {period} {onEdit} {onDelete} />
+    <SubjectPeriodRow {period} {facultyId} {subjectId} {onEdit} {onDelete} />
   {/snippet}
 </ResponsiveTable>

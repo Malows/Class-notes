@@ -6,6 +6,7 @@ export const periodService = {
     const url = subject_id ? `/periods?subject_id=${subject_id}` : "/periods";
     return apiFetch<Period[]>(url);
   },
+  getById: (id: number) => apiFetch<Period>(`/periods/${id}`),
   create: (subject_id: number, year: number, semester: number) =>
     apiFetch<Period>("/periods", {
       method: "POST",

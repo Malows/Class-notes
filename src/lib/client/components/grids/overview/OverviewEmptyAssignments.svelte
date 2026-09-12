@@ -37,4 +37,7 @@
   .text-center {
     text-align: center;
   }
+  .card:hover {
+    transform: none;
+  }
 </style>

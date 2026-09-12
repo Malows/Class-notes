@@ -35,12 +35,12 @@ describe("periodRepository integration tests", () => {
     const first = periodRepository.create(1, 2035, 1);
     createdIds.push(first.id);
 
-    const list = periodRepository.getAll(1);
+    const list = periodRepository.getAll();
     expect(list.length).toBeGreaterThan(0);
     expect(list.some((p) => p.id === first.id)).toBe(true);
 
     periodRepository.delete(first.id);
-    const updatedList = periodRepository.getAll(1);
+    const updatedList = periodRepository.getAll();
     expect(updatedList.some((p) => p.id === first.id)).toBe(false);
   });
 
@@ -50,13 +50,29 @@ describe("periodRepository integration tests", () => {
     const p3 = periodRepository.create(1, 2039, 1);
     createdIds.push(p1.id, p2.id, p3.id);
 
-    const list = periodRepository.getAll(1);
+    const list = periodRepository.getAll();
 
     const relative = list.filter((p) => [p1.id, p2.id, p3.id].includes(p.id));
 
     expect(relative[0].id).toBe(p2.id);
     expect(relative[1].id).toBe(p3.id);
     expect(relative[2].id).toBe(p1.id);
+  });
+
+  it("returns each seeded period once in the general listing", () => {
+    const list = periodRepository.getAll();
+    const seededPeriods = list.filter((period) => [1, 2, 3, 4].includes(period.id));
+
+    expect(seededPeriods).toHaveLength(4);
+    expect(new Set(seededPeriods.map((period) => period.id)).size).toBe(4);
+  });
+
+  it("returns the full period set for a subject when that subject is linked to all seeded periods", () => {
+    const list = periodRepository.getAllBySubject(1);
+    const seededPeriods = list.filter((period) => [1, 2, 3, 4].includes(period.id));
+
+    expect(seededPeriods).toHaveLength(4);
+    expect(seededPeriods.map((period) => period.id)).toEqual(expect.arrayContaining([1, 2, 3, 4]));
   });
 
   it("returns active metadata for the current year and semester window", () => {

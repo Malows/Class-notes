@@ -24,6 +24,7 @@ export interface Period {
 export interface Commission {
   id: number;
   period_id: number;
+  subject_id: number;
   name: string;
   student_count: number;
 }

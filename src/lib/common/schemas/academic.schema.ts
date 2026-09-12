@@ -21,5 +21,6 @@ export const CreatePeriodSchema = z.object({
 
 export const CreateCommissionSchema = z.object({
   period_id: z.number().min(1, VALIDATION_KEYS.PERIOD_ID_REQUIRED),
+  subject_id: z.number().min(1, VALIDATION_KEYS.SUBJECT_ID_REQUIRED),
   name: z.string().min(1, VALIDATION_KEYS.NAME_REQUIRED),
 });

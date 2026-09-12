@@ -15,6 +15,9 @@
   "confirm_delete_title": "Delete Academic Period",
   "confirm_delete_message": "Are you sure you want to delete the academic period {{year}} ({{semester}} semester)?",
   "period_not_found": "The selected period does not exist or could not be loaded.",
+  "load_period_error": "Could not load the period information.",
+  "save_subjects_success": "Subjects updated successfully.",
+  "save_subjects_error": "Could not save the selection.",
   "period_overview_title": "Period Overview",
   "error_already_exists": "A period is already registered for this subject in the chosen year and semester."
 }

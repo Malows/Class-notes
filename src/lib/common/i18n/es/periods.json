@@ -15,6 +15,9 @@
   "confirm_delete_title": "Borrar Periodo Lectivo",
   "confirm_delete_message": "¿Está seguro que desea borrar el periodo lectivo {{year}} ({{semester}}º Cuatrimestre)?",
   "period_not_found": "El periodo seleccionado no existe o no pudo ser cargado.",
+  "load_period_error": "No se pudo cargar la información del periodo.",
+  "save_subjects_success": "Materias actualizadas con éxito.",
+  "save_subjects_error": "No se pudo guardar la selección.",
   "period_overview_title": "Resumen del Periodo",
   "error_already_exists": "Ya existe un período registrado para esta materia en el año y cuatrimestre seleccionados."
 }

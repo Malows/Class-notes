@@ -5,7 +5,8 @@ import db, { drizzleDb, withTransaction } from "../database/db";
 import { periods, subjectPeriods, subjects } from "../database/schema";
 
 export interface PeriodRepository {
-  getAll(subjectID?: number): Period[];
+  getAll(): Period[];
+  getAllBySubject(subjectID: number): Period[];
   create(subject_id: number, year: number, semester: number): Period;
   update(id: number, year: number, semester: number): Period;
   delete(id: number): void;
@@ -13,12 +14,20 @@ export interface PeriodRepository {
 }
 
 class PeriodRepositoryImpl implements PeriodRepository {
-  getAll(subjectID?: number): Period[] {
-    const conditions = [isNull(periods.deletedAt)];
-    if (subjectID) {
-      conditions.push(eq(subjectPeriods.subjectId, subjectID));
-    }
+  getAll(): Period[] {
+    return drizzleDb
+      .select({
+        id: periods.id,
+        year: periods.year,
+        semester: periods.semester,
+      })
+      .from(periods)
+      .where(isNull(periods.deletedAt))
+      .orderBy(desc(periods.year), desc(periods.semester), desc(periods.id))
+      .all() as Period[];
+  }
 
+  getAllBySubject(subjectID: number): Period[] {
     return drizzleDb
       .select({
         id: periods.id,
@@ -28,15 +37,15 @@ class PeriodRepositoryImpl implements PeriodRepository {
         subject_name: subjects.name,
       })
       .from(periods)
-      .leftJoin(
+      .innerJoin(
         subjectPeriods,
         and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
       )
-      .leftJoin(
+      .innerJoin(
         subjects,
         and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
       )
-      .where(and(...conditions))
+      .where(and(eq(subjectPeriods.subjectId, subjectID), isNull(periods.deletedAt)))
       .orderBy(desc(periods.year), desc(periods.semester), desc(periods.id))
       .all() as Period[];
   }

@@ -3,6 +3,12 @@ import type { Subject } from "$lib/common/types/academic";
 
 export const subjectService = {
   getAll: () => apiFetch<Subject[]>("/subjects"),
+  getByPeriod: (periodId: number) => apiFetch<Subject[]>(`/periods/${periodId}/subjects`),
+  syncByPeriod: (periodId: number, subjectIds: number[]) =>
+    apiFetch<Subject[]>(`/periods/${periodId}/subjects`, {
+      method: "PUT",
+      body: JSON.stringify({ subject_ids: subjectIds }),
+    }),
   create: (faculty_id: number, name: string) =>
     apiFetch<Subject>("/subjects", {
       method: "POST",

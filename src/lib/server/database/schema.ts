@@ -52,6 +52,9 @@ export const subjectPeriods = sqliteTable(
 
 export const commissions = sqliteTable("commissions", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  subjectId: integer("subject_id", { mode: "number" })
+    .notNull()
+    .references(() => subjects.id, { onDelete: "cascade" }),
   periodId: integer("period_id", { mode: "number" })
     .notNull()
     .references(() => periods.id, { onDelete: "cascade" }),

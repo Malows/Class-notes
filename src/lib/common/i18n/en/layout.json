@@ -31,8 +31,13 @@
   "correct": "Correct",
   "subjects": "Subjects",
   "periods": "Periods",
+  "period": "Period",
   "commissions": "Commissions",
   "back_to_subjects": "« Back to subjects",
   "back_to_periods": "« Back to periods",
-  "back_to_commissions": "« Back to commissions"
+  "back_to_commissions": "« Back to commissions",
+  "associated_subjects": "Associated subjects",
+  "save_changes": "Save changes",
+  "saving": "Saving...",
+  "go_to_faculty": "Go to faculty"
 }

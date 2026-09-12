@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 
 import { apiFetch } from "$lib/client/services/api";
+import type { Period } from "$lib/common/types/academic";
 import { periodService } from "./period.service";
 
 vi.mock("$lib/client/services/api", () => ({
@@ -11,6 +12,14 @@ describe("periodService", () => {
   it("getAll calls apiFetch", async () => {
     await periodService.getAll();
     expect(apiFetch).toHaveBeenCalledWith("/periods");
+  });
+
+  it("getById calls apiFetch with the period endpoint", async () => {
+    const period = { id: 7, year: 2026, semester: 1 } as Period;
+    vi.mocked(apiFetch).mockResolvedValueOnce(period);
+
+    await expect(periodService.getById(7)).resolves.toEqual(period);
+    expect(apiFetch).toHaveBeenCalledWith("/periods/7");
   });
 
   it("create calls apiFetch", async () => {

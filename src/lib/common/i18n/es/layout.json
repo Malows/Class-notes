@@ -31,8 +31,13 @@
   "correct": "Corregir",
   "subjects": "Materias",
   "periods": "Periodos",
+  "period": "Periodo",
   "commissions": "Comisiones",
   "back_to_subjects": "« Volver a materias",
   "back_to_periods": "« Volver a periodos",
-  "back_to_commissions": "« Volver a comisiones"
+  "back_to_commissions": "« Volver a comisiones",
+  "associated_subjects": "Materias asociadas",
+  "save_changes": "Guardar cambios",
+  "saving": "Guardando...",
+  "go_to_faculty": "Ir a facultad"
 }

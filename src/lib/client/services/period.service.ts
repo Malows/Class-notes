@@ -7,6 +7,8 @@ export const periodService = {
     return apiFetch<Period[]>(url);
   },
   getById: (id: number) => apiFetch<Period>(`/periods/${id}`),
+  getByYearSemester: (year: number, semester: number) =>
+    apiFetch<Period>(`/periods?year=${year}&semester=${semester}`),
   create: (subject_id: number, year: number, semester: number) =>
     apiFetch<Period>("/periods", {
       method: "POST",

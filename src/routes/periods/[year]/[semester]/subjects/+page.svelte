@@ -13,7 +13,9 @@
   import { subjectService } from "$lib/client/services/subject.service";
   import { groupSubjectsByFaculty } from "$lib/client/utils/subject-grouping";
 
-  const periodId = Number(page.params.id);
+  const year = Number(page.params.year);
+  const semester = Number(page.params.semester);
+  const isValidPeriodPath = Number.isInteger(year) && (semester === 1 || semester === 2);
 
   let loading = $state(true);
   let saving = $state(false);
@@ -22,17 +24,19 @@
   let selectedSubjectIds = $state<number[]>([]);
   let groupedSubjects = $derived(groupSubjectsByFaculty(allSubjects));
 
+  const periodId = $derived(period?.id);
+
   async function loadData() {
     try {
       loading = true;
-      const [periodData, subjectsResponse] = await Promise.all([
-        periodService.getById(periodId),
-        subjectService.getByPeriod(periodId),
-      ]);
-
-      period = periodData ?? null;
+      if (isValidPeriodPath) {
+        period = await periodService.getByYearSemester(year, semester);
+        if (period) {
+          const subjectsResponse = await subjectService.getByPeriod(period.id);
+          selectedSubjectIds = (subjectsResponse as Subject[]).map((subject) => subject.id);
+        }
+      }
       allSubjects = await subjectService.getAll();
-      selectedSubjectIds = (subjectsResponse as Subject[]).map((subject) => subject.id);
     } catch (error) {
       console.error(error);
       notificationsStore.addError($t("periods.load_period_error"));
@@ -42,6 +46,7 @@
   }
 
   async function handleSave() {
+    if (!periodId) return;
     saving = true;
     try {
       await subjectService.syncByPeriod(periodId, selectedSubjectIds);

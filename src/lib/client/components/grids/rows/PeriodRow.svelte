@@ -12,7 +12,7 @@
 
   let { period, onEdit, onDelete }: Props = $props();
 
-  const rootPath = $derived(() => `/periods/${period.id}`);
+  const rootPath = $derived(() => `/periods/${period.year}/${period.semester}`);
 </script>
 
 <td data-test-id="period-year-{period.id}">{period.year}</td>

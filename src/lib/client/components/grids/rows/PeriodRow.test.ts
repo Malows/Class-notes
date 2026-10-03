@@ -33,6 +33,13 @@ test("PeriodRow renders and handles callbacks", async () => {
   expect(screen.getAllByText("2026")[0]).toBeDefined();
   expect(screen.getAllByText("1º")[0]).toBeDefined();
 
+  // Test subjects link uses the semantic year/semester URL
+  const subjectsLink = document.body.querySelector(
+    '[data-test-id="view-subjects-btn-1"]',
+  ) as HTMLAnchorElement;
+  expect(subjectsLink).not.toBeNull();
+  expect(subjectsLink.getAttribute("href")).toBe("/periods/2026/1/subjects");
+
   // Test Edit
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
   await fireEvent.click(editBtn);

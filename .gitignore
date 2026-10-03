@@ -31,3 +31,6 @@ vite.config.ts.timestamp-*
 
 coverage
 coverage.out
+
+# Playwright CLI session artifacts
+.playwright-cli

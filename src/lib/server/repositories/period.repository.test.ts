@@ -4,12 +4,17 @@ import db from "../database/db";
 
 describe("periodRepository integration tests", () => {
   const createdIds: number[] = [];
+  const createdSubjectIds: number[] = [];
 
   afterEach(() => {
     for (const id of createdIds) {
       db.prepare("DELETE FROM periods WHERE id = ?").run(id);
     }
     createdIds.length = 0;
+    for (const id of createdSubjectIds) {
+      db.prepare("DELETE FROM subjects WHERE id = ?").run(id);
+    }
+    createdSubjectIds.length = 0;
   });
 
   it("throws error when creating a duplicate active period", () => {
@@ -78,10 +83,11 @@ describe("periodRepository integration tests", () => {
   it("returns active metadata for the current year and semester window", () => {
     const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
     subjectStmt.run(99, 1, "Materia Metadata");
+    createdSubjectIds.push(99);
     const period = periodRepository.create(99, 2026, 1);
     createdIds.push(period.id);
 
-    const metadata = periodRepository.getActiveMetadata(new Date("2026-01-15T12:00:00.000Z"));
+    const metadata = periodRepository.getActiveMetadata(new Date("2026-04-15T12:00:00.000Z"));
 
     expect(metadata.periodData).toEqual({ year: 2026, term: "Cuatrimestre I" });
     expect(metadata.subjects).toEqual(
@@ -95,8 +101,50 @@ describe("periodRepository integration tests", () => {
     );
   });
 
-  it("returns empty metadata when no period matches the current year and semester", () => {
-    const metadata = periodRepository.getActiveMetadata(new Date("2025-10-15T12:00:00.000Z"));
+  it("selects semester 2 of the current year from August to December", () => {
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
+    subjectStmt.run(98, 2, "Materia Cuatrimestre II");
+    createdSubjectIds.push(98);
+    const period = periodRepository.create(98, 2026, 2);
+    createdIds.push(period.id);
+
+    const metadata = periodRepository.getActiveMetadata(new Date("2026-10-15T12:00:00.000Z"));
+
+    expect(metadata.periodData).toEqual({ year: 2026, term: "Cuatrimestre II" });
+    expect(metadata.subjects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "98",
+          name: "Materia Cuatrimestre II",
+          href: "/faculties/2/subjects/98/periods",
+        }),
+      ]),
+    );
+  });
+
+  it("falls back to the previous year's semester 2 in January", () => {
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
+    subjectStmt.run(97, 3, "Materia Enero");
+    createdSubjectIds.push(97);
+    const period = periodRepository.create(97, 2025, 2);
+    createdIds.push(period.id);
+
+    const metadata = periodRepository.getActiveMetadata(new Date("2026-01-15T12:00:00.000Z"));
+
+    expect(metadata.periodData).toEqual({ year: 2025, term: "Cuatrimestre II" });
+    expect(metadata.subjects).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "97",
+          name: "Materia Enero",
+          href: "/faculties/3/subjects/97/periods",
+        }),
+      ]),
+    );
+  });
+
+  it("returns empty metadata when no period matches the active quarter", () => {
+    const metadata = periodRepository.getActiveMetadata(new Date("2030-03-15T12:00:00.000Z"));
 
     expect(metadata.periodData).toBeNull();
     expect(metadata.subjects).toEqual([]);

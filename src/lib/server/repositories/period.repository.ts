@@ -190,6 +190,11 @@ class PeriodRepositoryImpl implements PeriodRepository {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
+    // Southern academic year: semester 1 = Mar-Jul, semester 2 = Aug-Dec,
+    // Jan-Feb fall back to the previous year's semester 2.
+    const activeSemester = currentMonth >= 3 && currentMonth <= 7 ? 1 : 2;
+    const activeYear = activeSemester === 1 || currentMonth >= 8 ? currentYear : currentYear - 1;
+
     const rows = drizzleDb
       .select({
         id: periods.id,
@@ -208,7 +213,13 @@ class PeriodRepositoryImpl implements PeriodRepository {
         subjects,
         and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
       )
-      .where(and(isNull(periods.deletedAt), eq(periods.year, currentYear)))
+      .where(
+        and(
+          isNull(periods.deletedAt),
+          eq(periods.year, activeYear),
+          eq(periods.semester, activeSemester),
+        ),
+      )
       .all() as Array<{
       id: number;
       year: number;
@@ -218,17 +229,13 @@ class PeriodRepositoryImpl implements PeriodRepository {
       faculty_id: number;
     }>;
 
-    const filteredRows = rows.filter((row) =>
-      row.semester === 1 ? currentMonth <= 1 : currentMonth <= 2,
-    );
-
-    if (filteredRows.length === 0) {
+    if (rows.length === 0) {
       return { periodData: null, subjects: [] };
     }
 
-    const [first] = filteredRows;
+    const [first] = rows;
     const term = first.semester === 1 ? "Cuatrimestre I" : "Cuatrimestre II";
-    const subjectItems = filteredRows.map((row) => ({
+    const subjectItems = rows.map((row) => ({
       id: String(row.subject_id),
       name: row.subject_name,
       href: `/faculties/${row.faculty_id}/subjects/${row.subject_id}/periods`,

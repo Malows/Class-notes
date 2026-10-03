@@ -1,12 +1,14 @@
 <script lang="ts">
+  import { getContext } from "svelte";
   import { t } from "$lib/common/i18n/config";
 
-  import { commissionsStore } from "$lib/client/stores/commissions.svelte";
-  import { facultiesStore } from "$lib/client/stores/faculties.svelte";
-  import { navStore } from "$lib/client/stores/nav.svelte";
-  import { periodsStore } from "$lib/client/stores/periods.svelte";
-  import { subjectsStore } from "$lib/client/stores/subjects.svelte";
+  import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
+  import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import type { NavStore } from "$lib/client/stores/nav.svelte";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
+  import { StoreKey } from "$lib/common";
 
   import { buildCommissionItems, buildPeriodItems, buildSubjectItems } from "./sidebar-context";
   import SidebarContextSection from "./SidebarContextSection.svelte";
@@ -16,8 +18,37 @@
   let isOpen = $state(false);
   let isCollapsed = $state(false);
 
-  const context = navStore.context;
+  // The sidebar consumes the same store instances the pages use via Svelte
+  // context (provided by initStoreContext in +layout.svelte) so the quick
+  // access sections reflect the data the pages already load.
+  const navStore = getContext<NavStore>(StoreKey.NAV);
+  const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
+  const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
+  const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
+  const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const metadataContext = metadataStore.context;
+  const context = navStore.context;
+
+  // Trigger guarded loads for the current context so empty stores populated
+  // by the pages still get fetched here when needed.
+  let loadedContext = $state<{ facultyId?: number; subjectId?: number; periodId?: number }>({});
+
+  $effect(() => {
+    const ctx = navStore.context;
+    if (ctx.facultyId && loadedContext.facultyId !== ctx.facultyId) {
+      loadedContext = { ...loadedContext, facultyId: ctx.facultyId };
+      void facultiesStore.load();
+      void subjectsStore.load();
+    }
+    if (ctx.subjectId && loadedContext.subjectId !== ctx.subjectId) {
+      loadedContext = { ...loadedContext, subjectId: ctx.subjectId };
+      void periodsStore.load(ctx.subjectId);
+    }
+    if (ctx.periodId && loadedContext.periodId !== ctx.periodId) {
+      loadedContext = { ...loadedContext, periodId: ctx.periodId };
+      void commissionsStore.load();
+    }
+  });
 
   function toggleMobile() {
     isOpen = !isOpen;

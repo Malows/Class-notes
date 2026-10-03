@@ -102,6 +102,26 @@ describe("periodRepository integration tests", () => {
     expect(metadata.subjects).toEqual([]);
   });
 
+  it("retrieves a period by id", () => {
+    const created = periodRepository.create(1, 2050, 1);
+    createdIds.push(created.id);
+
+    const found = periodRepository.getById(created.id);
+
+    expect(found).toMatchObject({ id: created.id, year: 2050, semester: 1 });
+    expect(periodRepository.getById(999_999)).toBeUndefined();
+  });
+
+  it("retrieves a period by year and semester", () => {
+    const created = periodRepository.create(1, 2051, 2);
+    createdIds.push(created.id);
+
+    const found = periodRepository.getByYearSemester(2051, 2);
+
+    expect(found).toMatchObject({ id: created.id, year: 2051, semester: 2 });
+    expect(periodRepository.getByYearSemester(2051, 1)).toBeUndefined();
+  });
+
   it("updates a period with a linked subject and preserves the relationship", () => {
     const period = periodRepository.create(1, 2040, 2);
     createdIds.push(period.id);

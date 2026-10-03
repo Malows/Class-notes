@@ -7,6 +7,8 @@ import { periods, subjectPeriods, subjects } from "../database/schema";
 export interface PeriodRepository {
   getAll(): Period[];
   getAllBySubject(subjectID: number): Period[];
+  getById(id: number): Period | undefined;
+  getByYearSemester(year: number, semester: number): Period | undefined;
   create(subject_id: number, year: number, semester: number): Period;
   update(id: number, year: number, semester: number): Period;
   delete(id: number): void;
@@ -48,6 +50,23 @@ class PeriodRepositoryImpl implements PeriodRepository {
       .where(and(eq(subjectPeriods.subjectId, subjectID), isNull(periods.deletedAt)))
       .orderBy(desc(periods.year), desc(periods.semester), desc(periods.id))
       .all() as Period[];
+  }
+
+  getById(id: number): Period | undefined {
+    return drizzleDb
+      .select({ id: periods.id, year: periods.year, semester: periods.semester })
+      .from(periods)
+      .where(and(eq(periods.id, id), isNull(periods.deletedAt)))
+      .get() as Period | undefined;
+  }
+
+  getByYearSemester(year: number, semester: number): Period | undefined {
+    return drizzleDb
+      .select({ id: periods.id, year: periods.year, semester: periods.semester })
+      .from(periods)
+      .where(and(eq(periods.year, year), eq(periods.semester, semester), isNull(periods.deletedAt)))
+      .orderBy(periods.id)
+      .get() as Period | undefined;
   }
 
   create(subject_id: number, year: number, semester: number): Period {

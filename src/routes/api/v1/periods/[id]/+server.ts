@@ -2,6 +2,19 @@ import { json } from "@sveltejs/kit";
 
 import { periodService } from "$lib/server/services/period.service";
 
+export async function GET({ params }: { params: Record<string, string> }) {
+  try {
+    const id = Number(params.id);
+    const period = periodService.getById(id);
+    if (!period) {
+      return json({ error: "Period not found" }, { status: 404 });
+    }
+    return json({ data: period });
+  } catch (error: any) {
+    return json({ error: error.message }, { status: 500 });
+  }
+}
+
 export async function PUT({
   params,
   request,

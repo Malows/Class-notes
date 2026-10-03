@@ -70,28 +70,51 @@ class PeriodRepositoryImpl implements PeriodRepository {
   }
 
   create(subject_id: number, year: number, semester: number): Period {
-    const existingPeriod = drizzleDb
-      .select({ id: periods.id })
-      .from(periods)
-      .innerJoin(
-        subjectPeriods,
-        and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
-      )
-      .where(
-        and(
-          eq(periods.year, year),
-          eq(periods.semester, semester),
-          eq(subjectPeriods.subjectId, subject_id),
-          isNull(periods.deletedAt),
-        ),
-      )
-      .get() as { id: number } | undefined;
-
-    if (existingPeriod) {
-      throw new Error("Period already exists for this subject");
-    }
-
     return withTransaction(db, () => {
+      // Periods are shared across subjects: if an active period for this
+      // (year, semester) already exists, link the subject to it instead of
+      // creating a duplicate row (enforced by the unique index).
+      const existingPeriod = drizzleDb
+        .select({ id: periods.id })
+        .from(periods)
+        .where(and(eq(periods.year, year), eq(periods.semester, semester), isNull(periods.deletedAt)))
+        .orderBy(periods.id)
+        .get() as { id: number } | undefined;
+
+      if (existingPeriod) {
+        const existingLink = drizzleDb
+          .select({ id: subjectPeriods.id })
+          .from(subjectPeriods)
+          .where(
+            and(
+              eq(subjectPeriods.periodId, existingPeriod.id),
+              eq(subjectPeriods.subjectId, subject_id),
+              isNull(subjectPeriods.deletedAt),
+            ),
+          )
+          .get();
+
+        if (existingLink) {
+          throw new Error("Period already exists for this subject");
+        }
+
+        drizzleDb
+          .insert(subjectPeriods)
+          .values({ subjectId: subject_id, periodId: existingPeriod.id })
+          .run();
+
+        const subjectName = drizzleDb
+          .select({ name: subjects.name })
+          .from(subjects)
+          .where(eq(subjects.id, subject_id))
+          .get() as { name: string } | undefined;
+
+        const period = { id: existingPeriod.id, year, semester } as Period;
+        period.subject_id = subject_id;
+        period.subject_name = subjectName?.name;
+        return period;
+      }
+
       const newPeriod = drizzleDb
         .insert(periods)
         .values({ year, semester })

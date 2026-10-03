@@ -170,6 +170,17 @@ describe("periodRepository integration tests", () => {
     expect(periodRepository.getByYearSemester(2051, 1)).toBeUndefined();
   });
 
+  it("reuses an existing global period when another subject links the same year and semester", () => {
+    const first = periodRepository.create(5, 2060, 1);
+    createdIds.push(first.id);
+
+    const second = periodRepository.create(6, 2060, 1);
+
+    expect(second.id).toBe(first.id);
+    expect(second.subject_id).toBe(6);
+    expect(periodRepository.getAllBySubject(6).some((p) => p.id === first.id)).toBe(true);
+  });
+
   it("updates a period with a linked subject and preserves the relationship", () => {
     const period = periodRepository.create(1, 2040, 2);
     createdIds.push(period.id);

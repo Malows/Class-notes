@@ -19,14 +19,23 @@ export const subjects = sqliteTable("subjects", {
   deletedAt: text("deletedAt", { mode: "text" }),
 });
 
-export const periods = sqliteTable("periods", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  year: integer("year").notNull(),
-  semester: integer("semester").notNull(),
-  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  deletedAt: text("deletedAt", { mode: "text" }),
-});
+export const periods = sqliteTable(
+  "periods",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    year: integer("year").notNull(),
+    semester: integer("semester").notNull(),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    uniqueYearSemester: uniqueIndex("idx_periods_year_semester_unique").on(
+      table.year,
+      table.semester,
+    ),
+  }),
+);
 
 export const subjectPeriods = sqliteTable(
   "subject_periods",

@@ -32,7 +32,11 @@
     <Button href="{rootPath()}/assignments" testId="view-assignments-btn-{period.id}" withHover>
       {$t("layout.define_tps")}
     </Button>
-    <Button testId="manage-subjects-btn-{period.id}" withHover onclick={() => onEdit(period)}>
+    <Button
+      href="/periods/{period.year}/{period.semester}/subjects"
+      testId="manage-subjects-btn-{period.id}"
+      withHover
+    >
       {$t("layout.subjects")}
     </Button>
     <Button testId="edit-btn-{period.id}" withHover onclick={() => onEdit(period)}>

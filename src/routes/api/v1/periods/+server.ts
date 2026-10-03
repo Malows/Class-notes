@@ -4,6 +4,17 @@ import { periodService } from "$lib/server/services/period.service";
 
 export async function GET({ url }: { url: URL }) {
   try {
+    const yearParam = url.searchParams.get("year");
+    const semesterParam = url.searchParams.get("semester");
+
+    if (yearParam && semesterParam) {
+      const period = periodService.getByYearSemester(Number(yearParam), Number(semesterParam));
+      if (!period) {
+        return json({ error: "Period not found" }, { status: 404 });
+      }
+      return json({ data: period });
+    }
+
     const subjectID = url.searchParams.get("subject_id")
       ? Number(url.searchParams.get("subject_id"))
       : undefined;

@@ -63,13 +63,17 @@ describe("academic schemas", () => {
   });
 
   test("CreateCommissionSchema accepts a valid commission", () => {
-    const result = CreateCommissionSchema.safeParse({ period_id: 10, name: "Comisión A" });
+    const result = CreateCommissionSchema.safeParse({
+      subject_id: 1,
+      period_id: 10,
+      name: "Comisión A",
+    });
 
     expect(result.success).toBe(true);
   });
 
   test("CreateCommissionSchema rejects an empty name", () => {
-    const result = CreateCommissionSchema.safeParse({ period_id: 10, name: "" });
+    const result = CreateCommissionSchema.safeParse({ subject_id: 1, period_id: 10, name: "" });
 
     expect(result.success).toBe(false);
     if (!result.success) {

@@ -10,7 +10,7 @@ afterEach(() => {
 
 test("CommissionRow renders and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const commission = { id: 1, period_id: 1, name: "Comm A", student_count: 5 };
+  const commission = { id: 1, subject_id: 1, period_id: 1, name: "Comm A", student_count: 5 };
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

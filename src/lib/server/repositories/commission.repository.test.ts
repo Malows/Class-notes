@@ -19,13 +19,15 @@ describe("commissionRepository integration tests", () => {
   });
 
   it("creates commissions and lists them for a specific period", () => {
-    const commission = commissionRepository.create(1, "Comisión A");
+    const commission = commissionRepository.create(1, 1, "Comisión A");
     createdCommissionIds.push(commission.id);
 
     const allCommissions = commissionRepository.getAll();
     const filteredCommissions = commissionRepository.getAll(1);
 
     expect(commission.id).toBeGreaterThan(0);
+    expect(commission.subject_id).toBe(1);
+    expect(commission.period_id).toBe(1);
     expect(commission.name).toBe("Comisión A");
     expect(commission.student_count).toBe(0);
     expect(allCommissions.some((item) => item.id === commission.id)).toBe(true);
@@ -33,7 +35,7 @@ describe("commissionRepository integration tests", () => {
   });
 
   it("updates the commission name and student count", () => {
-    const commission = commissionRepository.create(1, "Comisión vieja");
+    const commission = commissionRepository.create(1, 1, "Comisión vieja");
     createdCommissionIds.push(commission.id);
 
     const student = db
@@ -49,7 +51,7 @@ describe("commissionRepository integration tests", () => {
   });
 
   it("soft-deletes a commission", () => {
-    const commission = commissionRepository.create(2, "Comisión para borrar");
+    const commission = commissionRepository.create(1, 2, "Comisión para borrar");
     createdCommissionIds.push(commission.id);
 
     commissionRepository.delete(commission.id);

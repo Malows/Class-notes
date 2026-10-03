@@ -52,7 +52,7 @@ let component: ReturnType<typeof mount>;
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 function buildContext() {
-  const map = new Map<symbol, unknown>();
+  const map = new Map<StoreKey, unknown>();
   map.set(StoreKey.FACULTIES, new FacultiesStore());
   map.set(StoreKey.SUBJECTS, new SubjectsStore());
   map.set(StoreKey.PERIODS, new PeriodsStore());

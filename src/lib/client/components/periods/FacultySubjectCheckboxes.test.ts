@@ -11,7 +11,7 @@ describe("FacultySubjectCheckboxes", () => {
     render(FacultySubjectCheckboxes, {
       facultyName: "Ciencias",
       facultyId: 10,
-      subjects: [{ id: 1, name: "Álgebra", faculty_id: 10 }],
+      subjects: [{ id: 1, name: "Álgebra", faculty_id: 10, faculty_name: "Ciencias" }],
       selectedSubjectIds: [1],
       onToggle,
     });

@@ -43,7 +43,7 @@
         await commissionsStore.updateItem(id, name);
         notificationsStore.addSuccess("Comisión actualizada con éxito");
       } else {
-        await commissionsStore.create(periodID, name);
+        await commissionsStore.create(subjectID, periodID, name);
         notificationsStore.addSuccess("Comisión creada con éxito");
       }
       modal.close();
@@ -87,7 +87,9 @@
       <p>{$t("commissions.loading_commissions")}</p>
     {:else}
       <CommissionTable
-        commissions={commissionsStore.items.filter((c) => c.period_id === periodID)}
+        commissions={commissionsStore.items.filter(
+          (c) => c.period_id === periodID && c.subject_id === subjectID,
+        )}
         facultyId={facultyID}
         subjectId={subjectID}
         periodId={periodID}
@@ -101,6 +103,8 @@
     isOpen={modal.isCreate || modal.isEdit}
     mode={modal.mode === "create" ? "create" : "edit"}
     commission={modal.target}
+    subjectId={subjectID}
+    periodId={periodID}
     onSave={handleSave}
     onClose={() => modal.close()}
   />

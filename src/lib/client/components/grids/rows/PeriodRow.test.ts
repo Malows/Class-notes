@@ -23,8 +23,6 @@ test("PeriodRow renders and handles callbacks", async () => {
     target: tr,
     props: {
       period,
-      facultyId: 1,
-      subjectId: 1,
       onEdit,
       onDelete,
     },

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/svelte";
+import { render, fireEvent } from "@testing-library/svelte";
 import { loadTranslations } from "$lib/common/i18n/config";
 import { expect, test, vi, afterEach } from "vitest";
 

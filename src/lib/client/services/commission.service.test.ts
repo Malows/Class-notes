@@ -14,12 +14,12 @@ describe("commissionService", () => {
   });
 
   it("create calls apiFetch", async () => {
-    await commissionService.create(1, "Comm A");
+    await commissionService.create(1, 1, "Comm A");
     expect(apiFetch).toHaveBeenCalledWith(
       "/commissions",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ period_id: 1, name: "Comm A" }),
+        body: JSON.stringify({ subject_id: 1, period_id: 1, name: "Comm A" }),
       }),
     );
   });

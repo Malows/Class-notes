@@ -16,8 +16,8 @@ export class CommissionsStore {
     this.loaded = true;
   }
 
-  async create(periodId: number, name: string) {
-    const newItem = await this.service.create(periodId, name);
+  async create(subjectId: number, periodId: number, name: string) {
+    const newItem = await this.service.create(subjectId, periodId, name);
     this.items.push(newItem);
   }
 

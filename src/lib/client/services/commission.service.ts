@@ -3,10 +3,10 @@ import type { Commission } from "$lib/common/types/academic";
 
 export const commissionService = {
   getAll: () => apiFetch<Commission[]>("/commissions"),
-  create: (period_id: number, name: string) =>
+  create: (subject_id: number, period_id: number, name: string) =>
     apiFetch<Commission>("/commissions", {
       method: "POST",
-      body: JSON.stringify({ period_id, name }),
+      body: JSON.stringify({ subject_id, period_id, name }),
     }),
   update: (id: number, name: string) =>
     apiFetch<Commission>(`/commissions/${id}`, {

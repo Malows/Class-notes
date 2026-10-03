@@ -10,8 +10,8 @@ describe("database initialization", () => {
 
     expect(result.initialized).toBe(true);
     expect(result.initializedWithMigrations).toBe(true);
-    expect(sqlite.prepare("SELECT COUNT(*) as count FROM faculties").get()).toEqual({ count: 2 });
-    expect(sqlite.prepare("SELECT COUNT(*) as count FROM students").get()).toEqual({ count: 11 });
+    expect(sqlite.prepare("SELECT COUNT(*) as count FROM faculties").get()).toEqual({ count: 3 });
+    expect(sqlite.prepare("SELECT COUNT(*) as count FROM students").get()).toEqual({ count: 32 });
   });
 
   it("creates the expected foreign key relationships from migrations", () => {

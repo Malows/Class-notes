@@ -6,7 +6,7 @@ import { commissions, students } from "../database/schema";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];
-  create(period_id: number, name: string): Commission;
+  create(subject_id: number, period_id: number, name: string): Commission;
   update(id: number, name: string): Commission;
   delete(id: number): void;
 }
@@ -21,6 +21,7 @@ class CommissionRepositoryImpl implements CommissionRepository {
     return drizzleDb
       .select({
         id: commissions.id,
+        subject_id: commissions.subjectId,
         period_id: commissions.periodId,
         name: commissions.name,
         student_count: count(students.id),
@@ -35,12 +36,17 @@ class CommissionRepositoryImpl implements CommissionRepository {
       .all() as Commission[];
   }
 
-  create(period_id: number, name: string): Commission {
+  create(subject_id: number, period_id: number, name: string): Commission {
     return withTransaction(db, () => {
       const newCommission = drizzleDb
         .insert(commissions)
-        .values({ periodId: period_id, name })
-        .returning({ id: commissions.id, period_id: commissions.periodId, name: commissions.name })
+        .values({ subjectId: subject_id, periodId: period_id, name })
+        .returning({
+          id: commissions.id,
+          subject_id: commissions.subjectId,
+          period_id: commissions.periodId,
+          name: commissions.name,
+        })
         .get() as Commission;
       newCommission.student_count = 0;
       return newCommission;

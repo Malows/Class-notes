@@ -16,8 +16,8 @@ export async function GET({ url }: { url: URL }) {
 
 export async function POST({ request }: { request: Request }) {
   try {
-    const { period_id, name } = await request.json();
-    const newCommission = commissionService.create(period_id, name);
+    const { subject_id, period_id, name } = await request.json();
+    const newCommission = commissionService.create(Number(subject_id), Number(period_id), name);
     return json({ data: newCommission }, { status: 201 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });

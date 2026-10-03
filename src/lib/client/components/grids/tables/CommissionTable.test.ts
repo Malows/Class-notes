@@ -6,7 +6,7 @@ import CommissionTable from "./CommissionTable.svelte";
 
 test("CommissionTable renders commissions and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const commissions = [{ id: 1, period_id: 1, name: "Comm A", student_count: 5 }];
+  const commissions = [{ id: 1, subject_id: 1, period_id: 1, name: "Comm A", student_count: 5 }];
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

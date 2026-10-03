@@ -11,11 +11,13 @@
     isOpen: boolean;
     mode: "create" | "edit";
     commission: Commission | null;
+    subjectId: number;
+    periodId: number;
     onSave: (name: string, id?: number) => void;
     onClose: () => void;
   }
 
-  let { isOpen, mode, commission, onSave, onClose }: Props = $props();
+  let { isOpen, mode, commission, subjectId, periodId, onSave, onClose }: Props = $props();
 
   let name = $state("");
 
@@ -30,7 +32,8 @@
 
   function handleSaveClick() {
     const isValid = validator.validate({
-      period_id: commission?.period_id || 1, // Satisfies schema requirements
+      subject_id: subjectId,
+      period_id: periodId,
       name,
     });
     if (isValid) {

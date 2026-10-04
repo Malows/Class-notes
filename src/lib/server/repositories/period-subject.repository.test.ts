@@ -35,7 +35,7 @@ describe("periodSubjectRepository", () => {
     db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(102, 102, "Álgebra Lineal");
     db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(103, 102, "Análisis Matemático");
     db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(104, 102, "Física");
-    db.prepare("INSERT INTO periods (id, year, semester) VALUES (?, ?, ?)").run(10, 2026, 2);
+    db.prepare("INSERT INTO periods (id, year, semester) VALUES (?, ?, ?)").run(10, 2090, 2);
     db.prepare("INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?)").run(102, 10);
     createdLinks.push({ periodId: 10, subjectId: 102 });
 

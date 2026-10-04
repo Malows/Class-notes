@@ -44,6 +44,7 @@ const periodSeeds = [
   { id: 2, year: 2025, semester: 1 },
   { id: 3, year: 2025, semester: 2 },
   { id: 4, year: 2026, semester: 1 },
+  { id: 5, year: 2026, semester: 2 },
 ];
 
 const subjectPeriodSeeds = [
@@ -61,6 +62,10 @@ const subjectPeriodSeeds = [
   { id: 12, subjectId: 2, periodId: 1 },
   { id: 13, subjectId: 2, periodId: 2 },
   { id: 14, subjectId: 2, periodId: 4 },
+  { id: 15, subjectId: 1, periodId: 5 },
+  { id: 16, subjectId: 2, periodId: 5 },
+  { id: 17, subjectId: 3, periodId: 5 },
+  { id: 18, subjectId: 7, periodId: 5 },
 ];
 
 const commissionSeeds = [

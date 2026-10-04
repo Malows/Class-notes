@@ -94,12 +94,12 @@ describe("periodRepository integration tests", () => {
     const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
     subjectStmt.run(99, 1, "Materia Metadata");
     createdSubjectIds.push(99);
-    const period = periodRepository.create(99, 2026, 1);
+    const period = periodRepository.create(99, 2091, 1);
     createdIds.push(period.id);
 
-    const metadata = periodRepository.getActiveMetadata(new Date("2026-04-15T12:00:00.000Z"));
+    const metadata = periodRepository.getActiveMetadata(new Date("2091-04-15T12:00:00.000Z"));
 
-    expect(metadata.periodData).toEqual({ year: 2026, term: "Cuatrimestre I" });
+    expect(metadata.periodData).toEqual({ year: 2091, term: "Cuatrimestre I" });
     expect(metadata.subjects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -115,12 +115,12 @@ describe("periodRepository integration tests", () => {
     const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
     subjectStmt.run(98, 2, "Materia Cuatrimestre II");
     createdSubjectIds.push(98);
-    const period = periodRepository.create(98, 2026, 2);
+    const period = periodRepository.create(98, 2092, 2);
     createdIds.push(period.id);
 
-    const metadata = periodRepository.getActiveMetadata(new Date("2026-10-15T12:00:00.000Z"));
+    const metadata = periodRepository.getActiveMetadata(new Date("2092-10-15T12:00:00.000Z"));
 
-    expect(metadata.periodData).toEqual({ year: 2026, term: "Cuatrimestre II" });
+    expect(metadata.periodData).toEqual({ year: 2092, term: "Cuatrimestre II" });
     expect(metadata.subjects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -136,12 +136,12 @@ describe("periodRepository integration tests", () => {
     const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
     subjectStmt.run(97, 3, "Materia Enero");
     createdSubjectIds.push(97);
-    const period = periodRepository.create(97, 2025, 2);
+    const period = periodRepository.create(97, 2091, 2);
     createdIds.push(period.id);
 
-    const metadata = periodRepository.getActiveMetadata(new Date("2026-01-15T12:00:00.000Z"));
+    const metadata = periodRepository.getActiveMetadata(new Date("2092-01-15T12:00:00.000Z"));
 
-    expect(metadata.periodData).toEqual({ year: 2025, term: "Cuatrimestre II" });
+    expect(metadata.periodData).toEqual({ year: 2091, term: "Cuatrimestre II" });
     expect(metadata.subjects).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

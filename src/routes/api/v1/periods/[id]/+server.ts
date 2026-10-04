@@ -31,7 +31,10 @@ export async function PUT({
     }
     return json({ data: updatedPeriod });
   } catch (error: any) {
-    if (error.message === "Period already exists for this subject") {
+    if (
+      error.message === "Period already exists for this subject" ||
+      error.message === "Period already exists for this year and semester"
+    ) {
       return json({ error: error.message }, { status: 409 });
     }
     return json({ error: error.message }, { status: 500 });

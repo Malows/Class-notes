@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { GET } from "./+server";
+import { GET, PUT } from "./+server";
 
 const { getByIdMock, updateMock, deleteMock } = vi.hoisted(() => ({
   getByIdMock: vi.fn(),
@@ -44,5 +44,22 @@ describe("period API", () => {
 
     expect(response.status).toBe(404);
     expect(body.error).toBe("Period not found");
+  });
+
+  it("returns 409 when updating to an existing year and semester", async () => {
+    updateMock.mockImplementation(() => {
+      throw new Error("Period already exists for this year and semester");
+    });
+
+    const response = await PUT({
+      params: { id: "2" },
+      request: new Request("http://localhost", {
+        method: "PUT",
+        body: JSON.stringify({ year: 2026, semester: 1 }),
+        headers: { "Content-Type": "application/json" },
+      }),
+    } as any);
+
+    expect(response.status).toBe(409);
   });
 });

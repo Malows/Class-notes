@@ -33,7 +33,17 @@ describe("periodRepository integration tests", () => {
 
     expect(() => {
       periodRepository.update(p2.id, 2031, 1);
-    }).toThrow("Period already exists for this subject");
+    }).toThrow("Period already exists for this year and semester");
+  });
+
+  it("throws when updating a period into a year/semester used by another subject", () => {
+    const p1 = periodRepository.create(1, 2095, 1);
+    const p2 = periodRepository.create(5, 2095, 2);
+    createdIds.push(p1.id, p2.id);
+
+    expect(() => {
+      periodRepository.update(p2.id, 2095, 1);
+    }).toThrow("Period already exists for this year and semester");
   });
 
   it("retrieves all active periods for a subject and soft-deletes a period", () => {

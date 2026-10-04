@@ -146,28 +146,24 @@ class PeriodRepositoryImpl implements PeriodRepository {
       .orderBy(subjectPeriods.id)
       .get() as { subjectId: number } | undefined;
 
-    if (subjectLink) {
-      const existingPeriod = drizzleDb
-        .select({ id: periods.id })
-        .from(periods)
-        .innerJoin(
-          subjectPeriods,
-          and(eq(periods.id, subjectPeriods.periodId), isNull(subjectPeriods.deletedAt)),
-        )
-        .where(
-          and(
-            eq(periods.year, year),
-            eq(periods.semester, semester),
-            eq(subjectPeriods.subjectId, subjectLink.subjectId),
-            ne(periods.id, id),
-            isNull(periods.deletedAt),
-          ),
-        )
-        .get() as { id: number } | undefined;
+    // Periods are shared across subjects and (year, semester) is globally
+    // unique, so editing a period into a combination that already exists
+    // anywhere is a conflict handled with a friendly 409.
+    const existingPeriod = drizzleDb
+      .select({ id: periods.id })
+      .from(periods)
+      .where(
+        and(
+          eq(periods.year, year),
+          eq(periods.semester, semester),
+          ne(periods.id, id),
+          isNull(periods.deletedAt),
+        ),
+      )
+      .get() as { id: number } | undefined;
 
-      if (existingPeriod) {
-        throw new Error("Period already exists for this subject");
-      }
+    if (existingPeriod) {
+      throw new Error("Period already exists for this year and semester");
     }
 
     return withTransaction(db, () => {

@@ -174,3 +174,20 @@ test("Sidebar renders metadata context when available", async () => {
   expect(subjectLink).not.toBeNull();
   expect(subjectLink.textContent).toContain("Algoritmos");
 });
+
+test("Sidebar reacts to metadata initialized after mount", async () => {
+  await loadTranslations("en", "/");
+
+  mountWithContext();
+  flushSync();
+
+  expect(document.body.textContent).not.toContain("Cuatrimestre Activo");
+
+  metadataStore.initializeStore({
+    periodData: { year: 2026, term: "Cuatrimestre II" },
+    subjects: [{ id: "1", name: "Algoritmos", href: "/faculties/1/subjects/1/periods" }],
+  });
+  flushSync();
+
+  expect(document.body.textContent).toContain("Cuatrimestre Activo (2026 - Cuatrimestre II)");
+});

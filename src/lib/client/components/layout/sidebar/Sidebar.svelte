@@ -26,8 +26,8 @@
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
-  const metadataContext = metadataStore.context;
-  const context = navStore.context;
+  const metadataContext = $derived(metadataStore.context);
+  const context = $derived(navStore.context);
 
   // Trigger guarded loads for the current context so empty stores populated
   // by the pages still get fetched here when needed.

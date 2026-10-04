@@ -139,13 +139,6 @@ class PeriodRepositoryImpl implements PeriodRepository {
   }
 
   update(id: number, year: number, semester: number): Period {
-    const subjectLink = drizzleDb
-      .select({ subjectId: subjectPeriods.subjectId })
-      .from(subjectPeriods)
-      .where(and(eq(subjectPeriods.periodId, id), isNull(subjectPeriods.deletedAt)))
-      .orderBy(subjectPeriods.id)
-      .get() as { subjectId: number } | undefined;
-
     // Periods are shared across subjects and (year, semester) is globally
     // unique, so editing a period into a combination that already exists
     // anywhere is a conflict handled with a friendly 409.

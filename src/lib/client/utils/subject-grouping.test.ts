@@ -6,9 +6,30 @@ import type { Subject } from "$lib/common/types/academic";
 describe("groupSubjectsByFaculty", () => {
   it("groups subjects by faculty and sorts them by name", () => {
     const subjects: Subject[] = [
-      { id: 3, name: "Física", faculty_id: 2, faculty_name: "Ciencias" },
-      { id: 1, name: "Álgebra", faculty_id: 1, faculty_name: "Ingeniería" },
-      { id: 2, name: "Análisis", faculty_id: 1, faculty_name: "Ingeniería" },
+      {
+        id: 3,
+        name: "Física",
+        faculty_id: 2,
+        faculty_name: "Ciencias",
+        faculty_slug: "ciencias",
+        slug: "fisica",
+      },
+      {
+        id: 1,
+        name: "Álgebra",
+        faculty_id: 1,
+        faculty_name: "Ingeniería",
+        faculty_slug: "ingenieria",
+        slug: "algebra",
+      },
+      {
+        id: 2,
+        name: "Análisis",
+        faculty_id: 1,
+        faculty_name: "Ingeniería",
+        faculty_slug: "ingenieria",
+        slug: "analisis",
+      },
     ];
 
     const grouped = groupSubjectsByFaculty(subjects);
@@ -17,14 +38,37 @@ describe("groupSubjectsByFaculty", () => {
       {
         facultyId: 2,
         facultyName: "Ciencias",
-        subjects: [{ id: 3, name: "Física", faculty_id: 2, faculty_name: "Ciencias" }],
+        subjects: [
+          {
+            id: 3,
+            name: "Física",
+            faculty_id: 2,
+            faculty_name: "Ciencias",
+            faculty_slug: "ciencias",
+            slug: "fisica",
+          },
+        ],
       },
       {
         facultyId: 1,
         facultyName: "Ingeniería",
         subjects: [
-          { id: 1, name: "Álgebra", faculty_id: 1, faculty_name: "Ingeniería" },
-          { id: 2, name: "Análisis", faculty_id: 1, faculty_name: "Ingeniería" },
+          {
+            id: 1,
+            name: "Álgebra",
+            faculty_id: 1,
+            faculty_name: "Ingeniería",
+            faculty_slug: "ingenieria",
+            slug: "algebra",
+          },
+          {
+            id: 2,
+            name: "Análisis",
+            faculty_id: 1,
+            faculty_name: "Ingeniería",
+            faculty_slug: "ingenieria",
+            slug: "analisis",
+          },
         ],
       },
     ]);

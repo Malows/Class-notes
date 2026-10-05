@@ -10,7 +10,7 @@ afterEach(() => {
 
 test("FacultyRow renders and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const faculty = { id: 1, name: "Faculty A" };
+  const faculty = { id: 1, name: "Faculty A", slug: "faculty-a" };
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

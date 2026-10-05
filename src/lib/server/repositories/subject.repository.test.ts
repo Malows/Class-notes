@@ -19,7 +19,9 @@ describe("subjectRepository Integration Tests", () => {
 
     expect(subject.id).toBeGreaterThan(0);
     expect(subject.name).toBe("Discrete Mathematics");
+    expect(subject.slug).toBe("discrete-mathematics");
     expect(subject.faculty_name).toBe("Facultad de Ingeniería");
+    expect(subject.faculty_slug).toBe("facultad-de-ingenieria");
 
     const list = subjectRepository.getAll();
     const found = list.find((s) => s.id === subject.id);
@@ -27,6 +29,25 @@ describe("subjectRepository Integration Tests", () => {
 
     const updated = subjectRepository.update(subject.id, "Discrete Maths V2");
     expect(updated.name).toBe("Discrete Maths V2");
+    expect(updated.slug).toBe("discrete-maths-v2");
+  });
+
+  it("appends a numeric suffix for a slug collision within the faculty", () => {
+    const first = subjectRepository.create(1, "Materia Colision");
+    const second = subjectRepository.create(1, "Materia Colision");
+    createdIds.push(first.id, second.id);
+
+    expect(first.slug).toBe("materia-colision");
+    expect(second.slug).toBe("materia-colision-2");
+  });
+
+  it("allows the same slug in a different faculty", () => {
+    const first = subjectRepository.create(1, "Materia Compartida");
+    const second = subjectRepository.create(2, "Materia Compartida");
+    createdIds.push(first.id, second.id);
+
+    expect(first.slug).toBe("materia-compartida");
+    expect(second.slug).toBe("materia-compartida");
   });
 
   it("updates and soft-deletes a subject", () => {

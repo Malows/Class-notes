@@ -1,23 +1,42 @@
+import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer, uniqueIndex, primaryKey } from "drizzle-orm/sqlite-core";
 
-export const faculties = sqliteTable("faculties", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  name: text("name").notNull(),
-  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  deletedAt: text("deletedAt", { mode: "text" }),
-});
+export const faculties = sqliteTable(
+  "faculties",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    uniqueSlug: uniqueIndex("idx_faculties_slug_unique")
+      .on(table.slug)
+      .where(sql`${table.deletedAt} IS NULL`),
+  }),
+);
 
-export const subjects = sqliteTable("subjects", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  facultyId: integer("faculty_id", { mode: "number" })
-    .notNull()
-    .references(() => faculties.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  deletedAt: text("deletedAt", { mode: "text" }),
-});
+export const subjects = sqliteTable(
+  "subjects",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    facultyId: integer("faculty_id", { mode: "number" })
+      .notNull()
+      .references(() => faculties.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    uniqueFacultySlug: uniqueIndex("idx_subjects_faculty_slug_unique")
+      .on(table.facultyId, table.slug)
+      .where(sql`${table.deletedAt} IS NULL`),
+  }),
+);
 
 export const periods = sqliteTable(
   "periods",

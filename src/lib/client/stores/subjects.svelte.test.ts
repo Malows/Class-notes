@@ -17,7 +17,7 @@ describe("SubjectsStore", () => {
   });
 
   it("should load subjects", async () => {
-    const mockData = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A" }];
+    const mockData = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A", faculty_slug: "fac-a", slug: "subject-a" }];
     mockService.getAll.mockResolvedValue(mockData);
 
     await store.load();
@@ -33,6 +33,8 @@ describe("SubjectsStore", () => {
       faculty_id: 1,
       name: "Subject B",
       faculty_name: "Fac A",
+      faculty_slug: "fac-a",
+      slug: "subject-b",
     };
     mockService.create.mockResolvedValue(newSubject);
 
@@ -42,12 +44,14 @@ describe("SubjectsStore", () => {
   });
 
   it("should update a subject", async () => {
-    store.items = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A" }];
+    store.items = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A", faculty_slug: "fac-a", slug: "subject-a" }];
     const updated = {
       id: 1,
       faculty_id: 1,
       name: "Subject A Updated",
       faculty_name: "Fac A",
+      faculty_slug: "fac-a",
+      slug: "subject-a-updated",
     };
     mockService.update.mockResolvedValue(updated);
 
@@ -57,7 +61,7 @@ describe("SubjectsStore", () => {
   });
 
   it("should delete a subject", async () => {
-    store.items = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A" }];
+    store.items = [{ id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Fac A", faculty_slug: "fac-a", slug: "subject-a" }];
     mockService.delete.mockResolvedValue(undefined);
 
     await store.deleteItem(1);

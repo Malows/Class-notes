@@ -4,8 +4,22 @@ import type { Subject, Period, Commission } from "$lib/common";
 
 test("buildSubjectItems filters and maps subjects correctly", () => {
   const subjects: Subject[] = [
-    { id: 1, faculty_id: 1, name: "Matematica", faculty_name: "Facultad 1" },
-    { id: 2, faculty_id: 2, name: "Fisica", faculty_name: "Facultad 2" },
+    {
+      id: 1,
+      faculty_id: 1,
+      name: "Matematica",
+      faculty_name: "Facultad 1",
+      faculty_slug: "facultad-1",
+      slug: "matematica",
+    },
+    {
+      id: 2,
+      faculty_id: 2,
+      name: "Fisica",
+      faculty_name: "Facultad 2",
+      faculty_slug: "facultad-2",
+      slug: "fisica",
+    },
   ];
   const context = { facultyId: 1, activeSubjectId: 1 };
 

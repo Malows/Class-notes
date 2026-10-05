@@ -23,20 +23,20 @@ const runSafe = (operation: () => void) => {
 };
 
 const facultySeeds = [
-  { id: 1, name: "Facultad de Ingeniería" },
-  { id: 2, name: "Facultad de Ciencias Exactas" },
-  { id: 3, name: "Facultad de Humanidades y Artes" },
+  { id: 1, name: "Facultad de Ingeniería", slug: "facultad-de-ingenieria" },
+  { id: 2, name: "Facultad de Ciencias Exactas", slug: "facultad-de-ciencias-exactas" },
+  { id: 3, name: "Facultad de Humanidades y Artes", slug: "facultad-de-humanidades-y-artes" },
 ];
 
 const subjectSeeds = [
-  { id: 1, facultyId: 1, name: "Álgebra Lineal" },
-  { id: 2, facultyId: 1, name: "Análisis Matemático I" },
-  { id: 3, facultyId: 1, name: "Física General I" },
-  { id: 4, facultyId: 2, name: "Cálculo Diferencial" },
-  { id: 5, facultyId: 2, name: "Cálculo Integral" },
-  { id: 6, facultyId: 2, name: "Geometría Analítica" },
-  { id: 7, facultyId: 3, name: "Historia de la Ciencia" },
-  { id: 8, facultyId: 3, name: "Comunicación y Diseño" },
+  { id: 1, facultyId: 1, name: "Álgebra Lineal", slug: "algebra-lineal" },
+  { id: 2, facultyId: 1, name: "Análisis Matemático I", slug: "analisis-matematico-i" },
+  { id: 3, facultyId: 1, name: "Física General I", slug: "fisica-general-i" },
+  { id: 4, facultyId: 2, name: "Cálculo Diferencial", slug: "calculo-diferencial" },
+  { id: 5, facultyId: 2, name: "Cálculo Integral", slug: "calculo-integral" },
+  { id: 6, facultyId: 2, name: "Geometría Analítica", slug: "geometria-analitica" },
+  { id: 7, facultyId: 3, name: "Historia de la Ciencia", slug: "historia-de-la-ciencia" },
+  { id: 8, facultyId: 3, name: "Comunicación y Diseño", slug: "comunicacion-y-diseno" },
 ];
 
 const periodSeeds = [
@@ -168,7 +168,7 @@ export function insertSeed(client: Database): void {
         .values(facultySeeds)
         .onConflictDoUpdate({
           target: faculties.id,
-          set: { name: faculties.name },
+          set: { name: faculties.name, slug: faculties.slug },
         })
         .run();
     });
@@ -178,7 +178,7 @@ export function insertSeed(client: Database): void {
         .values(subjectSeeds)
         .onConflictDoUpdate({
           target: subjects.id,
-          set: { facultyId: subjects.facultyId, name: subjects.name },
+          set: { facultyId: subjects.facultyId, name: subjects.name, slug: subjects.slug },
         })
         .run();
     });

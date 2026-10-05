@@ -10,7 +10,7 @@ afterEach(() => {
 
 test("SubjectRow renders and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const subject = { id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Faculty A" };
+  const subject = { id: 1, faculty_id: 1, name: "Subject A", faculty_name: "Faculty A", faculty_slug: "faculty-a", slug: "subject-a" };
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

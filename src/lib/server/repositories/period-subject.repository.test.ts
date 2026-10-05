@@ -17,8 +17,8 @@ describe("periodSubjectRepository", () => {
   });
 
   it("returns the subjects linked to a period", () => {
-    db.prepare("INSERT INTO faculties (id, name) VALUES (?, ?)").run(101, "Test Faculty");
-    db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(101, 101, "Álgebra Lineal");
+    db.prepare("INSERT INTO faculties (id, name, slug) VALUES (?, ?, ?)").run(101, "Test Faculty", "test-faculty");
+    db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)").run(101, 101, "Álgebra Lineal", "algebra-lineal");
     db.prepare("INSERT INTO periods (id, year, semester) VALUES (?, ?, ?)").run(9, 2089, 1);
     db.prepare("INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?)").run(101, 9);
     createdLinks.push({ periodId: 9, subjectId: 101 });
@@ -31,10 +31,10 @@ describe("periodSubjectRepository", () => {
   });
 
   it("syncs the association to exactly the provided subject ids", () => {
-    db.prepare("INSERT INTO faculties (id, name) VALUES (?, ?)").run(102, "Test Faculty");
-    db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(102, 102, "Álgebra Lineal");
-    db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(103, 102, "Análisis Matemático");
-    db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)").run(104, 102, "Física");
+    db.prepare("INSERT INTO faculties (id, name, slug) VALUES (?, ?, ?)").run(102, "Test Faculty", "test-faculty-102");
+    db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)").run(102, 102, "Álgebra Lineal", "algebra-lineal");
+    db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)").run(103, 102, "Análisis Matemático", "analisis-matematico");
+    db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)").run(104, 102, "Física", "fisica");
     db.prepare("INSERT INTO periods (id, year, semester) VALUES (?, ?, ?)").run(10, 2090, 2);
     db.prepare("INSERT INTO subject_periods (subject_id, period_id) VALUES (?, ?)").run(102, 10);
     createdLinks.push({ periodId: 10, subjectId: 102 });

@@ -42,7 +42,7 @@ describe("database initialization", () => {
 
     expect(() =>
       withTransaction(sqlite, () => {
-        sqlite.prepare("INSERT INTO faculties (name) VALUES (?)").run("Nueva Facultad");
+        sqlite.prepare("INSERT INTO faculties (name, slug) VALUES (?, ?)").run("Nueva Facultad", "nueva-facultad");
         throw new Error("boom");
       }),
     ).toThrow("boom");

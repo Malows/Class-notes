@@ -40,6 +40,7 @@ CREATE TABLE `deliveries` (
 CREATE TABLE `faculties` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`name` text NOT NULL,
+	`slug` text NOT NULL,
 	`createdAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`updatedAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`deletedAt` text
@@ -80,11 +81,14 @@ CREATE TABLE `subjects` (
 	`id` integer PRIMARY KEY AUTOINCREMENT,
 	`faculty_id` integer NOT NULL,
 	`name` text NOT NULL,
+	`slug` text NOT NULL,
 	`createdAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`updatedAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`deletedAt` text,
 	CONSTRAINT `fk_subjects_faculty_id_faculties_id_fk` FOREIGN KEY (`faculty_id`) REFERENCES `faculties`(`id`) ON DELETE CASCADE
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `idx_faculties_slug_unique` ON `faculties` (`slug`) WHERE "faculties"."deletedAt" IS NULL;--> statement-breakpoint
 CREATE UNIQUE INDEX `idx_periods_year_semester_unique` ON `periods` (`year`,`semester`);--> statement-breakpoint
-CREATE UNIQUE INDEX `idx_subject_periods_subject_period_active` ON `subject_periods` (`subject_id`,`period_id`);
+CREATE UNIQUE INDEX `idx_subject_periods_subject_period_active` ON `subject_periods` (`subject_id`,`period_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `idx_subjects_faculty_slug_unique` ON `subjects` (`faculty_id`,`slug`) WHERE "subjects"."deletedAt" IS NULL;

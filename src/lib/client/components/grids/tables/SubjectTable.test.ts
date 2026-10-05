@@ -6,7 +6,7 @@ import SubjectTable from "./SubjectTable.svelte";
 
 test("SubjectTable renders subjects and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const subjects = [{ id: 1, faculty_id: 1, name: "Materia A", faculty_name: "Facultad A" }];
+  const subjects = [{ id: 1, faculty_id: 1, name: "Materia A", faculty_name: "Facultad A", faculty_slug: "facultad-a", slug: "materia-a" }];
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

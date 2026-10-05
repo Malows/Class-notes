@@ -6,7 +6,7 @@ import FacultyTable from "./FacultyTable.svelte";
 
 test("FacultyTable renders faculties and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const faculties = [{ id: 1, name: "Facultad A" }];
+  const faculties = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

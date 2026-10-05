@@ -1,12 +1,15 @@
 export interface Faculty {
   id: number;
   name: string;
+  slug: string;
 }
 export interface Subject {
   id: number;
   name: string;
   faculty_id: number;
   faculty_name: string;
+  faculty_slug: string;
+  slug: string;
 }
 export interface SubjectPeriod {
   id: number;

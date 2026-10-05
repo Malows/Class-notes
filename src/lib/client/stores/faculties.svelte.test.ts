@@ -17,7 +17,7 @@ describe("FacultiesStore", () => {
   });
 
   it("should load faculties", async () => {
-    const mockData = [{ id: 1, name: "Facultad A" }];
+    const mockData = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
     mockService.getAll.mockResolvedValue(mockData);
 
     await store.load();
@@ -27,7 +27,7 @@ describe("FacultiesStore", () => {
   });
 
   it("should not reload if already loaded", async () => {
-    const mockData = [{ id: 1, name: "Facultad A" }];
+    const mockData = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
     mockService.getAll.mockResolvedValue(mockData);
 
     await store.load();
@@ -37,7 +37,7 @@ describe("FacultiesStore", () => {
   });
 
   it("should create a new faculty and update store", async () => {
-    const newFaculty = { id: 2, name: "Facultad B" };
+    const newFaculty = { id: 2, name: "Facultad B", slug: "facultad-b" };
     mockService.create.mockResolvedValue(newFaculty);
 
     await store.create("Facultad B");
@@ -47,8 +47,8 @@ describe("FacultiesStore", () => {
   });
 
   it("should update an existing faculty", async () => {
-    store.items = [{ id: 1, name: "Facultad A" }];
-    const updatedFaculty = { id: 1, name: "Facultad A Updated" };
+    store.items = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
+    const updatedFaculty = { id: 1, name: "Facultad A Updated", slug: "facultad-a-updated" };
     mockService.update.mockResolvedValue(updatedFaculty);
 
     await store.updateItem(1, "Facultad A Updated");
@@ -58,7 +58,7 @@ describe("FacultiesStore", () => {
   });
 
   it("should delete a faculty", async () => {
-    store.items = [{ id: 1, name: "Facultad A" }];
+    store.items = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
     mockService.delete.mockResolvedValue(undefined);
 
     await store.deleteItem(1);
@@ -68,7 +68,7 @@ describe("FacultiesStore", () => {
   });
 
   it("should reset state", async () => {
-    store.items = [{ id: 1, name: "Facultad A" }];
+    store.items = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
     store.loaded = true;
 
     store.reset();

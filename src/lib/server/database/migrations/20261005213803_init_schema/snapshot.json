@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "65761fc0-e134-4725-b59f-89e1562e6ce9",
+  "id": "155a6197-618c-48e2-a95c-d36e30356d3c",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -300,6 +300,16 @@
     },
     {
       "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
       "notNull": false,
       "autoincrement": false,
       "default": "'CURRENT_TIMESTAMP'",
@@ -550,6 +560,16 @@
     },
     {
       "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
       "notNull": false,
       "autoincrement": false,
       "default": "'CURRENT_TIMESTAMP'",
@@ -789,6 +809,20 @@
     {
       "columns": [
         {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"faculties\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_faculties_slug_unique",
+      "entityType": "indexes",
+      "table": "faculties"
+    },
+    {
+      "columns": [
+        {
           "value": "year",
           "isExpression": false
         },
@@ -821,6 +855,24 @@
       "name": "idx_subject_periods_subject_period_active",
       "entityType": "indexes",
       "table": "subject_periods"
+    },
+    {
+      "columns": [
+        {
+          "value": "faculty_id",
+          "isExpression": false
+        },
+        {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"subjects\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_subjects_faculty_slug_unique",
+      "entityType": "indexes",
+      "table": "subjects"
     }
   ],
   "renames": []

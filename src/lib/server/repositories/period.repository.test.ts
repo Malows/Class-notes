@@ -91,8 +91,8 @@ describe("periodRepository integration tests", () => {
   });
 
   it("returns active metadata for the current year and semester window", () => {
-    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
-    subjectStmt.run(99, 1, "Materia Metadata");
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)");
+    subjectStmt.run(99, 1, "Materia Metadata", "materia-metadata");
     createdSubjectIds.push(99);
     const period = periodRepository.create(99, 2091, 1);
     createdIds.push(period.id);
@@ -112,8 +112,8 @@ describe("periodRepository integration tests", () => {
   });
 
   it("selects semester 2 of the current year from August to December", () => {
-    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
-    subjectStmt.run(98, 2, "Materia Cuatrimestre II");
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)");
+    subjectStmt.run(98, 2, "Materia Cuatrimestre II", "materia-cuatrimestre-ii");
     createdSubjectIds.push(98);
     const period = periodRepository.create(98, 2092, 2);
     createdIds.push(period.id);
@@ -133,8 +133,8 @@ describe("periodRepository integration tests", () => {
   });
 
   it("falls back to the previous year's semester 2 in January", () => {
-    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name) VALUES (?, ?, ?)");
-    subjectStmt.run(97, 3, "Materia Enero");
+    const subjectStmt = db.prepare("INSERT INTO subjects (id, faculty_id, name, slug) VALUES (?, ?, ?, ?)");
+    subjectStmt.run(97, 3, "Materia Enero", "materia-enero");
     createdSubjectIds.push(97);
     const period = periodRepository.create(97, 2091, 2);
     createdIds.push(period.id);

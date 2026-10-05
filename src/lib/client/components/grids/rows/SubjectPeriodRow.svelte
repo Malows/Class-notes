@@ -6,16 +6,16 @@
 
   interface Props {
     period: Period;
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     onEdit: (period: Period) => void;
     onDelete: (period: Period) => void;
   }
 
-  let { period, facultyId, subjectId, onEdit, onDelete }: Props = $props();
+  let { period, facultySlug, subjectSlug, onEdit, onDelete }: Props = $props();
 
   const rootPath = $derived(
-    () => `/faculties/${facultyId}/subjects/${subjectId}/periods/${period.id}`,
+    () => `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.id}`,
   );
 </script>
 

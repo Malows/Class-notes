@@ -39,14 +39,37 @@ vi.mock("$lib/client/services/api", () => {
 
 import Sidebar from "./Sidebar.svelte";
 
-const faculties = [{ id: 1, name: "Facultad de Ingeniería" }];
+const faculties = [{ id: 1, name: "Facultad de Ingeniería", slug: "facultad-de-ingenieria" }];
 const subjects = [
-  { id: 1, faculty_id: 1, name: "Álgebra Lineal" },
-  { id: 2, faculty_id: 1, name: "Análisis Matemático I" },
-  { id: 3, faculty_id: 1, name: "Física General I" },
+  {
+    id: 1,
+    faculty_id: 1,
+    name: "Álgebra Lineal",
+    faculty_name: "Facultad de Ingeniería",
+    faculty_slug: "facultad-de-ingenieria",
+    slug: "algebra-lineal",
+  },
+  {
+    id: 2,
+    faculty_id: 1,
+    name: "Análisis Matemático I",
+    faculty_name: "Facultad de Ingeniería",
+    faculty_slug: "facultad-de-ingenieria",
+    slug: "analisis-matematico-i",
+  },
+  {
+    id: 3,
+    faculty_id: 1,
+    name: "Física General I",
+    faculty_name: "Facultad de Ingeniería",
+    faculty_slug: "facultad-de-ingenieria",
+    slug: "fisica-general-i",
+  },
 ];
-const periods = [{ id: 3, subject_id: 2, year: 2026, semester: 1 }];
-const commissions = [{ id: 4, period_id: 3, name: "Comisión A" }];
+const periods = [
+  { id: 3, subject_id: 2, subject_slug: "analisis-matematico-i", year: 2026, semester: 1 },
+];
+const commissions = [{ id: 4, subject_id: 2, period_id: 3, name: "Comisión A", student_count: 0 }];
 
 let component: ReturnType<typeof mount>;
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -114,11 +137,13 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
   await loadTranslations("en", "/");
 
   mockParams = {
-    faculty_id: "1",
-    subject_id: "2",
+    faculty: "facultad-de-ingenieria",
+    subject: "analisis-matematico-i",
     period_id: "3",
   };
-  mockUrl = new URL("http://localhost/faculties/1/subjects/2/periods/3");
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3",
+  );
 
   mountWithContext();
   flushSync();
@@ -132,21 +157,21 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
 
   // Subjects of the faculty shown with direct links
   const subjectLink = document.body.querySelector(
-    'a[href="/faculties/1/subjects/2/periods"]',
+    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods"]',
   ) as HTMLAnchorElement;
   expect(subjectLink).not.toBeNull();
   expect(subjectLink.textContent).toContain("Análisis Matemático I");
 
   // Period of the subject with a direct link
   const periodLink = document.body.querySelector(
-    'a[href="/faculties/1/subjects/2/periods/3/commissions"]',
+    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3/commissions"]',
   ) as HTMLAnchorElement;
   expect(periodLink).not.toBeNull();
   expect(periodLink.textContent).toContain("2026 - 1º");
 
   // Commission with a direct link
   const commissionLink = document.body.querySelector(
-    'a[href="/faculties/1/subjects/2/periods/3/commissions/4/overview"]',
+    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3/commissions/4/overview"]',
   ) as HTMLAnchorElement;
   expect(commissionLink).not.toBeNull();
   expect(commissionLink.textContent).toContain("Comisión A");

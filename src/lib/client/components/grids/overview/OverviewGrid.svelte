@@ -10,33 +10,33 @@
   interface Props {
     assignments: Assignment[];
     grid: StudentGridRowDTO[];
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
     commissionId: number;
   }
 
-  let { assignments, grid, facultyId, subjectId, periodId, commissionId }: Props = $props();
+  let { assignments, grid, facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
 </script>
 
 {#if grid.length === 0}
-  <OverviewEmptyStudents {facultyId} {subjectId} {periodId} {commissionId} />
+  <OverviewEmptyStudents {facultySlug} {subjectSlug} {periodId} {commissionId} />
 {:else if assignments.length === 0}
-  <OverviewEmptyAssignments {facultyId} {subjectId} {periodId} />
+  <OverviewEmptyAssignments {facultySlug} {subjectSlug} {periodId} />
 {:else}
   <div
     class="overview-grid"
     data-test-id="overview-grid"
     style="display: grid; --cols: {assignments.length};"
   >
-    <OverviewHeader {assignments} {facultyId} {subjectId} {periodId} {commissionId} />
+    <OverviewHeader {assignments} {facultySlug} {subjectSlug} {periodId} {commissionId} />
 
     {#each grid as student}
       <OverviewRow
         name={student.name}
         deliveries={student.deliveries}
-        {facultyId}
-        {subjectId}
+        {facultySlug}
+        {subjectSlug}
         {periodId}
         {commissionId}
         studentCommissionId={student.commission_id}

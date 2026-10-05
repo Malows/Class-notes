@@ -2,6 +2,7 @@ import type { Subject } from "$lib/common/types/academic";
 
 export interface FacultySubjectGroup {
   facultyId: number;
+  facultySlug: string;
   facultyName: string;
   subjects: Subject[];
 }
@@ -17,6 +18,7 @@ export function groupSubjectsByFaculty(subjects: Subject[]): FacultySubjectGroup
     } else {
       grouped.set(subject.faculty_id, {
         facultyId: subject.faculty_id,
+        facultySlug: subject.faculty_slug,
         facultyName: subject.faculty_name,
         subjects: [subject],
       });

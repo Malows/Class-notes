@@ -37,6 +37,7 @@ describe("groupSubjectsByFaculty", () => {
     expect(grouped).toEqual([
       {
         facultyId: 2,
+        facultySlug: "ciencias",
         facultyName: "Ciencias",
         subjects: [
           {
@@ -51,6 +52,7 @@ describe("groupSubjectsByFaculty", () => {
       },
       {
         facultyId: 1,
+        facultySlug: "ingenieria",
         facultyName: "Ingeniería",
         subjects: [
           {

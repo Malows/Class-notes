@@ -38,27 +38,35 @@ test("navStore.breadcrumbs dynamically builds static index breadcrumbs", async (
   await loadTranslations("en", "/");
 
   mockParams = {
-    faculty_id: "1",
-    subject_id: "2",
+    faculty: "facultad-de-ingenieria",
+    subject: "algebra-lineal",
     period_id: "3",
     commission_id: "4",
   };
-  mockUrl = new URL("http://localhost/faculties/1/subjects/2/periods/3/commissions/4/overview");
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions/4/overview",
+  );
 
   const crumbs = navStore.breadcrumbs;
 
   expect(crumbs).toHaveLength(6);
   expect(crumbs[0]).toEqual({ key: "layout.home", href: "/" });
   expect(crumbs[1]).toEqual({ key: "layout.faculties", href: "/faculties" });
-  expect(crumbs[2]).toEqual({ key: "layout.subjects", href: "/faculties/1/subjects" });
-  expect(crumbs[3]).toEqual({ key: "layout.periods", href: "/faculties/1/subjects/2/periods" });
+  expect(crumbs[2]).toEqual({
+    key: "layout.subjects",
+    href: "/faculties/facultad-de-ingenieria/subjects",
+  });
+  expect(crumbs[3]).toEqual({
+    key: "layout.periods",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods",
+  });
   expect(crumbs[4]).toEqual({
     key: "layout.commissions",
-    href: "/faculties/1/subjects/2/periods/3/commissions",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions",
   });
   expect(crumbs[5]).toEqual({
     key: "layout.overview",
-    href: "/faculties/1/subjects/2/periods/3/commissions/4/overview",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions/4/overview",
   });
 });
 

@@ -7,13 +7,13 @@
 
   interface Props {
     periods: Period[];
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     onEdit: (period: Period) => void;
     onDelete: (period: Period) => void;
   }
 
-  let { periods, facultyId, subjectId, onEdit, onDelete }: Props = $props();
+  let { periods, facultySlug, subjectSlug, onEdit, onDelete }: Props = $props();
 </script>
 
 <ResponsiveTable items={periods}>
@@ -23,6 +23,6 @@
     <th data-test-id="table-header-actions">{$t("layout.actions")}</th>
   {/snippet}
   {#snippet row(period)}
-    <SubjectPeriodRow {period} {facultyId} {subjectId} {onEdit} {onDelete} />
+    <SubjectPeriodRow {period} {facultySlug} {subjectSlug} {onEdit} {onDelete} />
   {/snippet}
 </ResponsiveTable>

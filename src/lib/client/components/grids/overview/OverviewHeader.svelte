@@ -5,13 +5,13 @@
 
   interface Props {
     assignments: Assignment[];
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
     commissionId: number;
   }
 
-  let { assignments, facultyId, subjectId, periodId, commissionId }: Props = $props();
+  let { assignments, facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
 </script>
 
 <div class="overview-header" data-test-id="overview-header">
@@ -22,7 +22,7 @@
   </div>
 
   {#each assignments as assignment}
-    <OverviewHeaderCell {assignment} {facultyId} {subjectId} {periodId} {commissionId} />
+    <OverviewHeaderCell {assignment} {facultySlug} {subjectSlug} {periodId} {commissionId} />
   {/each}
 </div>
 

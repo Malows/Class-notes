@@ -20,8 +20,8 @@
 
   const modal = new ModalManager<Student>();
 
-  const facultyID = Number(page.params.faculty_id);
-  const subjectID = Number(page.params.subject_id);
+  const facultySlug = page.params.faculty ?? "";
+  const subjectSlug = page.params.subject ?? "";
   const periodID = Number(page.params.period_id);
   const commissionID = Number(page.params.commission_id);
 
@@ -74,7 +74,7 @@
 <PageWithAdd title={$t("students.manage_students_title")} onAdd={() => modal.openCreate()}>
   <p>
     <a
-      href="/faculties/{facultyID}/subjects/{subjectID}/periods/{periodID}/commissions"
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodID}/commissions"
       class="paper-btn btn-small">{$t("layout.back_to_commissions")}</a
     >
   </p>

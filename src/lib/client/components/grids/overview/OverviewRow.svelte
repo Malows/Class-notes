@@ -6,8 +6,8 @@
   interface Props {
     name: string;
     deliveries: Delivery[];
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
     commissionId: number;
     studentCommissionId?: number;
@@ -16,8 +16,8 @@
   let {
     name,
     deliveries,
-    facultyId,
-    subjectId,
+    facultySlug,
+    subjectSlug,
     periodId,
     commissionId,
     studentCommissionId,
@@ -28,7 +28,7 @@
   <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
   {#each deliveries as delivery}
     <OverviewCell
-      href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{studentCommissionId ||
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions/{studentCommissionId ||
         commissionId}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
       status={getOverviewDeliveryStatus(delivery)}
       aiLevel={delivery.ai_level}

@@ -3,13 +3,13 @@
 
   interface Props {
     assignment: Assignment;
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
     commissionId: number;
   }
 
-  let { assignment, facultyId, subjectId, periodId, commissionId }: Props = $props();
+  let { assignment, facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
 
   // Rules:
   // - Split title by words.
@@ -46,7 +46,7 @@
     {abbreviateTitle(assignment.title)}
   </span>
   <a
-    href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
+    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions/{commissionId}/correct?assignment_id={assignment.id}"
     class="paper-btn overview-header-cell__correct-btn"
     data-test-id="correct-assignment-btn-{assignment.id}"
     aria-label={`Correct ${assignment.title}`}

@@ -23,8 +23,8 @@ test("CommissionRow renders and handles callbacks", async () => {
     target: tr,
     props: {
       commission,
-      facultyId: 1,
-      subjectId: 1,
+      facultySlug: "facultad-1",
+      subjectSlug: "materia-1",
       periodId: 1,
       onEdit,
       onDelete,

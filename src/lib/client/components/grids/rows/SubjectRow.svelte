@@ -18,7 +18,7 @@
 <td>
   <div class="row flex-right gap-2">
     <Button
-      href="/faculties/{subject.faculty_id}/subjects/{subject.id}/periods"
+      href="/faculties/{subject.faculty_slug}/subjects/{subject.slug}/periods"
       testId="view-periods-btn-{subject.id}"
       withHover
     >

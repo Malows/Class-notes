@@ -23,6 +23,7 @@ export interface Period {
   semester: number;
   subject_id?: number;
   subject_name?: string;
+  subject_slug?: string;
 }
 export interface Commission {
   id: number;

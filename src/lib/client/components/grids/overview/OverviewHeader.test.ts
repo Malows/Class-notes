@@ -16,8 +16,8 @@ describe("OverviewHeader Component", () => {
 
     render(OverviewHeader, {
       assignments,
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -53,15 +53,15 @@ describe("OverviewHeader Component", () => {
 
     expect(link1).toHaveAttribute(
       "href",
-      "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=10",
+      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=10",
     );
     expect(link2).toHaveAttribute(
       "href",
-      "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=20",
+      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=20",
     );
     expect(link3).toHaveAttribute(
       "href",
-      "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=30",
+      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=30",
     );
   });
 });

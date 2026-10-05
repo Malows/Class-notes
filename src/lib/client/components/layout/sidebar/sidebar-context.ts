@@ -9,47 +9,47 @@ export type SidebarContextLink = {
 };
 
 type SubjectContext = {
-  facultyId: number;
-  activeSubjectId?: number;
+  facultySlug: string;
+  activeSubjectSlug?: string;
 };
 
 type PeriodContext = {
-  facultyId: number;
-  subjectId: number;
+  facultySlug: string;
+  subjectSlug: string;
   activePeriodId?: number;
 };
 
 type CommissionContext = {
-  facultyId: number;
-  subjectId: number;
+  facultySlug: string;
+  subjectSlug: string;
   periodId: number;
   activeCommissionId?: number;
 };
 
 export function buildSubjectItems(
   subjects: Subject[],
-  { facultyId, activeSubjectId }: SubjectContext,
+  { facultySlug, activeSubjectSlug }: SubjectContext,
 ): SidebarContextLink[] {
   return subjects
-    .filter((subject) => subject.faculty_id === facultyId)
+    .filter((subject) => subject.faculty_slug === facultySlug)
     .map((subject) => ({
       id: subject.id,
-      href: `/faculties/${facultyId}/subjects/${subject.id}/periods`,
+      href: `/faculties/${subject.faculty_slug}/subjects/${subject.slug}/periods`,
       label: subject.name,
       shortLabel: subject.name.substring(0, 2).toUpperCase(),
-      isActive: activeSubjectId === subject.id,
+      isActive: activeSubjectSlug === subject.slug,
     }));
 }
 
 export function buildPeriodItems(
   periods: Period[],
-  { facultyId, subjectId, activePeriodId }: PeriodContext,
+  { facultySlug, subjectSlug, activePeriodId }: PeriodContext,
 ): SidebarContextLink[] {
   return periods
-    .filter((period) => period.subject_id === subjectId)
+    .filter((period) => period.subject_slug === subjectSlug)
     .map((period) => ({
       id: period.id,
-      href: `/faculties/${facultyId}/subjects/${subjectId}/periods/${period.id}/commissions`,
+      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.id}/commissions`,
       label: `${period.year} - ${period.semester}º`,
       shortLabel: `${period.year % 100}-${period.semester}`,
       isActive: activePeriodId === period.id,
@@ -58,13 +58,13 @@ export function buildPeriodItems(
 
 export function buildCommissionItems(
   commissions: Commission[],
-  { facultyId, subjectId, periodId, activeCommissionId }: CommissionContext,
+  { facultySlug, subjectSlug, periodId, activeCommissionId }: CommissionContext,
 ): SidebarContextLink[] {
   return commissions
     .filter((commission) => commission.period_id === periodId)
     .map((commission) => ({
       id: commission.id,
-      href: `/faculties/${facultyId}/subjects/${subjectId}/periods/${periodId}/commissions/${commission.id}/overview`,
+      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodId}/commissions/${commission.id}/overview`,
       label: commission.name,
       shortLabel: commission.name.substring(0, 2).toUpperCase(),
       isActive: activeCommissionId === commission.id,

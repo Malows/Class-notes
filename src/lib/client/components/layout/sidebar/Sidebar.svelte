@@ -31,18 +31,29 @@
 
   // Trigger guarded loads for the current context so empty stores populated
   // by the pages still get fetched here when needed.
-  let loadedContext = $state<{ facultyId?: number; subjectId?: number; periodId?: number }>({});
+  let loadedContext = $state<{
+    facultySlug?: string;
+    subjectSlug?: string;
+    periodId?: number;
+  }>({});
 
   $effect(() => {
     const ctx = navStore.context;
-    if (ctx.facultyId && loadedContext.facultyId !== ctx.facultyId) {
-      loadedContext = { ...loadedContext, facultyId: ctx.facultyId };
+    if (ctx.facultySlug && loadedContext.facultySlug !== ctx.facultySlug) {
+      loadedContext = { ...loadedContext, facultySlug: ctx.facultySlug, subjectSlug: undefined };
       void facultiesStore.load();
       void subjectsStore.load();
     }
-    if (ctx.subjectId && loadedContext.subjectId !== ctx.subjectId) {
-      loadedContext = { ...loadedContext, subjectId: ctx.subjectId };
-      void periodsStore.load(ctx.subjectId);
+    if (ctx.subjectSlug && loadedContext.subjectSlug !== ctx.subjectSlug) {
+      const subjectSlug = ctx.subjectSlug;
+      loadedContext = { ...loadedContext, subjectSlug };
+      void (async () => {
+        await subjectsStore.load();
+        const subjectId = subjectsStore.bySlug.get(subjectSlug)?.id;
+        if (subjectId) {
+          await periodsStore.load(subjectId);
+        }
+      })();
     }
     if (ctx.periodId && loadedContext.periodId !== ctx.periodId) {
       loadedContext = { ...loadedContext, periodId: ctx.periodId };
@@ -71,29 +82,29 @@
   );
 
   const subjectItems = $derived(
-    context.facultyId
+    context.facultySlug
       ? buildSubjectItems(subjectsStore.items, {
-          facultyId: context.facultyId,
-          activeSubjectId: context.subjectId,
+          facultySlug: context.facultySlug,
+          activeSubjectSlug: context.subjectSlug,
         })
       : [],
   );
 
   const periodItems = $derived(
-    context.facultyId && context.subjectId
+    context.facultySlug && context.subjectSlug
       ? buildPeriodItems(periodsStore.items, {
-          facultyId: context.facultyId,
-          subjectId: context.subjectId,
+          facultySlug: context.facultySlug,
+          subjectSlug: context.subjectSlug,
           activePeriodId: context.periodId,
         })
       : [],
   );
 
   const commissionItems = $derived(
-    context.facultyId && context.subjectId && context.periodId
+    context.facultySlug && context.subjectSlug && context.periodId
       ? buildCommissionItems(commissionsStore.items, {
-          facultyId: context.facultyId,
-          subjectId: context.subjectId,
+          facultySlug: context.facultySlug,
+          subjectSlug: context.subjectSlug,
           periodId: context.periodId,
           activeCommissionId: context.commissionId,
         })
@@ -134,15 +145,15 @@
         {isCollapsed}
         items={activeMetadataSubjects}
       />
-    {:else if context.facultyId}
+    {:else if context.facultySlug}
       <SidebarContextSection
-        heading={`${$t("layout.subjects")} (${facultiesStore.map.get(context.facultyId)?.name ?? "..."})`}
+        heading={`${$t("layout.subjects")} (${facultiesStore.bySlug.get(context.facultySlug)?.name ?? "..."})`}
         {isCollapsed}
         items={subjectItems}
       />
     {/if}
 
-    {#if context.subjectId}
+    {#if context.subjectSlug}
       <SidebarContextSection heading={$t("layout.periods")} {isCollapsed} items={periodItems} />
     {/if}
 
@@ -154,7 +165,7 @@
       />
     {/if}
 
-    {#if !hasMetadataContext && !context.facultyId && !context.subjectId && !context.periodId}
+    {#if !hasMetadataContext && !context.facultySlug && !context.subjectSlug && !context.periodId}
       <div class="metadata-empty-state">
         <p>No hay contexto académico activo disponible.</p>
       </div>

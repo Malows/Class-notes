@@ -4,12 +4,12 @@
   import Button from "$lib/client/components/common/Button.svelte";
 
   interface Props {
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
   }
 
-  let { facultyId, subjectId, periodId }: Props = $props();
+  let { facultySlug, subjectSlug, periodId }: Props = $props();
 </script>
 
 <div class="card margin-top-lg" data-test-id="empty-assignments-card">
@@ -17,7 +17,7 @@
     <h4 class="card-title">{$t("commissions.no_assignments_message")} ✏️</h4>
     <div class="margin-top-md">
       <Button
-        href="/faculties/{facultyId}/subjects/{subjectId}/periods/{periodId}/assignments"
+        href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/assignments"
         class="btn-secondary"
         testId="empty-assignments-cta"
       >

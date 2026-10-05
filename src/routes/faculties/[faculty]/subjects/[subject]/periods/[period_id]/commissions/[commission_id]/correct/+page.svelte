@@ -18,8 +18,8 @@
   let currentIndex = $state(0);
   let loading = $state(true);
 
-  const facultyID = Number(page.params.faculty_id);
-  const subjectID = Number(page.params.subject_id);
+  const facultySlug = page.params.faculty ?? "";
+  const subjectSlug = page.params.subject ?? "";
   const periodID = Number(page.params.period_id);
   const commissionID = Number(page.params.commission_id);
 
@@ -27,7 +27,7 @@
   const initialStudentID = Number(page.url.searchParams.get("student_id"));
   const mode = page.url.searchParams.get("mode") || "all";
 
-  const baseUrl = `/faculties/${facultyID}/subjects/${subjectID}/periods/${periodID}/commissions/${commissionID}`;
+  const baseUrl = `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodID}/commissions/${commissionID}`;
 
   async function loadData() {
     try {

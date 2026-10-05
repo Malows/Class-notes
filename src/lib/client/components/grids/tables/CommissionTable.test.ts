@@ -12,8 +12,8 @@ test("CommissionTable renders commissions and handles callbacks", async () => {
 
   render(CommissionTable, {
     commissions,
-    facultyId: 1,
-    subjectId: 1,
+    facultySlug: "facultad-1",
+    subjectSlug: "materia-1",
     periodId: 1,
     onEdit,
     onDelete,

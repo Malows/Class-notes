@@ -5,19 +5,19 @@
 
   interface Props {
     facultyName: string;
-    facultyId: number;
+    facultySlug: string;
     subjects: Subject[];
     selectedSubjectIds: number[];
     onToggle: (subjectId: number) => void;
   }
 
-  let { facultyName, facultyId, subjects, selectedSubjectIds, onToggle }: Props = $props();
+  let { facultyName, facultySlug, subjects, selectedSubjectIds, onToggle }: Props = $props();
 </script>
 
 <fieldset class="form-group mt-4 faculty-subjects">
   <legend class="row between gap-2 items-center legend-title">
     <span>{facultyName}</span>
-    <a href="/faculties/{facultyId}/subjects" class="paper-btn btn-small">
+    <a href="/faculties/{facultySlug}/subjects" class="paper-btn btn-small">
       {$t("layout.go_to_faculty")}
     </a>
   </legend>

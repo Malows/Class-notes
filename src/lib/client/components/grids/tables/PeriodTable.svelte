@@ -7,13 +7,11 @@
 
   interface Props {
     periods: Period[];
-    facultyId: number;
-    subjectId: number;
     onEdit: (period: Period) => void;
     onDelete: (period: Period) => void;
   }
 
-  let { periods, facultyId, subjectId, onEdit, onDelete }: Props = $props();
+  let { periods, onEdit, onDelete }: Props = $props();
 </script>
 
 <ResponsiveTable items={periods}>

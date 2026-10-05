@@ -13,13 +13,18 @@
   import SubjectModal from "$lib/client/components/modals/SubjectModal.svelte";
   import SubjectTable from "$lib/client/components/grids/tables/SubjectTable.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
-  import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
+  import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
-  const facultyID = Number(page.params.faculty_id);
+
+  const facultySlug = page.params.faculty ?? "";
+  const facultyID = $derived(facultiesStore.bySlug.get(facultySlug)?.id);
+  const subjectsOfFaculty = $derived(
+    facultyID !== undefined ? (subjectsStore.byFaculty.get(facultyID) ?? []) : [],
+  );
 
   let loading = $state(true);
 
@@ -27,17 +32,7 @@
 
   async function load() {
     try {
-      const p = [];
-
-      if (!facultiesStore.map.has(facultyID)) {
-        p.push(facultiesStore.load());
-      }
-      if (!subjectsStore.map.has(facultyID)) {
-        p.push(subjectsStore.load());
-      }
-      if (p.length > 0) {
-        await Promise.all(p);
-      }
+      await Promise.all([facultiesStore.load(), subjectsStore.load()]);
     } catch (e) {
       console.error(e);
     } finally {
@@ -48,6 +43,7 @@
   async function handleSave(name: string, id?: number) {
     try {
       if (modal.isCreate) {
+        if (facultyID === undefined) return;
         await subjectsStore.create(facultyID, name);
         notificationsStore.addSuccess("Materia creada con éxito");
       } else if (modal.isEdit && id) {
@@ -86,7 +82,7 @@
   </div>
 
   <GuardWrapper
-    condition={facultiesStore.map.has(facultyID)}
+    condition={facultiesStore.bySlug.has(facultySlug)}
     message={$t("faculties.not_found_message")}
     linkHref="/faculties"
     linkText={$t("faculties.back_to_faculties")}
@@ -95,7 +91,7 @@
       <p>{$t("subjects.loading")}</p>
     {:else}
       <SubjectTable
-        subjects={subjectsStore.byFaculty.get(facultyID) || []}
+        subjects={subjectsOfFaculty}
         onEdit={(s) => modal.openEdit(s)}
         onDelete={(s) => modal.openDelete(s)}
       />

@@ -12,8 +12,6 @@ test("PeriodTable renders academic periods and handles callbacks", async () => {
 
   render(PeriodTable, {
     periods,
-    facultyId: 1,
-    subjectId: 1,
     onEdit,
     onDelete,
   });

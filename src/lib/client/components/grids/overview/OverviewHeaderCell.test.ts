@@ -12,8 +12,8 @@ describe("OverviewHeaderCell Component", () => {
 
     render(OverviewHeaderCell, {
       assignment,
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -27,7 +27,7 @@ describe("OverviewHeaderCell Component", () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute(
       "href",
-      "/faculties/1/subjects/2/periods/3/commissions/4/correct?assignment_id=12",
+      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=12",
     );
   });
 });

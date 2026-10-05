@@ -69,8 +69,6 @@
   {:else}
     <PeriodTable
       periods={periodsStore.items}
-      facultyId={1}
-      subjectId={1}
       onEdit={(p) => modal.openEdit(p)}
       onDelete={(p) => modal.openDelete(p)}
     />

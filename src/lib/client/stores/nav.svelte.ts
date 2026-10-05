@@ -2,8 +2,8 @@ import { page } from "$app/state";
 import type { Breadcrumb } from "$lib/common/types/layout";
 
 export interface NavContext {
-  facultyId?: number;
-  subjectId?: number;
+  facultySlug?: string;
+  subjectSlug?: string;
   periodId?: number;
   commissionId?: number;
 }
@@ -11,28 +11,12 @@ export interface NavContext {
 export class NavStore {
   context = $derived.by(() => {
     const params = page.params;
-    const fId = params.faculty_id ? Number(params.faculty_id) : undefined;
-    const sId = params.subject_id
-      ? Number(params.subject_id)
-      : params.id && page.url.pathname.includes("/subjects/")
-        ? Number(params.id)
-        : undefined;
-    const pId = params.period_id
-      ? Number(params.period_id)
-      : params.id && page.url.pathname.includes("/periods/")
-        ? Number(params.id)
-        : undefined;
-    const cId = params.commission_id
-      ? Number(params.commission_id)
-      : params.id && page.url.pathname.includes("/commissions/")
-        ? Number(params.id)
-        : undefined;
 
     return {
-      facultyId: fId,
-      subjectId: sId,
-      periodId: pId,
-      commissionId: cId,
+      facultySlug: params.faculty || undefined,
+      subjectSlug: params.subject || undefined,
+      periodId: params.period_id ? Number(params.period_id) : undefined,
+      commissionId: params.commission_id ? Number(params.commission_id) : undefined,
     };
   });
 
@@ -47,47 +31,42 @@ export class NavStore {
     }
 
     // 2. Selected Subject subpath
-    if (pathname.includes("/subjects") && ctx.facultyId) {
-      crumbs.push({ key: "layout.subjects", href: `/faculties/${ctx.facultyId}/subjects` });
+    if (pathname.includes("/subjects") && ctx.facultySlug) {
+      crumbs.push({ key: "layout.subjects", href: `/faculties/${ctx.facultySlug}/subjects` });
     }
 
     // 3. Selected Period subpath
-    if (pathname.includes("/periods") && ctx.facultyId && ctx.subjectId) {
+    if (pathname.includes("/periods") && ctx.facultySlug && ctx.subjectSlug) {
       crumbs.push({
         key: "layout.periods",
-        href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods`,
+        href: `/faculties/${ctx.facultySlug}/subjects/${ctx.subjectSlug}/periods`,
       });
     }
 
     // 4. Selected Commission / Assignments subpaths
-    if (ctx.facultyId && ctx.subjectId && ctx.periodId) {
+    if (ctx.facultySlug && ctx.subjectSlug && ctx.periodId) {
       if (pathname.includes("/commissions")) {
         crumbs.push({
           key: "layout.commissions",
-          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions`,
+          href: `/faculties/${ctx.facultySlug}/subjects/${ctx.subjectSlug}/periods/${ctx.periodId}/commissions`,
         });
       }
       if (pathname.includes("/assignments")) {
         crumbs.push({
           key: "layout.define_tps",
-          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/assignments`,
+          href: `/faculties/${ctx.facultySlug}/subjects/${ctx.subjectSlug}/periods/${ctx.periodId}/assignments`,
         });
       }
     }
 
     // 5. Subpages inside commissions (Overview, Students, Correct)
-    if (ctx.facultyId && ctx.subjectId && ctx.periodId && ctx.commissionId) {
+    if (ctx.facultySlug && ctx.subjectSlug && ctx.periodId && ctx.commissionId) {
+      const commissionBase = `/faculties/${ctx.facultySlug}/subjects/${ctx.subjectSlug}/periods/${ctx.periodId}/commissions/${ctx.commissionId}`;
       if (pathname.includes("/overview")) {
-        crumbs.push({
-          key: "layout.overview",
-          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions/${ctx.commissionId}/overview`,
-        });
+        crumbs.push({ key: "layout.overview", href: `${commissionBase}/overview` });
       }
       if (pathname.includes("/students")) {
-        crumbs.push({
-          key: "layout.students_label",
-          href: `/faculties/${ctx.facultyId}/subjects/${ctx.subjectId}/periods/${ctx.periodId}/commissions/${ctx.commissionId}/students`,
-        });
+        crumbs.push({ key: "layout.students_label", href: `${commissionBase}/students` });
       }
       if (pathname.includes("/correct")) {
         crumbs.push({ key: "layout.correct", href: pathname });

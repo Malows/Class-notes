@@ -37,6 +37,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
         semester: periods.semester,
         subject_id: subjectPeriods.subjectId,
         subject_name: subjects.name,
+        subject_slug: subjects.slug,
       })
       .from(periods)
       .innerJoin(

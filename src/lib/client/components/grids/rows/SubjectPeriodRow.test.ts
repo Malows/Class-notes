@@ -21,7 +21,7 @@ test("SubjectPeriodRow 'Materias' navigates to the period subjects and does not 
 
   render(SubjectPeriodRow, {
     target: tr,
-    props: { period, facultyId: 1, subjectId: 1, onEdit, onDelete },
+    props: { period, facultySlug: "facultad-1", subjectSlug: "materia-1", onEdit, onDelete },
   });
 
   const subjectsLink = document.body.querySelector(

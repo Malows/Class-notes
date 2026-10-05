@@ -94,7 +94,7 @@
         {#each groupedSubjects as group}
           <FacultySubjectCheckboxes
             facultyName={group.facultyName}
-            facultyId={group.facultyId}
+            facultySlug={group.facultySlug}
             subjects={group.subjects}
             selectedSubjectIds={selectedSubjectIds}
             onToggle={toggleSubject}

@@ -13,13 +13,14 @@
   let data = $state<OverviewData | null>(null);
   let loading = $state(true);
 
-  const facultyId = Number(page.params.faculty_id);
-  const subjectId = Number(page.params.subject_id);
+  const facultySlug = page.params.faculty ?? "";
+  const subjectSlug = page.params.subject ?? "";
   const periodId = Number(page.params.period_id);
+  const commissionId = Number(page.params.commission_id);
 
   async function loadData() {
     try {
-      data = await overviewService.getForPeriod(periodId);
+      data = await overviewService.get(commissionId);
     } catch (e) {
       console.error(e);
     } finally {
@@ -31,29 +32,28 @@
 </script>
 
 <svelte:head>
-  <title>{$t("periods.period_overview_title")} - {$t("layout.brand")}</title>
+  <title>{$t("commissions.commission_overview_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<h2>{$t("periods.period_overview_title")}</h2>
+<h2>{$t("commissions.commission_overview_title")}</h2>
 <Button
-  href="/faculties/{facultyId}/subjects/{subjectId}/periods"
+  href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions"
   class="btn-small"
-  testId="back-to-periods-btn"
 >
-  {$t("layout.back_to_periods")}
+  {$t("layout.back_to_commissions")}
 </Button>
 
 {#if loading}
   <p>{$t("commissions.loading_info")}</p>
 {:else if data}
-  <div style="overflow-x: auto; margin-top: 1rem;">
+  <div style="overflow-x: auto;">
     <OverviewGrid
       assignments={data.assignments}
       grid={data.grid}
-      {facultyId}
-      {subjectId}
+      {facultySlug}
+      {subjectSlug}
       {periodId}
-      commissionId={0}
+      {commissionId}
     />
   </div>
 {/if}

@@ -77,8 +77,8 @@ describe("overview components", () => {
     render(OverviewRow, {
       name: "A very long student name that should ellipsize",
       deliveries,
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -119,8 +119,8 @@ describe("overview components", () => {
     render(OverviewGrid, {
       assignments,
       grid,
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -149,8 +149,8 @@ describe("overview components", () => {
     render(OverviewGrid, {
       assignments: [],
       grid: [{ id: 1, name: "Student A", deliveries: [] }],
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -159,7 +159,7 @@ describe("overview components", () => {
     expect(card).toBeInTheDocument();
 
     const cta = screen.getByTestId("empty-assignments-cta");
-    expect(cta).toHaveAttribute("href", "/faculties/1/subjects/2/periods/3/assignments");
+    expect(cta).toHaveAttribute("href", "/faculties/fac-1/subjects/sub-2/periods/3/assignments");
   });
 
   test("OverviewGrid renders empty students card and CTA", () => {
@@ -168,8 +168,8 @@ describe("overview components", () => {
     render(OverviewGrid, {
       assignments,
       grid: [],
-      facultyId: 1,
-      subjectId: 2,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
       periodId: 3,
       commissionId: 4,
     });
@@ -178,6 +178,9 @@ describe("overview components", () => {
     expect(card).toBeInTheDocument();
 
     const cta = screen.getByTestId("empty-students-cta");
-    expect(cta).toHaveAttribute("href", "/faculties/1/subjects/2/periods/3/commissions/4/students");
+    expect(cta).toHaveAttribute(
+      "href",
+      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/students",
+    );
   });
 });

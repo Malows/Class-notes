@@ -8,6 +8,8 @@
 
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import type { AssignmentsStore } from "$lib/client/stores/assignments.svelte";
+  import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
   import AssignmentTable from "$lib/client/components/grids/tables/AssignmentTable.svelte";
@@ -19,13 +21,16 @@
 
   const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
+  const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
+  const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let loading = $state(true);
 
   const modal = new ModalManager<Assignment>();
 
-  const facultyID = Number(page.params.faculty_id);
-  const subjectID = Number(page.params.subject_id);
+  const facultySlug = page.params.faculty ?? "";
+  const subjectSlug = page.params.subject ?? "";
+  const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
   const periodID = Number(page.params.period_id);
 
   // Status transition state
@@ -54,7 +59,13 @@
 
   async function loadData() {
     try {
-      await Promise.all([periodsStore.load(subjectID), assignmentsStore.load(periodID)]);
+      await Promise.all([facultiesStore.load(), subjectsStore.load()]);
+      const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
+      if (sid) {
+        await Promise.all([periodsStore.load(sid), assignmentsStore.load(periodID)]);
+      } else {
+        await assignmentsStore.load(periodID);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -138,7 +149,7 @@
 
 <PageWithAdd title={$t("assignments.manage_assignments_title")} onAdd={() => modal.openCreate()}>
   <p>
-    <a href="/faculties/{facultyID}/subjects/{subjectID}/periods" class="paper-btn btn-small"
+    <a href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods" class="paper-btn btn-small"
       >{$t("layout.back_to_periods")}</a
     >
   </p>
@@ -146,7 +157,7 @@
   <GuardWrapper
     condition={periodsStore.items.some((p) => p.id === periodID)}
     message={$t("periods.period_not_found")}
-    linkHref="/faculties/{facultyID}/subjects/{subjectID}/periods"
+    linkHref="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
     linkText={$t("layout.back_to_periods")}
   >
     {#if loading}

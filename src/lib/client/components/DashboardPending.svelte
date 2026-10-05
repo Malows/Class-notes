@@ -47,7 +47,7 @@
                 >{item.pending_count}</span
               >
               <a
-                href="/faculties/{item.faculty_id}/subjects/{item.subject_id}/periods/{item.period_id}/commissions/{item.commission_id}/overview"
+                href="/faculties/{item.faculty_slug}/subjects/{item.subject_slug}/periods/{item.period_id}/commissions/{item.commission_id}/overview"
                 class="paper-btn btn-small"
                 data-test-id="view-pending-btn-{item.commission_id}">{$t("dashboard.go")}</a
               >

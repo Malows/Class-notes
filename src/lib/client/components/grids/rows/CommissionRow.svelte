@@ -5,18 +5,18 @@
 
   interface Props {
     commission: Commission;
-    facultyId: number;
-    subjectId: number;
+    facultySlug: string;
+    subjectSlug: string;
     periodId: number;
     onEdit: (commission: Commission) => void;
     onDelete: (commission: Commission) => void;
   }
 
-  let { commission, facultyId, subjectId, periodId, onEdit, onDelete }: Props = $props();
+  let { commission, facultySlug, subjectSlug, periodId, onEdit, onDelete }: Props = $props();
 
   const rootPath = $derived(
     () =>
-      `/faculties/${facultyId}/subjects/${subjectId}/periods/${periodId}/commissions/${commission.id}`,
+      `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodId}/commissions/${commission.id}`,
   );
 </script>
 

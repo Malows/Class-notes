@@ -27,6 +27,24 @@ describe("SubjectsStore", () => {
     expect(mockService.getAll).toHaveBeenCalledTimes(1);
   });
 
+  it("resolves subjects by slug and by faculty slug", async () => {
+    mockService.getAll.mockResolvedValue([
+      {
+        id: 1,
+        faculty_id: 1,
+        name: "Subject A",
+        faculty_name: "Fac A",
+        faculty_slug: "fac-a",
+        slug: "subject-a",
+      },
+    ]);
+
+    await store.load();
+
+    expect(store.bySlug.get("subject-a")?.id).toBe(1);
+    expect(store.byFacultySlug.get("fac-a")?.[0]?.id).toBe(1);
+  });
+
   it("should create a new subject", async () => {
     const newSubject = {
       id: 2,

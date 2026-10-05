@@ -13,11 +13,11 @@
 ## 3. Database baseline and seed
 
 - [x] 3.1 Regenerate the migration baseline from `schema.ts` and add `slug` to the faculty/subject seed data; verify a fresh SQLite database has the columns, the partial indexes, and non-empty unique slugs after seeding
-- [ ] 3.2 Reset the dev DB (`class-notes.db*`) and restart `pnpm dev`; verify via the API that `GET /api/v1/faculties` and `/subjects` return `slug` (and `faculty_slug` on subjects)
+- [x] 3.2 Reset the dev DB (`class-notes.db*`) and restart `pnpm dev`; verify via the API that `GET /api/v1/faculties` and `/subjects` return `slug` (and `faculty_slug` on subjects)
 
 ## 4. Slug-based routing and resolution
 
-- [ ] 4.1 Add `bySlug` derived maps to `facultiesStore` and `subjectsStore` and expose `faculty_slug` filtering; verify store tests resolve entities by slug
+- [x] 4.1 Add `bySlug` derived maps to `facultiesStore` and `subjectsStore` and expose `faculty_slug` filtering; verify store tests resolve entities by slug
 - [ ] 4.2 Rename the route params to `[faculty]`/`[subject]` slugs and make each affected page resolve slug → id in memory before its scoped calls; verify a deep page (e.g. `/faculties/{facultySlug}/subjects/{subjectSlug}/periods`) loads the right data
 - [ ] 4.3 Make `navStore.context` slug-based (`facultySlug`/`subjectSlug` + numeric `periodId`/`commissionId`) and make `navStore.breadcrumbs` emit slug URLs; verify nav store tests
 - [ ] 4.4 Update all link builders (table rows, overview components, sidebar context, dashboard pending, pages) to emit slugs; verify row and sidebar-context href tests

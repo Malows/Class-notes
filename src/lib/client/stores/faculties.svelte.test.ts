@@ -26,6 +26,14 @@ describe("FacultiesStore", () => {
     expect(mockService.getAll).toHaveBeenCalledTimes(1);
   });
 
+  it("resolves a faculty by slug", async () => {
+    mockService.getAll.mockResolvedValue([{ id: 1, name: "Facultad A", slug: "facultad-a" }]);
+
+    await store.load();
+
+    expect(store.bySlug.get("facultad-a")?.id).toBe(1);
+  });
+
   it("should not reload if already loaded", async () => {
     const mockData = [{ id: 1, name: "Facultad A", slug: "facultad-a" }];
     mockService.getAll.mockResolvedValue(mockData);

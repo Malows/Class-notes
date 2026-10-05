@@ -9,6 +9,7 @@ export class FacultiesStore {
 
   // O(1) lookup cached
   map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+  bySlug = $derived.by(() => new Map(this.items.map((i) => [i.slug, i])));
 
   async load(force = false) {
     if (this.loaded && !force) return;

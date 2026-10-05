@@ -2,7 +2,7 @@ import { and, desc, eq, isNull, ne, sql } from "drizzle-orm";
 import type { MetadataContextPayload, Period } from "$lib/common";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { periods, subjectPeriods, subjects } from "../database/schema";
+import { faculties, periods, subjectPeriods, subjects } from "../database/schema";
 
 export interface PeriodRepository {
   getAll(): Period[];
@@ -215,7 +215,9 @@ class PeriodRepositoryImpl implements PeriodRepository {
         semester: periods.semester,
         subject_id: subjects.id,
         subject_name: subjects.name,
+        subject_slug: subjects.slug,
         faculty_id: subjects.facultyId,
+        faculty_slug: faculties.slug,
       })
       .from(periods)
       .innerJoin(
@@ -226,6 +228,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
         subjects,
         and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
       )
+      .innerJoin(faculties, eq(subjects.facultyId, faculties.id))
       .where(
         and(
           isNull(periods.deletedAt),
@@ -239,7 +242,9 @@ class PeriodRepositoryImpl implements PeriodRepository {
       semester: number;
       subject_id: number;
       subject_name: string;
+      subject_slug: string;
       faculty_id: number;
+      faculty_slug: string;
     }>;
 
     if (rows.length === 0) {
@@ -251,7 +256,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
     const subjectItems = rows.map((row) => ({
       id: String(row.subject_id),
       name: row.subject_name,
-      href: `/faculties/${row.faculty_id}/subjects/${row.subject_id}/periods`,
+      href: `/faculties/${row.faculty_slug}/subjects/${row.subject_slug}/periods`,
     }));
 
     return {

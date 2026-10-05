@@ -105,7 +105,7 @@ describe("periodRepository integration tests", () => {
         expect.objectContaining({
           id: "99",
           name: "Materia Metadata",
-          href: "/faculties/1/subjects/99/periods",
+          href: "/faculties/facultad-de-ingenieria/subjects/materia-metadata/periods",
         }),
       ]),
     );
@@ -126,7 +126,7 @@ describe("periodRepository integration tests", () => {
         expect.objectContaining({
           id: "98",
           name: "Materia Cuatrimestre II",
-          href: "/faculties/2/subjects/98/periods",
+          href: "/faculties/facultad-de-ciencias-exactas/subjects/materia-cuatrimestre-ii/periods",
         }),
       ]),
     );
@@ -147,7 +147,7 @@ describe("periodRepository integration tests", () => {
         expect.objectContaining({
           id: "97",
           name: "Materia Enero",
-          href: "/faculties/3/subjects/97/periods",
+          href: "/faculties/facultad-de-humanidades-y-artes/subjects/materia-enero/periods",
         }),
       ]),
     );

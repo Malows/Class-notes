@@ -25,5 +25,5 @@
 
 ## 5. Integration verification
 
-- [ ] 5.1 Walk through the app: the full hierarchy navigates via slugs, and renaming a faculty/subject updates its slug (and appends a suffix on collision) without breaking navigation
-- [ ] 5.2 Run `pnpm check`, `pnpm lint`, `pnpm test`, and `pnpm validate:i18n` and verify all pass with the new tests included
+- [x] 5.1 Walk through the app: the full hierarchy navigates via slugs, and renaming a faculty/subject updates its slug (and appends a suffix on collision) without breaking navigation
+- [x] 5.2 Run `pnpm check`, `pnpm lint`, `pnpm test`, and `pnpm validate:i18n` and verify all pass with the new tests included

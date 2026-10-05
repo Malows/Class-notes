@@ -21,7 +21,7 @@
 - [x] 4.2 Rename the route params to `[faculty]`/`[subject]` slugs and make each affected page resolve slug → id in memory before its scoped calls; verify a deep page (e.g. `/faculties/{facultySlug}/subjects/{subjectSlug}/periods`) loads the right data
 - [x] 4.3 Make `navStore.context` slug-based (`facultySlug`/`subjectSlug` + numeric `periodId`/`commissionId`) and make `navStore.breadcrumbs` emit slug URLs; verify nav store tests
 - [x] 4.4 Update all link builders (table rows, overview components, sidebar context, dashboard pending, pages) to emit slugs; verify row and sidebar-context href tests
-- [ ] 4.5 Show a not-found state (no server error) for an unknown faculty/subject slug and verify it with a render test
+- [x] 4.5 Show a not-found state (no server error) for an unknown faculty/subject slug and verify it with a render test
 
 ## 5. Integration verification
 

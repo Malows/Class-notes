@@ -2,7 +2,7 @@
 
 ## 1. Slug helper and schema
 
-- [ ] 1.1 Add a server-side `slugify` + slug-uniqueness helper (e.g. `src/lib/server/utils/slug.ts`) and verify unit tests cover diacritics (`Álgebra` → `algebra`), whitespace/punctuation, the empty-name fallback, and numeric suffixing
+- [x] 1.1 Add a server-side `slugify` + slug-uniqueness helper (e.g. `src/lib/server/utils/slug.ts`) and verify unit tests cover diacritics (`Álgebra` → `algebra`), whitespace/punctuation, the empty-name fallback, and numeric suffixing
 - [ ] 1.2 Add `slug` columns plus partial unique indexes (`WHERE deletedAt IS NULL`) to `faculties` and `subjects` in `schema.ts`, and add `slug` (and `Subject.faculty_slug`) to shared types and repository selects; verify `pnpm exec drizzle-kit generate` shows the columns/indexes and `pnpm check` passes
 
 ## 2. Repository slug generation

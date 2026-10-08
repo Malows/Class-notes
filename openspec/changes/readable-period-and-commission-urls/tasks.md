@@ -21,5 +21,5 @@
 
 ## 4. Integration verification
 
-- [ ] 4.1 Walk through the app: the full hierarchy navigates via `/faculties/{f}/subjects/{s}/periods/{year}/{semester}/commissions/{commissionSlug}`, renaming a commission regenerates its slug (suffix on collision), and unknown slugs/period keys show not-found states
-- [ ] 4.2 Run `pnpm check`, `pnpm lint`, `pnpm test`, and `pnpm validate:i18n` and verify all pass with the new tests included
+- [x] 4.1 Walk through the app: the full hierarchy navigates via `/faculties/{f}/subjects/{s}/periods/{year}/{semester}/commissions/{commissionSlug}`, renaming a commission regenerates its slug (suffix on collision), and unknown slugs/period keys show not-found states
+- [x] 4.2 Run `pnpm check`, `pnpm lint`, `pnpm test`, and `pnpm validate:i18n` and verify all pass with the new tests included

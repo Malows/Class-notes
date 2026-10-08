@@ -1,8 +1,9 @@
-import { and, count, eq, isNull, sql } from "drizzle-orm";
+import { and, count, eq, isNull, ne, sql } from "drizzle-orm";
 import type { Commission } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
 import { commissions, students } from "../database/schema";
+import { buildUniqueSlug, slugify } from "../utils/slug";
 
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];
@@ -12,6 +13,29 @@ export interface CommissionRepository {
 }
 
 class CommissionRepositoryImpl implements CommissionRepository {
+  private slugFor(subjectId: number, periodId: number, name: string, excludeId?: number): string {
+    const base = slugify(name);
+
+    return buildUniqueSlug(base, (candidate) => {
+      const conditions = [
+        eq(commissions.subjectId, subjectId),
+        eq(commissions.periodId, periodId),
+        eq(commissions.slug, candidate),
+        isNull(commissions.deletedAt),
+      ];
+      if (excludeId !== undefined) {
+        conditions.push(ne(commissions.id, excludeId));
+      }
+      return Boolean(
+        drizzleDb
+          .select({ id: commissions.id })
+          .from(commissions)
+          .where(and(...conditions))
+          .get(),
+      );
+    });
+  }
+
   getAll(periodID?: number): Commission[] {
     const conditions = [isNull(commissions.deletedAt)];
     if (periodID) {
@@ -24,6 +48,7 @@ class CommissionRepositoryImpl implements CommissionRepository {
         subject_id: commissions.subjectId,
         period_id: commissions.periodId,
         name: commissions.name,
+        slug: commissions.slug,
         student_count: count(students.id),
       })
       .from(commissions)
@@ -38,14 +63,16 @@ class CommissionRepositoryImpl implements CommissionRepository {
 
   create(subject_id: number, period_id: number, name: string): Commission {
     return withTransaction(db, () => {
+      const slug = this.slugFor(subject_id, period_id, name);
       const newCommission = drizzleDb
         .insert(commissions)
-        .values({ subjectId: subject_id, periodId: period_id, name })
+        .values({ subjectId: subject_id, periodId: period_id, name, slug })
         .returning({
           id: commissions.id,
           subject_id: commissions.subjectId,
           period_id: commissions.periodId,
           name: commissions.name,
+          slug: commissions.slug,
         })
         .get() as Commission;
       newCommission.student_count = 0;
@@ -55,11 +82,32 @@ class CommissionRepositoryImpl implements CommissionRepository {
 
   update(id: number, name: string): Commission {
     return withTransaction(db, () => {
+      const current = drizzleDb
+        .select({
+          subjectId: commissions.subjectId,
+          periodId: commissions.periodId,
+        })
+        .from(commissions)
+        .where(and(eq(commissions.id, id), isNull(commissions.deletedAt)))
+        .get() as { subjectId: number; periodId: number } | undefined;
+
+      const slug = this.slugFor(
+        current?.subjectId ?? 0,
+        current?.periodId ?? 0,
+        name,
+        id,
+      );
       const updatedCommission = drizzleDb
         .update(commissions)
-        .set({ name, updatedAt: sql`CURRENT_TIMESTAMP` })
+        .set({ name, slug, updatedAt: sql`CURRENT_TIMESTAMP` })
         .where(and(eq(commissions.id, id), isNull(commissions.deletedAt)))
-        .returning({ id: commissions.id, period_id: commissions.periodId, name: commissions.name })
+        .returning({
+          id: commissions.id,
+          subject_id: commissions.subjectId,
+          period_id: commissions.periodId,
+          name: commissions.name,
+          slug: commissions.slug,
+        })
         .get() as Commission;
 
       if (updatedCommission) {

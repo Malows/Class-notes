@@ -78,19 +78,30 @@ export const subjectPeriods = sqliteTable(
   }),
 );
 
-export const commissions = sqliteTable("commissions", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  subjectId: integer("subject_id", { mode: "number" })
-    .notNull()
-    .references(() => subjects.id, { onDelete: "cascade" }),
-  periodId: integer("period_id", { mode: "number" })
-    .notNull()
-    .references(() => periods.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  deletedAt: text("deletedAt", { mode: "text" }),
-});
+export const commissions = sqliteTable(
+  "commissions",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    subjectId: integer("subject_id", { mode: "number" })
+      .notNull()
+      .references(() => subjects.id, { onDelete: "cascade" }),
+    periodId: integer("period_id", { mode: "number" })
+      .notNull()
+      .references(() => periods.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    uniqueSubjectPeriodSlug: uniqueIndex("idx_commissions_subject_period_slug_unique").on(
+      table.subjectId,
+      table.periodId,
+      table.slug,
+    ).where(sql`${table.deletedAt} IS NULL`),
+  }),
+);
 
 export const students = sqliteTable("students", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),

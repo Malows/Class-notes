@@ -17,7 +17,7 @@ describe("CommissionsStore", () => {
   });
 
   it("should load commissions", async () => {
-    const mockData = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", student_count: 0 }];
+    const mockData = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", slug: "commission-a", student_count: 0 }];
     mockService.getAll.mockResolvedValue(mockData);
 
     await store.load();
@@ -33,6 +33,7 @@ describe("CommissionsStore", () => {
       subject_id: 1,
       period_id: 1,
       name: "Commission B",
+      slug: "commission-b",
       student_count: 0,
     };
     mockService.create.mockResolvedValue(newCommission);
@@ -43,12 +44,13 @@ describe("CommissionsStore", () => {
   });
 
   it("should update a commission", async () => {
-    store.items = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", student_count: 0 }];
+    store.items = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", slug: "commission-a", student_count: 0 }];
     const updated = {
       id: 1,
       subject_id: 1,
       period_id: 1,
       name: "Commission A Updated",
+      slug: "commission-a-updated",
       student_count: 0,
     };
     mockService.update.mockResolvedValue(updated);
@@ -59,7 +61,7 @@ describe("CommissionsStore", () => {
   });
 
   it("should delete a commission", async () => {
-    store.items = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", student_count: 0 }];
+    store.items = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", slug: "commission-a", student_count: 0 }];
     mockService.delete.mockResolvedValue(undefined);
 
     await store.deleteItem(1);

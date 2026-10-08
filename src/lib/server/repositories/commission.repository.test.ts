@@ -29,9 +29,41 @@ describe("commissionRepository integration tests", () => {
     expect(commission.subject_id).toBe(1);
     expect(commission.period_id).toBe(1);
     expect(commission.name).toBe("Comisión A");
+    expect(commission.slug).toBe("comision-a");
     expect(commission.student_count).toBe(0);
     expect(allCommissions.some((item) => item.id === commission.id)).toBe(true);
     expect(filteredCommissions.some((item) => item.id === commission.id)).toBe(true);
+  });
+
+  it("appends a numeric suffix for a slug collision within the same subject and period", () => {
+    const first = commissionRepository.create(1, 1, "Comisión Mañana");
+    const second = commissionRepository.create(1, 1, "Comisión Mañana");
+    createdCommissionIds.push(first.id, second.id);
+
+    expect(first.slug).toBe("comision-manana");
+    expect(second.slug).toBe("comision-manana-2");
+  });
+
+  it("reuses the slug of a soft-deleted commission in the same scope", () => {
+    const first = commissionRepository.create(1, 1, "Comisión Reuso");
+    createdCommissionIds.push(first.id);
+    commissionRepository.delete(first.id);
+
+    const second = commissionRepository.create(1, 1, "Comisión Reuso");
+    createdCommissionIds.push(second.id);
+
+    expect(second.slug).toBe("comision-reuso");
+  });
+
+  it("regenerates the slug on rename and keeps it when the name is unchanged", () => {
+    const commission = commissionRepository.create(1, 1, "Comisión Inicial");
+    createdCommissionIds.push(commission.id);
+
+    const renamed = commissionRepository.update(commission.id, "Comisión Renombrada");
+    expect(renamed.slug).toBe("comision-renombrada");
+
+    const untouched = commissionRepository.update(commission.id, "Comisión Renombrada");
+    expect(untouched.slug).toBe("comision-renombrada");
   });
 
   it("updates the commission name and student count", () => {

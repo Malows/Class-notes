@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "155a6197-618c-48e2-a95c-d36e30356d3c",
+  "id": "aca09e9e-02f7-4bfb-b58c-88feff0f4511",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
@@ -155,6 +155,16 @@
       "default": null,
       "generated": null,
       "name": "name",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
       "entityType": "columns",
       "table": "commissions"
     },
@@ -805,6 +815,28 @@
       "name": "subjects_pk",
       "table": "subjects",
       "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "subject_id",
+          "isExpression": false
+        },
+        {
+          "value": "period_id",
+          "isExpression": false
+        },
+        {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"commissions\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_commissions_subject_period_slug_unique",
+      "entityType": "indexes",
+      "table": "commissions"
     },
     {
       "columns": [

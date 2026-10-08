@@ -266,6 +266,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       .select({
         commission_id: commissions.id,
         commission_name: commissions.name,
+        commission_slug: commissions.slug,
         subject_name: subjects.name,
         subject_slug: subjects.slug,
         faculty_id: faculties.id,

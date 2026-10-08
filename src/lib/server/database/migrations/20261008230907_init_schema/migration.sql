@@ -15,6 +15,7 @@ CREATE TABLE `commissions` (
 	`subject_id` integer NOT NULL,
 	`period_id` integer NOT NULL,
 	`name` text NOT NULL,
+	`slug` text NOT NULL,
 	`createdAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`updatedAt` text DEFAULT 'CURRENT_TIMESTAMP',
 	`deletedAt` text,
@@ -88,6 +89,7 @@ CREATE TABLE `subjects` (
 	CONSTRAINT `fk_subjects_faculty_id_faculties_id_fk` FOREIGN KEY (`faculty_id`) REFERENCES `faculties`(`id`) ON DELETE CASCADE
 );
 --> statement-breakpoint
+CREATE UNIQUE INDEX `idx_commissions_subject_period_slug_unique` ON `commissions` (`subject_id`,`period_id`,`slug`) WHERE "commissions"."deletedAt" IS NULL;--> statement-breakpoint
 CREATE UNIQUE INDEX `idx_faculties_slug_unique` ON `faculties` (`slug`) WHERE "faculties"."deletedAt" IS NULL;--> statement-breakpoint
 CREATE UNIQUE INDEX `idx_periods_year_semester_unique` ON `periods` (`year`,`semester`);--> statement-breakpoint
 CREATE UNIQUE INDEX `idx_subject_periods_subject_period_active` ON `subject_periods` (`subject_id`,`period_id`);--> statement-breakpoint

@@ -2,9 +2,9 @@
 
 ## 1. Commission model and generation
 
-- [ ] 1.1 Add `commissions.slug` plus the partial unique index `(subject_id, period_id, slug)` (`WHERE deletedAt IS NULL`) to `schema.ts`, add `Commission.slug` to the shared type and selects; verify `pnpm exec drizzle-kit generate` shows the column/index and `pnpm check` passes
-- [ ] 1.2 Commission repository generates `slug` on `create`/`update` (scoped to subject+period, excluding its own row, numeric suffix on collision) and returns it; verify repository tests cover create, rename, in-scope collision, same slug in a different subject/period, and reuse after soft delete
-- [ ] 1.3 Regenerate the migration baseline, add commission slugs to the seed, reset the dev DB, and verify `GET /api/v1/commissions` returns `slug`; add `commission_slug` to the pending-summary payload for the dashboard
+- [x] 1.1 Add `commissions.slug` plus the partial unique index `(subject_id, period_id, slug)` (`WHERE deletedAt IS NULL`) to `schema.ts`, add `Commission.slug` to the shared type and selects; verify `pnpm exec drizzle-kit generate` shows the column/index and `pnpm check` passes
+- [x] 1.2 Commission repository generates `slug` on `create`/`update` (scoped to subject+period, excluding its own row, numeric suffix on collision) and returns it; verify repository tests cover create, rename, in-scope collision, same slug in a different subject/period, and reuse after soft delete
+- [x] 1.3 Regenerate the migration baseline, add commission slugs to the seed, reset the dev DB, and verify `GET /api/v1/commissions` returns `slug`; add `commission_slug` to the pending-summary payload for the dashboard
 
 ## 2. Commission routing by slug
 

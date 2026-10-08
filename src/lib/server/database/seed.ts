@@ -69,18 +69,18 @@ const subjectPeriodSeeds = [
 ];
 
 const commissionSeeds = [
-  { id: 1, subjectId: 1, periodId: 2, name: "Comisión Mañana" },
-  { id: 2, subjectId: 1, periodId: 2, name: "Comisión Tarde" },
-  { id: 3, subjectId: 2, periodId: 3, name: "Comisión Única" },
-  { id: 4, subjectId: 3, periodId: 4, name: "Comisión Virtual" },
-  { id: 5, subjectId: 4, periodId: 1, name: "Comisión A" },
-  { id: 6, subjectId: 4, periodId: 1, name: "Comisión B" },
-  { id: 7, subjectId: 5, periodId: 2, name: "Comisión 1" },
-  { id: 8, subjectId: 5, periodId: 2, name: "Comisión 2" },
-  { id: 9, subjectId: 6, periodId: 3, name: "Comisión Noche" },
-  { id: 10, subjectId: 7, periodId: 4, name: "Comisión Taller" },
-  { id: 11, subjectId: 8, periodId: 1, name: "Comisión Diseño" },
-  { id: 12, subjectId: 8, periodId: 1, name: "Comisión Comunicación" },
+  { id: 1, subjectId: 1, periodId: 2, name: "Comisión Mañana", slug: "comision-manana" },
+  { id: 2, subjectId: 1, periodId: 2, name: "Comisión Tarde", slug: "comision-tarde" },
+  { id: 3, subjectId: 2, periodId: 3, name: "Comisión Única", slug: "comision-unica" },
+  { id: 4, subjectId: 3, periodId: 4, name: "Comisión Virtual", slug: "comision-virtual" },
+  { id: 5, subjectId: 4, periodId: 1, name: "Comisión A", slug: "comision-a" },
+  { id: 6, subjectId: 4, periodId: 1, name: "Comisión B", slug: "comision-b" },
+  { id: 7, subjectId: 5, periodId: 2, name: "Comisión 1", slug: "comision-1" },
+  { id: 8, subjectId: 5, periodId: 2, name: "Comisión 2", slug: "comision-2" },
+  { id: 9, subjectId: 6, periodId: 3, name: "Comisión Noche", slug: "comision-noche" },
+  { id: 10, subjectId: 7, periodId: 4, name: "Comisión Taller", slug: "comision-taller" },
+  { id: 11, subjectId: 8, periodId: 1, name: "Comisión Diseño", slug: "comision-diseno" },
+  { id: 12, subjectId: 8, periodId: 1, name: "Comisión Comunicación", slug: "comision-comunicacion" },
 ];
 
 const studentSeeds = [
@@ -208,7 +208,12 @@ export function insertSeed(client: Database): void {
         .values(commissionSeeds)
         .onConflictDoUpdate({
           target: commissions.id,
-          set: { subjectId: commissions.subjectId, periodId: commissions.periodId, name: commissions.name },
+          set: {
+            subjectId: commissions.subjectId,
+            periodId: commissions.periodId,
+            name: commissions.name,
+            slug: commissions.slug,
+          },
         })
         .run();
     });

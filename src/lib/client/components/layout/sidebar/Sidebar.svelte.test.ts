@@ -69,7 +69,9 @@ const subjects = [
 const periods = [
   { id: 3, subject_id: 2, subject_slug: "analisis-matematico-i", year: 2026, semester: 1 },
 ];
-const commissions = [{ id: 4, subject_id: 2, period_id: 3, name: "Comisión A", student_count: 0 }];
+const commissions = [
+  { id: 4, subject_id: 2, period_id: 3, name: "Comisión A", slug: "comision-a", student_count: 0 },
+];
 
 let component: ReturnType<typeof mount>;
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));

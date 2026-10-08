@@ -56,8 +56,8 @@ test("buildPeriodItems filters and maps periods correctly", () => {
 
 test("buildCommissionItems filters and maps commissions correctly", () => {
   const commissions: Commission[] = [
-    { id: 100, subject_id: 1, period_id: 10, name: "Comision A", student_count: 5 },
-    { id: 200, subject_id: 2, period_id: 20, name: "Comision B", student_count: 10 },
+    { id: 100, subject_id: 1, period_id: 10, name: "Comision A", slug: "comision-a", student_count: 5 },
+    { id: 200, subject_id: 2, period_id: 20, name: "Comision B", slug: "comision-b", student_count: 10 },
   ];
   const context = {
     facultySlug: "facultad-1",

@@ -9,12 +9,21 @@
     commissions: Commission[];
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
+    periodYear: number;
+    periodSemester: number;
     onEdit: (commission: Commission) => void;
     onDelete: (commission: Commission) => void;
   }
 
-  let { commissions, facultySlug, subjectSlug, periodId, onEdit, onDelete }: Props = $props();
+  let {
+    commissions,
+    facultySlug,
+    subjectSlug,
+    periodYear,
+    periodSemester,
+    onEdit,
+    onDelete,
+  }: Props = $props();
 </script>
 
 <ResponsiveTable items={commissions}>
@@ -24,6 +33,14 @@
     <th>{$t("layout.actions")}</th>
   {/snippet}
   {#snippet row(commission)}
-    <CommissionRow {commission} {facultySlug} {subjectSlug} {periodId} {onEdit} {onDelete} />
+    <CommissionRow
+      {commission}
+      {facultySlug}
+      {subjectSlug}
+      {periodYear}
+      {periodSemester}
+      {onEdit}
+      {onDelete}
+    />
   {/snippet}
 </ResponsiveTable>

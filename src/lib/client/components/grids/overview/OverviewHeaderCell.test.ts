@@ -14,8 +14,9 @@ describe("OverviewHeaderCell Component", () => {
       assignment,
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     const titleEl = screen.getByTestId("overview-header-assignment-title-12");
@@ -27,7 +28,7 @@ describe("OverviewHeaderCell Component", () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute(
       "href",
-      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=12",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/correct?assignment_id=12",
     );
   });
 });

@@ -15,7 +15,7 @@
   let { period, facultySlug, subjectSlug, onEdit, onDelete }: Props = $props();
 
   const rootPath = $derived(
-    () => `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.id}`,
+    () => `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.year}/${period.semester}`,
   );
 </script>
 

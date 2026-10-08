@@ -8,28 +8,20 @@
     deliveries: Delivery[];
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
-    commissionId: number;
-    studentCommissionId?: number;
+    periodYear: number;
+    periodSemester: number;
+    commissionSlug: string;
   }
 
-  let {
-    name,
-    deliveries,
-    facultySlug,
-    subjectSlug,
-    periodId,
-    commissionId,
-    studentCommissionId,
-  }: Props = $props();
+  let { name, deliveries, facultySlug, subjectSlug, periodYear, periodSemester, commissionSlug }: Props =
+    $props();
 </script>
 
 <div class="overview-row" data-test-id="overview-row">
   <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
   {#each deliveries as delivery}
     <OverviewCell
-      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions/{studentCommissionId ||
-        commissionId}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
       status={getOverviewDeliveryStatus(delivery)}
       aiLevel={delivery.ai_level}
       label={getOverviewDeliveryStatus(delivery)}

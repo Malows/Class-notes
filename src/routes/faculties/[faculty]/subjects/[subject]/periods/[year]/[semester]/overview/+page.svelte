@@ -1,25 +1,44 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, getContext } from "svelte";
   import { page } from "$app/state";
 
   import { t } from "$lib/common/i18n/config";
+  import { StoreKey } from "$lib/common";
   import type { OverviewData } from "$lib/common";
 
   import Button from "$lib/client/components/common/Button.svelte";
   import OverviewGrid from "$lib/client/components/grids/overview/OverviewGrid.svelte";
   import OverviewLegend from "$lib/client/components/grids/overview/OverviewLegend.svelte";
+  import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
+
+  const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
+  const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
+  const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
+
+  const facultySlug = page.params.faculty ?? "";
+  const subjectSlug = page.params.subject ?? "";
+  const periodYear = Number(page.params.year);
+  const periodSemester = Number(page.params.semester);
 
   let data = $state<OverviewData | null>(null);
   let loading = $state(true);
 
-  const facultySlug = page.params.faculty ?? "";
-  const subjectSlug = page.params.subject ?? "";
-  const periodId = Number(page.params.period_id);
-
   async function loadData() {
     try {
-      data = await overviewService.getForPeriod(periodId);
+      await Promise.all([facultiesStore.load(), subjectsStore.load()]);
+      const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
+      if (sid) {
+        await periodsStore.load(sid);
+      }
+      const pid = periodsStore.items.find(
+        (p) => p.year === periodYear && p.semester === periodSemester,
+      )?.id;
+      if (pid) {
+        data = await overviewService.getForPeriod(pid);
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -52,9 +71,12 @@
       grid={data.grid}
       {facultySlug}
       {subjectSlug}
-      {periodId}
-      commissionId={0}
+      periodYear={periodYear}
+      periodSemester={periodSemester}
+      commissionSlug=""
     />
   </div>
+{:else}
+  <p>{$t("periods.period_not_found")}</p>
 {/if}
 <OverviewLegend />

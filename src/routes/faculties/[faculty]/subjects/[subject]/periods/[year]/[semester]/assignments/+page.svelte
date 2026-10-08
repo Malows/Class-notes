@@ -30,8 +30,12 @@
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
+  const year = Number(page.params.year);
+  const semester = Number(page.params.semester);
   const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
-  const periodID = Number(page.params.period_id);
+  const periodID = $derived(
+    periodsStore.items.find((p) => p.year === year && p.semester === semester)?.id,
+  );
 
   // Status transition state
   let isAdvanceModalOpen = $state(false);
@@ -61,10 +65,10 @@
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
-      if (sid) {
-        await Promise.all([periodsStore.load(sid), assignmentsStore.load(periodID)]);
-      } else {
-        await assignmentsStore.load(periodID);
+      if (sid) await periodsStore.load(sid);
+      const pid = periodsStore.items.find((p) => p.year === year && p.semester === semester)?.id;
+      if (pid) {
+        await assignmentsStore.load(pid);
       }
     } catch (e) {
       console.error(e);
@@ -84,6 +88,7 @@
         await assignmentsStore.updateItem(id, title, subtitle);
         notificationsStore.addSuccess("Trabajo práctico actualizado con éxito");
       } else {
+        if (periodID === undefined) return;
         await assignmentsStore.create(periodID, title, subtitle, workflowStatus);
         notificationsStore.addSuccess("Trabajo práctico creado con éxito");
       }
@@ -130,7 +135,7 @@
   }
 
   async function confirmCopy() {
-    if (!previousPeriod) return;
+    if (!previousPeriod || periodID === undefined) return;
     try {
       await assignmentsStore.copy(previousPeriod.id, periodID);
       notificationsStore.addSuccess("Trabajos prácticos copiados con éxito");

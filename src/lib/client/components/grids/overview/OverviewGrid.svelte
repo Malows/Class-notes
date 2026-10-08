@@ -12,24 +12,39 @@
     grid: StudentGridRowDTO[];
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
-    commissionId: number;
+    periodYear: number;
+    periodSemester: number;
+    commissionSlug: string;
   }
 
-  let { assignments, grid, facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
+  let {
+    assignments,
+    grid,
+    facultySlug,
+    subjectSlug,
+    periodYear,
+    periodSemester,
+    commissionSlug,
+  }: Props = $props();
 </script>
 
 {#if grid.length === 0}
-  <OverviewEmptyStudents {facultySlug} {subjectSlug} {periodId} {commissionId} />
+  <OverviewEmptyStudents
+    {facultySlug}
+    {subjectSlug}
+    {periodYear}
+    {periodSemester}
+    {commissionSlug}
+  />
 {:else if assignments.length === 0}
-  <OverviewEmptyAssignments {facultySlug} {subjectSlug} {periodId} />
+  <OverviewEmptyAssignments {facultySlug} {subjectSlug} {periodYear} {periodSemester} />
 {:else}
   <div
     class="overview-grid"
     data-test-id="overview-grid"
     style="display: grid; --cols: {assignments.length};"
   >
-    <OverviewHeader {assignments} {facultySlug} {subjectSlug} {periodId} {commissionId} />
+    <OverviewHeader {assignments} {facultySlug} {subjectSlug} {periodYear} {periodSemester} {commissionSlug} />
 
     {#each grid as student}
       <OverviewRow
@@ -37,9 +52,9 @@
         deliveries={student.deliveries}
         {facultySlug}
         {subjectSlug}
-        {periodId}
-        {commissionId}
-        studentCommissionId={student.commission_id}
+        {periodYear}
+        {periodSemester}
+        {commissionSlug}
       />
     {/each}
   </div>

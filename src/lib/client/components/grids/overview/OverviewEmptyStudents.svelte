@@ -6,20 +6,21 @@
   interface Props {
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
-    commissionId: number;
+    periodYear: number;
+    periodSemester: number;
+    commissionSlug: string;
   }
 
-  let { facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
+  let { facultySlug, subjectSlug, periodYear, periodSemester, commissionSlug }: Props = $props();
 </script>
 
 <div class="card margin-top-lg" data-test-id="empty-students-card">
   <div class="card-body text-center">
     <h4 class="card-title">{$t("commissions.no_students_message")} 👤</h4>
     <div class="margin-top-md">
-      {#if commissionId > 0}
+      {#if commissionSlug}
         <Button
-          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions/{commissionId}/students"
+          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/students"
           class="btn-secondary"
           testId="empty-students-cta"
         >
@@ -27,7 +28,7 @@
         </Button>
       {:else}
         <Button
-          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/commissions"
+          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions"
           class="btn-secondary"
           testId="empty-commissions-cta"
         >

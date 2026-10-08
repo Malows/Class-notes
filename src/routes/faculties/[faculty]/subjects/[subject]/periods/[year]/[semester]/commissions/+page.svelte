@@ -9,8 +9,8 @@
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
-  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
   import CommissionTable from "$lib/client/components/grids/tables/CommissionTable.svelte";
   import CommissionModal from "$lib/client/components/modals/CommissionModal.svelte";
@@ -29,18 +29,19 @@
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
+  const periodYear = Number(page.params.year);
+  const periodSemester = Number(page.params.semester);
   const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
-  const periodID = Number(page.params.period_id);
+  const periodID = $derived(
+    periodsStore.items.find((p) => p.year === periodYear && p.semester === periodSemester)?.id,
+  );
 
   async function loadData() {
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
-      if (sid) {
-        await Promise.all([periodsStore.load(sid), commissionsStore.load()]);
-      } else {
-        await commissionsStore.load();
-      }
+      if (sid) await periodsStore.load(sid);
+      await commissionsStore.load();
     } catch (e) {
       console.error(e);
     } finally {
@@ -54,7 +55,7 @@
         await commissionsStore.updateItem(id, name);
         notificationsStore.addSuccess("Comisión actualizada con éxito");
       } else {
-        if (subjectID === undefined) return;
+        if (subjectID === undefined || periodID === undefined) return;
         await commissionsStore.create(subjectID, periodID, name);
         notificationsStore.addSuccess("Comisión creada con éxito");
       }
@@ -90,7 +91,9 @@
   </p>
 
   <GuardWrapper
-    condition={periodsStore.items.some((p) => p.id === periodID)}
+    condition={periodsStore.items.some(
+      (p) => p.year === periodYear && p.semester === periodSemester,
+    )}
     message={$t("periods.period_not_found")}
     linkHref="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
     linkText={$t("layout.back_to_periods")}
@@ -104,7 +107,8 @@
         )}
         {facultySlug}
         {subjectSlug}
-        periodId={periodID}
+        {periodYear}
+        {periodSemester}
         onEdit={(commission) => modal.openEdit(commission)}
         onDelete={(commission) => modal.openDelete(commission)}
       />
@@ -116,7 +120,7 @@
     mode={modal.mode === "create" ? "create" : "edit"}
     commission={modal.target}
     subjectId={subjectID ?? 0}
-    periodId={periodID}
+    periodId={periodID ?? 0}
     onSave={handleSave}
     onClose={() => modal.close()}
   />

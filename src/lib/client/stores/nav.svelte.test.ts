@@ -40,11 +40,12 @@ test("navStore.breadcrumbs dynamically builds static index breadcrumbs", async (
   mockParams = {
     faculty: "facultad-de-ingenieria",
     subject: "algebra-lineal",
-    period_id: "3",
-    commission_id: "4",
+    year: "2026",
+    semester: "1",
+    commission: "comision-manana",
   };
   mockUrl = new URL(
-    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions/4/overview",
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/overview",
   );
 
   const crumbs = navStore.breadcrumbs;
@@ -62,11 +63,11 @@ test("navStore.breadcrumbs dynamically builds static index breadcrumbs", async (
   });
   expect(crumbs[4]).toEqual({
     key: "layout.commissions",
-    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions",
   });
   expect(crumbs[5]).toEqual({
     key: "layout.overview",
-    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/3/commissions/4/overview",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/overview",
   });
 });
 

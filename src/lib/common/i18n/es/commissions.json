@@ -17,5 +17,6 @@
   "define_assignments_cta": "Definir Trabajos Prácticos",
   "no_students_message": "Aún no hay alumnos matriculados.",
   "enroll_students_cta": "Gestionar Alumnos",
-  "define_commissions_cta": "Gestionar Comisiones"
+  "define_commissions_cta": "Gestionar Comisiones",
+  "not_found_message": "La comisión seleccionada no existe o no pudo ser cargada."
 }

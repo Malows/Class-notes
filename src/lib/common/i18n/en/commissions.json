@@ -17,5 +17,6 @@
   "define_assignments_cta": "Define Assignments",
   "no_students_message": "No students have been enrolled yet.",
   "enroll_students_cta": "Manage Students",
-  "define_commissions_cta": "Manage Commissions"
+  "define_commissions_cta": "Manage Commissions",
+  "not_found_message": "The selected commission does not exist or could not be loaded."
 }

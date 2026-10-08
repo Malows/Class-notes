@@ -273,6 +273,8 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
         faculty_slug: faculties.slug,
         subject_id: subjects.id,
         period_id: periods.id,
+        period_year: periods.year,
+        period_semester: periods.semester,
         pending_count: pendingCount,
       })
       .from(commissions)

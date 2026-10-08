@@ -7,16 +7,25 @@
     commission: Commission;
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
+    periodYear: number;
+    periodSemester: number;
     onEdit: (commission: Commission) => void;
     onDelete: (commission: Commission) => void;
   }
 
-  let { commission, facultySlug, subjectSlug, periodId, onEdit, onDelete }: Props = $props();
+  let {
+    commission,
+    facultySlug,
+    subjectSlug,
+    periodYear,
+    periodSemester,
+    onEdit,
+    onDelete,
+  }: Props = $props();
 
   const rootPath = $derived(
     () =>
-      `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodId}/commissions/${commission.id}`,
+      `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commission.slug}`,
   );
 </script>
 

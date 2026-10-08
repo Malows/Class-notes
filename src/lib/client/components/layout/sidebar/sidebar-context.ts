@@ -16,14 +16,17 @@ type SubjectContext = {
 type PeriodContext = {
   facultySlug: string;
   subjectSlug: string;
-  activePeriodId?: number;
+  activePeriodYear?: number;
+  activePeriodSemester?: number;
 };
 
 type CommissionContext = {
   facultySlug: string;
   subjectSlug: string;
   periodId: number;
-  activeCommissionId?: number;
+  periodYear: number;
+  periodSemester: number;
+  activeCommissionSlug?: string;
 };
 
 export function buildSubjectItems(
@@ -43,30 +46,37 @@ export function buildSubjectItems(
 
 export function buildPeriodItems(
   periods: Period[],
-  { facultySlug, subjectSlug, activePeriodId }: PeriodContext,
+  { facultySlug, subjectSlug, activePeriodYear, activePeriodSemester }: PeriodContext,
 ): SidebarContextLink[] {
   return periods
     .filter((period) => period.subject_slug === subjectSlug)
     .map((period) => ({
       id: period.id,
-      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.id}/commissions`,
+      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.year}/${period.semester}/commissions`,
       label: `${period.year} - ${period.semester}º`,
       shortLabel: `${period.year % 100}-${period.semester}`,
-      isActive: activePeriodId === period.id,
+      isActive: activePeriodYear === period.year && activePeriodSemester === period.semester,
     }));
 }
 
 export function buildCommissionItems(
   commissions: Commission[],
-  { facultySlug, subjectSlug, periodId, activeCommissionId }: CommissionContext,
+  {
+    facultySlug,
+    subjectSlug,
+    periodId,
+    periodYear,
+    periodSemester,
+    activeCommissionSlug,
+  }: CommissionContext,
 ): SidebarContextLink[] {
   return commissions
     .filter((commission) => commission.period_id === periodId)
     .map((commission) => ({
       id: commission.id,
-      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodId}/commissions/${commission.id}/overview`,
+      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commission.slug}/overview`,
       label: commission.name,
       shortLabel: commission.name.substring(0, 2).toUpperCase(),
-      isActive: activeCommissionId === commission.id,
+      isActive: activeCommissionSlug === commission.slug,
     }));
 }

@@ -60,6 +60,33 @@ describe("CommissionsStore", () => {
     expect(store.items[0].name).toBe("Commission A Updated");
   });
 
+  it("resolves a commission by subject, period and slug", async () => {
+    mockService.getAll.mockResolvedValue([
+      {
+        id: 1,
+        subject_id: 1,
+        period_id: 1,
+        name: "Comm A",
+        slug: "comm-a",
+        student_count: 0,
+      },
+      {
+        id: 2,
+        subject_id: 1,
+        period_id: 2,
+        name: "Comm A",
+        slug: "comm-a",
+        student_count: 0,
+      },
+    ]);
+
+    await store.load();
+
+    expect(store.findInScope(1, 1, "comm-a")?.id).toBe(1);
+    expect(store.findInScope(1, 2, "comm-a")?.id).toBe(2);
+    expect(store.findInScope(9, 9, "comm-a")).toBeUndefined();
+  });
+
   it("should delete a commission", async () => {
     store.items = [{ id: 1, subject_id: 1, period_id: 1, name: "Commission A", slug: "commission-a", student_count: 0 }];
     mockService.delete.mockResolvedValue(undefined);

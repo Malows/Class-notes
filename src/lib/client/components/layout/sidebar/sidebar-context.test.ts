@@ -37,17 +37,34 @@ test("buildSubjectItems filters and maps subjects correctly", () => {
 
 test("buildPeriodItems filters and maps periods correctly", () => {
   const periods: Period[] = [
-    { id: 10, subject_id: 1, subject_slug: "matematica", year: 2026, semester: 1 },
-    { id: 20, subject_id: 2, subject_slug: "fisica", year: 2026, semester: 2 },
+    {
+      id: 10,
+      subject_id: 1,
+      subject_slug: "matematica",
+      year: 2026,
+      semester: 1,
+    },
+    {
+      id: 20,
+      subject_id: 2,
+      subject_slug: "fisica",
+      year: 2026,
+      semester: 2,
+    },
   ];
-  const context = { facultySlug: "facultad-1", subjectSlug: "matematica", activePeriodId: 10 };
+  const context = {
+    facultySlug: "facultad-1",
+    subjectSlug: "matematica",
+    activePeriodYear: 2026,
+    activePeriodSemester: 1,
+  };
 
   const result = buildPeriodItems(periods, context);
 
   expect(result).toHaveLength(1);
   expect(result[0]).toEqual({
     id: 10,
-    href: "/faculties/facultad-1/subjects/matematica/periods/10/commissions",
+    href: "/faculties/facultad-1/subjects/matematica/periods/2026/1/commissions",
     label: "2026 - 1º",
     shortLabel: "26-1",
     isActive: true,
@@ -56,14 +73,30 @@ test("buildPeriodItems filters and maps periods correctly", () => {
 
 test("buildCommissionItems filters and maps commissions correctly", () => {
   const commissions: Commission[] = [
-    { id: 100, subject_id: 1, period_id: 10, name: "Comision A", slug: "comision-a", student_count: 5 },
-    { id: 200, subject_id: 2, period_id: 20, name: "Comision B", slug: "comision-b", student_count: 10 },
+    {
+      id: 100,
+      subject_id: 1,
+      period_id: 10,
+      name: "Comision A",
+      slug: "comision-a",
+      student_count: 5,
+    },
+    {
+      id: 200,
+      subject_id: 2,
+      period_id: 20,
+      name: "Comision B",
+      slug: "comision-b",
+      student_count: 10,
+    },
   ];
   const context = {
     facultySlug: "facultad-1",
     subjectSlug: "matematica",
     periodId: 10,
-    activeCommissionId: 100,
+    periodYear: 2026,
+    periodSemester: 1,
+    activeCommissionSlug: "comision-a",
   };
 
   const result = buildCommissionItems(commissions, context);
@@ -71,7 +104,7 @@ test("buildCommissionItems filters and maps commissions correctly", () => {
   expect(result).toHaveLength(1);
   expect(result[0]).toEqual({
     id: 100,
-    href: "/faculties/facultad-1/subjects/matematica/periods/10/commissions/100/overview",
+    href: "/faculties/facultad-1/subjects/matematica/periods/2026/1/commissions/comision-a/overview",
     label: "Comision A",
     shortLabel: "CO",
     isActive: true,

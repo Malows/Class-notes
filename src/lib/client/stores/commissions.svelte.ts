@@ -7,8 +7,15 @@ export class CommissionsStore {
 
   constructor(private service = commissionService) {}
 
-  // O(1) lookup cached
+  // O(1) lookups cached
   map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
+  bySlug = $derived.by(() =>
+    new Map(this.items.map((i) => [`${i.subject_id}:${i.period_id}:${i.slug}`, i])),
+  );
+
+  findInScope(subjectId: number, periodId: number, slug: string): Commission | undefined {
+    return this.bySlug.get(`${subjectId}:${periodId}:${slug}`);
+  }
 
   async load() {
     if (this.loaded) return;

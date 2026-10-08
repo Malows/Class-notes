@@ -141,10 +141,11 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
   mockParams = {
     faculty: "facultad-de-ingenieria",
     subject: "analisis-matematico-i",
-    period_id: "3",
+    year: "2026",
+    semester: "1",
   };
   mockUrl = new URL(
-    "http://localhost/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3",
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1",
   );
 
   mountWithContext();
@@ -166,14 +167,14 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
 
   // Period of the subject with a direct link
   const periodLink = document.body.querySelector(
-    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3/commissions"]',
+    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions"]',
   ) as HTMLAnchorElement;
   expect(periodLink).not.toBeNull();
   expect(periodLink.textContent).toContain("2026 - 1º");
 
   // Commission with a direct link
   const commissionLink = document.body.querySelector(
-    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/3/commissions/4/overview"]',
+    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions/comision-a/overview"]',
   ) as HTMLAnchorElement;
   expect(commissionLink).not.toBeNull();
   expect(commissionLink.textContent).toContain("Comisión A");

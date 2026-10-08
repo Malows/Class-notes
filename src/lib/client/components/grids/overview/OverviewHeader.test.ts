@@ -18,8 +18,9 @@ describe("OverviewHeader Component", () => {
       assignments,
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     // Verify Row 1: Left column by test id
@@ -53,15 +54,15 @@ describe("OverviewHeader Component", () => {
 
     expect(link1).toHaveAttribute(
       "href",
-      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=10",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/correct?assignment_id=10",
     );
     expect(link2).toHaveAttribute(
       "href",
-      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=20",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/correct?assignment_id=20",
     );
     expect(link3).toHaveAttribute(
       "href",
-      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/correct?assignment_id=30",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/correct?assignment_id=30",
     );
   });
 });

@@ -7,11 +7,19 @@
     assignments: Assignment[];
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
-    commissionId: number;
+    periodYear: number;
+    periodSemester: number;
+    commissionSlug: string;
   }
 
-  let { assignments, facultySlug, subjectSlug, periodId, commissionId }: Props = $props();
+  let {
+    assignments,
+    facultySlug,
+    subjectSlug,
+    periodYear,
+    periodSemester,
+    commissionSlug,
+  }: Props = $props();
 </script>
 
 <div class="overview-header" data-test-id="overview-header">
@@ -22,7 +30,7 @@
   </div>
 
   {#each assignments as assignment}
-    <OverviewHeaderCell {assignment} {facultySlug} {subjectSlug} {periodId} {commissionId} />
+    <OverviewHeaderCell {assignment} {facultySlug} {subjectSlug} {periodYear} {periodSemester} {commissionSlug} />
   {/each}
 </div>
 

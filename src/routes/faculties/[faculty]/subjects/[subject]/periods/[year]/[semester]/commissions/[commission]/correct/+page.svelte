@@ -1,16 +1,26 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, getContext } from "svelte";
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
 
   import type { Delivery, Student, Assignment } from "$lib/common";
+  import { StoreKey } from "$lib/common";
   import { t } from "$lib/common/i18n/config";
 
   import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
+  import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
+  import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+  import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { assignmentService } from "$lib/client/services/assignment.service";
   import { correctionService } from "$lib/client/services/correction.service";
   import { studentService } from "$lib/client/services/student.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+
+  const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
+  const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
+  const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
+  const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let students = $state<Student[]>([]);
   let assignment = $state<Assignment | null>(null);
@@ -20,17 +30,33 @@
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
-  const periodID = Number(page.params.period_id);
-  const commissionID = Number(page.params.commission_id);
+  const commissionSlug = page.params.commission;
+  const periodYear = Number(page.params.year);
+  const periodSemester = Number(page.params.semester);
+
+  const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
+  const periodID = $derived(
+    periodsStore.items.find((p) => p.year === periodYear && p.semester === periodSemester)?.id,
+  );
+  const commissionID = $derived(
+    subjectID !== undefined && periodID !== undefined && commissionSlug
+      ? commissionsStore.findInScope(subjectID, periodID, commissionSlug)?.id
+      : undefined,
+  );
 
   const assignmentID = Number(page.url.searchParams.get("assignment_id"));
   const initialStudentID = Number(page.url.searchParams.get("student_id"));
   const mode = page.url.searchParams.get("mode") || "all";
 
-  const baseUrl = `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodID}/commissions/${commissionID}`;
+  const baseUrl = `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commissionSlug ?? ""}`;
 
   async function loadData() {
     try {
+      await Promise.all([facultiesStore.load(), subjectsStore.load()]);
+      const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
+      if (sid) await periodsStore.load(sid);
+      await commissionsStore.load();
+      if (commissionID === undefined || periodID === undefined) return;
       students = await studentService.getAll(commissionID);
       if (initialStudentID) {
         currentIndex = students.findIndex((s) => s.id === initialStudentID);
@@ -49,6 +75,7 @@
   }
 
   async function loadDelivery() {
+    if (assignmentID === 0 || commissionID === undefined) return;
     const student = students[currentIndex];
     if (!student) return;
     delivery = await correctionService.getOne(assignmentID, student.id);
@@ -101,6 +128,8 @@
 
 {#if loading}
   <p>{$t("common.loading")}</p>
+{:else if commissionID === undefined}
+  <p>{$t("commissions.not_found_message")}</p>
 {:else if delivery}
   <DeliveryForm
     {delivery}

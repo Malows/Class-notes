@@ -79,8 +79,9 @@ describe("overview components", () => {
       deliveries,
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     const nameEl = screen.getByTestId("overview-row-student-name");
@@ -121,8 +122,9 @@ describe("overview components", () => {
       grid,
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     // Verify OverviewHeader and OverviewRow exist by their respective test IDs
@@ -151,15 +153,19 @@ describe("overview components", () => {
       grid: [{ id: 1, name: "Student A", deliveries: [] }],
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     const card = screen.getByTestId("empty-assignments-card");
     expect(card).toBeInTheDocument();
 
     const cta = screen.getByTestId("empty-assignments-cta");
-    expect(cta).toHaveAttribute("href", "/faculties/fac-1/subjects/sub-2/periods/3/assignments");
+    expect(cta).toHaveAttribute(
+      "href",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/assignments",
+    );
   });
 
   test("OverviewGrid renders empty students card and CTA", () => {
@@ -170,8 +176,9 @@ describe("overview components", () => {
       grid: [],
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
-      periodId: 3,
-      commissionId: 4,
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "comision-a",
     });
 
     const card = screen.getByTestId("empty-students-card");
@@ -180,7 +187,7 @@ describe("overview components", () => {
     const cta = screen.getByTestId("empty-students-cta");
     expect(cta).toHaveAttribute(
       "href",
-      "/faculties/fac-1/subjects/sub-2/periods/3/commissions/4/students",
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/students",
     );
   });
 });

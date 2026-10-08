@@ -6,10 +6,11 @@
   interface Props {
     facultySlug: string;
     subjectSlug: string;
-    periodId: number;
+    periodYear: number;
+    periodSemester: number;
   }
 
-  let { facultySlug, subjectSlug, periodId }: Props = $props();
+  let { facultySlug, subjectSlug, periodYear, periodSemester }: Props = $props();
 </script>
 
 <div class="card margin-top-lg" data-test-id="empty-assignments-card">
@@ -17,7 +18,7 @@
     <h4 class="card-title">{$t("commissions.no_assignments_message")} ✏️</h4>
     <div class="margin-top-md">
       <Button
-        href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodId}/assignments"
+        href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/assignments"
         class="btn-secondary"
         testId="empty-assignments-cta"
       >

@@ -34,7 +34,7 @@
   let loadedContext = $state<{
     facultySlug?: string;
     subjectSlug?: string;
-    periodId?: number;
+    periodKey?: string;
   }>({});
 
   $effect(() => {
@@ -55,9 +55,12 @@
         }
       })();
     }
-    if (ctx.periodId && loadedContext.periodId !== ctx.periodId) {
-      loadedContext = { ...loadedContext, periodId: ctx.periodId };
-      void commissionsStore.load();
+    if (ctx.periodYear !== undefined && ctx.periodSemester !== undefined) {
+      const key = `${ctx.periodYear}:${ctx.periodSemester}`;
+      if (loadedContext.periodKey !== key) {
+        loadedContext = { ...loadedContext, periodKey: key };
+        void commissionsStore.load();
+      }
     }
   });
 
@@ -90,23 +93,38 @@
       : [],
   );
 
+  const activePeriodId = $derived(
+    context.periodYear !== undefined && context.periodSemester !== undefined
+      ? periodsStore.items.find(
+          (p) => p.year === context.periodYear && p.semester === context.periodSemester,
+        )?.id
+      : undefined,
+  );
+
   const periodItems = $derived(
     context.facultySlug && context.subjectSlug
       ? buildPeriodItems(periodsStore.items, {
           facultySlug: context.facultySlug,
           subjectSlug: context.subjectSlug,
-          activePeriodId: context.periodId,
+          activePeriodYear: context.periodYear,
+          activePeriodSemester: context.periodSemester,
         })
       : [],
   );
 
   const commissionItems = $derived(
-    context.facultySlug && context.subjectSlug && context.periodId
+    context.facultySlug &&
+      context.subjectSlug &&
+      context.periodYear !== undefined &&
+      context.periodSemester !== undefined &&
+      activePeriodId !== undefined
       ? buildCommissionItems(commissionsStore.items, {
           facultySlug: context.facultySlug,
           subjectSlug: context.subjectSlug,
-          periodId: context.periodId,
-          activeCommissionId: context.commissionId,
+          periodId: activePeriodId,
+          periodYear: context.periodYear,
+          periodSemester: context.periodSemester,
+          activeCommissionSlug: context.commissionSlug,
         })
       : [],
   );
@@ -157,7 +175,7 @@
       <SidebarContextSection heading={$t("layout.periods")} {isCollapsed} items={periodItems} />
     {/if}
 
-    {#if context.periodId}
+    {#if context.periodYear !== undefined && context.periodSemester !== undefined}
       <SidebarContextSection
         heading={$t("layout.commissions")}
         {isCollapsed}
@@ -165,7 +183,7 @@
       />
     {/if}
 
-    {#if !hasMetadataContext && !context.facultySlug && !context.subjectSlug && !context.periodId}
+    {#if !hasMetadataContext && !context.facultySlug && !context.subjectSlug && context.periodYear === undefined && context.periodSemester === undefined}
       <div class="metadata-empty-state">
         <p>No hay contexto académico activo disponible.</p>
       </div>

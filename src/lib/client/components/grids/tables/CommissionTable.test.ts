@@ -14,7 +14,8 @@ test("CommissionTable renders commissions and handles callbacks", async () => {
     commissions,
     facultySlug: "facultad-1",
     subjectSlug: "materia-1",
-    periodId: 1,
+    periodYear: 2026,
+    periodSemester: 1,
     onEdit,
     onDelete,
   });

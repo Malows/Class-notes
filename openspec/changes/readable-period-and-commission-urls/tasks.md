@@ -8,16 +8,16 @@
 
 ## 2. Commission routing by slug
 
-- [ ] 2.1 Add a per-scope slug lookup to `commissionsStore` and verify store tests resolve a commission by `(subject_id, period_id, slug)`
-- [ ] 2.2 Rename the route param `[commission_id]` to `[commission]` (slug), and make the commissions list page plus the overview/students/correct subpages resolve slug → id in memory before their API calls; verify a deep commission URL loads the right data
-- [ ] 2.3 Update all commission link builders to emit slugs (`CommissionRow`, sidebar context `buildCommissionItems`, `navStore` breadcrumbs, overview components, `DashboardPending`) and verify row and sidebar-context href tests
-- [ ] 2.4 Show a not-found state (no server error) for an unknown commission slug and verify it with a render test
+- [x] 2.1 Add a per-scope slug lookup to `commissionsStore` and verify store tests resolve a commission by `(subject_id, period_id, slug)`
+- [x] 2.2 Rename the route param `[commission_id]` to `[commission]` (slug), and make the commissions list page plus the overview/students/correct subpages resolve slug → id in memory before their API calls; verify a deep commission URL loads the right data
+- [x] 2.3 Update all commission link builders to emit slugs (`CommissionRow`, sidebar context `buildCommissionItems`, `navStore` breadcrumbs, overview components, `DashboardPending`) and verify row and sidebar-context href tests
+- [x] 2.4 Show a not-found state (no server error) for an unknown commission slug and verify it with a render test
 
 ## 3. Nested period routing by year/semester
 
-- [ ] 3.1 Restructure `periods/[period_id]` to `periods/[year]/[semester]` under `subjects/[subject]` (moving overview/assignments/commissions and the commission subpages one level deeper), and make each page derive the numeric period id in memory from the `(year, semester)` key; verify a nested period URL loads the right data
-- [ ] 3.2 Update `navStore.context` (periodYear/periodSemester) and breadcrumbs, `SubjectPeriodRow`, sidebar period items (active by key), and the overview components to build `/periods/{year}/{semester}/...` URLs; verify nav and row href tests
-- [ ] 3.3 Show a not-found state for a nested period `(year, semester)` that does not exist for the subject and verify it with a render test
+- [x] 3.1 Restructure `periods/[period_id]` to `periods/[year]/[semester]` under `subjects/[subject]` (moving overview/assignments/commissions and the commission subpages one level deeper), and make each page derive the numeric period id in memory from the `(year, semester)` key; verify a nested period URL loads the right data
+- [x] 3.2 Update `navStore.context` (periodYear/periodSemester) and breadcrumbs, `SubjectPeriodRow`, sidebar period items (active by key), and the overview components to build `/periods/{year}/{semester}/...` URLs; verify nav and row href tests
+- [x] 3.3 Show a not-found state for a nested period `(year, semester)` that does not exist for the subject and verify it with a render test
 
 ## 4. Integration verification
 

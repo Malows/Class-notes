@@ -57,13 +57,20 @@ The system SHALL allow the user to manage Subjects associated with a specific Fa
 
 ### Requirement: Period and Commission Management
 
-The system SHALL support organizing subjects into academic periods (Year + Semester 1 or 2) and multiple Commissions per period, maintaining hierarchical paths. The system SHALL allow the user to view and manage the subjects associated with a period, and period data SHALL be retrievable by id so those views load successfully. Data integrity SHALL be ensured by keeping the database schema in sync with the application code so periods, commissions, students, assignments, and deliveries persist correctly.
+The system SHALL support organizing subjects into academic periods (Year + Semester 1 or 2) and multiple Commissions per period, maintaining hierarchical paths. The system SHALL allow the user to view and manage the subjects associated with a period, and period data SHALL be retrievable by id so those views load successfully. Data integrity SHALL be ensured by keeping the database schema in sync with the application code so periods, commissions, students, assignments, and deliveries persist correctly. Each Commission SHALL have a slug derived from its name, unique among commissions of the same Subject and Period, regenerated whenever the name changes.
 
 #### Scenario: Create a Commission for a Semester
 
 - **WHEN** the user selects a Subject, a Year (e.g., 2026), and a Semester (1st or 2nd), and creates a Commission (e.g., "A")
 - **THEN** the system creates the commission as a container for students and assignments for that specific timeframe
-- **AND** the navigation SHALL reflect this nesting (e.g., `.../periods/[p_id]/commissions/[c_id]`)
+- **AND** the navigation SHALL reflect this nesting (e.g., `.../periods/[year]/[semester]/commissions/[commissionSlug]`)
+
+#### Scenario: Commission slug is unique within its subject and period
+
+- **WHEN** a commission is created or renamed inside a subject's period
+- **THEN** its slug SHALL be derived from the name and unique among commissions of that subject and period
+- **AND** the commission's own row SHALL be excluded from the uniqueness check
+- **AND** when the derived slug is already taken, a numeric suffix SHALL be appended
 
 #### Scenario: View subjects of a period
 

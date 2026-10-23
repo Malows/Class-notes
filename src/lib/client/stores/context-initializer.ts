@@ -4,6 +4,7 @@ import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
 import { NavStore } from "$lib/client/stores/nav.svelte";
 import { PeriodsStore } from "$lib/client/stores/periods.svelte";
 import { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
+import { AttendanceStore } from "$lib/client/stores/attendance.svelte";
 import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
 import { StoreKey } from "$lib/common";
 import { setContext } from "svelte";
@@ -17,6 +18,7 @@ export function initStoreContext() {
   setContext(StoreKey.COMMISSIONS, new CommissionsStore());
   setContext(StoreKey.ASSIGNMENTS, new AssignmentsStore());
   setContext(StoreKey.ENROLLMENTS, new EnrollmentsStore());
+  setContext(StoreKey.ATTENDANCE, new AttendanceStore());
   setContext(StoreKey.NAV, new NavStore());
   setContext(StoreKey.METADATA, new MetadataStore());
 }

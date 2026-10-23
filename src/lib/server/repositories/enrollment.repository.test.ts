@@ -126,4 +126,62 @@ describe("enrollmentRepository Integration Tests", () => {
       enrollment.id,
     );
   });
+
+  it("returns the cursada roster with its subject, period and commissions", () => {
+    const roster = enrollmentRepository.getCursadaRoster(CURSADA_1);
+
+    expect(roster).not.toBeNull();
+    expect(roster?.subject).toEqual({
+      id: 1,
+      name: "Álgebra Lineal",
+      slug: "algebra-lineal",
+      faculty_slug: "facultad-de-ingenieria",
+    });
+    expect(roster?.period).toEqual({ id: 2, year: 2025, semester: 1 });
+    expect(roster?.commissions).toHaveLength(2);
+    expect(roster?.commissions.map((c) => c.name)).toEqual([
+      "Comisión Mañana",
+      "Comisión Tarde",
+    ]);
+    expect(roster?.students).toHaveLength(8);
+    expect(roster?.students[0]?.name).toBe("Ana Martínez");
+    expect(roster?.students[0]?.commission_name).toBe("Comisión Mañana");
+    expect(roster?.students[0]?.commission_slug).toBe("comision-manana");
+  });
+
+  it("includes students of the cursada without a commission", () => {
+    const person = createPerson("Sin Comisión Roster", "ROSTER-001");
+    const enrollment = enrollmentRepository.enroll(person.id, CURSADA_1);
+
+    const roster = enrollmentRepository.getCursadaRoster(CURSADA_1);
+    const row = roster?.students.find((student) => student.enrollment_id === enrollment.id);
+
+    expect(row).toBeDefined();
+    expect(row?.commission_id).toBeNull();
+    expect(row?.commission_name).toBeNull();
+    expect(row?.commission_slug).toBeNull();
+  });
+
+  it("excludes a deleted person from the cursada roster", () => {
+    const person = createPerson("Persona Fuera Del Roster", "ROSTER-002");
+    enrollmentRepository.enroll(person.id, CURSADA_1, COMMISSION_1);
+
+    expect(
+      enrollmentRepository
+        .getCursadaRoster(CURSADA_1)
+        ?.students.some((student) => student.person_id === person.id),
+    ).toBe(true);
+
+    personRepository.delete(person.id);
+
+    expect(
+      enrollmentRepository
+        .getCursadaRoster(CURSADA_1)
+        ?.students.some((student) => student.person_id === person.id),
+    ).toBe(false);
+  });
+
+  it("returns null for an unknown cursada", () => {
+    expect(enrollmentRepository.getCursadaRoster(999999)).toBeNull();
+  });
 });

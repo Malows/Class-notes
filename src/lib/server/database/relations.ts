@@ -14,27 +14,40 @@ export const relations = defineRelations(schema, (r) => ({
   periods: {
     subjectPeriods: r.many.subjectPeriods({ from: r.periods.id, to: r.subjectPeriods.periodId }),
     commissions: r.many.commissions({ from: r.periods.id, to: r.commissions.periodId }),
-    assignments: r.many.assignments({ from: r.periods.id, to: r.assignments.periodId }),
   },
   subjectPeriods: {
     subject: r.one.subjects({ from: r.subjectPeriods.subjectId, to: r.subjects.id }),
     period: r.one.periods({ from: r.subjectPeriods.periodId, to: r.periods.id }),
+    enrollments: r.many.enrollments({
+      from: r.subjectPeriods.id,
+      to: r.enrollments.subjectPeriodId,
+    }),
   },
   commissions: {
     period: r.one.periods({ from: r.commissions.periodId, to: r.periods.id }),
     subject: r.one.subjects({ from: r.commissions.subjectId, to: r.subjects.id }),
-    students: r.many.students({ from: r.commissions.id, to: r.students.commissionId }),
+    enrollments: r.many.enrollments({ from: r.commissions.id, to: r.enrollments.commissionId }),
   },
-  students: {
-    commission: r.one.commissions({ from: r.students.commissionId, to: r.commissions.id }),
-    deliveries: r.many.deliveries({ from: r.students.id, to: r.deliveries.studentId }),
+  persons: {
+    enrollments: r.many.enrollments({ from: r.persons.id, to: r.enrollments.personId }),
+  },
+  enrollments: {
+    person: r.one.persons({ from: r.enrollments.personId, to: r.persons.id }),
+    subjectPeriod: r.one.subjectPeriods({
+      from: r.enrollments.subjectPeriodId,
+      to: r.subjectPeriods.id,
+    }),
+    commission: r.one.commissions({ from: r.enrollments.commissionId, to: r.commissions.id }),
   },
   assignments: {
-    period: r.one.periods({ from: r.assignments.periodId, to: r.periods.id }),
+    subjectPeriod: r.one.subjectPeriods({
+      from: r.assignments.subjectPeriodId,
+      to: r.subjectPeriods.id,
+    }),
     deliveries: r.many.deliveries({ from: r.assignments.id, to: r.deliveries.assignmentId }),
   },
   deliveries: {
     assignment: r.one.assignments({ from: r.deliveries.assignmentId, to: r.assignments.id }),
-    student: r.one.students({ from: r.deliveries.studentId, to: r.students.id }),
+    enrollment: r.one.enrollments({ from: r.deliveries.enrollmentId, to: r.enrollments.id }),
   },
 }));

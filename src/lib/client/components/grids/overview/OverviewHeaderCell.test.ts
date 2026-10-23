@@ -8,7 +8,7 @@ configure({ testIdAttribute: "data-test-id" });
 
 describe("OverviewHeaderCell Component", () => {
   test("renders abbreviated title, native tooltip, and pencil link", () => {
-    const assignment = { id: 12, period_id: 1, title: "Lab Exercise 10", subtitle: "Maths" };
+    const assignment = { id: 12, subject_period_id: 1, title: "Lab Exercise 10", subtitle: "Maths" };
 
     render(OverviewHeaderCell, {
       assignment,

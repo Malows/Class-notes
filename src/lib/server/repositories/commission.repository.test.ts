@@ -5,16 +5,17 @@ import { commissionRepository } from "./commission.repository";
 
 describe("commissionRepository integration tests", () => {
   const createdCommissionIds: number[] = [];
-  const createdStudentIds: number[] = [];
+  const createdPersonIds: number[] = [];
 
   afterEach(() => {
-    for (const id of createdStudentIds) {
-      db.prepare("DELETE FROM students WHERE id = ?").run(id);
+    for (const id of createdPersonIds) {
+      db.prepare("DELETE FROM enrollments WHERE person_id = ?").run(id);
+      db.prepare("DELETE FROM persons WHERE id = ?").run(id);
     }
     for (const id of createdCommissionIds) {
       db.prepare("DELETE FROM commissions WHERE id = ?").run(id);
     }
-    createdStudentIds.length = 0;
+    createdPersonIds.length = 0;
     createdCommissionIds.length = 0;
   });
 
@@ -70,10 +71,14 @@ describe("commissionRepository integration tests", () => {
     const commission = commissionRepository.create(1, 1, "Comisión vieja");
     createdCommissionIds.push(commission.id);
 
-    const student = db
-      .prepare("INSERT INTO students (commission_id, name) VALUES (?, ?) RETURNING id")
-      .get(commission.id, "Estudiante test") as { id: number };
-    createdStudentIds.push(student.id);
+    const personId = db
+      .prepare("INSERT INTO persons (name) VALUES (?) RETURNING id")
+      .get("Estudiante test") as { id: number };
+    createdPersonIds.push(personId.id);
+    db.prepare("INSERT INTO enrollments (person_id, subject_period_id, commission_id) VALUES (?, 9, ?)").run(
+      personId.id,
+      commission.id,
+    );
 
     const updated = commissionRepository.update(commission.id, "Comisión nueva");
 

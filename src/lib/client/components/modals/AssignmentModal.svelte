@@ -40,7 +40,7 @@
 
   function handleSaveClick() {
     const isValid = validator.validate({
-      period_id: assignment?.period_id || 1, // Satisfies period_id requirements for the schema
+      subject_period_id: assignment?.subject_period_id || 1, // Satisfies subject_period_id requirements for the schema
       title,
     });
     if (isValid) {

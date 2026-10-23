@@ -4,6 +4,7 @@
   "subject_id_required": "Subject ID required",
   "period_id_required": "Period ID required",
   "commission_id_required": "Commission ID required",
+  "subject_period_id_required": "Subject period ID required",
   "at_least_one_name_required": "At least one name required",
   "title_required": "Title required",
   "source_period_id_required": "Source period ID required",

@@ -1,0 +1,18 @@
+{
+  "manage_title": "Inscripciones",
+  "new_title": "Inscribir alumno",
+  "search_label": "Buscar un alumno existente",
+  "search_placeholder": "Nombre o legajo",
+  "reuse_hint": "Este alumno ya existe en el registro y se lo va a inscribir.",
+  "new_hint": "No se eligió una coincidencia: se va a crear un alumno nuevo.",
+  "paste_list_label": "Pegar lista (un nombre por línea):",
+  "register_success": "{{created}} inscriptos · {{reused}} reutilizados",
+  "pending_title": "Inscriptos sin comisión",
+  "pending_empty": "Todos los alumnos ya tienen comisión.",
+  "assign_btn": "Asignar",
+  "assign_commission_label": "Comisión",
+  "pending_count": "{{count}} sin comisión",
+  "loading": "Cargando inscripciones...",
+  "remove_confirm_title": "Quitar alumno",
+  "remove_confirm_message": "¿Quitar a {{name}} de esta comisión? El alumno sigue en el registro."
+}

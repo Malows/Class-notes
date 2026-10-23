@@ -6,16 +6,20 @@ export async function GET({ url }: { url: URL }) {
   try {
     const commissionParam = url.searchParams.get("commission_id");
     const periodParam = url.searchParams.get("period_id");
+    const subjectParam = url.searchParams.get("subject_id");
 
     if (commissionParam) {
       const data = deliveryService.getCommissionOverviewData(Number(commissionParam));
       return json({ data });
-    } else if (periodParam) {
-      const data = deliveryService.getPeriodOverviewData(Number(periodParam));
+    } else if (periodParam && subjectParam) {
+      const data = deliveryService.getSubjectPeriodOverviewData(
+        Number(subjectParam),
+        Number(periodParam),
+      );
       return json({ data });
     }
 
-    return json({ error: "Missing commission_id or period_id" }, { status: 400 });
+    return json({ error: "Missing commission_id or period_id and subject_id" }, { status: 400 });
   } catch (error: any) {
     return json({ error: error.message }, { status: 500 });
   }

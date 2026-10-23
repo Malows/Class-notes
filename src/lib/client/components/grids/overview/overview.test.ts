@@ -18,7 +18,7 @@ describe("overview components", () => {
   test("getOverviewDeliveryStatus maps workflow states to overview statuses", () => {
     const pendingDelivery = getOverviewDeliveryStatus({
       assignment_id: 1,
-      student_id: 1,
+      enrollment_id: 1,
       grade: 0,
       ai_level: 0,
       comments: "",
@@ -27,7 +27,7 @@ describe("overview components", () => {
 
     const pendingCorrection = getOverviewDeliveryStatus({
       assignment_id: 1,
-      student_id: 1,
+      enrollment_id: 1,
       grade: 0,
       ai_level: 0,
       comments: "",
@@ -58,7 +58,7 @@ describe("overview components", () => {
     const deliveries = [
       {
         assignment_id: 1,
-        student_id: 7,
+        enrollment_id: 7,
         grade: 10,
         ai_level: 0,
         comments: "",
@@ -66,7 +66,7 @@ describe("overview components", () => {
       },
       {
         assignment_id: 2,
-        student_id: 7,
+        enrollment_id: 7,
         grade: 0,
         ai_level: 0,
         comments: "",
@@ -99,15 +99,16 @@ describe("overview components", () => {
   });
 
   test("OverviewGrid renders assignment headers and student rows", () => {
-    const assignments = [{ id: 1, period_id: 1, title: "T 1" }];
+    const assignments = [{ id: 1, subject_period_id: 1, title: "T 1" }];
     const grid = [
       {
         id: 1,
+        enrollment_id: 1,
         name: "Student A",
         deliveries: [
           {
             assignment_id: 1,
-            student_id: 1,
+            enrollment_id: 1,
             grade: 10,
             ai_level: 0,
             comments: "",
@@ -150,7 +151,7 @@ describe("overview components", () => {
   test("OverviewGrid renders empty assignments card and CTA", () => {
     render(OverviewGrid, {
       assignments: [],
-      grid: [{ id: 1, name: "Student A", deliveries: [] }],
+      grid: [{ id: 1, enrollment_id: 1, name: "Student A", deliveries: [] }],
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
       periodYear: 2026,
@@ -169,7 +170,7 @@ describe("overview components", () => {
   });
 
   test("OverviewGrid renders empty students card and CTA", () => {
-    const assignments = [{ id: 1, period_id: 3, title: "Lab 1" }];
+    const assignments = [{ id: 1, subject_period_id: 3, title: "Lab 1" }];
 
     render(OverviewGrid, {
       assignments,

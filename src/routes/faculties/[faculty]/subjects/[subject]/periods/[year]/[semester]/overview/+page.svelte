@@ -36,8 +36,8 @@
       const pid = periodsStore.items.find(
         (p) => p.year === periodYear && p.semester === periodSemester,
       )?.id;
-      if (pid) {
-        data = await overviewService.getForPeriod(pid);
+      if (pid && sid) {
+        data = await overviewService.getForPeriod(sid, pid);
       }
     } catch (e) {
       console.error(e);

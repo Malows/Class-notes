@@ -10,13 +10,13 @@ export class AssignmentsStore {
   // O(1) lookup cached
   map = $derived.by(() => new Map(this.items.map((i) => [i.id, i])));
 
-  async load(periodId?: number) {
-    this.items = await this.service.getAll(periodId);
+  async load(subjectPeriodId?: number) {
+    this.items = await this.service.getAll(subjectPeriodId);
     this.loaded = true;
   }
 
-  async create(periodId: number, title: string, subtitle?: string, workflowStatus?: string) {
-    const newItem = await this.service.create(periodId, title, subtitle, workflowStatus);
+  async create(subjectPeriodId: number, title: string, subtitle?: string, workflowStatus?: string) {
+    const newItem = await this.service.create(subjectPeriodId, title, subtitle, workflowStatus);
     this.items.push(newItem);
   }
 
@@ -35,9 +35,9 @@ export class AssignmentsStore {
     });
   }
 
-  async copy(sourcePeriodId: number, targetPeriodId: number) {
-    await this.service.copy(sourcePeriodId, targetPeriodId);
-    await this.load(targetPeriodId);
+  async copy(sourceSubjectPeriodId: number, targetSubjectPeriodId: number) {
+    await this.service.copy(sourceSubjectPeriodId, targetSubjectPeriodId);
+    await this.load(targetSubjectPeriodId);
   }
 
   async deleteItem(id: number) {

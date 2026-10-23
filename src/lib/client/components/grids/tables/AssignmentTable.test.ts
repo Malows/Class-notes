@@ -5,7 +5,7 @@ import AssignmentTable from "./AssignmentTable.svelte";
 
 test("AssignmentTable renders assignments and handles callbacks", async () => {
   await loadTranslations("es", "/");
-  const assignments = [{ id: 1, period_id: 1, title: "Test TP" }];
+  const assignments = [{ id: 1, subject_period_id: 1, title: "Test TP" }];
   const onEdit = vi.fn();
   const onDelete = vi.fn();
 

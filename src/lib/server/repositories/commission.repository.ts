@@ -2,7 +2,7 @@ import { and, count, eq, isNull, ne, sql } from "drizzle-orm";
 import type { Commission } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { commissions, students } from "../database/schema";
+import { commissions, enrollments } from "../database/schema";
 import { buildUniqueSlug, slugify } from "../utils/slug";
 
 export interface CommissionRepository {
@@ -49,12 +49,12 @@ class CommissionRepositoryImpl implements CommissionRepository {
         period_id: commissions.periodId,
         name: commissions.name,
         slug: commissions.slug,
-        student_count: count(students.id),
+        student_count: count(enrollments.id),
       })
       .from(commissions)
       .leftJoin(
-        students,
-        and(eq(commissions.id, students.commissionId), isNull(students.deletedAt)),
+        enrollments,
+        and(eq(commissions.id, enrollments.commissionId), isNull(enrollments.deletedAt)),
       )
       .where(and(...conditions))
       .groupBy(commissions.id)
@@ -113,8 +113,8 @@ class CommissionRepositoryImpl implements CommissionRepository {
       if (updatedCommission) {
         const countResult = drizzleDb
           .select({ count: sql<number>`COUNT(*)` })
-          .from(students)
-          .where(and(eq(students.commissionId, id), isNull(students.deletedAt)))
+          .from(enrollments)
+          .where(and(eq(enrollments.commissionId, id), isNull(enrollments.deletedAt)))
           .get() as { count: number };
         updatedCommission.student_count = countResult?.count ?? 0;
       }

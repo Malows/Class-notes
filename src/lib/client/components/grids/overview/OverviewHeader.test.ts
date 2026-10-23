@@ -9,9 +9,9 @@ configure({ testIdAttribute: "data-test-id" });
 describe("OverviewHeader Component", () => {
   test("renders students label and dynamic abbreviated assignment columns with pencil emoji links and standard titles", () => {
     const assignments = [
-      { id: 10, period_id: 1, title: "Lab 1", subtitle: "" },
-      { id: 20, period_id: 1, title: "Lab Exercise 12", subtitle: "Physics II" },
-      { id: 30, period_id: 1, title: "Discrete Mathematics", subtitle: undefined },
+      { id: 10, subject_period_id: 1, title: "Lab 1", subtitle: "" },
+      { id: 20, subject_period_id: 1, title: "Lab Exercise 12", subtitle: "Physics II" },
+      { id: 30, subject_period_id: 1, title: "Discrete Mathematics", subtitle: undefined },
     ];
 
     render(OverviewHeader, {

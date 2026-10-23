@@ -2,39 +2,57 @@ import { and, eq, isNull, sql, type SQL } from "drizzle-orm";
 import type { Assignment } from "$lib/common/types/academic";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { assignments, commissions, deliveries, students } from "../database/schema";
+import { assignments, deliveries, enrollments } from "../database/schema";
 
 export interface AssignmentRepository {
-  getAll(periodID?: number): Assignment[];
-  create(periodID: number, title: string, subtitle?: string, workflow_status?: string): Assignment;
+  getAll(subjectPeriodId?: number): Assignment[];
+  create(
+    subjectPeriodId: number,
+    title: string,
+    subtitle?: string,
+    workflow_status?: string,
+  ): Assignment;
   update(id: number, title: string, subtitle?: string, workflow_status?: string): Assignment;
   updateStatus(id: number, status: string): void;
-  copy(sourcePeriodID: number, targetPeriodID: number): void;
+  copy(sourceSubjectPeriodId: number, targetSubjectPeriodId: number): void;
   delete(id: number): void;
 }
 
+const assignmentColumns = {
+  id: assignments.id,
+  subject_period_id: assignments.subjectPeriodId,
+  title: assignments.title,
+  subtitle: assignments.subtitle,
+  workflow_status: assignments.workflowStatus,
+};
+
 class AssignmentRepositoryImpl implements AssignmentRepository {
-  getAll(periodID?: number): Assignment[] {
+  getAll(subjectPeriodId?: number): Assignment[] {
     const conditions = [isNull(assignments.deletedAt)];
-    if (periodID) {
-      conditions.push(eq(assignments.periodId, periodID));
+    if (subjectPeriodId) {
+      conditions.push(eq(assignments.subjectPeriodId, subjectPeriodId));
     }
 
     return drizzleDb
-      .select({
-        id: assignments.id,
-        period_id: assignments.periodId,
-        title: assignments.title,
-        subtitle: assignments.subtitle,
-        workflow_status: assignments.workflowStatus,
-      })
+      .select(assignmentColumns)
       .from(assignments)
       .where(and(...conditions))
       .all() as Assignment[];
   }
 
+  private enrollmentIdsForCursada(subjectPeriodId: number): number[] {
+    return drizzleDb
+      .select({ id: enrollments.id })
+      .from(enrollments)
+      .where(
+        and(eq(enrollments.subjectPeriodId, subjectPeriodId), isNull(enrollments.deletedAt)),
+      )
+      .all()
+      .map((row) => row.id);
+  }
+
   create(
-    periodID: number,
+    subjectPeriodId: number,
     title: string,
     subtitle?: string,
     workflow_status: string = "NOT_DICTATED",
@@ -43,43 +61,25 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
       const assignment = drizzleDb
         .insert(assignments)
         .values({
-          periodId: periodID,
+          subjectPeriodId,
           title,
           subtitle: subtitle ?? null,
           workflowStatus: workflow_status,
         })
-        .returning({
-          id: assignments.id,
-          period_id: assignments.periodId,
-          title: assignments.title,
-          subtitle: assignments.subtitle,
-          workflow_status: assignments.workflowStatus,
-        })
+        .returning(assignmentColumns)
         .get() as Assignment;
 
-      const targetStudents = drizzleDb
-        .select({ id: students.id })
-        .from(students)
-        .innerJoin(commissions, eq(students.commissionId, commissions.id))
-        .where(
-          and(
-            eq(commissions.periodId, periodID),
-            isNull(students.deletedAt),
-            isNull(commissions.deletedAt),
-          ),
-        )
-        .all() as { id: number }[];
-
-      for (const student of targetStudents) {
+      for (const enrollmentId of this.enrollmentIdsForCursada(subjectPeriodId)) {
         drizzleDb
           .insert(deliveries)
           .values({
             assignmentId: assignment.id,
-            studentId: student.id,
+            enrollmentId,
             workflowStatus: workflow_status,
           })
           .run();
       }
+
       return assignment;
     });
   }
@@ -102,13 +102,7 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
         .update(assignments)
         .set(updates as any)
         .where(and(eq(assignments.id, id), isNull(assignments.deletedAt)))
-        .returning({
-          id: assignments.id,
-          period_id: assignments.periodId,
-          title: assignments.title,
-          subtitle: assignments.subtitle,
-          workflow_status: assignments.workflowStatus,
-        })
+        .returning(assignmentColumns)
         .get() as Assignment;
     });
   }
@@ -129,7 +123,7 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
     });
   }
 
-  copy(sourcePeriodID: number, targetPeriodID: number): void {
+  copy(sourceSubjectPeriodId: number, targetSubjectPeriodId: number): void {
     const assignmentsToCopy = drizzleDb
       .select({
         title: assignments.title,
@@ -137,28 +131,22 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
         workflowStatus: assignments.workflowStatus,
       })
       .from(assignments)
-      .where(and(eq(assignments.periodId, sourcePeriodID), isNull(assignments.deletedAt)))
-      .all() as Array<{ title: string; subtitle?: string | null; workflowStatus?: string | null }>;
-
-    const targetStudents = drizzleDb
-      .select({ id: students.id })
-      .from(students)
-      .innerJoin(commissions, eq(students.commissionId, commissions.id))
       .where(
         and(
-          eq(commissions.periodId, targetPeriodID),
-          isNull(students.deletedAt),
-          isNull(commissions.deletedAt),
+          eq(assignments.subjectPeriodId, sourceSubjectPeriodId),
+          isNull(assignments.deletedAt),
         ),
       )
-      .all() as { id: number }[];
+      .all() as Array<{ title: string; subtitle?: string | null; workflowStatus?: string | null }>;
+
+    const targetEnrollmentIds = this.enrollmentIdsForCursada(targetSubjectPeriodId);
 
     withTransaction(db, () => {
       for (const assignment of assignmentsToCopy) {
         const inserted = drizzleDb
           .insert(assignments)
           .values({
-            periodId: targetPeriodID,
+            subjectPeriodId: targetSubjectPeriodId,
             title: assignment.title,
             subtitle: assignment.subtitle ?? null,
             workflowStatus: assignment.workflowStatus ?? "NOT_DICTATED",
@@ -166,12 +154,12 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
           .returning({ id: assignments.id, workflowStatus: assignments.workflowStatus })
           .get() as { id: number; workflowStatus: string };
 
-        for (const student of targetStudents) {
+        for (const enrollmentId of targetEnrollmentIds) {
           drizzleDb
             .insert(deliveries)
             .values({
               assignmentId: inserted.id,
-              studentId: student.id,
+              enrollmentId,
               workflowStatus: inserted.workflowStatus,
             })
             .run();

@@ -22,6 +22,7 @@ export interface Period {
   year: number;
   semester: number;
   subject_id?: number;
+  subject_period_id?: number;
   subject_name?: string;
   subject_slug?: string;
 }
@@ -41,7 +42,7 @@ export enum AssignmentWorkflowStatus {
 
 export interface Assignment {
   id: number;
-  period_id: number;
+  subject_period_id: number;
   title: string;
   subtitle?: string;
   workflow_status?: AssignmentWorkflowStatus;

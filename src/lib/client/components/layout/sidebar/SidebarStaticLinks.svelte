@@ -14,6 +14,7 @@
   <SidebarItem href="/" title={$t("layout.dashboard")} icon="📊" {isCollapsed} />
   <SidebarItem href="/faculties" title={$t("layout.faculties")} icon="🏫" {isCollapsed} />
   <SidebarItem href="/periods" title={$t("layout.periods")} icon="🗓️" {isCollapsed} />
+  <SidebarItem href="/persons" title={$t("layout.students")} icon="🎓" {isCollapsed} />
 </div>
 
 <style>

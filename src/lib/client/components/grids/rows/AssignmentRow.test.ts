@@ -10,7 +10,7 @@ afterEach(() => {
 
 test("AssignmentRow renders and handles onDelete", async () => {
   await loadTranslations("es", "/");
-  const assignment = { id: 1, period_id: 1, title: "Test TP" };
+  const assignment = { id: 1, subject_period_id: 1, title: "Test TP" };
   const onDelete = vi.fn();
 
   const table = document.createElement("table");

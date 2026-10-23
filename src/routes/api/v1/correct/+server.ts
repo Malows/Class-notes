@@ -12,11 +12,11 @@ export async function GET({ url }: { url: URL }) {
     }
 
     const assignmentIDStr = url.searchParams.get("assignment_id");
-    const studentIDStr = url.searchParams.get("student_id");
-    if (assignmentIDStr !== null && studentIDStr !== null) {
+    const enrollmentIDStr = url.searchParams.get("enrollment_id");
+    if (assignmentIDStr !== null && enrollmentIDStr !== null) {
       const assignmentID = Number(assignmentIDStr);
-      const studentID = Number(studentIDStr);
-      const delivery = deliveryService.getOne(assignmentID, studentID);
+      const enrollmentID = Number(enrollmentIDStr);
+      const delivery = deliveryService.getOne(assignmentID, enrollmentID);
       return json({ data: delivery });
     }
 

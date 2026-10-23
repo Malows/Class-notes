@@ -1,5 +1,12 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer, uniqueIndex, primaryKey } from "drizzle-orm/sqlite-core";
+import {
+  sqliteTable,
+  text,
+  integer,
+  uniqueIndex,
+  index,
+  primaryKey,
+} from "drizzle-orm/sqlite-core";
 
 export const faculties = sqliteTable(
   "faculties",
@@ -71,10 +78,9 @@ export const subjectPeriods = sqliteTable(
     deletedAt: text("deletedAt", { mode: "text" }),
   },
   (table) => ({
-    uniqueSubjectPeriodActive: uniqueIndex("idx_subject_periods_subject_period_active").on(
-      table.subjectId,
-      table.periodId,
-    ),
+    uniqueSubjectPeriodActive: uniqueIndex("idx_subject_periods_subject_period_active")
+      .on(table.subjectId, table.periodId)
+      .where(sql`${table.deletedAt} IS NULL`),
   }),
 );
 
@@ -103,23 +109,55 @@ export const commissions = sqliteTable(
   }),
 );
 
-export const students = sqliteTable("students", {
-  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  commissionId: integer("commission_id", { mode: "number" })
-    .notNull()
-    .references(() => commissions.id, { onDelete: "cascade" }),
-  name: text("name").notNull(),
-  externalId: text("external_id"),
-  createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
-  deletedAt: text("deletedAt", { mode: "text" }),
-});
+export const persons = sqliteTable(
+  "persons",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    name: text("name").notNull(),
+    legajo: text("legajo"),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt"),
+  },
+  (table) => ({
+    uniqueLegajo: uniqueIndex("idx_persons_legajo_unique")
+      .on(table.legajo)
+      .where(sql`${table.deletedAt} IS NULL AND ${table.legajo} IS NOT NULL`),
+    byName: index("idx_persons_name").on(table.name),
+  }),
+);
+
+export const enrollments = sqliteTable(
+  "enrollments",
+  {
+    id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+    personId: integer("person_id", { mode: "number" })
+      .notNull()
+      .references(() => persons.id, { onDelete: "cascade" }),
+    subjectPeriodId: integer("subject_period_id", { mode: "number" })
+      .notNull()
+      .references(() => subjectPeriods.id, { onDelete: "cascade" }),
+    commissionId: integer("commission_id", { mode: "number" }).references(() => commissions.id, {
+      onDelete: "set null",
+    }),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt"),
+  },
+  (table) => ({
+    uniquePersonCursada: uniqueIndex("idx_enrollments_person_subject_period_unique")
+      .on(table.personId, table.subjectPeriodId)
+      .where(sql`${table.deletedAt} IS NULL`),
+    byCommission: index("idx_enrollments_commission").on(table.commissionId),
+    bySubjectPeriod: index("idx_enrollments_subject_period").on(table.subjectPeriodId),
+  }),
+);
 
 export const assignments = sqliteTable("assignments", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  periodId: integer("period_id", { mode: "number" })
+  subjectPeriodId: integer("subject_period_id", { mode: "number" })
     .notNull()
-    .references(() => periods.id, { onDelete: "cascade" }),
+    .references(() => subjectPeriods.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   subtitle: text("subtitle"),
   workflowStatus: text("workflow_status").notNull().default("NOT_DICTATED"),
@@ -134,9 +172,9 @@ export const deliveries = sqliteTable(
     assignmentId: integer("assignment_id", { mode: "number" })
       .notNull()
       .references(() => assignments.id, { onDelete: "cascade" }),
-    studentId: integer("student_id", { mode: "number" })
+    enrollmentId: integer("enrollment_id", { mode: "number" })
       .notNull()
-      .references(() => students.id, { onDelete: "cascade" }),
+      .references(() => enrollments.id, { onDelete: "cascade" }),
     workflowStatus: text("workflow_status").notNull().default("NOT_DICTATED"),
     grade: integer("grade", { mode: "number" }).default(0),
     aiLevel: integer("ai_level", { mode: "number" }).default(0),
@@ -146,6 +184,6 @@ export const deliveries = sqliteTable(
     deletedAt: text("deletedAt", { mode: "text" }),
   },
   (table) => ({
-    pk: primaryKey({ columns: [table.assignmentId, table.studentId] }),
+    pk: primaryKey({ columns: [table.assignmentId, table.enrollmentId] }),
   }),
 );

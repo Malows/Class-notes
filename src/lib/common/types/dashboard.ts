@@ -1,5 +1,5 @@
 import type { Assignment } from "./academic";
-import type { StudentGridRowDTO } from "./dto";
+import type { EnrollmentGridRowDTO } from "./dto";
 
 export interface GlobalStats {
   totalStudents: number;
@@ -13,5 +13,5 @@ export interface PendingSummary {
 }
 export interface OverviewData {
   assignments: Assignment[];
-  grid: StudentGridRowDTO[];
+  grid: EnrollmentGridRowDTO[];
 }

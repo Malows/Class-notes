@@ -5,20 +5,21 @@
   import { t } from "$lib/common/i18n/config";
   import { StoreKey } from "$lib/common";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
-  import type { Student } from "$lib/common/types/student";
+  import type { EnrollmentInput, EnrollmentWithPerson } from "$lib/common/types/enrollment";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
+  import type { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
-  import type { StudentsStore } from "$lib/client/stores/students.svelte";
 
   import StudentTable from "$lib/client/components/grids/tables/StudentTable.svelte";
-  import StudentModal from "$lib/client/components/modals/StudentModal.svelte";
+  import EnrollmentModal from "$lib/client/components/modals/EnrollmentModal.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import { personService } from "$lib/client/services/person.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
-  const studentsStore = getContext<StudentsStore>(StoreKey.STUDENTS);
+  const enrollmentsStore = getContext<EnrollmentsStore>(StoreKey.ENROLLMENTS);
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
@@ -26,7 +27,7 @@
 
   let loading = $state(true);
 
-  const modal = new ModalManager<Student>();
+  const modal = new ModalManager<EnrollmentWithPerson>();
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
@@ -35,9 +36,11 @@
   const periodSemester = Number(page.params.semester);
 
   const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
-  const periodID = $derived(
-    periodsStore.items.find((p) => p.year === periodYear && p.semester === periodSemester)?.id,
+  const period = $derived(
+    periodsStore.items.find((p) => p.year === periodYear && p.semester === periodSemester),
   );
+  const periodID = $derived(period?.id);
+  const subjectPeriodID = $derived(period?.subject_period_id);
   const commissionID = $derived(
     subjectID !== undefined && periodID !== undefined && commissionSlug
       ? commissionsStore.findInScope(subjectID, periodID, commissionSlug)?.id
@@ -51,7 +54,7 @@
       if (sid) await periodsStore.load(sid);
       await commissionsStore.load();
       if (commissionID !== undefined) {
-        await studentsStore.load(commissionID);
+        await enrollmentsStore.load(commissionID);
       }
     } catch (e) {
       console.error(e);
@@ -60,30 +63,29 @@
     }
   }
 
-  async function handleSave(name: string, externalId: string, id?: number, bulkNames?: string[]) {
+  async function handleCreate(entries: EnrollmentInput[]) {
     try {
-      if (commissionID === undefined) return;
-      if (bulkNames) {
-        await studentsStore.create(commissionID, bulkNames);
-        notificationsStore.addSuccess("Alumnos cargados con éxito");
-      } else if (id) {
-        await studentsStore.updateItem(id, name);
-        notificationsStore.addSuccess("Alumno actualizado con éxito");
-      } else {
-        await studentsStore.create(commissionID, [name]);
-        notificationsStore.addSuccess("Alumno creado con éxito");
-      }
+      if (commissionID === undefined || subjectPeriodID === undefined) return;
+
+      const report = await enrollmentsStore.register(subjectPeriodID, entries, commissionID);
+      notificationsStore.addSuccess(
+        $t("enrollments.register_success", {
+          created: report.created,
+          reused: report.reused,
+        } as never),
+      );
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
     }
   }
 
+
   async function handleDelete() {
     if (!modal.target) return;
     try {
-      await studentsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Alumno eliminado con éxito");
+      await enrollmentsStore.deleteItem(modal.target.id);
+      notificationsStore.addSuccess("Alumno quitado de la comisión");
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
@@ -94,10 +96,10 @@
 </script>
 
 <svelte:head>
-  <title>{$t("students.manage_students_title")} - {$t("layout.brand")}</title>
+  <title>{$t("enrollments.manage_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<PageWithAdd title={$t("students.manage_students_title")} onAdd={() => modal.openCreate()}>
+<PageWithAdd title={$t("enrollments.manage_title")} onAdd={() => modal.openCreate()}>
   <p>
     <a
       href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions"
@@ -106,29 +108,29 @@
   </p>
 
   {#if loading}
-    <p>{$t("students.loading_students")}</p>
+    <p>{$t("enrollments.loading")}</p>
   {:else if commissionID === undefined}
     <p>{$t("commissions.not_found_message")}</p>
   {:else}
     <StudentTable
-      students={studentsStore.items}
-      onEdit={(student) => modal.openEdit(student)}
-      onDelete={(student) => modal.openDelete(student)}
+      enrollments={enrollmentsStore.items}
+      onDelete={(enrollment) => modal.openDelete(enrollment)}
     />
   {/if}
 
-  <StudentModal
-    isOpen={modal.isCreate || modal.isEdit}
-    mode={modal.mode === "create" ? "create" : "edit"}
-    student={modal.target}
-    onSave={handleSave}
+  <EnrollmentModal
+    isOpen={modal.isCreate}
+    searchPersons={(query) => personService.search(query)}
+    onCreate={handleCreate}
     onClose={() => modal.close()}
   />
 
   <ConfirmDialog
     isOpen={modal.isDelete}
-    title={$t("students.confirm_delete_title")}
-    message={$t("students.confirm_delete_message", { name: modal.target?.name || "" } as never)}
+    title={$t("enrollments.remove_confirm_title")}
+    message={$t("enrollments.remove_confirm_message", {
+      name: modal.target?.name || "",
+    } as never)}
     onConfirm={handleDelete}
     onClose={() => modal.close()}
   />

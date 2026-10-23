@@ -16,13 +16,13 @@ describe("correctionService", () => {
 
   it("getOne calls apiFetch", async () => {
     await correctionService.getOne(1, 2);
-    expect(apiFetch).toHaveBeenCalledWith("/correct?assignment_id=1&student_id=2");
+    expect(apiFetch).toHaveBeenCalledWith("/correct?assignment_id=1&enrollment_id=2");
   });
 
   it("save calls apiFetch", async () => {
     const delivery = {
       assignment_id: 1,
-      student_id: 1,
+      enrollment_id: 1,
       grade: 10,
       ai_level: 0,
       comments: "OK",

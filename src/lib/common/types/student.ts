@@ -6,15 +6,9 @@ export enum DeliveryWorkflowStatus {
   REJECTED = "REJECTED",
 }
 
-export interface Student {
-  id: number;
-  commission_id: number;
-  name: string;
-  external_id: string;
-}
 export interface Delivery {
   assignment_id: number;
-  student_id: number;
+  enrollment_id: number;
   grade: number;
   ai_level: number;
   comments: string;

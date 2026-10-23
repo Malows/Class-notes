@@ -21,11 +21,11 @@
   <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
   {#each deliveries as delivery}
     <OverviewCell
-      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/correct?assignment_id={delivery.assignment_id}&student_id={delivery.student_id}&mode=single"
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/correct?assignment_id={delivery.assignment_id}&enrollment_id={delivery.enrollment_id}&mode=single"
       status={getOverviewDeliveryStatus(delivery)}
       aiLevel={delivery.ai_level}
       label={getOverviewDeliveryStatus(delivery)}
-      testId={`delivery-cell-${delivery.student_id}-${delivery.assignment_id}`}
+      testId={`delivery-cell-${delivery.enrollment_id}-${delivery.assignment_id}`}
     />
   {/each}
 </div>

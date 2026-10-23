@@ -6,7 +6,8 @@ export const overviewService = {
     apiFetch<OverviewData>(`/overview?commission_id=${commission_id}`),
   getForCommission: (commission_id: number) =>
     apiFetch<OverviewData>(`/overview?commission_id=${commission_id}`),
-  getForPeriod: (period_id: number) => apiFetch<OverviewData>(`/overview?period_id=${period_id}`),
+  getForPeriod: (subject_id: number, period_id: number) =>
+    apiFetch<OverviewData>(`/overview?subject_id=${subject_id}&period_id=${period_id}`),
   getPendingSummary: () => apiFetch<PendingSummary[]>("/overview/pending"),
   getGlobalStats: () => apiFetch<GlobalStats>("/overview/stats"),
 };

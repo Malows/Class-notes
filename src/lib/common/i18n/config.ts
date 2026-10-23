@@ -45,6 +45,16 @@ const config = {
     },
     {
       locale: "en",
+      key: "enrollments",
+      loader: async () => (await import("./en/enrollments.json")).default,
+    },
+    {
+      locale: "en",
+      key: "persons",
+      loader: async () => (await import("./en/persons.json")).default,
+    },
+    {
+      locale: "en",
       key: "assignments",
       loader: async () => (await import("./en/assignments.json")).default,
     },
@@ -92,6 +102,16 @@ const config = {
       locale: "es",
       key: "students",
       loader: async () => (await import("./es/students.json")).default,
+    },
+    {
+      locale: "es",
+      key: "enrollments",
+      loader: async () => (await import("./es/enrollments.json")).default,
+    },
+    {
+      locale: "es",
+      key: "persons",
+      loader: async () => (await import("./es/persons.json")).default,
     },
     {
       locale: "es",

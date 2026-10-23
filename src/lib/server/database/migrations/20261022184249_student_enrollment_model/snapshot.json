@@ -1,0 +1,1088 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "1e3f7a29-c937-41be-85f2-f037ed360872",
+  "prevIds": [
+    "aca09e9e-02f7-4bfb-b58c-88feff0f4511"
+  ],
+  "ddl": [
+    {
+      "name": "assignments",
+      "entityType": "tables"
+    },
+    {
+      "name": "commissions",
+      "entityType": "tables"
+    },
+    {
+      "name": "deliveries",
+      "entityType": "tables"
+    },
+    {
+      "name": "enrollments",
+      "entityType": "tables"
+    },
+    {
+      "name": "faculties",
+      "entityType": "tables"
+    },
+    {
+      "name": "periods",
+      "entityType": "tables"
+    },
+    {
+      "name": "persons",
+      "entityType": "tables"
+    },
+    {
+      "name": "subject_periods",
+      "entityType": "tables"
+    },
+    {
+      "name": "subjects",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subject_period_id",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "title",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subtitle",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'NOT_DICTATED'",
+      "generated": null,
+      "name": "workflow_status",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "assignments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subject_id",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "period_id",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "commissions"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "assignment_id",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "enrollment_id",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'NOT_DICTATED'",
+      "generated": null,
+      "name": "workflow_status",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "grade",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "ai_level",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "comments",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "deliveries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "person_id",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subject_period_id",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "commission_id",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "enrollments"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "faculties"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "year",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "semester",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "periods"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "legajo",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "persons"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "subject_id",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "period_id",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "subject_periods"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "faculty_id",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "createdAt",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "'CURRENT_TIMESTAMP'",
+      "generated": null,
+      "name": "updatedAt",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "deletedAt",
+      "entityType": "columns",
+      "table": "subjects"
+    },
+    {
+      "columns": [
+        "subject_period_id"
+      ],
+      "tableTo": "subject_periods",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_assignments_subject_period_id_subject_periods_id_fk",
+      "entityType": "fks",
+      "table": "assignments"
+    },
+    {
+      "columns": [
+        "subject_id"
+      ],
+      "tableTo": "subjects",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_commissions_subject_id_subjects_id_fk",
+      "entityType": "fks",
+      "table": "commissions"
+    },
+    {
+      "columns": [
+        "period_id"
+      ],
+      "tableTo": "periods",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_commissions_period_id_periods_id_fk",
+      "entityType": "fks",
+      "table": "commissions"
+    },
+    {
+      "columns": [
+        "assignment_id"
+      ],
+      "tableTo": "assignments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_deliveries_assignment_id_assignments_id_fk",
+      "entityType": "fks",
+      "table": "deliveries"
+    },
+    {
+      "columns": [
+        "enrollment_id"
+      ],
+      "tableTo": "enrollments",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_deliveries_enrollment_id_enrollments_id_fk",
+      "entityType": "fks",
+      "table": "deliveries"
+    },
+    {
+      "columns": [
+        "person_id"
+      ],
+      "tableTo": "persons",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_enrollments_person_id_persons_id_fk",
+      "entityType": "fks",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        "subject_period_id"
+      ],
+      "tableTo": "subject_periods",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_enrollments_subject_period_id_subject_periods_id_fk",
+      "entityType": "fks",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        "commission_id"
+      ],
+      "tableTo": "commissions",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "SET NULL",
+      "nameExplicit": false,
+      "name": "fk_enrollments_commission_id_commissions_id_fk",
+      "entityType": "fks",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        "subject_id"
+      ],
+      "tableTo": "subjects",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_subject_periods_subject_id_subjects_id_fk",
+      "entityType": "fks",
+      "table": "subject_periods"
+    },
+    {
+      "columns": [
+        "period_id"
+      ],
+      "tableTo": "periods",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_subject_periods_period_id_periods_id_fk",
+      "entityType": "fks",
+      "table": "subject_periods"
+    },
+    {
+      "columns": [
+        "faculty_id"
+      ],
+      "tableTo": "faculties",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_subjects_faculty_id_faculties_id_fk",
+      "entityType": "fks",
+      "table": "subjects"
+    },
+    {
+      "columns": [
+        "assignment_id",
+        "enrollment_id"
+      ],
+      "nameExplicit": false,
+      "name": "deliveries_pk",
+      "entityType": "pks",
+      "table": "deliveries"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "assignments_pk",
+      "table": "assignments",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "commissions_pk",
+      "table": "commissions",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "enrollments_pk",
+      "table": "enrollments",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "faculties_pk",
+      "table": "faculties",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "periods_pk",
+      "table": "periods",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "persons_pk",
+      "table": "persons",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "subject_periods_pk",
+      "table": "subject_periods",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "subjects_pk",
+      "table": "subjects",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "subject_id",
+          "isExpression": false
+        },
+        {
+          "value": "period_id",
+          "isExpression": false
+        },
+        {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"commissions\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_commissions_subject_period_slug_unique",
+      "entityType": "indexes",
+      "table": "commissions"
+    },
+    {
+      "columns": [
+        {
+          "value": "person_id",
+          "isExpression": false
+        },
+        {
+          "value": "subject_period_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"enrollments\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_enrollments_person_subject_period_unique",
+      "entityType": "indexes",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        {
+          "value": "commission_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_enrollments_commission",
+      "entityType": "indexes",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        {
+          "value": "subject_period_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_enrollments_subject_period",
+      "entityType": "indexes",
+      "table": "enrollments"
+    },
+    {
+      "columns": [
+        {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"faculties\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_faculties_slug_unique",
+      "entityType": "indexes",
+      "table": "faculties"
+    },
+    {
+      "columns": [
+        {
+          "value": "year",
+          "isExpression": false
+        },
+        {
+          "value": "semester",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_periods_year_semester_unique",
+      "entityType": "indexes",
+      "table": "periods"
+    },
+    {
+      "columns": [
+        {
+          "value": "legajo",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"persons\".\"deletedAt\" IS NULL AND \"persons\".\"legajo\" IS NOT NULL",
+      "origin": "manual",
+      "name": "idx_persons_legajo_unique",
+      "entityType": "indexes",
+      "table": "persons"
+    },
+    {
+      "columns": [
+        {
+          "value": "name",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "idx_persons_name",
+      "entityType": "indexes",
+      "table": "persons"
+    },
+    {
+      "columns": [
+        {
+          "value": "subject_id",
+          "isExpression": false
+        },
+        {
+          "value": "period_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"subject_periods\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_subject_periods_subject_period_active",
+      "entityType": "indexes",
+      "table": "subject_periods"
+    },
+    {
+      "columns": [
+        {
+          "value": "faculty_id",
+          "isExpression": false
+        },
+        {
+          "value": "slug",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": "\"subjects\".\"deletedAt\" IS NULL",
+      "origin": "manual",
+      "name": "idx_subjects_faculty_slug_unique",
+      "entityType": "indexes",
+      "table": "subjects"
+    }
+  ],
+  "renames": []
+}

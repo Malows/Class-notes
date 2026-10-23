@@ -8,10 +8,16 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
-test("StudentRow renders and handles callbacks", async () => {
+test("StudentRow links to the person and only offers removing the enrollment", async () => {
   await loadTranslations("es", "/");
-  const student = { id: 1, commission_id: 1, name: "Student A", external_id: "" };
-  const onEdit = vi.fn();
+  const enrollment = {
+    id: 1,
+    person_id: 7,
+    subject_period_id: 1,
+    commission_id: 1,
+    name: "Student A",
+    legajo: "LEG-007",
+  };
   const onDelete = vi.fn();
 
   const table = document.createElement("table");
@@ -21,18 +27,20 @@ test("StudentRow renders and handles callbacks", async () => {
 
   render(StudentRow, {
     target: tr,
-    props: { student, onEdit, onDelete },
+    props: { enrollment, onDelete },
   });
 
   expect(screen.getAllByText("Student A")[0]).toBeDefined();
+  expect(screen.getAllByText("LEG-007")[0]).toBeDefined();
 
-  // Test Edit
-  const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
-  await fireEvent.click(editBtn);
-  expect(onEdit).toHaveBeenCalledWith(student);
+  const link = document.body.querySelector(
+    '[data-test-id="student-person-link-1"]',
+  ) as HTMLAnchorElement;
+  expect(link.getAttribute("href")).toBe("/persons/7");
 
-  // Test Delete
+  expect(document.body.querySelector('[data-test-id="edit-btn-1"]')).toBeNull();
+
   const deleteBtn = document.body.querySelector('[data-test-id="delete-btn-1"]') as HTMLElement;
   await fireEvent.click(deleteBtn);
-  expect(onDelete).toHaveBeenCalledWith(student);
+  expect(onDelete).toHaveBeenCalledWith(enrollment);
 });

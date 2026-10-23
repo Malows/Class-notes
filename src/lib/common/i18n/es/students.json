@@ -1,17 +1,8 @@
 {
-  "new_title": "Nuevo Estudiante",
-  "edit_title": "Editar Estudiante",
-  "name_label": "Nombre del Estudiante",
-  "external_id_label": "Legajo / ID",
+  "name_label": "Nombre del alumno",
+  "external_id_label": "Legajo",
   "placeholder": "Ej: Juan Pérez",
   "external_id_placeholder": "Ej: 12345",
-  "confirm_delete": "¿Borrar alumno?",
-  "confirm_delete_title": "Borrar Alumno",
-  "confirm_delete_message": "¿Está seguro que desea borrar al alumno {{name}}?",
-  "manage_students_title": "Gestión de Alumnos",
-  "upload_students_title": "Carga de Alumnos",
-  "paste_list_label": "Pegar lista (un nombre por línea):",
-  "single_name_label": "O un solo nombre:",
-  "save_students_btn": "Guardar Alumnos",
-  "loading_students": "Cargando alumnos..."
+  "single_name_label": "Un solo alumno",
+  "upload_students_title": "Carga de alumnos"
 }

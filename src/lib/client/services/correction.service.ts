@@ -3,8 +3,8 @@ import type { Delivery } from "$lib/common/types/student";
 
 export const correctionService = {
   get: (commission_id: number) => apiFetch<Delivery[]>(`/correct?commission_id=${commission_id}`),
-  getOne: (assignment_id: number, student_id: number) =>
-    apiFetch<Delivery>(`/correct?assignment_id=${assignment_id}&student_id=${student_id}`),
+  getOne: (assignment_id: number, enrollment_id: number) =>
+    apiFetch<Delivery>(`/correct?assignment_id=${assignment_id}&enrollment_id=${enrollment_id}`),
   save: (delivery: Delivery) =>
     apiFetch<void>("/correct", {
       method: "POST",

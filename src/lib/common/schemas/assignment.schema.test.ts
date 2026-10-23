@@ -6,13 +6,13 @@ import { CopyAssignmentsSchema, CreateAssignmentSchema } from "./assignment.sche
 
 describe("assignment schemas", () => {
   test("CreateAssignmentSchema accepts valid assignment data", () => {
-    const result = CreateAssignmentSchema.safeParse({ period_id: 1, title: "Trabajo práctico" });
+    const result = CreateAssignmentSchema.safeParse({ subject_period_id: 1, title: "Trabajo práctico" });
 
     expect(result.success).toBe(true);
   });
 
   test("CreateAssignmentSchema rejects an empty title", () => {
-    const result = CreateAssignmentSchema.safeParse({ period_id: 1, title: "" });
+    const result = CreateAssignmentSchema.safeParse({ subject_period_id: 1, title: "" });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -21,13 +21,13 @@ describe("assignment schemas", () => {
   });
 
   test("CopyAssignmentsSchema accepts valid source and target periods", () => {
-    const result = CopyAssignmentsSchema.safeParse({ source_period_id: 1, target_period_id: 2 });
+    const result = CopyAssignmentsSchema.safeParse({ source_subject_period_id: 1, target_subject_period_id: 2 });
 
     expect(result.success).toBe(true);
   });
 
   test("CopyAssignmentsSchema rejects invalid target period", () => {
-    const result = CopyAssignmentsSchema.safeParse({ source_period_id: 1, target_period_id: 0 });
+    const result = CopyAssignmentsSchema.safeParse({ source_subject_period_id: 1, target_subject_period_id: 0 });
 
     expect(result.success).toBe(false);
     if (!result.success) {

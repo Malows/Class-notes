@@ -1,4 +1,10 @@
-## ADDED Requirements
+# sketch-design-system Specification
+
+## Purpose
+
+Define the visual language of the application: one set of CSS custom properties consumed by every component, plus the reusable primitives (card, button, badge) that carry the hand-drawn aesthetic in both light and dark mode.
+
+## Requirements
 
 ### Requirement: Global Design System
 

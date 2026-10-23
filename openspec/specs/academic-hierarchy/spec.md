@@ -57,12 +57,12 @@ The system SHALL allow the user to manage Subjects associated with a specific Fa
 
 ### Requirement: Period and Commission Management
 
-The system SHALL support organizing subjects into academic periods (Year + Semester 1 or 2) and multiple Commissions per period, maintaining hierarchical paths. The system SHALL allow the user to view and manage the subjects associated with a period, and period data SHALL be retrievable by id so those views load successfully. Data integrity SHALL be ensured by keeping the database schema in sync with the application code so periods, commissions, students, assignments, and deliveries persist correctly. Each Commission SHALL have a slug derived from its name, unique among commissions of the same Subject and Period, regenerated whenever the name changes.
+The system SHALL support organizing subjects into academic periods (Year + Semester 1 or 2) and multiple Commissions per period, maintaining hierarchical paths. The system SHALL allow the user to view and manage the subjects associated with a period, and period data SHALL be retrievable by id so those views load successfully. Data integrity SHALL be ensured by keeping the database schema in sync with the application code so periods, commissions, persons, enrollments, assignments, and deliveries persist correctly. Each Commission SHALL have a slug derived from its name, unique among commissions of the same Subject and Period, regenerated whenever the name changes.
 
 #### Scenario: Create a Commission for a Semester
 
 - **WHEN** the user selects a Subject, a Year (e.g., 2026), and a Semester (1st or 2nd), and creates a Commission (e.g., "A")
-- **THEN** the system creates the commission as a container for students and assignments for that specific timeframe
+- **THEN** the system creates the commission as a container for enrollments and assignments for that specific timeframe
 - **AND** the navigation SHALL reflect this nesting (e.g., `.../periods/[year]/[semester]/commissions/[commissionSlug]`)
 
 #### Scenario: Commission slug is unique within its subject and period
@@ -86,13 +86,41 @@ The system SHALL support organizing subjects into academic periods (Year + Semes
 #### Scenario: Seeded academic data persists
 
 - **WHEN** the database is initialized fresh (migrations applied and seed data inserted)
-- **THEN** commissions, students, assignments, and deliveries SHALL be created and persisted, matching the schema declared by the application
+- **THEN** commissions, persons, enrollments, assignments, and deliveries SHALL be created and persisted, matching the schema declared by the application
 
 ### Requirement: Student Management
 
-The system SHALL allow the user to manage a list of Students for each Commission.
+The system SHALL allow the user to manage the students of a Subject in a Period through enrollments. Each enrollment SHALL link a person to the cursada and MAY assign that enrollment to one of the cursada's commissions. Deleting a student from a commission SHALL remove the enrollment, never the person.
 
 #### Scenario: Add Student to Commission
 
-- **WHEN** the user adds a student (Name/ID) to a specific commission
-- **THEN** the student appears in the roster for that commission
+- **WHEN** the user adds a student (Name/ID) whose name matches no person in the registry to a specific commission
+- **THEN** the system creates the person and an enrollment assigned to that commission
+- **AND** the student appears in the roster for that commission
+
+#### Scenario: Add a student that already exists
+
+- **WHEN** the user adds a student who already exists in the registry to a specific commission
+- **THEN** the system enrolls the existing person instead of creating a duplicate
+- **AND** the student appears in the roster for that commission
+
+#### Scenario: Assign a pending enrollment to a commission
+
+- **WHEN** the user assigns an enrollment of the cursada to a commission
+- **THEN** the enrollment moves from the pending list into that commission's roster
+
+#### Scenario: Remove a student from a commission
+
+- **WHEN** the user deletes a student from a commission's roster
+- **THEN** the system removes that enrollment
+- **AND** the person SHALL remain in the registry
+
+### Requirement: Subject-Period Link Lifecycle
+
+The system SHALL allow a subject to be unlinked from a period and linked to it again later, treating links that are deleted as absent when checking uniqueness.
+
+#### Scenario: Re-link a subject that was unlinked
+
+- **WHEN** the user unlinks a subject from a period and then links that same subject to the same period again
+- **THEN** the system restores the link
+- **AND** SHALL NOT fail with a uniqueness error

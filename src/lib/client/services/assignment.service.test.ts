@@ -19,7 +19,7 @@ describe("assignmentService", () => {
       "/assignments",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ period_id: 1, title: "Title" }),
+        body: JSON.stringify({ subject_period_id: 1, title: "Title" }),
       }),
     );
   });
@@ -52,7 +52,7 @@ describe("assignmentService", () => {
       "/assignments/copy",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ source_period_id: 1, target_period_id: 2 }),
+        body: JSON.stringify({ source_subject_period_id: 1, target_subject_period_id: 2 }),
       }),
     );
   });

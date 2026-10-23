@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Assignment } from "$lib/common/types/academic";
-  import type { StudentGridRowDTO } from "$lib/common/types/dto";
+  import type { EnrollmentGridRowDTO } from "$lib/common/types/dto";
 
   import OverviewRow from "./OverviewRow.svelte";
   import OverviewHeader from "./OverviewHeader.svelte";
@@ -9,7 +9,7 @@
 
   interface Props {
     assignments: Assignment[];
-    grid: StudentGridRowDTO[];
+    grid: EnrollmentGridRowDTO[];
     facultySlug: string;
     subjectSlug: string;
     periodYear: number;

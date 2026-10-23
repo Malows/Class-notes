@@ -4,6 +4,7 @@
   "subject_id_required": "ID de materia requerido",
   "period_id_required": "ID de período requerido",
   "commission_id_required": "ID de comisión requerido",
+  "subject_period_id_required": "ID de cursada requerido",
   "at_least_one_name_required": "Al menos un nombre requerido",
   "title_required": "Título requerido",
   "source_period_id_required": "ID de período de origen requerido",

@@ -9,7 +9,7 @@ configure({ testIdAttribute: "data-test-id" });
 test("DeliveryForm renders and saves", async () => {
   const delivery: Delivery = {
     assignment_id: 1,
-    student_id: 1,
+    enrollment_id: 1,
     workflow_status: "NOT_DICTATED" as Delivery["workflow_status"],
     grade: 0,
     ai_level: 0,
@@ -28,7 +28,7 @@ test("DeliveryForm renders and saves", async () => {
 test("DeliveryForm triggers model updates and callbacks", async () => {
   const delivery: Delivery = {
     assignment_id: 1,
-    student_id: 1,
+    enrollment_id: 1,
     workflow_status: "NOT_DICTATED" as Delivery["workflow_status"],
     grade: 5.0,
     ai_level: 0,
@@ -102,7 +102,7 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   expect(onSave).toHaveBeenCalledWith(
     expect.objectContaining({
       assignment_id: 1,
-      student_id: 1,
+      enrollment_id: 1,
       workflow_status: "REJECTED", // Latest radio selection
       grade: 9.5,
       ai_level: 2,

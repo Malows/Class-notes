@@ -18,7 +18,7 @@ describe("AssignmentsStore", () => {
   });
 
   it("should load assignments", async () => {
-    const mockData = [{ id: 1, period_id: 1, title: "Assignment A" }];
+    const mockData = [{ id: 1, subject_period_id: 1, title: "Assignment A" }];
     mockService.getAll.mockResolvedValue(mockData);
 
     await store.load(1);
@@ -27,7 +27,7 @@ describe("AssignmentsStore", () => {
   });
 
   it("should create an assignment", async () => {
-    const newAssignment = { id: 2, period_id: 1, title: "Assignment B" };
+    const newAssignment = { id: 2, subject_period_id: 1, title: "Assignment B" };
     mockService.create.mockResolvedValue(newAssignment);
 
     await store.create(1, "Assignment B");
@@ -36,8 +36,8 @@ describe("AssignmentsStore", () => {
   });
 
   it("should update an assignment", async () => {
-    store.items = [{ id: 1, period_id: 1, title: "Assignment A" }];
-    const updated = { id: 1, period_id: 1, title: "Assignment A Updated" };
+    store.items = [{ id: 1, subject_period_id: 1, title: "Assignment A" }];
+    const updated = { id: 1, subject_period_id: 1, title: "Assignment A Updated" };
     mockService.update.mockResolvedValue(updated);
 
     await store.updateItem(1, "Assignment A Updated");
@@ -47,7 +47,7 @@ describe("AssignmentsStore", () => {
 
   it("should update status and cascade to items", async () => {
     store.items = [
-      { id: 1, period_id: 1, title: "Assignment A", workflow_status: "NOT_DICTATED" as any },
+      { id: 1, subject_period_id: 1, title: "Assignment A", workflow_status: "NOT_DICTATED" as any },
     ];
     mockService.updateStatus = vi.fn().mockResolvedValue(undefined);
 
@@ -59,7 +59,7 @@ describe("AssignmentsStore", () => {
 
   it("should copy assignments and reload them", async () => {
     mockService.copy.mockResolvedValue(undefined);
-    mockService.getAll.mockResolvedValue([{ id: 10, period_id: 2, title: "Copied A" }]);
+    mockService.getAll.mockResolvedValue([{ id: 10, subject_period_id: 2, title: "Copied A" }]);
 
     await store.copy(1, 2);
 
@@ -69,7 +69,7 @@ describe("AssignmentsStore", () => {
   });
 
   it("should delete an assignment", async () => {
-    store.items = [{ id: 1, period_id: 1, title: "Assignment A" }];
+    store.items = [{ id: 1, subject_period_id: 1, title: "Assignment A" }];
     mockService.delete.mockResolvedValue(undefined);
 
     await store.deleteItem(1);
@@ -78,7 +78,7 @@ describe("AssignmentsStore", () => {
   });
 
   it("should reset", async () => {
-    store.items = [{ id: 1, period_id: 1, title: "Assignment A" }];
+    store.items = [{ id: 1, subject_period_id: 1, title: "Assignment A" }];
     store.loaded = true;
 
     store.reset();

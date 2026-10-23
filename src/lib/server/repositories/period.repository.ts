@@ -36,6 +36,7 @@ class PeriodRepositoryImpl implements PeriodRepository {
         year: periods.year,
         semester: periods.semester,
         subject_id: subjectPeriods.subjectId,
+        subject_period_id: subjectPeriods.id,
         subject_name: subjects.name,
         subject_slug: subjects.slug,
       })

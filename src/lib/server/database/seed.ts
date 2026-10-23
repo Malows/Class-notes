@@ -7,9 +7,10 @@ import {
   assignments,
   commissions,
   deliveries,
+  enrollments,
   faculties,
   periods,
-  students,
+  persons,
   subjectPeriods,
   subjects,
 } from "./schema";
@@ -84,80 +85,105 @@ const commissionSeeds = [
 ];
 
 const studentSeeds = [
-  { id: 1, commissionId: 1, name: "Juan Pérez", externalId: "ING-001" },
-  { id: 2, commissionId: 1, name: "María Rodríguez", externalId: "ING-002" },
-  { id: 3, commissionId: 1, name: "Carlos Gómez", externalId: "ING-003" },
-  { id: 4, commissionId: 1, name: "Ana Martínez", externalId: "ING-004" },
-  { id: 5, commissionId: 2, name: "Luis Fernández", externalId: "ING-005" },
-  { id: 6, commissionId: 2, name: "Sofía López", externalId: "ING-006" },
-  { id: 7, commissionId: 2, name: "Tomás Benítez", externalId: "ING-007" },
-  { id: 8, commissionId: 2, name: "Valentina Ruiz", externalId: "ING-008" },
-  { id: 9, commissionId: 3, name: "Nicolás Vega", externalId: "MAT-001" },
-  { id: 10, commissionId: 3, name: "Paula Sosa", externalId: "MAT-002" },
-  { id: 11, commissionId: 3, name: "Mateo Ibarra", externalId: "MAT-003" },
-  { id: 12, commissionId: 3, name: "Camila Ortega", externalId: "MAT-004" },
-  { id: 13, commissionId: 4, name: "Diego Montalvo", externalId: "FIS-001" },
-  { id: 14, commissionId: 4, name: "Lucía Domínguez", externalId: "FIS-002" },
-  { id: 15, commissionId: 4, name: "Bruno Álvarez", externalId: "FIS-003" },
-  { id: 16, commissionId: 4, name: "Florencia Torres", externalId: "FIS-004" },
-  { id: 17, commissionId: 5, name: "Agustín Ríos", externalId: "CAL-001" },
-  { id: 18, commissionId: 5, name: "Micaela Prado", externalId: "CAL-002" },
-  { id: 19, commissionId: 6, name: "Julián Paredes", externalId: "CAL-003" },
-  { id: 20, commissionId: 6, name: "Renata Núñez", externalId: "CAL-004" },
-  { id: 21, commissionId: 7, name: "Emilia Castro", externalId: "CAL-005" },
-  { id: 22, commissionId: 7, name: "Leandro Acosta", externalId: "CAL-006" },
-  { id: 23, commissionId: 8, name: "Noelia Salazar", externalId: "CAL-007" },
-  { id: 24, commissionId: 8, name: "Federico Paz", externalId: "CAL-008" },
-  { id: 25, commissionId: 9, name: "Milagros Benavides", externalId: "GEO-001" },
-  { id: 26, commissionId: 9, name: "Santiago Roldán", externalId: "GEO-002" },
-  { id: 27, commissionId: 10, name: "Elena Quiroga", externalId: "HIS-001" },
-  { id: 28, commissionId: 10, name: "Tomás Ledesma", externalId: "HIS-002" },
-  { id: 29, commissionId: 11, name: "Cecilia Mora", externalId: "DIS-001" },
-  { id: 30, commissionId: 11, name: "Pablo Cárdenas", externalId: "DIS-002" },
-  { id: 31, commissionId: 12, name: "Natalia Ferrer", externalId: "COM-001" },
-  { id: 32, commissionId: 12, name: "Gonzalo Varela", externalId: "COM-002" },
+  { id: 1, commissionId: 1, name: "Juan Pérez", legajo: "ING-001" },
+  { id: 2, commissionId: 1, name: "María Rodríguez", legajo: "ING-002" },
+  { id: 3, commissionId: 1, name: "Carlos Gómez", legajo: "ING-003" },
+  { id: 4, commissionId: 1, name: "Ana Martínez", legajo: "ING-004" },
+  { id: 5, commissionId: 2, name: "Luis Fernández", legajo: "ING-005" },
+  { id: 6, commissionId: 2, name: "Sofía López", legajo: "ING-006" },
+  { id: 7, commissionId: 2, name: "Tomás Benítez", legajo: "ING-007" },
+  { id: 8, commissionId: 2, name: "Valentina Ruiz", legajo: "ING-008" },
+  { id: 9, commissionId: 3, name: "Nicolás Vega", legajo: "MAT-001" },
+  { id: 10, commissionId: 3, name: "Paula Sosa", legajo: "MAT-002" },
+  { id: 11, commissionId: 3, name: "Mateo Ibarra", legajo: "MAT-003" },
+  { id: 12, commissionId: 3, name: "Camila Ortega", legajo: "MAT-004" },
+  { id: 13, commissionId: 4, name: "Diego Montalvo", legajo: "FIS-001" },
+  { id: 14, commissionId: 4, name: "Lucía Domínguez", legajo: "FIS-002" },
+  { id: 15, commissionId: 4, name: "Bruno Álvarez", legajo: "FIS-003" },
+  { id: 16, commissionId: 4, name: "Florencia Torres", legajo: "FIS-004" },
+  { id: 17, commissionId: 5, name: "Agustín Ríos", legajo: "CAL-001" },
+  { id: 18, commissionId: 5, name: "Micaela Prado", legajo: "CAL-002" },
+  { id: 19, commissionId: 6, name: "Julián Paredes", legajo: "CAL-003" },
+  { id: 20, commissionId: 6, name: "Renata Núñez", legajo: "CAL-004" },
+  { id: 21, commissionId: 7, name: "Emilia Castro", legajo: "CAL-005" },
+  { id: 22, commissionId: 7, name: "Leandro Acosta", legajo: "CAL-006" },
+  { id: 23, commissionId: 8, name: "Noelia Salazar", legajo: "CAL-007" },
+  { id: 24, commissionId: 8, name: "Federico Paz", legajo: "CAL-008" },
+  { id: 25, commissionId: 9, name: "Milagros Benavides", legajo: "GEO-001" },
+  { id: 26, commissionId: 9, name: "Santiago Roldán", legajo: "GEO-002" },
+  { id: 27, commissionId: 10, name: "Elena Quiroga", legajo: "HIS-001" },
+  { id: 28, commissionId: 10, name: "Tomás Ledesma", legajo: "HIS-002" },
+  { id: 29, commissionId: 11, name: "Cecilia Mora", legajo: "DIS-001" },
+  { id: 30, commissionId: 11, name: "Pablo Cárdenas", legajo: "DIS-002" },
+  { id: 31, commissionId: 12, name: "Natalia Ferrer", legajo: "COM-001" },
+  { id: 32, commissionId: 12, name: "Gonzalo Varela", legajo: "COM-002" },
 ];
 
+const cursadaIdForCommission = (commissionId: number): number => {
+  const commission = commissionSeeds.find((entry) => entry.id === commissionId);
+  if (!commission) {
+    throw new Error(`Seed data references unknown commission ${commissionId}`);
+  }
+
+  const cursada = subjectPeriodSeeds.find(
+    (entry) => entry.subjectId === commission.subjectId && entry.periodId === commission.periodId,
+  );
+  if (!cursada) {
+    throw new Error(`Seed data has no cursada for commission ${commissionId}`);
+  }
+
+  return cursada.id;
+};
+
+const personSeeds = studentSeeds.map(({ id, name, legajo }) => ({ id, name, legajo }));
+
+const enrollmentSeeds = studentSeeds.map((student) => ({
+  id: student.id,
+  personId: student.id,
+  subjectPeriodId: cursadaIdForCommission(student.commissionId),
+  commissionId: student.commissionId,
+}));
+
 const assignmentSeeds = [
-  { id: 1, periodId: 2, title: "Trabajo Práctico 1", subtitle: "Espacios Vectoriales", workflowStatus: "WAITING_FOR_CORRECTION" },
-  { id: 2, periodId: 2, title: "Trabajo Práctico 2", subtitle: "Matrices y Determinantes", workflowStatus: "WAITING_FOR_STUDENTS" },
-  { id: 3, periodId: 3, title: "Trabajo Práctico 1", subtitle: "Límites y Continuidad", workflowStatus: "WAITING_FOR_STUDENTS" },
-  { id: 4, periodId: 4, title: "Guía de Problemas 1", subtitle: "Cinemática", workflowStatus: "NOT_DICTATED" },
-  { id: 5, periodId: 3, title: "Trabajo Práctico 2", subtitle: "Integrales y Aplicaciones", workflowStatus: "WAITING_FOR_CORRECTION" },
-  { id: 6, periodId: 1, title: "Ensayo breve", subtitle: "Historia de la ciencia y el método", workflowStatus: "APPROVED" },
-  { id: 7, periodId: 4, title: "Proyecto de diseño", subtitle: "Identidad visual para la asignatura", workflowStatus: "WAITING_FOR_CORRECTION" },
-  { id: 8, periodId: 1, title: "Análisis de caso", subtitle: "Comunicación efectiva en clase", workflowStatus: "WAITING_FOR_STUDENTS" },
+  { id: 1, subjectPeriodId: 1, title: "Trabajo Práctico 1", subtitle: "Espacios Vectoriales", workflowStatus: "WAITING_FOR_CORRECTION" },
+  { id: 2, subjectPeriodId: 1, title: "Trabajo Práctico 2", subtitle: "Matrices y Determinantes", workflowStatus: "WAITING_FOR_STUDENTS" },
+  { id: 3, subjectPeriodId: 2, title: "Trabajo Práctico 1", subtitle: "Límites y Continuidad", workflowStatus: "WAITING_FOR_STUDENTS" },
+  { id: 4, subjectPeriodId: 3, title: "Guía de Problemas 1", subtitle: "Cinemática", workflowStatus: "NOT_DICTATED" },
+  { id: 5, subjectPeriodId: 5, title: "Trabajo Práctico 2", subtitle: "Integrales y Aplicaciones", workflowStatus: "WAITING_FOR_CORRECTION" },
+  { id: 6, subjectPeriodId: 7, title: "Ensayo breve", subtitle: "Historia de la ciencia y el método", workflowStatus: "APPROVED" },
+  { id: 7, subjectPeriodId: 8, title: "Proyecto de diseño", subtitle: "Identidad visual para la asignatura", workflowStatus: "WAITING_FOR_CORRECTION" },
+  { id: 8, subjectPeriodId: 8, title: "Análisis de caso", subtitle: "Comunicación efectiva en clase", workflowStatus: "WAITING_FOR_STUDENTS" },
 ];
 
 const deliverySeeds = [
-  { assignmentId: 1, studentId: 1, workflowStatus: "APPROVED", grade: 8, aiLevel: 0, comments: "Excelente planteo de los ejercicios de subespacios." },
-  { assignmentId: 1, studentId: 2, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 1, comments: "Aprobado con lo justo. Prestar atención al uso de IA." },
-  { assignmentId: 1, studentId: 3, workflowStatus: "REJECTED", grade: 4, aiLevel: 0, comments: "Faltaron resolver los puntos 3 y 4. Debe rehacer." },
-  { assignmentId: 1, studentId: 4, workflowStatus: "APPROVED", grade: 7, aiLevel: 1, comments: "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA." },
-  { assignmentId: 1, studentId: 5, workflowStatus: "APPROVED", grade: 10, aiLevel: 0, comments: "Trabajo perfecto y sumamente original." },
-  { assignmentId: 1, studentId: 6, workflowStatus: "WAITING_FOR_CORRECTION", grade: 5, aiLevel: 2, comments: "Entregado con varias respuestas genéricas y poco desarrollo." },
-  { assignmentId: 1, studentId: 7, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado aún." },
-  { assignmentId: 2, studentId: 1, workflowStatus: "APPROVED", grade: 9, aiLevel: 0, comments: "Perfecto uso de las propiedades del determinante." },
-  { assignmentId: 2, studentId: 2, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado." },
-  { assignmentId: 2, studentId: 3, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "Tema aún no dictado." },
-  { assignmentId: 2, studentId: 4, workflowStatus: "REJECTED", grade: 2, aiLevel: 2, comments: "Certeza absoluta de plagio y generación por IA sin edición." },
-  { assignmentId: 2, studentId: 5, workflowStatus: "WAITING_FOR_CORRECTION", grade: 8, aiLevel: 2, comments: "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT." },
-  { assignmentId: 2, studentId: 6, workflowStatus: "APPROVED", grade: 8, aiLevel: 1, comments: "Bien resuelto, con ligera ayuda de IA en los comentarios." },
-  { assignmentId: 3, studentId: 9, workflowStatus: "APPROVED", grade: 7, aiLevel: 0, comments: "Excelente trabajo matemático." },
-  { assignmentId: 3, studentId: 10, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Falta entregar." },
-  { assignmentId: 3, studentId: 11, workflowStatus: "APPROVED", grade: 9, aiLevel: 1, comments: "Desarrollo claro y muy bien justificado." },
-  { assignmentId: 3, studentId: 12, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 1, comments: "Falta pulir la argumentación final." },
-  { assignmentId: 4, studentId: 13, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Estudiantes aún no cargaron la solución." },
-  { assignmentId: 4, studentId: 14, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "El tema aún no fue dictado para este alumno." },
-  { assignmentId: 5, studentId: 15, workflowStatus: "WAITING_FOR_CORRECTION", grade: 0, aiLevel: 1, comments: "Entregado a término, falta revisión docente." },
-  { assignmentId: 5, studentId: 16, workflowStatus: "REJECTED", grade: 2, aiLevel: 2, comments: "Fraude académico detectado mediante análisis de patrones." },
-  { assignmentId: 5, studentId: 17, workflowStatus: "APPROVED", grade: 8, aiLevel: 0, comments: "Muy buena resolución y buena exposición del método." },
-  { assignmentId: 6, studentId: 27, workflowStatus: "APPROVED", grade: 9, aiLevel: 0, comments: "Ensayo muy bien documentado y con referencias claras." },
-  { assignmentId: 6, studentId: 28, workflowStatus: "WAITING_FOR_CORRECTION", grade: 7, aiLevel: 1, comments: "Buen contenido, falta mayor profundidad en la conclusión." },
-  { assignmentId: 7, studentId: 29, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 2, comments: "El concepto visual es interesante, pero aún falta pulir la coherencia." },
-  { assignmentId: 7, studentId: 30, workflowStatus: "APPROVED", grade: 10, aiLevel: 0, comments: "Proyecto muy sólido y con una propuesta visual muy clara." },
-  { assignmentId: 8, studentId: 31, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Aún no se ha presentado la respuesta final." },
-  { assignmentId: 8, studentId: 32, workflowStatus: "APPROVED", grade: 8, aiLevel: 1, comments: "Muy buena comprensión de la consigna y del contexto." },
+  { assignmentId: 1, enrollmentId: 1, workflowStatus: "APPROVED", grade: 8, aiLevel: 0, comments: "Excelente planteo de los ejercicios de subespacios." },
+  { assignmentId: 1, enrollmentId: 2, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 1, comments: "Aprobado con lo justo. Prestar atención al uso de IA." },
+  { assignmentId: 1, enrollmentId: 3, workflowStatus: "REJECTED", grade: 4, aiLevel: 0, comments: "Faltaron resolver los puntos 3 y 4. Debe rehacer." },
+  { assignmentId: 1, enrollmentId: 4, workflowStatus: "APPROVED", grade: 7, aiLevel: 1, comments: "Buen desarrollo, pero con respuestas redactadas sospechosamente por IA." },
+  { assignmentId: 1, enrollmentId: 5, workflowStatus: "APPROVED", grade: 10, aiLevel: 0, comments: "Trabajo perfecto y sumamente original." },
+  { assignmentId: 1, enrollmentId: 6, workflowStatus: "WAITING_FOR_CORRECTION", grade: 5, aiLevel: 2, comments: "Entregado con varias respuestas genéricas y poco desarrollo." },
+  { assignmentId: 1, enrollmentId: 7, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado aún." },
+  { assignmentId: 2, enrollmentId: 1, workflowStatus: "APPROVED", grade: 9, aiLevel: 0, comments: "Perfecto uso de las propiedades del determinante." },
+  { assignmentId: 2, enrollmentId: 2, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "No entregado." },
+  { assignmentId: 2, enrollmentId: 3, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "Tema aún no dictado." },
+  { assignmentId: 2, enrollmentId: 4, workflowStatus: "REJECTED", grade: 2, aiLevel: 2, comments: "Certeza absoluta de plagio y generación por IA sin edición." },
+  { assignmentId: 2, enrollmentId: 5, workflowStatus: "WAITING_FOR_CORRECTION", grade: 8, aiLevel: 2, comments: "Entregado. Sospecha muy alta de código copiado directamente de ChatGPT." },
+  { assignmentId: 2, enrollmentId: 6, workflowStatus: "APPROVED", grade: 8, aiLevel: 1, comments: "Bien resuelto, con ligera ayuda de IA en los comentarios." },
+  { assignmentId: 3, enrollmentId: 9, workflowStatus: "APPROVED", grade: 7, aiLevel: 0, comments: "Excelente trabajo matemático." },
+  { assignmentId: 3, enrollmentId: 10, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Falta entregar." },
+  { assignmentId: 3, enrollmentId: 11, workflowStatus: "APPROVED", grade: 9, aiLevel: 1, comments: "Desarrollo claro y muy bien justificado." },
+  { assignmentId: 3, enrollmentId: 12, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 1, comments: "Falta pulir la argumentación final." },
+  { assignmentId: 4, enrollmentId: 13, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Estudiantes aún no cargaron la solución." },
+  { assignmentId: 4, enrollmentId: 14, workflowStatus: "NOT_DICTATED", grade: 0, aiLevel: 0, comments: "El tema aún no fue dictado para este alumno." },
+  { assignmentId: 5, enrollmentId: 21, workflowStatus: "WAITING_FOR_CORRECTION", grade: 0, aiLevel: 1, comments: "Entregado a término, falta revisión docente." },
+  { assignmentId: 5, enrollmentId: 22, workflowStatus: "REJECTED", grade: 2, aiLevel: 2, comments: "Fraude académico detectado mediante análisis de patrones." },
+  { assignmentId: 5, enrollmentId: 23, workflowStatus: "APPROVED", grade: 8, aiLevel: 0, comments: "Muy buena resolución y buena exposición del método." },
+  { assignmentId: 6, enrollmentId: 27, workflowStatus: "APPROVED", grade: 9, aiLevel: 0, comments: "Ensayo muy bien documentado y con referencias claras." },
+  { assignmentId: 6, enrollmentId: 28, workflowStatus: "WAITING_FOR_CORRECTION", grade: 7, aiLevel: 1, comments: "Buen contenido, falta mayor profundidad en la conclusión." },
+  { assignmentId: 7, enrollmentId: 29, workflowStatus: "WAITING_FOR_CORRECTION", grade: 6, aiLevel: 2, comments: "El concepto visual es interesante, pero aún falta pulir la coherencia." },
+  { assignmentId: 7, enrollmentId: 30, workflowStatus: "APPROVED", grade: 10, aiLevel: 0, comments: "Proyecto muy sólido y con una propuesta visual muy clara." },
+  { assignmentId: 8, enrollmentId: 31, workflowStatus: "WAITING_FOR_STUDENTS", grade: 0, aiLevel: 0, comments: "Aún no se ha presentado la respuesta final." },
+  { assignmentId: 8, enrollmentId: 32, workflowStatus: "APPROVED", grade: 8, aiLevel: 1, comments: "Muy buena comprensión de la consigna y del contexto." },
 ];
 
 export function insertSeed(client: Database): void {
@@ -219,14 +245,27 @@ export function insertSeed(client: Database): void {
     });
 
     runSafe(() => {
-      db.insert(students)
-        .values(studentSeeds)
+      db.insert(persons)
+        .values(personSeeds)
         .onConflictDoUpdate({
-          target: students.id,
+          target: persons.id,
           set: {
-            commissionId: students.commissionId,
-            name: students.name,
-            externalId: students.externalId,
+            name: persons.name,
+            legajo: persons.legajo,
+          },
+        })
+        .run();
+    });
+
+    runSafe(() => {
+      db.insert(enrollments)
+        .values(enrollmentSeeds)
+        .onConflictDoUpdate({
+          target: enrollments.id,
+          set: {
+            personId: enrollments.personId,
+            subjectPeriodId: enrollments.subjectPeriodId,
+            commissionId: enrollments.commissionId,
           },
         })
         .run();
@@ -238,7 +277,7 @@ export function insertSeed(client: Database): void {
         .onConflictDoUpdate({
           target: assignments.id,
           set: {
-            periodId: assignments.periodId,
+            subjectPeriodId: assignments.subjectPeriodId,
             title: assignments.title,
             subtitle: assignments.subtitle,
             workflowStatus: assignments.workflowStatus,
@@ -251,7 +290,7 @@ export function insertSeed(client: Database): void {
       db.insert(deliveries)
         .values(deliverySeeds)
         .onConflictDoUpdate({
-          target: [deliveries.assignmentId, deliveries.studentId],
+          target: [deliveries.assignmentId, deliveries.enrollmentId],
           set: {
             workflowStatus: deliveries.workflowStatus,
             grade: deliveries.grade,

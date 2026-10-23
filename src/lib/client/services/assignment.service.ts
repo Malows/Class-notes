@@ -2,14 +2,16 @@ import { apiFetch } from "$lib/client/services/api";
 import type { Assignment } from "$lib/common/types/academic";
 
 export const assignmentService = {
-  getAll: (period_id?: number) => {
-    const url = period_id ? `/assignments?period_id=${period_id}` : "/assignments";
+  getAll: (subject_period_id?: number) => {
+    const url = subject_period_id
+      ? `/assignments?subject_period_id=${subject_period_id}`
+      : "/assignments";
     return apiFetch<Assignment[]>(url);
   },
-  create: (period_id: number, title: string, subtitle?: string, workflow_status?: string) =>
+  create: (subject_period_id: number, title: string, subtitle?: string, workflow_status?: string) =>
     apiFetch<Assignment>("/assignments", {
       method: "POST",
-      body: JSON.stringify({ period_id, title, subtitle, workflow_status }),
+      body: JSON.stringify({ subject_period_id, title, subtitle, workflow_status }),
     }),
   update: (id: number, title: string, subtitle?: string, workflow_status?: string) =>
     apiFetch<Assignment>(`/assignments/${id}`, {
@@ -21,10 +23,10 @@ export const assignmentService = {
       method: "PUT",
       body: JSON.stringify({ status }),
     }),
-  copy: (source_period_id: number, target_period_id: number) =>
+  copy: (source_subject_period_id: number, target_subject_period_id: number) =>
     apiFetch<void>("/assignments/copy", {
       method: "POST",
-      body: JSON.stringify({ source_period_id, target_period_id }),
+      body: JSON.stringify({ source_subject_period_id, target_subject_period_id }),
     }),
   delete: (id: number) =>
     apiFetch<void>(`/assignments/${id}`, {

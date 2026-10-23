@@ -1,0 +1,18 @@
+{
+  "manage_title": "Enrollments",
+  "new_title": "Enroll student",
+  "search_label": "Search an existing student",
+  "search_placeholder": "Name or legajo",
+  "reuse_hint": "This student already exists in the registry and will be enrolled.",
+  "new_hint": "No match selected: a new student will be created.",
+  "paste_list_label": "Paste a list (one name per line):",
+  "register_success": "{{created}} enrolled · {{reused}} reused",
+  "pending_title": "Enrolled without commission",
+  "pending_empty": "Every student already has a commission.",
+  "assign_btn": "Assign",
+  "assign_commission_label": "Commission",
+  "pending_count": "{{count}} without commission",
+  "loading": "Loading enrollments...",
+  "remove_confirm_title": "Remove student",
+  "remove_confirm_message": "Remove {{name}} from this commission? The student stays in the registry."
+}

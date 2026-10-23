@@ -6,6 +6,7 @@ import {
   uniqueIndex,
   index,
   primaryKey,
+  foreignKey,
 } from "drizzle-orm/sqlite-core";
 
 export const faculties = sqliteTable(
@@ -150,6 +151,10 @@ export const enrollments = sqliteTable(
       .where(sql`${table.deletedAt} IS NULL`),
     byCommission: index("idx_enrollments_commission").on(table.commissionId),
     bySubjectPeriod: index("idx_enrollments_subject_period").on(table.subjectPeriodId),
+    uniqueIdCursada: uniqueIndex("idx_enrollments_id_subject_period_unique").on(
+      table.id,
+      table.subjectPeriodId,
+    ),
   }),
 );
 
@@ -164,7 +169,12 @@ export const assignments = sqliteTable("assignments", {
   createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
   updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
   deletedAt: text("deletedAt", { mode: "text" }),
-});
+}, (table) => ({
+  uniqueIdCursada: uniqueIndex("idx_assignments_id_subject_period_unique").on(
+    table.id,
+    table.subjectPeriodId,
+  ),
+}));
 
 export const deliveries = sqliteTable(
   "deliveries",
@@ -185,5 +195,38 @@ export const deliveries = sqliteTable(
   },
   (table) => ({
     pk: primaryKey({ columns: [table.assignmentId, table.enrollmentId] }),
+  }),
+);
+
+export const attendances = sqliteTable(
+  "attendances",
+  {
+    assignmentId: integer("assignment_id", { mode: "number" }).notNull(),
+    enrollmentId: integer("enrollment_id", { mode: "number" }).notNull(),
+    subjectPeriodId: integer("subject_period_id", { mode: "number" }).notNull(),
+    commissionId: integer("commission_id", { mode: "number" }).references(() => commissions.id, {
+      onDelete: "set null",
+    }),
+    status: text("status").notNull(),
+    recordedOn: text("recorded_on").notNull(),
+    createdAt: text("createdAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    updatedAt: text("updatedAt", { mode: "text" }).default("CURRENT_TIMESTAMP"),
+    deletedAt: text("deletedAt", { mode: "text" }),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.assignmentId, table.enrollmentId] }),
+    assignmentCursada: foreignKey({
+      name: "fk_attendances_assignment_cursada",
+      columns: [table.assignmentId, table.subjectPeriodId],
+      foreignColumns: [assignments.id, assignments.subjectPeriodId],
+    }).onDelete("cascade"),
+    enrollmentCursada: foreignKey({
+      name: "fk_attendances_enrollment_cursada",
+      columns: [table.enrollmentId, table.subjectPeriodId],
+      foreignColumns: [enrollments.id, enrollments.subjectPeriodId],
+    }).onDelete("cascade"),
+    byCursada: index("idx_attendances_subject_period").on(table.subjectPeriodId),
+    byCommission: index("idx_attendances_commission").on(table.commissionId),
+    byStatus: index("idx_attendances_status").on(table.status),
   }),
 );

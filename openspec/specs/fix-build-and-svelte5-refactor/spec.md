@@ -1,49 +1,47 @@
-# Spec: Build Fix and Svelte 5 Refactor
+# fix-build-and-svelte5-refactor Specification
 
-## 1. Goal
+## Purpose
 
-Fix all build-blocking errors, re-implement the missing theme store, and address Svelte 5 deprecation/a11y warnings.
+Keep the application buildable under Svelte 5 and record the durable behaviour that came out of the build-fix refactor: a remembered light/dark theme and accessible form fields.
 
-## 2. Approach
+## Requirements
 
-Systematic fix of import paths, creation of missing store, and surgical refactoring of components to adhere to Svelte 5 standards.
+### Requirement: Application Build
 
-## 3. Changes
+The project SHALL build for production without errors, including the i18n key validation that runs before the build.
 
-### 3.1 Path Corrections
+#### Scenario: Production build succeeds
 
-- **`src/routes/+layout.svelte`**: Correct `Sidebar` import path.
-- **`src/routes/faculties/[faculty_id]/subjects/+page.svelte`**: Correct `SubjectTable` import path.
-- **`src/lib/components/Breadcrumbs.svelte`**: Correct `navStore` import path (add `.ts` or fix name).
-- **`src/lib/components/ThemeToggle.svelte`**: Correct `themeStore` import path.
+- **WHEN** `pnpm build` runs
+- **THEN** the i18n key validation passes
+- **AND** the build completes without errors
 
-### 3.2 Theme Store (`src/lib/stores/theme.svelte.ts`)
+### Requirement: Theme Preference
 
-Implement a Svelte 5 reactive store for theme management:
+The application SHALL offer a light and a dark theme. The chosen theme SHALL be applied to the document root and SHALL be remembered across reloads.
 
-- State: `current` ('light' | 'dark').
-- Methods: `toggle()`.
-- Persistence: Sync with `localStorage`.
-- DOM Sync: Toggle `.dark` class on `document.documentElement`.
+#### Scenario: Toggle the theme
 
-### 3.3 Svelte 5 Modernization
+- **WHEN** the user toggles the theme
+- **THEN** the document root switches between the light and dark variants
+- **AND** every visible component adopts the corresponding colours
 
-- **`src/lib/components/common/Card.svelte`**:
-  - Use `{@render children()}` instead of `<slot />`.
-  - Accept `children` as a prop.
-- **`src/lib/components/DeliveryForm.svelte`**:
-  - Address "state referenced locally" warning by using `$derived` if data should be reactive to props, or clarifying intent.
-  - Fix A11y labels by adding `id` to inputs and `for` to labels.
-- **`src/lib/components/PeriodEditModal.svelte`**:
-  - Address "state referenced locally" warning.
+#### Scenario: Theme survives a reload
 
-### 3.4 Verification
+- **WHEN** the user reloads the page after choosing a theme
+- **THEN** the previously chosen theme is applied again
 
-- Execute `pnpm build`.
-- Verify no errors or critical warnings remain.
+#### Scenario: First visit follows the system preference
 
-## 4. Success Criteria
+- **WHEN** no theme has been chosen yet
+- **THEN** the application uses the operating system colour-scheme preference
 
-- `pnpm build` completes successfully.
-- Theme switching works (verified by presence of `.dark` class in DOM).
-- Components render correctly with new Svelte 5 syntax.
+### Requirement: Labelled Form Fields
+
+Form controls SHALL be associated with a label so assistive technology can identify them.
+
+#### Scenario: Delivery form fields are labelled
+
+- **WHEN** the delivery form renders
+- **THEN** every input and textarea has an associated label
+- **AND** the label is linked to the control it describes

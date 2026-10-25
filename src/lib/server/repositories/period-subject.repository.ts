@@ -6,6 +6,7 @@ import { subjectPeriods, subjects, faculties } from "../database/schema";
 
 export interface PeriodSubjectRepository {
   getAll(periodId: number): Subject[];
+  findBySubjectAndPeriod(subjectId: number, periodId: number): number | null;
   sync(periodId: number, subjectIds: number[]): Subject[];
 }
 
@@ -27,6 +28,22 @@ class PeriodSubjectRepositoryImpl implements PeriodSubjectRepository {
       .where(and(isNull(subjects.deletedAt), isNull(faculties.deletedAt), isNull(subjectPeriods.deletedAt)))
       .orderBy(subjects.name)
       .all() as Subject[];
+  }
+
+  findBySubjectAndPeriod(subjectId: number, periodId: number): number | null {
+    const row = drizzleDb
+      .select({ id: subjectPeriods.id })
+      .from(subjectPeriods)
+      .where(
+        and(
+          eq(subjectPeriods.subjectId, subjectId),
+          eq(subjectPeriods.periodId, periodId),
+          isNull(subjectPeriods.deletedAt),
+        ),
+      )
+      .get() as { id: number } | undefined;
+
+    return row?.id ?? null;
   }
 
   sync(periodId: number, subjectIds: number[]): Subject[] {

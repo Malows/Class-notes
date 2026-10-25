@@ -76,7 +76,7 @@
       if (next === null) {
         await attendanceStore.unmark(assignmentId, enrollmentId);
       } else {
-        await attendanceStore.mark(assignmentId, enrollmentId, next, commissionID);
+        await attendanceStore.mark(assignmentId, enrollmentId, next);
       }
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

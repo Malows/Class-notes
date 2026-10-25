@@ -31,7 +31,6 @@ export interface AttendanceGridRow {
   commission_id: number | null;
   commission_name: string | null;
   commission_slug: string | null;
-  is_guest: boolean;
   present_count: number;
   taken_count: number;
   cells: AttendanceCell[];

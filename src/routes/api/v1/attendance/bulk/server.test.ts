@@ -54,7 +54,6 @@ describe("attendance bulk API", () => {
     const response = await POST({
       request: postRequest({
         assignment_id: 1,
-        commission_id: 1,
         entries: [
           { enrollment_id: 1, status: "PRESENT" },
           { enrollment_id: 2, status: "ABSENT" },
@@ -64,7 +63,7 @@ describe("attendance bulk API", () => {
     const body = await response.json();
 
     expect(response.status).toBe(201);
-    expect(bulkMock).toHaveBeenCalledWith(1, 1, [
+    expect(bulkMock).toHaveBeenCalledWith(1, [
       { enrollment_id: 1, status: "PRESENT" },
       { enrollment_id: 2, status: "ABSENT" },
     ]);

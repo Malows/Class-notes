@@ -1,7 +1,6 @@
 import { apiFetch } from "$lib/client/services/api";
 import { RegisterEnrollmentsSchema } from "$lib/common/schemas";
 import type {
-  CursadaRoster,
   EnrollmentInput,
   EnrollmentRegistrationReport,
   EnrollmentWithPerson,
@@ -14,8 +13,6 @@ export const enrollmentService = {
     apiFetch<EnrollmentWithPerson[]>(
       `/enrollments?subject_period_id=${subject_period_id}&pending=true`,
     ),
-  getCursadaRoster: (subject_id: number, period_id: number) =>
-    apiFetch<CursadaRoster>(`/periods/${period_id}/subjects/${subject_id}/students`),
   getByCursada: (subject_period_id: number) =>
     apiFetch<EnrollmentWithPerson[]>(`/enrollments?subject_period_id=${subject_period_id}`),
   register: (

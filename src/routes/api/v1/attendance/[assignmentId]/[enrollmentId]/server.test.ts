@@ -81,12 +81,12 @@ describe("attendance item API", () => {
 
     const response = await PUT({
       params: { assignmentId: "1", enrollmentId: "1" },
-      request: putRequest({ status: "PRESENT", commission_id: 2 }),
+      request: putRequest({ status: "PRESENT" }),
     } as any);
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(markMock).toHaveBeenCalledWith(1, 1, "PRESENT", 2);
+    expect(markMock).toHaveBeenCalledWith(1, 1, "PRESENT");
     expect(body.data).toEqual(record);
   });
 

@@ -57,17 +57,7 @@ export async function PUT({
       return json({ error: "Missing or invalid status" }, { status: 400 });
     }
 
-    const commissionId =
-      body?.commission_id === undefined || body?.commission_id === null
-        ? null
-        : Number(body.commission_id);
-
-    const record = attendanceService.mark(
-      ids.assignmentId,
-      ids.enrollmentId,
-      body.status,
-      commissionId,
-    );
+    const record = attendanceService.mark(ids.assignmentId, ids.enrollmentId, body.status);
 
     return json({ data: record });
   } catch (error: any) {

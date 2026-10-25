@@ -50,11 +50,7 @@
       <div class="attendance-grid__row" data-test-id="attendance-row-{row.enrollment_id}">
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
           <a href="/persons/{row.person_id}">{row.name}</a>
-          {#if row.is_guest}
-            <span class="attendance-grid__badge" data-test-id="attendance-guest-{row.enrollment_id}">
-              {$t("attendance.guest")} · {row.commission_name ?? "—"}
-            </span>
-          {:else if grid.scope === "cursada"}
+          {#if grid.scope === "cursada"}
             <span class="attendance-grid__commission" data-test-id="attendance-commission-{row.enrollment_id}">
               {row.commission_name ?? $t("attendance.no_commission")}
             </span>
@@ -144,8 +140,7 @@
     text-overflow: ellipsis;
   }
 
-  .attendance-grid__commission,
-  .attendance-grid__badge {
+  .attendance-grid__commission {
     display: block;
     font-weight: 400;
     font-size: 0.75rem;

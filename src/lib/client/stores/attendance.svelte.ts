@@ -18,13 +18,8 @@ export class AttendanceStore {
     this.loaded = true;
   }
 
-  async mark(
-    assignmentId: number,
-    enrollmentId: number,
-    status: AttendanceStatus,
-    commissionId?: number | null,
-  ) {
-    const record = await this.service.mark(assignmentId, enrollmentId, status, commissionId);
+  async mark(assignmentId: number, enrollmentId: number, status: AttendanceStatus) {
+    const record = await this.service.mark(assignmentId, enrollmentId, status);
     this.applyRecord({
       assignment_id: record.assignment_id,
       enrollment_id: record.enrollment_id,
@@ -46,10 +41,8 @@ export class AttendanceStore {
     });
   }
 
-  async bulkMarkPresent(assignmentId: number, commissionId: number | null) {
-    const enrollmentIds = (this.grid?.rows ?? [])
-      .filter((row) => !row.is_guest)
-      .map((row) => row.enrollment_id);
+  async bulkMarkPresent(assignmentId: number) {
+    const enrollmentIds = (this.grid?.rows ?? []).map((row) => row.enrollment_id);
 
     if (enrollmentIds.length === 0) {
       return [];
@@ -57,7 +50,6 @@ export class AttendanceStore {
 
     const records = await this.service.bulk(
       assignmentId,
-      commissionId,
       enrollmentIds.map((enrollment_id) => ({
         enrollment_id,
         status: AttendanceStatus.PRESENT,

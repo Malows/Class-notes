@@ -56,7 +56,6 @@ const grid = {
       commission_id: 1,
       commission_name: "Comisión Mañana",
       commission_slug: "comision-manana",
-      is_guest: false,
       present_count: 1,
       taken_count: 1,
       cells: [

@@ -13,7 +13,6 @@ import db from "../database/db";
 const CURSADA_1 = 1;
 const CURSADA_2 = 2;
 const COMMISSION_1 = 1;
-const COMMISSION_2 = 2;
 const ASSIGNMENT_1 = 1;
 const ASSIGNMENT_2 = 2;
 
@@ -37,7 +36,6 @@ describe("attendanceService", () => {
     expect(grid?.commission).toEqual({ id: 1, name: "Comisión Mañana", slug: "comision-manana" });
     expect(grid?.assignments.length).toBeGreaterThan(0);
     expect(grid?.rows).toHaveLength(4);
-    expect(grid?.rows.every((row) => row.is_guest === false)).toBe(true);
     expect(grid?.rows[0]?.cells).toHaveLength(grid?.assignments.length ?? 0);
     expect(grid?.rows[0]?.cells.every((cell) => cell.status === null)).toBe(true);
     expect(grid?.columns.every((column) => column.taken_count === 0)).toBe(true);
@@ -71,36 +69,14 @@ describe("attendanceService", () => {
     expect(grid?.columns.find((item) => item.assignment_id === ASSIGNMENT_2)?.taken_count).toBe(0);
   });
 
-  it("shows a guest in the commission where attendance was taken and in their own commission", () => {
-    // Enrollment 5 belongs to commission 2; attendance is taken in commission 1.
-    attendanceService.mark(ASSIGNMENT_1, 5, AttendanceStatus.PRESENT, COMMISSION_1);
-
-    const taken = attendanceService.getGridByCommission(COMMISSION_1);
-    const own = attendanceService.getGridByCommission(COMMISSION_2);
-
-    const guestRow = taken?.rows.find((row) => row.enrollment_id === 5);
-    expect(guestRow?.is_guest).toBe(true);
-    expect(guestRow?.commission_name).toBe("Comisión Tarde");
-    expect(
-      guestRow?.cells.find((cell) => cell.assignment_id === ASSIGNMENT_1)?.status,
-    ).toBe(AttendanceStatus.PRESENT);
-
-    const ownRow = own?.rows.find((row) => row.enrollment_id === 5);
-    expect(ownRow?.is_guest).toBe(false);
-    expect(ownRow?.cells.find((cell) => cell.assignment_id === ASSIGNMENT_1)?.status).toBe(
-      AttendanceStatus.PRESENT,
-    );
-  });
-
-  it("builds the cursada grid with every enrollment and no guests", () => {
-    attendanceService.mark(ASSIGNMENT_1, 5, AttendanceStatus.PRESENT, COMMISSION_1);
+  it("builds the cursada grid with every enrollment of the cursada", () => {
+    attendanceService.mark(ASSIGNMENT_1, 5, AttendanceStatus.PRESENT);
 
     const grid = attendanceService.getGridByCursada(CURSADA_1);
 
     expect(grid?.scope).toBe("cursada");
     expect(grid?.commission).toBeNull();
     expect(grid?.rows).toHaveLength(8);
-    expect(grid?.rows.every((row) => row.is_guest === false)).toBe(true);
     expect(grid?.rows.find((row) => row.enrollment_id === 5)?.commission_name).toBe(
       "Comisión Tarde",
     );
@@ -145,7 +121,7 @@ describe("attendanceService", () => {
   });
 
   it("applies a bulk of decisions using the assignment cursada", () => {
-    const records = attendanceService.bulk(ASSIGNMENT_1, COMMISSION_1, [
+    const records = attendanceService.bulk(ASSIGNMENT_1, [
       { enrollment_id: 1, status: AttendanceStatus.PRESENT },
       { enrollment_id: 2, status: AttendanceStatus.PRESENT },
     ]);
@@ -157,7 +133,7 @@ describe("attendanceService", () => {
 
   it("rejects a bulk that mixes another cursada", () => {
     expect(() =>
-      attendanceService.bulk(ASSIGNMENT_1, COMMISSION_1, [
+      attendanceService.bulk(ASSIGNMENT_1, [
         { enrollment_id: 1, status: AttendanceStatus.PRESENT },
         { enrollment_id: 9, status: AttendanceStatus.PRESENT },
       ]),

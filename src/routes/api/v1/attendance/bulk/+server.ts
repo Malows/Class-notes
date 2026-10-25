@@ -32,12 +32,7 @@ export async function POST({ request }: { request: Request }) {
       return json({ error: "Invalid entry" }, { status: 400 });
     }
 
-    const commissionId =
-      body?.commission_id === undefined || body?.commission_id === null
-        ? null
-        : Number(body.commission_id);
-
-    const records = attendanceService.bulk(assignmentId, commissionId, entries);
+    const records = attendanceService.bulk(assignmentId, entries);
 
     return json({ data: records }, { status: 201 });
   } catch (error: any) {

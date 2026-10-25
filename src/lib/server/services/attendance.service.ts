@@ -37,7 +37,6 @@ const buildRows = (
   students: CursadaRosterStudent[],
   assignments: Assignment[],
   records: Map<string, { status: AttendanceStatus; recorded_on: string; commission_id: number | null }>,
-  isGuest: (student: CursadaRosterStudent) => boolean,
 ): AttendanceGridRow[] =>
   students.map((student) => {
     const cells: AttendanceCell[] = assignments.map((assignment) => {
@@ -59,7 +58,6 @@ const buildRows = (
       commission_id: student.commission_id,
       commission_name: student.commission_name,
       commission_slug: student.commission_slug,
-      is_guest: isGuest(student),
       present_count: cells.filter((cell) => cell.status === AttendanceStatus.PRESENT).length,
       taken_count: cells.filter((cell) => cell.status !== null).length,
       cells,
@@ -127,17 +125,11 @@ export const attendanceService = {
       ]),
     );
 
-    const takenHere = new Set(
-      recordsRows
-        .filter((record) => record.commission_id === commissionId)
-        .map((record) => record.enrollment_id),
-    );
-
     const students = roster.students.filter(
-      (student) => student.commission_id === commissionId || takenHere.has(student.enrollment_id),
+      (student) => student.commission_id === commissionId,
     );
 
-    const rows = buildRows(students, assignments, records, (student) => student.commission_id !== commissionId);
+    const rows = buildRows(students, assignments, records);
 
     return {
       scope: "commission",
@@ -171,7 +163,7 @@ export const attendanceService = {
         ]),
     );
 
-    const rows = buildRows(roster.students, assignments, records, () => false);
+    const rows = buildRows(roster.students, assignments, records);
 
     return {
       scope: "cursada",
@@ -189,19 +181,14 @@ export const attendanceService = {
     return attendanceRepository.getOne(assignmentId, enrollmentId);
   },
 
-  mark(
-    assignmentId: number,
-    enrollmentId: number,
-    status: AttendanceStatus,
-    commissionId?: number | null,
-  ) {
+  mark(assignmentId: number, enrollmentId: number, status: AttendanceStatus) {
     const { assignment, enrollment } = resolveTarget(assignmentId, enrollmentId);
 
     return attendanceRepository.upsert({
       assignmentId,
       enrollmentId,
       subjectPeriodId: assignment.subject_period_id,
-      commissionId: commissionId ?? enrollment.commission_id ?? null,
+      commissionId: enrollment.commission_id ?? null,
       status,
       recordedOn: todayLocalDate(),
     });
@@ -211,11 +198,7 @@ export const attendanceService = {
     attendanceRepository.unmark(assignmentId, enrollmentId);
   },
 
-  bulk(
-    assignmentId: number,
-    commissionId: number | null,
-    entries: AttendanceBulkEntry[],
-  ) {
+  bulk(assignmentId: number, entries: AttendanceBulkEntry[]) {
     const assignment = assignmentRepository.findById(assignmentId);
     if (!assignment) {
       throw new AttendanceTargetNotFoundError("Assignment");
@@ -239,7 +222,7 @@ export const attendanceService = {
           assignmentId,
           enrollmentId: entry.enrollment_id,
           subjectPeriodId: assignment.subject_period_id,
-          commissionId: commissionId ?? enrollment.commission_id ?? null,
+          commissionId: enrollment.commission_id ?? null,
           status: entry.status,
           recordedOn,
         };

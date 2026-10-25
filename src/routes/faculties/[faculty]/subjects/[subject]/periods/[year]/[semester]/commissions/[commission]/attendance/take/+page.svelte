@@ -5,16 +5,13 @@
   import { t } from "$lib/common/i18n/config";
   import { StoreKey } from "$lib/common";
   import { AttendanceStatus } from "$lib/common/types/attendance";
-  import type { CursadaRoster } from "$lib/common/types/enrollment";
 
-  import DialogBase from "$lib/client/components/common/DialogBase.svelte";
   import TakeAttendanceCard from "$lib/client/components/attendance/TakeAttendanceCard.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
-  import { enrollmentService } from "$lib/client/services/enrollment.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const attendanceStore = getContext<AttendanceStore>(StoreKey.ATTENDANCE);
@@ -26,9 +23,6 @@
   let loading = $state(true);
   let currentIndex = $state(0);
   let done = $state(false);
-  let guestOpen = $state(false);
-  let guestSearch = $state("");
-  let cursadaRoster = $state<CursadaRoster | null>(null);
 
   interface UndoEntry {
     enrollmentId: number;
@@ -58,7 +52,7 @@
 
   const baseUrl = `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commissionSlug ?? ""}`;
 
-  const rows = $derived((attendanceStore.grid?.rows ?? []).filter((row) => !row.is_guest));
+  const rows = $derived(attendanceStore.grid?.rows ?? []);
   const currentRow = $derived(rows[currentIndex] ?? null);
   const currentStatus = $derived(
     currentRow?.cells.find((cell) => cell.assignment_id === assignmentId)?.status ?? null,
@@ -80,21 +74,6 @@
     }
 
     return { present, absent, unmarked };
-  });
-
-  const availableGuests = $derived.by(() => {
-    if (!cursadaRoster) return [];
-    const inGrid = new Set((attendanceStore.grid?.rows ?? []).map((row) => row.enrollment_id));
-    const term = guestSearch.trim().toLowerCase();
-
-    return cursadaRoster.students.filter((student) => {
-      if (inGrid.has(student.enrollment_id)) return false;
-      if (!term) return true;
-      return (
-        student.name.toLowerCase().includes(term) ||
-        (student.legajo ?? "").toLowerCase().includes(term)
-      );
-    });
   });
 
   async function loadData() {
@@ -133,7 +112,7 @@
         undoStack = [...undoStack, { enrollmentId: row.enrollment_id, previous, wrote: false }];
       } else {
         const status = decision === "present" ? AttendanceStatus.PRESENT : AttendanceStatus.ABSENT;
-        await attendanceStore.mark(assignmentId, row.enrollment_id, status, commissionID);
+        await attendanceStore.mark(assignmentId, row.enrollment_id, status);
         undoStack = [...undoStack, { enrollmentId: row.enrollment_id, previous, wrote: true }];
       }
       advance();
@@ -151,12 +130,7 @@
         if (last.previous === null) {
           await attendanceStore.unmark(assignmentId, last.enrollmentId);
         } else {
-          await attendanceStore.mark(
-            assignmentId,
-            last.enrollmentId,
-            last.previous,
-            commissionID,
-          );
+          await attendanceStore.mark(assignmentId, last.enrollmentId, last.previous);
         }
       }
 
@@ -173,9 +147,8 @@
   }
 
   async function markAllPresent() {
-    if (commissionID === undefined) return;
     try {
-      await attendanceStore.bulkMarkPresent(assignmentId, commissionID);
+      await attendanceStore.bulkMarkPresent(assignmentId);
       notificationsStore.addSuccess($t("attendance.take_all_present"));
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
@@ -201,33 +174,6 @@
     } else if (event.key === "ArrowUp") {
       event.preventDefault();
       void decide("skip");
-    }
-  }
-
-  async function openGuests() {
-    guestOpen = true;
-    if (cursadaRoster || !attendanceStore.grid) return;
-
-    try {
-      const grid = attendanceStore.grid;
-      cursadaRoster = await enrollmentService.getCursadaRoster(
-        grid.subject.id,
-        grid.period.id,
-      );
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
-  }
-
-  async function addGuest(enrollmentId: number) {
-    if (commissionID === undefined) return;
-    try {
-      await attendanceStore.mark(assignmentId, enrollmentId, AttendanceStatus.PRESENT, commissionID);
-      await attendanceStore.loadCommission(commissionID);
-      notificationsStore.addSuccess($t("attendance.guest"));
-      guestOpen = false;
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
     }
   }
 
@@ -276,9 +222,6 @@
       >
         {$t("attendance.take_title")}
       </button>
-      <button type="button" class="paper-btn" onclick={openGuests} data-test-id="take-add-guest">
-        {$t("attendance.take_add_guest")}
-      </button>
       <a href="{baseUrl}/attendance" class="paper-btn btn-small" data-test-id="take-back">
         {$t("attendance.take_back")}
       </a>
@@ -315,50 +258,6 @@
   </div>
 {/if}
 
-<DialogBase
-  isOpen={guestOpen}
-  title={$t("attendance.guest_title")}
-  onClose={() => (guestOpen = false)}
->
-  {#snippet children()}
-    <div class="form-group">
-      <label for="guest-search">{$t("attendance.guest_search")}</label>
-      <input
-        type="search"
-        id="guest-search"
-        bind:value={guestSearch}
-        class="input-block"
-        data-test-id="guest-search-input"
-      />
-    </div>
-
-    {#if availableGuests.length === 0}
-      <p data-test-id="guest-empty">{$t("attendance.guest_empty")}</p>
-    {:else}
-      <ul class="guest-list" data-test-id="guest-list">
-        {#each availableGuests as student (student.enrollment_id)}
-          <li>
-            <button
-              type="button"
-              class="paper-btn btn-small"
-              onclick={() => addGuest(student.enrollment_id)}
-              data-test-id="guest-option-{student.enrollment_id}"
-            >
-              {student.name}{student.legajo ? ` · ${student.legajo}` : ""} · {student.commission_name ?? "—"}
-            </button>
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  {/snippet}
-
-  {#snippet footer()}
-    <button class="paper-btn" onclick={() => (guestOpen = false)}>
-      {$t("attendance.guest_close")}
-    </button>
-  {/snippet}
-</DialogBase>
-
 <style>
   .take-toolbar,
   .take-report-actions {
@@ -367,16 +266,5 @@
     gap: 0.5rem;
     justify-content: center;
     margin-top: 1rem;
-  }
-
-  .guest-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    max-height: 40vh;
-    overflow-y: auto;
   }
 </style>

@@ -15,7 +15,6 @@ const ENROLLMENT_2 = 2;
 const ENROLLMENT_OTHER_CURSADA = 9;
 const CURSADA_1 = 1;
 const COMMISSION_1 = 1;
-const COMMISSION_2 = 2;
 
 const base = {
   assignmentId: ASSIGNMENT_1,
@@ -91,21 +90,6 @@ describe("attendanceRepository Integration Tests", () => {
     attendanceRepository.unmark(ASSIGNMENT_2, ENROLLMENT_1);
 
     expect(attendanceRepository.getByCursada(CURSADA_1)).toHaveLength(2);
-  });
-
-  it("records a guest against the commission where it was taken", () => {
-    attendanceRepository.upsert({
-      ...base,
-      commissionId: COMMISSION_2,
-      status: AttendanceStatus.PRESENT,
-    });
-
-    const takenInCommission2 = attendanceRepository
-      .getByCursada(CURSADA_1)
-      .filter((record) => record.commission_id === COMMISSION_2);
-
-    expect(takenInCommission2).toHaveLength(1);
-    expect(takenInCommission2[0]?.enrollment_id).toBe(ENROLLMENT_1);
   });
 
   it("refuses a record whose enrollment belongs to another cursada", () => {

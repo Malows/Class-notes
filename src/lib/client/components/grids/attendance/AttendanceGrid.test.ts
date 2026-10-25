@@ -35,7 +35,6 @@ const baseGrid = (): AttendanceGridData => ({
       commission_id: 1,
       commission_name: "Comisión Mañana",
       commission_slug: "comision-manana",
-      is_guest: false,
       present_count: 1,
       taken_count: 1,
       cells: [
@@ -55,42 +54,14 @@ const baseGrid = (): AttendanceGridData => ({
         },
       ],
     },
-    {
-      enrollment_id: 5,
-      person_id: 5,
-      name: "Luis Fernández",
-      legajo: "ING-005",
-      commission_id: 2,
-      commission_name: "Comisión Tarde",
-      commission_slug: "comision-tarde",
-      is_guest: true,
-      present_count: 1,
-      taken_count: 1,
-      cells: [
-        {
-          assignment_id: 10,
-          enrollment_id: 5,
-          status: AttendanceStatus.ABSENT,
-          recorded_on: "2026-10-23",
-          commission_id: 1,
-        },
-        {
-          assignment_id: 11,
-          enrollment_id: 5,
-          status: null,
-          recorded_on: null,
-          commission_id: null,
-        },
-      ],
-    },
   ],
   columns: [
-    { assignment_id: 10, present_count: 1, taken_count: 2 },
+    { assignment_id: 10, present_count: 1, taken_count: 1 },
     { assignment_id: 11, present_count: 0, taken_count: 0 },
   ],
 });
 
-test("renders the commission grid with cells, guests and summaries", async () => {
+test("renders the commission grid with cells and summaries", async () => {
   await loadTranslations("es", "/");
 
   render(AttendanceGrid, { grid: baseGrid(), canEdit: false });
@@ -99,14 +70,9 @@ test("renders the commission grid with cells, guests and summaries", async () =>
   expect(screen.getByText("Ana Martínez")).toBeTruthy();
   expect(screen.getByTestId("attendance-cell-1-10").textContent?.trim()).toBe("✓");
   expect(screen.getByTestId("attendance-cell-1-11").textContent?.trim()).toBe("–");
-  expect(screen.getByTestId("attendance-cell-5-10").textContent?.trim()).toBe("✗");
-
-  const guest = screen.getByTestId("attendance-guest-5");
-  expect(guest.textContent).toContain("Invitado");
-  expect(guest.textContent).toContain("Comisión Tarde");
 
   expect(screen.getByTestId("attendance-row-summary-1").textContent?.trim()).toBe("1 / 1");
-  expect(screen.getByTestId("attendance-column-10").textContent?.trim()).toBe("1 / 2");
+  expect(screen.getByTestId("attendance-column-10").textContent?.trim()).toBe("1 / 1");
   expect(screen.getByTestId("attendance-empty-column-11")).toBeTruthy();
 });
 

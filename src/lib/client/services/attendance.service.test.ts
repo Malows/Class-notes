@@ -25,21 +25,12 @@ describe("attendanceService (client)", () => {
     expect(apiFetch).toHaveBeenCalledWith("/attendance?subject_period_id=7");
   });
 
-  it("records a decision with the commission", async () => {
-    await attendanceService.mark(1, 5, AttendanceStatus.PRESENT, 2);
+  it("records a decision", async () => {
+    await attendanceService.mark(1, 5, AttendanceStatus.PRESENT);
 
     expect(apiFetch).toHaveBeenCalledWith("/attendance/1/5", {
       method: "PUT",
-      body: JSON.stringify({ status: "PRESENT", commission_id: 2 }),
-    });
-  });
-
-  it("sends a null commission when none is given", async () => {
-    await attendanceService.mark(1, 5, AttendanceStatus.ABSENT);
-
-    expect(apiFetch).toHaveBeenCalledWith("/attendance/1/5", {
-      method: "PUT",
-      body: JSON.stringify({ status: "ABSENT", commission_id: null }),
+      body: JSON.stringify({ status: "PRESENT" }),
     });
   });
 
@@ -50,13 +41,12 @@ describe("attendanceService (client)", () => {
   });
 
   it("sends a bulk of decisions", async () => {
-    await attendanceService.bulk(1, 2, [{ enrollment_id: 5, status: AttendanceStatus.PRESENT }]);
+    await attendanceService.bulk(1, [{ enrollment_id: 5, status: AttendanceStatus.PRESENT }]);
 
     expect(apiFetch).toHaveBeenCalledWith("/attendance/bulk", {
       method: "POST",
       body: JSON.stringify({
         assignment_id: 1,
-        commission_id: 2,
         entries: [{ enrollment_id: 5, status: "PRESENT" }],
       }),
     });

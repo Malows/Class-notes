@@ -24,7 +24,6 @@ const grid = (): AttendanceGrid => ({
       commission_id: 1,
       commission_name: "Comisión Mañana",
       commission_slug: "comision-manana",
-      is_guest: false,
       present_count: 0,
       taken_count: 0,
       cells: [
@@ -86,7 +85,7 @@ describe("AttendanceStore", () => {
       recorded_on: "2026-10-23",
     });
 
-    await store.mark(10, 1, AttendanceStatus.PRESENT, 1);
+    await store.mark(10, 1, AttendanceStatus.PRESENT);
 
     expect(store.grid?.rows[0]?.cells[0]?.status).toBe(AttendanceStatus.PRESENT);
     expect(store.grid?.rows[0]?.present_count).toBe(1);
@@ -107,7 +106,7 @@ describe("AttendanceStore", () => {
       status: AttendanceStatus.ABSENT,
       recorded_on: "2026-10-23",
     });
-    await store.mark(10, 1, AttendanceStatus.ABSENT, 1);
+    await store.mark(10, 1, AttendanceStatus.ABSENT);
 
     mockService.unmark.mockResolvedValue(undefined);
     await store.unmark(10, 1);
@@ -132,9 +131,9 @@ describe("AttendanceStore", () => {
       },
     ]);
 
-    const records = await store.bulkMarkPresent(10, 1);
+    const records = await store.bulkMarkPresent(10);
 
-    expect(mockService.bulk).toHaveBeenCalledWith(10, 1, [
+    expect(mockService.bulk).toHaveBeenCalledWith(10, [
       { enrollment_id: 1, status: AttendanceStatus.PRESENT },
     ]);
     expect(records).toHaveLength(1);

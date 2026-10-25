@@ -8,7 +8,6 @@
   "state_present": "Presente",
   "state_absent": "Ausente",
   "state_unmarked": "Sin tomar",
-  "guest": "Invitado",
   "no_commission": "Sin comisión",
   "empty_students": "Esta comisión todavía no tiene alumnos.",
   "empty_assignments": "Esta cursada todavía no tiene trabajos prácticos.",
@@ -27,11 +26,6 @@
   "take_result_present": "{{count}} presentes",
   "take_result_absent": "{{count}} ausentes",
   "take_result_unmarked": "{{count}} sin tomar",
-  "take_add_guest": "Agregar invitado",
-  "guest_title": "Agregar un alumno de otra comisión",
-  "guest_search": "Buscar alumnos de esta cursada",
-  "guest_empty": "No hay otros alumnos inscriptos en esta cursada.",
-  "guest_close": "Cerrar",
   "take_back": "Volver a la grilla",
   "open_take": "Tomar asistencia de este TP"
 }

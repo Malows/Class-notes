@@ -43,7 +43,6 @@ const rosterRow = (id: number, personId: number, name: string) => ({
   commission_id: 1,
   commission_name: "Comisión Mañana",
   commission_slug: "comision-manana",
-  is_guest: false,
   present_count: 0,
   taken_count: 0,
   cells: [
@@ -67,37 +66,6 @@ const grid = {
   columns: [{ assignment_id: 10, present_count: 0, taken_count: 0 }],
 };
 
-const cursadaRoster = {
-  subject: {
-    id: 5,
-    name: "Álgebra Lineal",
-    slug: "algebra-lineal",
-    faculty_slug: "facultad-de-ingenieria",
-  },
-  period: { id: 2, year: 2025, semester: 1 },
-  commissions: [{ id: 1, name: "Comisión Mañana", slug: "comision-manana" }],
-  students: [
-    {
-      enrollment_id: 1,
-      person_id: 1,
-      name: "Juan Pérez",
-      legajo: null,
-      commission_id: 1,
-      commission_name: "Comisión Mañana",
-      commission_slug: "comision-manana",
-    },
-    {
-      enrollment_id: 9,
-      person_id: 9,
-      name: "Nicolás Vega",
-      legajo: "MAT-001",
-      commission_id: 2,
-      commission_name: "Comisión Tarde",
-      commission_slug: "comision-tarde",
-    },
-  ],
-};
-
 const staticRoutes: Array<[string, unknown]> = [
   ["/faculties", [{ id: 1, name: "Facultad de Ingeniería", slug: "facultad-de-ingenieria" }]],
   [
@@ -112,10 +80,6 @@ const staticRoutes: Array<[string, unknown]> = [
         faculty_slug: "facultad-de-ingenieria",
       },
     ],
-  ],
-  [
-    "/periods/2/subjects/5/students",
-    cursadaRoster,
   ],
   [
     "/periods",
@@ -229,7 +193,7 @@ test("walks the roster and records a decision per student", async () => {
 
   expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/1", {
     method: "PUT",
-    body: JSON.stringify({ status: "PRESENT", commission_id: 1 }),
+    body: JSON.stringify({ status: "PRESENT" }),
   });
   expect(document.body.textContent).toContain("María Rodríguez");
 
@@ -237,7 +201,7 @@ test("walks the roster and records a decision per student", async () => {
 
   expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/2", {
     method: "PUT",
-    body: JSON.stringify({ status: "ABSENT", commission_id: 1 }),
+    body: JSON.stringify({ status: "ABSENT" }),
   });
 
   const report = document.querySelector('[data-test-id="take-report"]');
@@ -268,31 +232,4 @@ test("undo restores the previous value and returns to that student", async () =>
 
   expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/1", { method: "DELETE" });
   expect(document.body.textContent).toContain("Juan Pérez");
-});
-
-test("adds a guest from another commission and records it against this one", async () => {
-  await mountPage();
-
-  await key("ArrowRight");
-  await key("ArrowLeft");
-
-  const addGuest = document.querySelector('[data-test-id="take-add-guest"]') as HTMLElement;
-  expect(addGuest).not.toBeNull();
-  addGuest.click();
-  flushSync();
-  await flush();
-  flushSync();
-
-  const option = document.querySelector('[data-test-id="guest-option-9"]') as HTMLElement;
-  expect(option).not.toBeNull();
-
-  option.click();
-  flushSync();
-  await flush();
-  flushSync();
-
-  expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/9", {
-    method: "PUT",
-    body: JSON.stringify({ status: "PRESENT", commission_id: 1 }),
-  });
 });

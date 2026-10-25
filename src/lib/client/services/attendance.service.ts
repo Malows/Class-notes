@@ -15,27 +15,18 @@ export const attendanceService = {
     apiFetch<AttendanceGrid>(`/attendance?commission_id=${commission_id}`),
   getGridByCursada: (subject_period_id: number) =>
     apiFetch<AttendanceGrid>(`/attendance?subject_period_id=${subject_period_id}`),
-  mark: (
-    assignment_id: number,
-    enrollment_id: number,
-    status: AttendanceStatus,
-    commission_id?: number | null,
-  ) =>
+  mark: (assignment_id: number, enrollment_id: number, status: AttendanceStatus) =>
     apiFetch<AttendanceRecord>(`/attendance/${assignment_id}/${enrollment_id}`, {
       method: "PUT",
-      body: JSON.stringify({ status, commission_id: commission_id ?? null }),
+      body: JSON.stringify({ status }),
     }),
   unmark: (assignment_id: number, enrollment_id: number) =>
     apiFetch<void>(`/attendance/${assignment_id}/${enrollment_id}`, {
       method: "DELETE",
     }),
-  bulk: (
-    assignment_id: number,
-    commission_id: number | null,
-    entries: AttendanceBulkPayloadEntry[],
-  ) =>
+  bulk: (assignment_id: number, entries: AttendanceBulkPayloadEntry[]) =>
     apiFetch<AttendanceRecord[]>("/attendance/bulk", {
       method: "POST",
-      body: JSON.stringify({ assignment_id, commission_id, entries }),
+      body: JSON.stringify({ assignment_id, entries }),
     }),
 };

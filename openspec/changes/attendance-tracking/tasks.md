@@ -15,7 +15,7 @@
 
 - [x] 3.1 Implement `attendance.repository.ts` with `getOne`, `upsert`, `unmark`, `bulkUpsert`, `getByCommission` and `getByCursada`; verify with tests that unmark leaves no row, that re-recording updates the existing row instead of duplicating it, and that `recorded_on` moves to the new date.
 - [x] 3.2 Verify the row set of a commission grid in those tests: the roster plus enrollments with a record taken in that commission, and that a deleted enrollment or deleted person disappears from both grids.
-- [x] 3.3 Compute the summary in the repository and verify with tests that an assignment with no record is not counted as an absence, that a column with no records reports empty rather than zero, and that a guest's record appears both in the commission where it was taken and in the guest's own commission grid.
+- [x] 3.3 Compute the summary in the repository and verify with tests that an assignment with no record is not counted as an absence, and that a column with no records reports empty rather than zero.
 
 ## 4. Servicio
 
@@ -32,13 +32,13 @@
 
 ## 7. Vistas
 
-- [x] 7.1 Build `AttendanceGrid.svelte` (rows = enrollments, columns = assignments, cells showing present/absent/not-taken, row and column summaries) and mount it on `.../commissions/{slug}/attendance` and `.../periods/{year}/{semester}/attendance`, adding the navigation entry points on the commission row and the commissions page; verify with render tests for both scopes, including the empty-column state and the guest label.
+- [x] 7.1 Build `AttendanceGrid.svelte` (rows = enrollments, columns = assignments, cells showing present/absent/not-taken, row and column summaries) and mount it on `.../commissions/{slug}/attendance` and `.../periods/{year}/{semester}/attendance`, adding the navigation entry points on the commission row and the commissions page; verify with render tests for both scopes, including the empty-column state and the per-row commission label.
 - [x] 7.2 Build the take mode at `.../commissions/{slug}/attendance/take?assignment_id=` with one card per student, a progress counter, a "mark all present" action and an end-of-run report; verify with a render test that the run reports present/absent/skipped and that skipped students stay unmarked.
 - [x] 7.3 Implement the gesture layer with pointer events and a threshold of `max(80px, 20%)` plus axis dominance, and wire the arrow keys and the three visible buttons; verify with a unit test for the gesture decision and a render test that keyboard and buttons produce the same records and that undo restores the previous value.
-- [x] 7.4 Add the guest picker inside take mode, searching persons of the same cursada who are not in the roster; verify with a render test that the picked person is appended as a guest and stored with this commission's id.
+- [x] 7.4 Keep attendance scoped to the commission roster: no guest rows, no guest label, no guest picker, and the grid row set is exactly the roster; verify no guest affordance remains in the UI and that the grid test covers the roster-only row set.
 
 ## 8. i18n e integración
 
-- [x] 8.1 Add the `attendance.json` namespace in EN and ES covering the grids, the take mode, the guest picker and the summary — and the labels the cursada roster needs on the academic side; verify `pnpm validate:i18n` passes.
+- [x] 8.1 Add the `attendance.json` namespace in EN and ES covering the grids, the take mode and the summary — and the labels the cursada roster needs on the academic side; verify `pnpm validate:i18n` passes.
 - [x] 8.2 Run `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server` and `pnpm test:client`, fixing every failure.
-- [x] 8.3 Smoke test on a fresh database: read the cursada roster and confirm it lists every enrolled student with its commission, mark a student present and another absent for a TP, unmark one and confirm it returns to not-taken, re-record the same TP and confirm it overwrites with a new date, mark a guest from another commission and confirm the value shows in both grids and in the cursada roster totals.
+- [x] 8.3 Smoke test on a fresh database: read the cursada roster and confirm it lists every enrolled student with its commission, mark a student present and another absent for a TP, unmark one and confirm it returns to not-taken, re-record the same TP and confirm it overwrites with a new date, and confirm the cursada grid reports the same totals as the commission grid.

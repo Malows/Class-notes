@@ -33,6 +33,12 @@ The system SHALL store at most one attendance record per enrollment and practica
 - **THEN** the existing record is updated instead of duplicated
 - **AND** its recorded date is replaced with the new one
 
+#### Scenario: Reject a student from another cursada
+
+- **WHEN** the user tries to record attendance for a student who is not enrolled in the cursada of the assignment
+- **THEN** the system rejects the record with an error
+- **AND** SHALL NOT store any attendance
+
 ### Requirement: Attendance Grid
 
 The system SHALL present attendance as a grid with enrollments as rows and the cursada's assignments as columns, and SHALL allow reading it scoped to one commission or to the whole cursada.
@@ -54,27 +60,6 @@ The system SHALL present attendance as a grid with enrollments as rows and the c
 
 - **WHEN** an enrollment or its person is deleted
 - **THEN** it SHALL NOT appear as a row in any attendance grid
-
-### Requirement: Guest Attendance
-
-The system SHALL allow marking attendance for a student who is enrolled in the same cursada but belongs to another commission, recording it against the commission where it was taken. A student from another cursada SHALL NOT be markable.
-
-#### Scenario: Mark a guest from another commission
-
-- **WHEN** the user adds a student of the same cursada but of another commission while taking attendance
-- **THEN** the attendance is recorded against the commission where it was taken
-- **AND** the student appears as a row in that commission's grid, identified as a guest
-
-#### Scenario: Guest attendance counts in the student's own commission
-
-- **WHEN** a guest's attendance is recorded in another commission
-- **THEN** that value SHALL also appear in the grid of the guest's own commission for the same assignment
-
-#### Scenario: Reject a student from another cursada
-
-- **WHEN** the user tries to mark a student who is not enrolled in the cursada of the assignment
-- **THEN** the system rejects the record with an error
-- **AND** SHALL NOT store any attendance
 
 ### Requirement: Sequential Take Mode
 

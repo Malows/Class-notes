@@ -16,13 +16,14 @@ See `proposal.md` — Why. Constraints that shape the approach:
 
 - A state per (TP, enrollment) that can distinguish present, absent and not-taken.
 - Two readable scopes: one commission (where attendance is taken) and the whole cursada (the global view).
-- Guest attendance that is structurally impossible to record across cursadas.
+- A record that remembers which commission it was taken in, without exposing cross-commission attendance yet.
 - A take mode that works one-handed on a phone, with a keyboard path that is not an afterthought.
 
 **Non-Goals:**
 
 - No sessions: one state per TP, not per class date.
 - No attendance thresholds or "regularidad" rules.
+- No guest attendance: cross-commission marking is planned, not supported (D9).
 - No offline queue, no background sync.
 - No automatic absence or bulk import from a file.
 - No changes to the enrollment, roster or assignment flows.
@@ -41,7 +42,7 @@ attendances
         PK (assignment_id, enrollment_id)
         status: PRESENT | ABSENT
         recorded_on: YYYY-MM-DD (local)
-        commission_id: where it was taken (differs from the enrollment's own => guest)
+        commission_id: the commission where it was taken (derived from the enrollment for now)
         subject_period_id: denormalized, so the same-cursada rule is enforceable (D4)
         deletedAt: soft delete
 ```
@@ -60,25 +61,11 @@ Writing `ABSENT` is what makes "nobody came" different from "I have not taken at
 
 Unmarking is a soft delete, and the upsert revives the row, exactly like `deliveryRepository.save`.
 
-### D3. `commission_id` on the record is what makes guests work
+### D3. `commission_id` records where attendance was taken
 
-An attendance row is keyed by the enrollment, so the student's own commission is always derivable. The extra `commission_id` says **where it was taken**, and only differs for guests.
+An attendance row is keyed by the enrollment, so the student's commission is always derivable. The extra `commission_id` stores **where the value was recorded**, and for now it is always the enrollment's own commission, because take mode only walks the roster of the commission being taken.
 
-That single column makes both grids correct without duplicating anything:
-
-```
-Comision A (donde tomo asistencia)          Comision B (donde cursa Beto)
-        TP1   TP2                                   TP1   TP2
- Ana    [v]   [ ]                            Beto  [v]   [ ]   <- misma fila
- Beto*  [v]   [ ]   <- invitado
- Caro   [x]   [ ]
-```
-
-- Commission A's grid includes Beto because he has a record taken there.
-- Commission B's grid shows Beto's TP1 as present because the cell is looked up by `(assignment, enrollment)`, not by commission.
-- The cursada grid has one row per enrollment, so Beto appears once even though two commissions "see" him.
-
-Row set of a commission grid = roster of the commission ∪ enrollments with a record taken in that commission.
+Guests — marking a student of another commission of the same cursada — are out of scope for this change (D9). The column and the composite keys stay because they are what makes that feature a UI-only addition later: no migration, and the grid is already keyed by `(assignment, enrollment)`.
 
 ### D4. Same-cursada enforced by composite foreign keys
 
@@ -95,7 +82,7 @@ SQLite enforces this if the parents have a unique index on the pair, so the migr
 
 ```
 .../periods/{year}/{semester}/attendance                  de la cursada (todas las comisiones)
-.../commissions/{slug}/attendance                          de la comision (nomina + invitados)
+.../commissions/{slug}/attendance                          de la comision (nomina)
 .../commissions/{slug}/attendance/take?assignment_id=X     tomar asistencia (siempre por comision)
 ```
 
@@ -125,11 +112,13 @@ Each decision is a `PUT` (or `DELETE` for unmark) issued immediately, with optim
 - Per column: count of `PRESENT`; a column with no records at all renders an empty state, not `0`.
 - Unmarked is never counted as absent, anywhere.
 
-### D9. Guest picker
+### D9. Guests are out of scope for now
 
-In take mode, a button opens a picker that searches persons **already enrolled in the same cursada** who are not in this commission's roster (the data comes from `getByCursada` minus the roster). Picking one appends a card at the end of the run, flagged as a guest; the record is written with this commission's id.
+Attendance covers the roster of the commission where it is taken, and nothing else: no picker, no guest rows, no guest label. The commission grid is exactly the roster.
 
-This matches the intent stated for the feature ("al final quiero poder agregar asistencia de estudiantes de otra comisión"): guests are deliberate additions, not part of the walked roster.
+The model stays ready for the feature: a record already carries `commission_id`, and the two composite keys already force every attendance into the cursada of its assignment and of its enrollment. Adding guests later is therefore a UI change on an existing table, not a migration.
+
+Accepted consequence: a student who attends another commission's class for the same TP cannot be marked from that commission. That is the requirement as stated today; when the need comes back, the change is additive.
 
 ### D10. i18n and accessibility
 
@@ -153,7 +142,7 @@ Students without a commission appear with null commission fields — they are en
 
 - **A TP taught twice loses the first class.** Accepted by design (D1). Mitigation: the date is visible on the cell tooltip, and the session migration path is documented for when it matters.
 - **Migrations only run on a fresh database.** The new table requires deleting `class-notes.db*`, which is fine today but would destroy real attendance later. Recommended follow-up: a `schema_migrations` tracking table so migrations can be applied incrementally before attendance is used for real. No attendance tasks in this change are blocked by that, hence the explicit warning rather than silent absorption.
-- **A guest appears in two grids.** Intentional and consistent (D3), but a teacher may wonder why Beto is in both. Mitigation: the guest row is labelled with its origin commission.
+- **A student who attends another commission cannot be marked.** Accepted by scope (D9); the gap is visible in the cursada grid, where the student shows as not taken.
 - **Optimistic writes on a bad network.** A decision can be lost between the card and the server. Mitigation: the grid is the source of truth after the run, failures surface as a toast, and the bulk endpoint gives one retry unit.
 - **Swipe vs. page scroll on mobile.** `touch-action: none` on the card, axis dominance and a threshold; the buttons remain the fallback.
 - **Attendance volume.** A cursada of 40 students × 12 TPs = 480 rows, trivial for SQLite; the grid query is one join keyed by `subject_period_id`/`commission_id`.

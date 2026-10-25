@@ -11,5 +11,6 @@
   "pending_title": "Pending Corrections",
   "pending_loading": "Loading pending...",
   "pending_empty": "🎉 All up to date! No pending corrections.",
+  "pending_empty_active": "No pending corrections in the active period.",
   "go": "Go"
 }

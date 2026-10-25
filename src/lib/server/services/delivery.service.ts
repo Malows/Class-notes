@@ -14,6 +14,6 @@ export const deliveryService = {
     deliveryRepository.getCommissionOverviewData(commissionID),
   getSubjectPeriodOverviewData: (subjectID: number, periodID: number) =>
     deliveryRepository.getSubjectPeriodOverviewData(subjectID, periodID),
-  getPendingSummary: () => deliveryRepository.getPendingSummary(),
+  getPendingSummary: (now?: Date) => deliveryRepository.getPendingSummary(now),
   getGlobalStats: () => deliveryRepository.getGlobalStats(),
 };

@@ -3,6 +3,7 @@ import type { MetadataContextPayload, Period } from "$lib/common";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
 import { faculties, periods, subjectPeriods, subjects } from "../database/schema";
+import { getActivePeriodKey } from "../utils/active-period";
 
 export interface PeriodRepository {
   getAll(): Period[];
@@ -201,13 +202,8 @@ class PeriodRepositoryImpl implements PeriodRepository {
   }
 
   getActiveMetadata(now: Date): MetadataContextPayload {
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
-
-    // Southern academic year: semester 1 = Mar-Jul, semester 2 = Aug-Dec,
-    // Jan-Feb fall back to the previous year's semester 2.
-    const activeSemester = currentMonth >= 3 && currentMonth <= 7 ? 1 : 2;
-    const activeYear = activeSemester === 1 || currentMonth >= 8 ? currentYear : currentYear - 1;
+    // Same active-period rule as the pending dashboard (Mar-Jul / Aug-Dec).
+    const { year: activeYear, semester: activeSemester } = getActivePeriodKey(now);
 
     const rows = drizzleDb
       .select({

@@ -148,3 +148,21 @@ test("abbreviates assignment headers while keeping the full title available", as
   expect(second.textContent?.trim()).toBe("GDP");
   expect(second.querySelector("span")?.getAttribute("aria-label")).toBe("Guía de problemas");
 });
+
+test("striping starts on the first data row, not on the header", async () => {
+  await loadTranslations("es", "/");
+
+  const grid = baseGrid();
+  grid.rows = [
+    { ...grid.rows[0]!, enrollment_id: 1, person_id: 1, name: "Ana Martínez" },
+    { ...grid.rows[0]!, enrollment_id: 2, person_id: 2, name: "Beto Suárez" },
+  ];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const first = screen.getByTestId("attendance-row-1");
+  const second = screen.getByTestId("attendance-row-2");
+
+  expect(first.classList.contains("attendance-grid__row--striped")).toBe(false);
+  expect(second.classList.contains("attendance-grid__row--striped")).toBe(true);
+});

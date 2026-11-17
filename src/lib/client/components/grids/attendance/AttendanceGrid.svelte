@@ -54,8 +54,12 @@
       <div class="attendance-grid__summary-head">{$t("attendance.column_summary")}</div>
     </div>
 
-    {#each grid.rows as row (row.enrollment_id)}
-      <div class="attendance-grid__row" data-test-id="attendance-row-{row.enrollment_id}">
+    {#each grid.rows as row, index (row.enrollment_id)}
+      <div
+        class="attendance-grid__row"
+        class:attendance-grid__row--striped={index % 2 === 1}
+        data-test-id="attendance-row-{row.enrollment_id}"
+      >
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
           <a href="/persons/{row.person_id}">{row.name}</a>
           {#if grid.scope === "cursada"}
@@ -135,11 +139,11 @@
     text-overflow: ellipsis;
   }
 
-  .attendance-grid__row:nth-child(odd) {
+  .attendance-grid__row--striped {
     background-color: #f3f4f6;
   }
 
-  :global(.dark) .attendance-grid__row:nth-child(odd) {
+  :global(.dark) .attendance-grid__row--striped {
     background-color: #4c4b49;
   }
 

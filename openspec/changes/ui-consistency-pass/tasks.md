@@ -2,8 +2,8 @@
 
 ## 1. Defectos de las grillas
 
-- [ ] 1.1 Replace the grid column header with a single-line abbreviated label (`TP1` derived from the trailing number, else initials) with the full title in `title` and `aria-label`, raise the column to `3.2rem` and reserve the header row height; verify at 1440 and 390 that no header overlaps the first data row and that the full title appears on hover.
-- [ ] 1.2 Fix the attendance row striping so alternation starts on the first data row (header out of the striped selector or `:nth-child(even)`); verify by inspecting that the first data row is not striped and the second is.
+- [x] 1.1 Replace the grid column header with a single-line abbreviated label (`TP1` derived from the trailing number, else initials) with the full title in `title` and `aria-label`, raise the column to `3.2rem` and reserve the header row height; verify at 1440 and 390 that no header overlaps the first data row and that the full title appears on hover.
+- [x] 1.2 Fix the attendance row striping so alternation starts on the first data row (header out of the striped selector or `:nth-child(even)`); verify by inspecting that the first data row is not striped and the second is.
 - [ ] 1.3 Make the cursada summary cells navigate to the row's own commission (commission slug looked up from the row's `commission_id`); verify with a test asserting the href of a cell in a cursada grid and that a row without commission keeps a non-navigating cell.
 - [ ] 1.4 Remove the floating sidebar toggle on narrow viewports after confirming the navbar control is present, and verify at 390 that no control overlaps page content.
 

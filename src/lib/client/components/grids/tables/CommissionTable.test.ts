@@ -23,6 +23,10 @@ test("CommissionTable renders commissions and handles callbacks", async () => {
   expect(screen.getAllByText("Comm A")[0]).toBeDefined();
   expect(screen.getAllByText("5")[0]).toBeDefined();
 
+  document.body
+    .querySelectorAll("details")
+    .forEach((details) => ((details as HTMLDetailsElement).open = true));
+
   // Test Edit
   const editButtons = screen.getAllByText("Editar");
   await fireEvent.click(editButtons[0]);

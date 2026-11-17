@@ -24,6 +24,12 @@ test("AssignmentRow renders and handles onDelete", async () => {
   });
 
   expect(screen.getAllByText("Test TP")[0]).toBeDefined();
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-1"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
   const deleteBtn = document.body.querySelector('[data-test-id="delete-btn-1"]') as HTMLElement;
   await fireEvent.click(deleteBtn);
 

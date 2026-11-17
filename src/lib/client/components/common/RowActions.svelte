@@ -1,0 +1,137 @@
+<script lang="ts">
+  import type { Snippet } from "svelte";
+
+  import { t } from "$lib/common/i18n/config";
+
+  interface Props {
+    /** The single action a row shows directly. */
+    primary?: Snippet;
+    /** Non-destructive actions shown inside the disclosure. */
+    overflow?: Snippet;
+    /** Destructive actions, rendered after a separator. */
+    destructive?: Snippet;
+    /** Accessible name of the row this disclosure belongs to. */
+    label?: string;
+    testId?: string;
+  }
+
+  let { primary, overflow, destructive, label, testId }: Props = $props();
+
+  const disclosureLabel = $derived(
+    label ? `${$t("layout.more_actions")} — ${label}` : $t("layout.more_actions"),
+  );
+
+  // Close the disclosure after picking an action so the next interaction
+  // starts from the row again.
+  function closeMenu(event: MouseEvent) {
+    const details = (event.currentTarget as HTMLElement).closest("details");
+    if (details) details.open = false;
+  }
+</script>
+
+<div class="row-actions">
+  {#if primary}
+    <div class="row-actions__primary">
+      {@render primary()}
+    </div>
+  {/if}
+
+  {#if overflow || destructive}
+    <details class="row-actions__disclosure" data-test-id={testId}>
+      <summary class="paper-btn btn-small row-actions__summary" aria-label={disclosureLabel}>
+        ⋯
+      </summary>
+      <div
+        class="row-actions__menu"
+        role="group"
+        aria-label={disclosureLabel}
+        onclick={closeMenu}
+      >
+        {@render overflow?.()}
+        {#if overflow && destructive}
+          <hr class="row-actions__separator" />
+        {/if}
+        {@render destructive?.()}
+      </div>
+    </details>
+  {/if}
+</div>
+
+<style>
+  .row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .row-actions__primary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .row-actions__disclosure {
+    position: relative;
+  }
+
+  .row-actions__summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    padding: 0 0.5rem;
+    cursor: pointer;
+    list-style: none;
+    line-height: 1;
+  }
+
+  .row-actions__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .row-actions__summary::marker {
+    content: "";
+  }
+
+  .row-actions__menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.35rem);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 11rem;
+    padding: 0.5rem;
+    background-color: #fff;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--border-color);
+  }
+
+  :global(.dark) .row-actions__menu {
+    background-color: #1a1c1c;
+  }
+
+  .row-actions__menu :global(.paper-btn) {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+  }
+
+  .row-actions__separator {
+    width: 100%;
+    margin: 0.25rem 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  @media (pointer: coarse) {
+    .row-actions__summary {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+</style>

@@ -43,6 +43,12 @@ test("SubjectPeriodRow 'Materias' navigates to the period subjects and does not 
   );
 
   // Edit still opens the edit flow
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-2"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-2"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(period);

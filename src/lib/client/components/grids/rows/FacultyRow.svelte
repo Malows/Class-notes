@@ -3,6 +3,7 @@
   import type { Faculty } from "$lib/common/types/academic";
 
   import Button from "$lib/client/components/common/Button.svelte";
+  import RowActions from "$lib/client/components/common/RowActions.svelte";
 
   interface Props {
     faculty: Faculty;
@@ -16,19 +17,25 @@
 <td data-test-id="faculty-id-{faculty.id}">{faculty.id}</td>
 <td data-test-id="faculty-name-{faculty.id}">{faculty.name}</td>
 <td>
-  <div class="row flex-right gap-2">
-    <Button
-      href="/faculties/{faculty.slug}/subjects"
-      testId="view-subjects-btn-{faculty.id}"
-      withHover
-    >
-      {$t("layout.view_subjects")}
-    </Button>
-    <Button onclick={() => onEdit(faculty)} testId="edit-btn-{faculty.id}" withHover>
-      {$t("common.edit")}
-    </Button>
-    <Button onclick={() => onDelete(faculty)} testId="delete-btn-{faculty.id}" withHover>
-      {$t("common.delete")}
-    </Button>
-  </div>
+  <RowActions label={faculty.name} testId="row-actions-{faculty.id}">
+    {#snippet primary()}
+      <Button
+        href="/faculties/{faculty.slug}/subjects"
+        testId="view-subjects-btn-{faculty.id}"
+        withHover
+      >
+        {$t("layout.view_subjects")}
+      </Button>
+    {/snippet}
+    {#snippet overflow()}
+      <Button onclick={() => onEdit(faculty)} testId="edit-btn-{faculty.id}" withHover>
+        {$t("common.edit")}
+      </Button>
+    {/snippet}
+    {#snippet destructive()}
+      <Button onclick={() => onDelete(faculty)} testId="delete-btn-{faculty.id}" withHover>
+        {$t("common.delete")}
+      </Button>
+    {/snippet}
+  </RowActions>
 </td>

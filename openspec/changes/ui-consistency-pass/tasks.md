@@ -18,8 +18,8 @@
 ## 3. Listas y acciones
 
 - [x] 3.1 Apply the content measure token to the page container and confirm grids opt out; verify at 1440 that list actions sit near their row instead of the viewport edge.
-- [ ] 3.2 Create `RowActions` (one primary action plus a disclosure reusing the popover pattern) and migrate the commission, subject, period, subject-period and assignment rows; verify the disclosure opens, lists the secondary actions and is keyboard reachable.
-- [ ] 3.3 Separate destructive actions inside the disclosure (after a separator) and keep the existing confirmation; update the row tests to open the disclosure before asserting edit/delete, and verify the whole client suite passes.
+- [x] 3.2 Create `RowActions` (one primary action plus a disclosure reusing the popover pattern) and migrate the commission, subject, period, subject-period and assignment rows; verify the disclosure opens, lists the secondary actions and is keyboard reachable.
+- [x] 3.3 Separate destructive actions inside the disclosure (after a separator) and keep the existing confirmation; update the row tests to open the disclosure before asserting edit/delete, and verify the whole client suite passes.
 - [ ] 3.4 Introduce the `link-quiet` treatment for navigating values (roster person name, person detail cursadas) and verify no navigating value falls back to the browser default underline.
 
 ## 4. Estados y feedback

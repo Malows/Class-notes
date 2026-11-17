@@ -82,6 +82,7 @@
       {periodYear}
       {periodSemester}
       commissionSlug={commissionSlug ?? ""}
+      commissions={commissionsStore.items}
     />
   </div>
 {:else}

@@ -2,7 +2,7 @@
   import { OverviewDeliveryStatus } from "$lib/common/types/student";
 
   interface Props {
-    href: string;
+    href?: string;
     status: OverviewDeliveryStatus;
     aiLevel?: number;
     label?: string;
@@ -31,17 +31,30 @@
   });
 </script>
 
-<a
-  class="paper-btn overview-cell"
-  class:btn-success={status === OverviewDeliveryStatus.APPROVED}
-  class:btn-danger={status === OverviewDeliveryStatus.REJECTED}
-  class:btn-secondary={status === OverviewDeliveryStatus.PENDING_CORRECTION}
-  {href}
-  data-test-id={testId}
-  aria-label={label || statusIcon[status]}
->
-  {cellContent()}
-</a>
+{#if href}
+  <a
+    class="paper-btn overview-cell"
+    class:btn-success={status === OverviewDeliveryStatus.APPROVED}
+    class:btn-danger={status === OverviewDeliveryStatus.REJECTED}
+    class:btn-secondary={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    {href}
+    data-test-id={testId}
+    aria-label={label || statusIcon[status]}
+  >
+    {cellContent()}
+  </a>
+{:else}
+  <span
+    class="paper-btn overview-cell"
+    class:btn-success={status === OverviewDeliveryStatus.APPROVED}
+    class:btn-danger={status === OverviewDeliveryStatus.REJECTED}
+    class:btn-secondary={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    data-test-id={testId}
+    aria-label={label || statusIcon[status]}
+  >
+    {cellContent()}
+  </span>
+{/if}
 
 <style>
   .overview-cell {

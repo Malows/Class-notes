@@ -15,6 +15,7 @@
     periodYear: number;
     periodSemester: number;
     commissionSlug: string;
+    commissions?: Array<{ id: number; slug: string }>;
   }
 
   let {
@@ -25,7 +26,16 @@
     periodYear,
     periodSemester,
     commissionSlug,
+    commissions = [],
   }: Props = $props();
+
+  const commissionSlugById = $derived(new Map(commissions.map((c) => [c.id, c.slug])));
+
+  // The cursada grid holds rows from several commissions: each cell returns to
+  // the commission of its own row, not to the (empty) page-level slug.
+  const resolveCommissionSlug = (commissionId?: number) =>
+    (commissionId !== undefined ? commissionSlugById.get(commissionId) : undefined) ??
+    (commissionSlug || undefined);
 </script>
 
 {#if grid.length === 0}
@@ -47,6 +57,7 @@
     <OverviewHeader {assignments} {facultySlug} {subjectSlug} {periodYear} {periodSemester} {commissionSlug} />
 
     {#each grid as student}
+      {@const rowCommissionSlug = resolveCommissionSlug(student.commission_id)}
       <OverviewRow
         name={student.name}
         deliveries={student.deliveries}
@@ -54,7 +65,7 @@
         {subjectSlug}
         {periodYear}
         {periodSemester}
-        {commissionSlug}
+        commissionSlug={rowCommissionSlug}
       />
     {/each}
   </div>

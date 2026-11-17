@@ -191,4 +191,41 @@ describe("overview components", () => {
       "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-a/students",
     );
   });
+
+  test("cursada cells return to the commission of their own row", () => {
+    const assignments = [{ id: 1, subject_period_id: 1, title: "TP 1" }];
+    const delivery = (enrollmentId: number) => ({
+      assignment_id: 1,
+      enrollment_id: enrollmentId,
+      grade: 0,
+      ai_level: 0,
+      comments: "",
+      workflow_status: DeliveryWorkflowStatus.APPROVED,
+    });
+    const grid = [
+      { id: 1, enrollment_id: 1, name: "Ana", commission_id: 1, deliveries: [delivery(1)] },
+      { id: 2, enrollment_id: 2, name: "Beto", deliveries: [delivery(2)] },
+    ];
+
+    render(OverviewGrid, {
+      assignments,
+      grid,
+      facultySlug: "fac-1",
+      subjectSlug: "sub-2",
+      periodYear: 2026,
+      periodSemester: 1,
+      commissionSlug: "",
+      commissions: [{ id: 1, slug: "comision-manana" }],
+    });
+
+    const linked = screen.getByTestId("delivery-cell-1-1");
+    expect(linked.tagName).toBe("A");
+    expect(linked.getAttribute("href")).toBe(
+      "/faculties/fac-1/subjects/sub-2/periods/2026/1/commissions/comision-manana/correct?assignment_id=1&enrollment_id=1&mode=single",
+    );
+
+    const withoutCommission = screen.getByTestId("delivery-cell-2-1");
+    expect(withoutCommission.tagName).not.toBe("A");
+    expect(withoutCommission.getAttribute("href")).toBeNull();
+  });
 });

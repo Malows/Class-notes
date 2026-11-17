@@ -106,6 +106,8 @@
   .page-container {
     padding: 1rem 0;
     height: 100%;
+    width: 100%;
+    max-width: var(--content-measure);
   }
 
   @media (max-width: 768px) {

@@ -8,6 +8,7 @@
   import { t } from "$lib/common/i18n/config";
 
   import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
+  import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
@@ -124,7 +125,7 @@
   <title>{$t("layout.correct")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<h2>{$t("layout.correct")} {assignment?.title || "TP"}</h2>
+<PageHeader title={`${$t("layout.correct")} ${assignment?.title || "TP"}`} />
 <p>
   {$t("layout.student")}: {enrollments[currentIndex]?.name || "..."} ({currentIndex + 1}
   {$t("common.of")}

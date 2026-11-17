@@ -10,7 +10,7 @@
 ## 2. Shell y navegación
 
 - [x] 2.1 Create `PageHeader` (title, optional lead, primary action slot, optional secondary row) and make `CommonPage`/`PageWithAdd` thin wrappers; verify the existing page tests still pass.
-- [ ] 2.2 Migrate every page that uses a raw `<h2>` (the two attendance grids, take mode, the ported overview and correct screens) to `PageHeader`; verify at 1440 that all screen titles render at the same scale and position.
+- [x] 2.2 Migrate every page that uses a raw `<h2>` (the two attendance grids, take mode, the ported overview and correct screens) to `PageHeader`; verify at 1440 that all screen titles render at the same scale and position.
 - [ ] 2.3 Reduce the navbar brand to logo scale so the page title is the most prominent text in the content area; verify at 1440 and 390.
 - [ ] 2.4 Add the compact breadcrumb for narrow viewports (current resource + parent, parent navigable) while keeping the full trail on wide screens; verify at 390 that the trail is visible and its parent entry navigates.
 - [ ] 2.5 Add `[Asistencia]` to the period row's cursada actions and remove the cursada attendance button from the commissions page; update the row test to assert the new entry point and verify the commissions page no longer offers it.

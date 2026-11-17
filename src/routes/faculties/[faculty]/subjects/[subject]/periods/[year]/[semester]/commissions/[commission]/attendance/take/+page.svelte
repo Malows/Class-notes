@@ -7,6 +7,7 @@
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
   import TakeAttendanceCard from "$lib/client/components/attendance/TakeAttendanceCard.svelte";
+  import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
@@ -186,10 +187,7 @@
   <title>{$t("attendance.take_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<h2>
-  {$t("attendance.take_title")}
-  {#if assignmentTitle}· {assignmentTitle}{/if}
-</h2>
+<PageHeader title={`${$t("attendance.take_title")}${assignmentTitle ? ` · ${assignmentTitle}` : ""}`} />
 
 {#if loading}
   <p>{$t("attendance.loading")}</p>

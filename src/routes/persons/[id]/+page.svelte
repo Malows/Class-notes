@@ -8,6 +8,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import PersonModal from "$lib/client/components/modals/PersonModal.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import { personService } from "$lib/client/services/person.service";
@@ -63,16 +64,24 @@
   <title>{$t("persons.detail_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<p>
-  <a href="/persons" class="paper-btn btn-small">{$t("persons.back_to_registry")}</a>
-</p>
+{#snippet backLink()}
+  <Button href="/persons" class="btn-small">{$t("persons.back_to_registry")}</Button>
+{/snippet}
 
 {#if loading}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
   <p>{$t("persons.loading")}</p>
 {:else if !detail}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
   <p data-test-id="person-detail-not-found">{$t("persons.not_found")}</p>
 {:else}
-  <h2 data-test-id="person-detail-name">{detail.person.name}</h2>
+  <PageHeader title={detail.person.name} testId="person-detail-name">
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
   <p>
     {$t("persons.legajo_label")}:
     <span data-test-id="person-detail-legajo">{detail.person.legajo ?? "—"}</span>

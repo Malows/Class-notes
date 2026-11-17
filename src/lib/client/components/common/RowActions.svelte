@@ -22,10 +22,21 @@
   );
 
   // Close the disclosure after picking an action so the next interaction
-  // starts from the row again.
-  function closeMenu(event: MouseEvent) {
-    const details = (event.currentTarget as HTMLElement).closest("details");
-    if (details) details.open = false;
+  // starts from the row again. An action keeps the menu container inert,
+  // unlike a click handler on a non-interactive div.
+  function closeOnAction(node: HTMLElement) {
+    function handleClick(event: MouseEvent) {
+      if (!(event.target as HTMLElement).closest("a, button")) return;
+      const details = node.closest("details");
+      if (details) details.open = false;
+    }
+
+    node.addEventListener("click", handleClick);
+    return {
+      destroy() {
+        node.removeEventListener("click", handleClick);
+      },
+    };
   }
 </script>
 
@@ -45,7 +56,7 @@
         class="row-actions__menu"
         role="group"
         aria-label={disclosureLabel}
-        onclick={closeMenu}
+        use:closeOnAction
       >
         {@render overflow?.()}
         {#if overflow && destructive}

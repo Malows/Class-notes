@@ -9,6 +9,7 @@ import { CommissionsStore } from "$lib/client/stores/commissions.svelte";
 import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
 import { NavStore } from "$lib/client/stores/nav.svelte";
 import { PeriodsStore } from "$lib/client/stores/periods.svelte";
+import { SidebarUiStore } from "$lib/client/stores/sidebar-ui.svelte";
 import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
 
 let mockParams = $state<Record<string, string>>({});
@@ -74,6 +75,7 @@ const commissions = [
 ];
 
 let component: ReturnType<typeof mount>;
+let sidebarUi: SidebarUiStore;
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 function buildContext() {
@@ -83,6 +85,8 @@ function buildContext() {
   map.set(StoreKey.PERIODS, new PeriodsStore());
   map.set(StoreKey.COMMISSIONS, new CommissionsStore());
   map.set(StoreKey.NAV, new NavStore());
+  sidebarUi = new SidebarUiStore();
+  map.set(StoreKey.SIDEBAR_UI, sidebarUi);
   return map;
 }
 
@@ -110,7 +114,7 @@ beforeEach(() => {
   });
 });
 
-test("Sidebar renders and handles mobile/collapse toggles", async () => {
+test("Sidebar follows the navbar menu state and handles collapse", async () => {
   await loadTranslations("en", "/");
   mountWithContext();
   flushSync();
@@ -120,10 +124,8 @@ test("Sidebar renders and handles mobile/collapse toggles", async () => {
   expect(aside?.classList.contains("open")).toBe(false);
   expect(aside?.classList.contains("collapsed")).toBe(false);
 
-  // Toggle mobile menu
-  const toggleMobileBtn = document.body.querySelector(".sidebar-toggle") as HTMLButtonElement;
-  expect(toggleMobileBtn).toBeTruthy();
-  await fireEvent.click(toggleMobileBtn);
+  // The navbar control owns the mobile open state; the sidebar follows it.
+  sidebarUi.toggle();
   flushSync();
   expect(aside?.classList.contains("open")).toBe(true);
 

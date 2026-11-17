@@ -8,4 +8,5 @@ export enum StoreKey {
   ATTENDANCE = "attendance",
   NAV = "nav",
   METADATA = "metadata",
+  SIDEBAR_UI = "sidebar-ui",
 }

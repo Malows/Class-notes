@@ -6,6 +6,7 @@
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { NavStore } from "$lib/client/stores/nav.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
+  import type { SidebarUiStore } from "$lib/client/stores/sidebar-ui.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
   import { StoreKey } from "$lib/common";
@@ -15,8 +16,10 @@
   import SidebarHeader from "./SidebarHeader.svelte";
   import SidebarStaticLinks from "./SidebarStaticLinks.svelte";
 
-  let isOpen = $state(false);
   let isCollapsed = $state(false);
+
+  // The mobile menu control lives in the navbar; both read the same state.
+  const sidebarUi = getContext<SidebarUiStore>(StoreKey.SIDEBAR_UI);
 
   // The sidebar consumes the same store instances the pages use via Svelte
   // context (provided by initStoreContext in +layout.svelte) so the quick
@@ -63,10 +66,6 @@
       }
     }
   });
-
-  function toggleMobile() {
-    isOpen = !isOpen;
-  }
 
   function toggleCollapse() {
     isCollapsed = !isCollapsed;
@@ -138,18 +137,10 @@
   );
 </script>
 
-<!-- Mobile Toggle Button -->
-<button
-  class="paper-btn sidebar-toggle sm-only"
-  onclick={toggleMobile}
-  aria-label={isOpen ? $t("layout.menu_close") : $t("layout.menu_open")}
->
-  {isOpen ? "✕" : "☰"}
-</button>
-
+<!-- The menu control lives in the navbar so it never floats over page content. -->
 <aside
   class="sidebar sketch-border sketch-shadow"
-  class:open={isOpen}
+  class:open={sidebarUi.isOpen}
   class:collapsed={isCollapsed}
 >
   <SidebarHeader {isCollapsed} onToggle={toggleCollapse} />
@@ -220,28 +211,7 @@
     font-size: 0.85rem;
   }
 
-  .sidebar-toggle {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    z-index: 1001;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .sm-only {
-    display: none;
-  }
-
   @media (max-width: 768px) {
-    .sm-only {
-      display: flex;
-    }
     .sidebar {
       position: fixed;
       top: 0;

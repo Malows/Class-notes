@@ -86,6 +86,9 @@
 
   .nav-brand h3 {
     margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
   }
 
   .nav-breadcrumbs {

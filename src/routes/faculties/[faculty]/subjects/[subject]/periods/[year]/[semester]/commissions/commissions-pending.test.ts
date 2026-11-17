@@ -138,6 +138,13 @@ test("lists enrollments without commission in a pending section", async () => {
   expect(pending?.textContent).toContain("Alumno Sin Comisión");
   expect(pending?.textContent).toContain("SIN-009");
 
+  // The cursada attendance entry point belongs to the cursada row, not this list.
+  expect(
+    document.body.querySelector(
+      'a[href="/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2025/1/attendance"]',
+    ),
+  ).toBeNull();
+
   expect(apiFetchMock).toHaveBeenCalledWith(
     "/enrollments?subject_period_id=1&pending=true",
   );

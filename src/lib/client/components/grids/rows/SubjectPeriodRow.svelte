@@ -29,6 +29,9 @@
     <Button href="{rootPath()}/commissions" testId="view-commissions-btn-{period.id}" withHover>
       {$t("layout.commissions")}
     </Button>
+    <Button href="{rootPath()}/attendance" testId="view-attendance-btn-{period.id}" withHover>
+      {$t("attendance.cursada_title")}
+    </Button>
     <Button href="{rootPath()}/assignments" testId="view-assignments-btn-{period.id}" withHover>
       {$t("layout.define_tps")}
     </Button>

@@ -5,6 +5,7 @@ export enum StoreKey {
   COMMISSIONS = "commissions",
   ASSIGNMENTS = "assignments",
   ENROLLMENTS = "enrollments",
+  ATTENDANCE = "attendance",
   NAV = "nav",
   METADATA = "metadata",
 }

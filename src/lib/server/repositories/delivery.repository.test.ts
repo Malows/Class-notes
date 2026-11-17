@@ -122,7 +122,9 @@ describe("deliveryRepository Integration Tests", () => {
       "INSERT INTO enrollments (person_id, subject_period_id, commission_id) VALUES (?, 9, ?)",
     ).run(insertedPersonId, insertedCommissionId);
 
-    const pendingSummary = deliveryRepository.getPendingSummary();
+    const pendingSummary = deliveryRepository.getPendingSummary(
+      new Date("2024-09-15T12:00:00.000Z"),
+    );
     expect(pendingSummary.length).toBeGreaterThan(0);
     expect(pendingSummary[0]).toEqual(
       expect.objectContaining({
@@ -131,6 +133,11 @@ describe("deliveryRepository Integration Tests", () => {
       }),
     );
     expect(pendingSummary.some((row) => row.pending_count > 0)).toBe(true);
+    // Only the active period (2024 - 2nd semester) is included.
+    expect(pendingSummary.every((row) => row.period_id === 1)).toBe(true);
+    // Each commission is paired with its own subject, not any subject sharing the period.
+    const comisionA = pendingSummary.find((row) => row.commission_name === "Comisión A");
+    expect(comisionA?.subject_name).toBe("Cálculo Diferencial");
 
     const stats = deliveryRepository.getGlobalStats();
     expect(stats).toEqual(

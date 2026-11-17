@@ -1,4 +1,5 @@
 import type {
+  CursadaRoster,
   EnrollmentInput,
   EnrollmentRegistrationReport,
   EnrollmentWithPerson,
@@ -7,12 +8,20 @@ import type {
 import { enrollmentRepository } from "../repositories/enrollment.repository";
 import { personRepository } from "../repositories/person.repository";
 import { findPersonMatch } from "../utils/person-matching";
+import { periodSubjectService } from "./period-subject.service";
 
 export const enrollmentService = {
   getRoster: (commissionId: number): EnrollmentWithPerson[] =>
     enrollmentRepository.getRoster(commissionId),
   getByCursada: (subjectPeriodId: number): EnrollmentWithPerson[] =>
     enrollmentRepository.getByCursada(subjectPeriodId),
+  getCursadaRoster: (subjectId: number, periodId: number): CursadaRoster | null => {
+    const subjectPeriodId = periodSubjectService.findCursadaId(subjectId, periodId);
+    if (subjectPeriodId === null) {
+      return null;
+    }
+    return enrollmentRepository.getCursadaRoster(subjectPeriodId);
+  },
   getPending: (subjectPeriodId: number): EnrollmentWithPerson[] =>
     enrollmentRepository.getPending(subjectPeriodId),
   assignCommission: (id: number, commissionId: number | null): EnrollmentWithPerson =>

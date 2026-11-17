@@ -8,8 +8,18 @@ export interface GlobalStats {
   totalDeliveries: number;
 }
 export interface PendingSummary {
-  id: number;
-  title: string;
+  commission_id: number;
+  commission_name: string;
+  commission_slug: string;
+  subject_id: number;
+  subject_name: string;
+  subject_slug: string;
+  faculty_id: number;
+  faculty_slug: string;
+  period_id: number;
+  period_year: number;
+  period_semester: number;
+  pending_count: number;
 }
 export interface OverviewData {
   assignments: Assignment[];

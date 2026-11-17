@@ -55,6 +55,11 @@ const config = {
     },
     {
       locale: "en",
+      key: "attendance",
+      loader: async () => (await import("./en/attendance.json")).default,
+    },
+    {
+      locale: "en",
       key: "assignments",
       loader: async () => (await import("./en/assignments.json")).default,
     },
@@ -112,6 +117,11 @@ const config = {
       locale: "es",
       key: "persons",
       loader: async () => (await import("./es/persons.json")).default,
+    },
+    {
+      locale: "es",
+      key: "attendance",
+      loader: async () => (await import("./es/attendance.json")).default,
     },
     {
       locale: "es",

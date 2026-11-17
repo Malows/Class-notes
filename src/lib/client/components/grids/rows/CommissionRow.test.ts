@@ -36,6 +36,11 @@ test("CommissionRow renders and handles callbacks", async () => {
   expect(screen.getAllByText("5")[0]).toBeDefined();
 
   // Test Edit
+  const attendanceBtn = document.body.querySelector(
+    '[data-test-id="view-attendance-btn-1"]',
+  ) as HTMLAnchorElement;
+  expect(attendanceBtn.getAttribute("href")).toContain("/attendance");
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(commission);

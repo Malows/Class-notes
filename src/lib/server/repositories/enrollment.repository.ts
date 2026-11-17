@@ -1,8 +1,21 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
-import type { EnrollmentWithPerson } from "$lib/common/types/enrollment";
+import type {
+  CursadaRoster,
+  CursadaRosterCommission,
+  CursadaRosterStudent,
+  EnrollmentWithPerson,
+} from "$lib/common/types/enrollment";
 
 import db, { drizzleDb, withTransaction } from "../database/db";
-import { commissions, enrollments, persons, subjectPeriods } from "../database/schema";
+import {
+  commissions,
+  enrollments,
+  faculties,
+  periods,
+  persons,
+  subjectPeriods,
+  subjects,
+} from "../database/schema";
 
 export class EnrollmentConflictError extends Error {
   constructor() {
@@ -21,6 +34,7 @@ export class CrossCursadaError extends Error {
 export interface EnrollmentRepository {
   getRoster(commissionId: number): EnrollmentWithPerson[];
   getByCursada(subjectPeriodId: number): EnrollmentWithPerson[];
+  getCursadaRoster(subjectPeriodId: number): CursadaRoster | null;
   getPending(subjectPeriodId: number): EnrollmentWithPerson[];
   findById(id: number): EnrollmentWithPerson | null;
   findByPersonAndCursada(personId: number, subjectPeriodId: number): EnrollmentWithPerson | null;
@@ -97,6 +111,102 @@ class EnrollmentRepositoryImpl implements EnrollmentRepository {
       )
       .orderBy(persons.name)
       .all() as EnrollmentWithPerson[];
+  }
+
+  getCursadaRoster(subjectPeriodId: number): CursadaRoster | null {
+    const cursada = drizzleDb
+      .select({
+        subject_id: subjects.id,
+        subject_name: subjects.name,
+        subject_slug: subjects.slug,
+        faculty_slug: faculties.slug,
+        period_id: periods.id,
+        period_year: periods.year,
+        period_semester: periods.semester,
+      })
+      .from(subjectPeriods)
+      .innerJoin(subjects, eq(subjects.id, subjectPeriods.subjectId))
+      .innerJoin(faculties, eq(faculties.id, subjects.facultyId))
+      .innerJoin(periods, eq(periods.id, subjectPeriods.periodId))
+      .where(
+        and(
+          eq(subjectPeriods.id, subjectPeriodId),
+          isNull(subjectPeriods.deletedAt),
+          isNull(subjects.deletedAt),
+          isNull(faculties.deletedAt),
+          isNull(periods.deletedAt),
+        ),
+      )
+      .get() as
+      | {
+          subject_id: number;
+          subject_name: string;
+          subject_slug: string;
+          faculty_slug: string;
+          period_id: number;
+          period_year: number;
+          period_semester: number;
+        }
+      | undefined;
+
+    if (!cursada) {
+      return null;
+    }
+
+    const students = drizzleDb
+      .select({
+        enrollment_id: enrollments.id,
+        person_id: persons.id,
+        name: persons.name,
+        legajo: persons.legajo,
+        commission_id: commissions.id,
+        commission_name: commissions.name,
+        commission_slug: commissions.slug,
+      })
+      .from(enrollments)
+      .innerJoin(persons, eq(persons.id, enrollments.personId))
+      .leftJoin(
+        commissions,
+        and(eq(commissions.id, enrollments.commissionId), isNull(commissions.deletedAt)),
+      )
+      .where(
+        and(
+          eq(enrollments.subjectPeriodId, subjectPeriodId),
+          isNull(enrollments.deletedAt),
+          isNull(persons.deletedAt),
+        ),
+      )
+      .orderBy(persons.name)
+      .all() as CursadaRosterStudent[];
+
+    const cursadaCommissions = drizzleDb
+      .select({ id: commissions.id, name: commissions.name, slug: commissions.slug })
+      .from(commissions)
+      .where(
+        and(
+          eq(commissions.subjectId, cursada.subject_id),
+          eq(commissions.periodId, cursada.period_id),
+          isNull(commissions.deletedAt),
+        ),
+      )
+      .orderBy(commissions.name)
+      .all() as CursadaRosterCommission[];
+
+    return {
+      subject: {
+        id: cursada.subject_id,
+        name: cursada.subject_name,
+        slug: cursada.subject_slug,
+        faculty_slug: cursada.faculty_slug,
+      },
+      period: {
+        id: cursada.period_id,
+        year: cursada.period_year,
+        semester: cursada.period_semester,
+      },
+      commissions: cursadaCommissions,
+      students,
+    };
   }
 
   getPending(subjectPeriodId: number): EnrollmentWithPerson[] {

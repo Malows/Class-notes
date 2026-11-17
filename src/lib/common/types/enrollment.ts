@@ -28,6 +28,38 @@ export interface EnrollmentRegistrationReport {
   enrollments: EnrollmentWithPerson[];
 }
 
+export interface CursadaRosterStudent {
+  enrollment_id: number;
+  person_id: number;
+  name: string;
+  legajo: string | null;
+  commission_id: number | null;
+  commission_name: string | null;
+  commission_slug: string | null;
+}
+
+export interface CursadaRosterCommission {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface CursadaRoster {
+  subject: {
+    id: number;
+    name: string;
+    slug: string;
+    faculty_slug: string;
+  };
+  period: {
+    id: number;
+    year: number;
+    semester: number;
+  };
+  commissions: CursadaRosterCommission[];
+  students: CursadaRosterStudent[];
+}
+
 export interface PersonRegistryRow {
   id: number;
   name: string;

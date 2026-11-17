@@ -19,6 +19,7 @@ import {
   subjectPeriods,
   subjects,
 } from "../database/schema";
+import { getActivePeriodKey } from "../utils/active-period";
 
 export interface DeliveryRepository {
   getOne(assignmentID: number, enrollmentID: number): Delivery | null;
@@ -26,7 +27,7 @@ export interface DeliveryRepository {
   save(delivery: Delivery): void;
   getCommissionOverviewData(commissionID: number): OverviewData;
   getSubjectPeriodOverviewData(subjectID: number, periodID: number): OverviewData;
-  getPendingSummary(): any[];
+  getPendingSummary(now?: Date): any[];
   getGlobalStats(): any;
 }
 
@@ -282,7 +283,8 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
     };
   }
 
-  getPendingSummary(): any[] {
+  getPendingSummary(now: Date = new Date()): any[] {
+    const { year: activeYear, semester: activeSemester } = getActivePeriodKey(now);
     const pendingCount = sql<number>`COUNT(${enrollments.id}) - (
       SELECT COUNT(*)
       FROM deliveries d
@@ -310,12 +312,8 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       .from(commissions)
       .innerJoin(periods, eq(commissions.periodId, periods.id))
       .innerJoin(
-        subjectPeriods,
-        and(eq(subjectPeriods.periodId, periods.id), isNull(subjectPeriods.deletedAt)),
-      )
-      .innerJoin(
         subjects,
-        and(eq(subjectPeriods.subjectId, subjects.id), isNull(subjects.deletedAt)),
+        and(eq(commissions.subjectId, subjects.id), isNull(subjects.deletedAt)),
       )
       .innerJoin(faculties, eq(subjects.facultyId, faculties.id))
       .leftJoin(
@@ -323,7 +321,13 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
         and(eq(enrollments.commissionId, commissions.id), isNull(enrollments.deletedAt)),
       )
       .where(
-        and(isNull(commissions.deletedAt), isNull(periods.deletedAt), isNull(subjects.deletedAt)),
+        and(
+          isNull(commissions.deletedAt),
+          isNull(periods.deletedAt),
+          isNull(subjects.deletedAt),
+          eq(periods.year, activeYear),
+          eq(periods.semester, activeSemester),
+        ),
       )
       .groupBy(commissions.id)
       .having(sql`${pendingCount} > 0`)

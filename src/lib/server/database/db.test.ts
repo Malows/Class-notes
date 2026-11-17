@@ -63,6 +63,60 @@ describe("database initialization", () => {
     expect(sqlite.prepare("SELECT COUNT(*) as count FROM deliveries").get()).toEqual({ count: 28 });
   });
 
+  it("creates the attendances table with the cursada composite foreign keys", () => {
+    const sqlite = new Database(":memory:");
+
+    initializeDatabase(sqlite, { isTest: true, shouldSeed: false });
+
+    const tables = (
+      sqlite.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all() as {
+        name: string;
+      }[]
+    ).map((row) => row.name);
+    expect(tables).toContain("attendances");
+
+    const foreignKeys = sqlite.prepare("PRAGMA foreign_key_list(attendances)").all() as {
+      id: number;
+      from: string;
+      table: string;
+      to: string;
+    }[];
+
+    const assignmentCursada = foreignKeys.filter(
+      (fk) => fk.table === "assignments" && fk.id === 1,
+    );
+    const enrollmentCursada = foreignKeys.filter(
+      (fk) => fk.table === "enrollments" && fk.id === 0,
+    );
+
+    expect(assignmentCursada).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ from: "assignment_id", to: "id" }),
+        expect.objectContaining({ from: "subject_period_id", to: "subject_period_id" }),
+      ]),
+    );
+    expect(enrollmentCursada).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ from: "enrollment_id", to: "id" }),
+        expect.objectContaining({ from: "subject_period_id", to: "subject_period_id" }),
+      ]),
+    );
+  });
+
+  it("refuses an attendance whose enrollment belongs to another cursada", () => {
+    const sqlite = new Database(":memory:");
+
+    initializeDatabase(sqlite, { isTest: true, shouldSeed: true });
+
+    const insert = sqlite.prepare(
+      "INSERT INTO attendances (assignment_id, enrollment_id, subject_period_id, commission_id, status, recorded_on) VALUES (?, ?, ?, ?, ?, ?)",
+    );
+
+    insert.run(1, 1, 1, 1, "PRESENT", "2026-10-23");
+
+    expect(() => insert.run(1, 9, 1, 1, "PRESENT", "2026-10-23")).toThrow(/FOREIGN KEY/);
+  });
+
   it("creates the expected foreign key relationships from migrations", () => {
     const sqlite = new Database(":memory:");
 

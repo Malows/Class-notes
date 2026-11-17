@@ -5,8 +5,17 @@ import db, { drizzleDb, withTransaction } from "../database/db";
 import { commissions, enrollments } from "../database/schema";
 import { buildUniqueSlug, slugify } from "../utils/slug";
 
+export interface CommissionScope {
+  id: number;
+  subject_id: number;
+  period_id: number;
+  name: string;
+  slug: string;
+}
+
 export interface CommissionRepository {
   getAll(periodID?: number): Commission[];
+  findScope(id: number): CommissionScope | null;
   create(subject_id: number, period_id: number, name: string): Commission;
   update(id: number, name: string): Commission;
   delete(id: number): void;
@@ -59,6 +68,22 @@ class CommissionRepositoryImpl implements CommissionRepository {
       .where(and(...conditions))
       .groupBy(commissions.id)
       .all() as Commission[];
+  }
+
+  findScope(id: number): CommissionScope | null {
+    return (
+      (drizzleDb
+        .select({
+          id: commissions.id,
+          subject_id: commissions.subjectId,
+          period_id: commissions.periodId,
+          name: commissions.name,
+          slug: commissions.slug,
+        })
+        .from(commissions)
+        .where(and(eq(commissions.id, id), isNull(commissions.deletedAt)))
+        .get() as CommissionScope | undefined) ?? null
+    );
   }
 
   create(subject_id: number, period_id: number, name: string): Commission {

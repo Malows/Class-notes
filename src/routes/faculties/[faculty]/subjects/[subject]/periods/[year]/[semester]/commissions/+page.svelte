@@ -114,6 +114,10 @@
     <a href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods" class="paper-btn btn-small"
       >{$t("layout.back_to_periods")}</a
     >
+    <a
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/attendance"
+      class="paper-btn btn-small">{$t("attendance.cursada_title")}</a
+    >
   </p>
 
   <GuardWrapper

@@ -6,6 +6,7 @@ import { assignments, deliveries, enrollments } from "../database/schema";
 
 export interface AssignmentRepository {
   getAll(subjectPeriodId?: number): Assignment[];
+  findById(id: number): Assignment | null;
   create(
     subjectPeriodId: number,
     title: string,
@@ -38,6 +39,16 @@ class AssignmentRepositoryImpl implements AssignmentRepository {
       .from(assignments)
       .where(and(...conditions))
       .all() as Assignment[];
+  }
+
+  findById(id: number): Assignment | null {
+    return (
+      (drizzleDb
+        .select(assignmentColumns)
+        .from(assignments)
+        .where(and(eq(assignments.id, id), isNull(assignments.deletedAt)))
+        .get() as Assignment | undefined) ?? null
+    );
   }
 
   private enrollmentIdsForCursada(subjectPeriodId: number): number[] {

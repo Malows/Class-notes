@@ -11,5 +11,6 @@
   "pending_title": "Pendientes de Corrección",
   "pending_loading": "Cargando pendientes...",
   "pending_empty": "🎉 ¡Todo al día! No hay pendientes.",
+  "pending_empty_active": "No hay pendientes de corrección en el período vigente.",
   "go": "Ir"
 }

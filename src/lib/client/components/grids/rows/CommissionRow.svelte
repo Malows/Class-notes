@@ -39,6 +39,13 @@
     <Button testId="view-overview-btn-{commission.id}" href="{rootPath()}/overview" withHover>
       {$t("layout.overview")}
     </Button>
+    <Button
+      testId="view-attendance-btn-{commission.id}"
+      href="{rootPath()}/attendance"
+      withHover
+    >
+      {$t("attendance.commission_title")}
+    </Button>
     <Button testId="edit-btn-{commission.id}" withHover onclick={() => onEdit(commission)}>
       {$t("common.edit")}
     </Button>

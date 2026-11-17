@@ -121,6 +121,30 @@ test("links each assignment to take mode when a href builder is given", async ()
     takeHref: (assignmentId: number) => `/take?assignment_id=${assignmentId}`,
   });
 
-  const link = screen.getByText("TP 1").closest("a");
+  const head = screen.getByTestId("attendance-head-10");
+  expect(head.textContent?.trim()).toBe("TP1");
+  const link = head.querySelector("a");
   expect(link?.getAttribute("href")).toBe("/take?assignment_id=10");
+  expect(link?.getAttribute("title")).toBe("TP 1");
+  expect(link?.getAttribute("aria-label")).toBe("TP 1");
+});
+
+test("abbreviates assignment headers while keeping the full title available", async () => {
+  await loadTranslations("es", "/");
+
+  const grid = baseGrid();
+  grid.assignments = [
+    { id: 10, subject_period_id: 1, title: "Trabajo Práctico 3" },
+    { id: 11, subject_period_id: 1, title: "Guía de problemas" },
+  ];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const first = screen.getByTestId("attendance-head-10");
+  expect(first.textContent?.trim()).toBe("TP3");
+  expect(first.querySelector("span")?.getAttribute("title")).toBe("Trabajo Práctico 3");
+
+  const second = screen.getByTestId("attendance-head-11");
+  expect(second.textContent?.trim()).toBe("GDP");
+  expect(second.querySelector("span")?.getAttribute("aria-label")).toBe("Guía de problemas");
 });

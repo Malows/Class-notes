@@ -3,6 +3,8 @@
   import type { AttendanceGrid } from "$lib/common/types/attendance";
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
+  import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
+
   import AttendanceCell from "./AttendanceCell.svelte";
 
   interface Props {
@@ -35,11 +37,17 @@
       {#each grid.assignments as assignment (assignment.id)}
         <div class="attendance-grid__assignment-head" data-test-id="attendance-head-{assignment.id}">
           {#if takeHref && takeHref(assignment.id)}
-            <a href={takeHref(assignment.id)} title={$t("attendance.open_take")}>
-              {assignment.title}
+            <a
+              href={takeHref(assignment.id)}
+              title={assignment.title}
+              aria-label={assignment.title}
+            >
+              {abbreviateTitle(assignment.title)}
             </a>
           {:else}
-            {assignment.title}
+            <span title={assignment.title} aria-label={assignment.title}>
+              {abbreviateTitle(assignment.title)}
+            </span>
           {/if}
         </div>
       {/each}
@@ -95,7 +103,7 @@
 <style>
   .attendance-grid {
     display: grid;
-    grid-template-columns: 12rem repeat(var(--cols, 1), 2.8rem) 4.5rem;
+    grid-template-columns: 12rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;
@@ -115,12 +123,14 @@
 
   .attendance-grid__header {
     font-weight: 700;
+    min-height: 3.2rem;
   }
 
   .attendance-grid__assignment-head,
   .attendance-grid__summary-head {
     text-align: center;
     font-size: 0.8rem;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }

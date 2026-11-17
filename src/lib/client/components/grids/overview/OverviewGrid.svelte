@@ -63,8 +63,8 @@
 <style>
   .overview-grid {
     display: grid;
-    /* First track 12rem for student name, N tracks of 2.8rem for each assignment */
-    grid-template-columns: 12rem repeat(var(--cols, 1), 2.8rem);
+    /* First track 12rem for student name, N tracks of 3.2rem for each assignment */
+    grid-template-columns: 12rem repeat(var(--cols, 1), 3.2rem);
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;

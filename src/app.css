@@ -48,3 +48,19 @@ main {
 .gap-2 {
   gap: 0.5rem;
 }
+
+/* Navigating values (a person's name, a cursada) look like part of the
+   application, not like the browser's default link next to sketch controls. */
+.link-quiet {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  background-image: none;
+}
+
+.link-quiet:hover {
+  text-decoration-style: dashed;
+  text-decoration-thickness: 2px;
+}

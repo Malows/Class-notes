@@ -116,6 +116,7 @@
           <span class="cursada-list__commission">
             {#if cursada.commission_slug && cursada.commission_name}
               <a
+                class="link-quiet"
                 href={commissionHref(cursada)}
                 data-test-id="person-cursada-link-{cursada.id}"
               >

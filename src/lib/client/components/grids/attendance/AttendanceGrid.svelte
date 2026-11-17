@@ -61,7 +61,7 @@
         data-test-id="attendance-row-{row.enrollment_id}"
       >
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
-          <a href="/persons/{row.person_id}">{row.name}</a>
+          <a class="link-quiet" href="/persons/{row.person_id}">{row.name}</a>
           {#if grid.scope === "cursada"}
             <span class="attendance-grid__commission" data-test-id="attendance-commission-{row.enrollment_id}">
               {row.commission_name ?? $t("attendance.no_commission")}

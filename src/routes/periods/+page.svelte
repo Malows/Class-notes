@@ -31,10 +31,10 @@
   async function handleSave(year: number, semester: number, id?: number) {
     if (id) {
       await periodsStore.updateItem(id, year, semester);
-      notificationsStore.addSuccess("Período actualizado con éxito");
+      notificationsStore.addSuccess($t("periods.updated_success"));
     } else {
       await periodsStore.create(1, year, semester);
-      notificationsStore.addSuccess("Período creado con éxito");
+      notificationsStore.addSuccess($t("periods.created_success"));
     }
     modal.close();
   }
@@ -43,7 +43,7 @@
     if (!modal.target) return;
     try {
       await periodsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Período eliminado con éxito");
+      notificationsStore.addSuccess($t("periods.deleted_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

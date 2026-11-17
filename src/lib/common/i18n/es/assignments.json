@@ -22,5 +22,10 @@
   "copy_previous_title": "Copiar Trabajos Prácticos",
   "copy_previous_message": "Se copiarán todos los trabajos prácticos del período anterior. Asegúrese de que las comisiones y alumnos de este período ya estén cargados, ya que esto generará automáticamente los registros de entrega para cada estudiante. ¿Desea continuar?",
   "copy_previous_btn": "Copiar TPs de Período Anterior",
-  "warning_alert": "Al crear o copiar trabajos prácticos, se generarán automáticamente las planillas de entregas para todos los estudiantes inscriptos en este período."
+  "warning_alert": "Al crear o copiar trabajos prácticos, se generarán automáticamente las planillas de entregas para todos los estudiantes inscriptos en este período.",
+  "created_success": "Trabajo práctico creado",
+  "updated_success": "Trabajo práctico actualizado",
+  "deleted_success": "Trabajo práctico eliminado",
+  "status_advanced": "Estado avanzado",
+  "copied_success": "Trabajos prácticos copiados"
 }

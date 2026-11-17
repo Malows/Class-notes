@@ -90,7 +90,7 @@
   async function saveDelivery(d: Delivery) {
     try {
       await correctionService.save(d);
-      notificationsStore.addSuccess("Corrección guardada con éxito");
+      notificationsStore.addSuccess($t("common.correction_saved"));
       if (mode === "single" || currentIndex === enrollments.length - 1) {
         goto(`${baseUrl}/overview`);
       } else {

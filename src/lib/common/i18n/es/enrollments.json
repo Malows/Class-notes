@@ -14,5 +14,6 @@
   "pending_count": "{{count}} sin comisión",
   "loading": "Cargando inscripciones...",
   "remove_confirm_title": "Quitar alumno",
-  "remove_confirm_message": "¿Quitar a {{name}} de esta comisión? El alumno sigue en el registro."
+  "remove_confirm_message": "¿Quitar a {{name}} de esta comisión? El alumno sigue en el registro.",
+  "removed_success": "Alumno quitado de la comisión"
 }

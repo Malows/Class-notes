@@ -22,5 +22,10 @@
   "copy_previous_title": "Copy Assignments",
   "copy_previous_message": "This will copy all assignments from the previous period. Please verify that commissions and students for this period are fully loaded, as this will automatically generate submission records for each student. Do you want to continue?",
   "copy_previous_btn": "Copy Assignments from Previous Period",
-  "warning_alert": "Creating or copying assignments will automatically generate submission sheets for all students enrolled in this period."
+  "warning_alert": "Creating or copying assignments will automatically generate submission sheets for all students enrolled in this period.",
+  "created_success": "Assignment created",
+  "updated_success": "Assignment updated",
+  "deleted_success": "Assignment deleted",
+  "status_advanced": "Status advanced",
+  "copied_success": "Assignments copied"
 }

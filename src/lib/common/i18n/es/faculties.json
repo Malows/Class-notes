@@ -10,5 +10,8 @@
   "confirm_delete_title": "Borrar Facultad",
   "confirm_delete_message": "¿Está seguro que desea borrar la facultad {{name}}?",
   "not_found_message": "La facultad seleccionada no existe o no pudo ser cargada.",
-  "back_to_faculties": "Volver a facultades"
+  "back_to_faculties": "Volver a facultades",
+  "created_success": "Facultad creada",
+  "updated_success": "Facultad actualizada",
+  "deleted_success": "Facultad eliminada"
 }

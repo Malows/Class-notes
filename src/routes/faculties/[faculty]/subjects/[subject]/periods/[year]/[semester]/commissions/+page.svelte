@@ -53,7 +53,7 @@
 
     try {
       await enrollmentsStore.assignCommission(enrollmentId, target);
-      notificationsStore.addSuccess("Alumno asignado con éxito");
+      notificationsStore.addSuccess($t("commissions.assigned_success"));
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
     }
@@ -79,11 +79,11 @@
     try {
       if (id) {
         await commissionsStore.updateItem(id, name);
-        notificationsStore.addSuccess("Comisión actualizada con éxito");
+        notificationsStore.addSuccess($t("commissions.updated_success"));
       } else {
         if (subjectID === undefined || periodID === undefined) return;
         await commissionsStore.create(subjectID, periodID, name);
-        notificationsStore.addSuccess("Comisión creada con éxito");
+        notificationsStore.addSuccess($t("commissions.created_success"));
       }
       modal.close();
     } catch (e: any) {
@@ -95,7 +95,7 @@
     if (!modal.target) return;
     try {
       await commissionsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Comisión eliminada con éxito");
+      notificationsStore.addSuccess($t("commissions.deleted_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

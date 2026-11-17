@@ -166,3 +166,32 @@ test("striping starts on the first data row, not on the header", async () => {
   expect(first.classList.contains("attendance-grid__row--striped")).toBe(false);
   expect(second.classList.contains("attendance-grid__row--striped")).toBe(true);
 });
+
+test("an empty roster offers a way to manage its students", async () => {
+  await loadTranslations("es", "/");
+  const grid = baseGrid();
+  grid.rows = [];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const card = screen.getByTestId("attendance-empty-students");
+  expect(card).toBeTruthy();
+  const cta = screen.getByTestId("attendance-empty-students-cta") as HTMLAnchorElement;
+  expect(cta.getAttribute("href")).toBe(
+    "/faculties/facultad/subjects/algebra-lineal/periods/2025/1/commissions/comision-manana/students",
+  );
+});
+
+test("an empty assignment list offers defining the assignments", async () => {
+  await loadTranslations("es", "/");
+  const grid = baseGrid();
+  grid.assignments = [];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  expect(screen.getByTestId("attendance-empty-assignments")).toBeTruthy();
+  const cta = screen.getByTestId("attendance-empty-assignments-cta") as HTMLAnchorElement;
+  expect(cta.getAttribute("href")).toBe(
+    "/faculties/facultad/subjects/algebra-lineal/periods/2025/1/assignments",
+  );
+});

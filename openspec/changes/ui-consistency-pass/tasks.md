@@ -24,7 +24,7 @@
 
 ## 4. Estados y feedback
 
-- [ ] 4.1 Create `EmptyState` (icon, title, description, one or two actions) and replace the two overview empty components and the attendance empty sentences; verify every empty collection on the grid pages offers a way forward.
+- [x] 4.1 Create `EmptyState` (icon, title, description, one or two actions) and replace the two overview empty components and the attendance empty sentences; verify every empty collection on the grid pages offers a way forward.
 - [ ] 4.2 Move every hardcoded toast to translation keys per namespace (`created_success`/`updated_success`/`deleted_success`, plus the specific ones), adding EN and ES in the same pass; verify `pnpm validate:i18n` passes and no Spanish literal remains in `notificationsStore` calls.
 - [ ] 4.3 Raise grid cells and small controls to a 44×44 minimum under `pointer: coarse`; verify at 390 that a cell can be tapped without hitting its neighbour and that desktop density is unchanged.
 

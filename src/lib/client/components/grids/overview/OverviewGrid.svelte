@@ -2,10 +2,13 @@
   import type { Assignment } from "$lib/common/types/academic";
   import type { EnrollmentGridRowDTO } from "$lib/common/types/dto";
 
+  import { t } from "$lib/common/i18n/config";
+
+  import Button from "$lib/client/components/common/Button.svelte";
+  import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+
   import OverviewRow from "./OverviewRow.svelte";
   import OverviewHeader from "./OverviewHeader.svelte";
-  import OverviewEmptyAssignments from "./OverviewEmptyAssignments.svelte";
-  import OverviewEmptyStudents from "./OverviewEmptyStudents.svelte";
 
   interface Props {
     assignments: Assignment[];
@@ -39,15 +42,47 @@
 </script>
 
 {#if grid.length === 0}
-  <OverviewEmptyStudents
-    {facultySlug}
-    {subjectSlug}
-    {periodYear}
-    {periodSemester}
-    {commissionSlug}
-  />
+  <EmptyState
+    icon="👤"
+    title={$t("commissions.no_students_message")}
+    testId="empty-students-card"
+  >
+    {#snippet actions()}
+      {#if commissionSlug}
+        <Button
+          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/students"
+          class="btn-secondary"
+          testId="empty-students-cta"
+        >
+          {$t("commissions.enroll_students_cta")}
+        </Button>
+      {:else}
+        <Button
+          href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions"
+          class="btn-secondary"
+          testId="empty-commissions-cta"
+        >
+          {$t("commissions.define_commissions_cta")}
+        </Button>
+      {/if}
+    {/snippet}
+  </EmptyState>
 {:else if assignments.length === 0}
-  <OverviewEmptyAssignments {facultySlug} {subjectSlug} {periodYear} {periodSemester} />
+  <EmptyState
+    icon="✏️"
+    title={$t("commissions.no_assignments_message")}
+    testId="empty-assignments-card"
+  >
+    {#snippet actions()}
+      <Button
+        href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/assignments"
+        class="btn-secondary"
+        testId="empty-assignments-cta"
+      >
+        {$t("commissions.define_assignments_cta")}
+      </Button>
+    {/snippet}
+  </EmptyState>
 {:else}
   <div
     class="overview-grid"

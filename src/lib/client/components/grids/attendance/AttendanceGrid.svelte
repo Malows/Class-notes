@@ -4,6 +4,8 @@
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
   import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
+  import Button from "$lib/client/components/common/Button.svelte";
+  import EmptyState from "$lib/client/components/common/EmptyState.svelte";
 
   import AttendanceCell from "./AttendanceCell.svelte";
 
@@ -20,12 +22,54 @@
     if (!canEdit || !onCycleCell) return;
     onCycleCell(assignmentId, enrollmentId, current);
   };
+
+  const periodBase = $derived(
+    `/faculties/${grid.subject.faculty_slug}/subjects/${grid.subject.slug}/periods/${grid.period.year}/${grid.period.semester}`,
+  );
 </script>
 
 {#if grid.rows.length === 0}
-  <p data-test-id="attendance-empty-students">{$t("attendance.empty_students")}</p>
+  <EmptyState
+    icon="👤"
+    title={$t("attendance.empty_students")}
+    testId="attendance-empty-students"
+  >
+    {#snippet actions()}
+      {#if grid.commission?.slug}
+        <Button
+          href="{periodBase}/commissions/{grid.commission.slug}/students"
+          class="btn-secondary"
+          testId="attendance-empty-students-cta"
+        >
+          {$t("commissions.enroll_students_cta")}
+        </Button>
+      {:else}
+        <Button
+          href="{periodBase}/commissions"
+          class="btn-secondary"
+          testId="attendance-empty-commissions-cta"
+        >
+          {$t("commissions.define_commissions_cta")}
+        </Button>
+      {/if}
+    {/snippet}
+  </EmptyState>
 {:else if grid.assignments.length === 0}
-  <p data-test-id="attendance-empty-assignments">{$t("attendance.empty_assignments")}</p>
+  <EmptyState
+    icon="✏️"
+    title={$t("attendance.empty_assignments")}
+    testId="attendance-empty-assignments"
+  >
+    {#snippet actions()}
+      <Button
+        href="{periodBase}/assignments"
+        class="btn-secondary"
+        testId="attendance-empty-assignments-cta"
+      >
+        {$t("commissions.define_assignments_cta")}
+      </Button>
+    {/snippet}
+  </EmptyState>
 {:else}
   <div
     class="attendance-grid"

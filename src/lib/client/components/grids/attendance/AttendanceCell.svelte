@@ -82,4 +82,11 @@
     background: #7f1d1d;
     color: #fbd5d5;
   }
+
+  @media (pointer: coarse) {
+    .attendance-cell {
+      min-height: 3rem;
+      min-width: 3rem;
+    }
+  }
 </style>

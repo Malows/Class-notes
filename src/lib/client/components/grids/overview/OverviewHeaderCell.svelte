@@ -87,4 +87,13 @@
   .overview-header-cell__correct-btn:hover {
     transform: scale(1.05);
   }
+
+  @media (pointer: coarse) {
+    .overview-header-cell__correct-btn {
+      min-height: 3rem;
+      min-width: 3rem;
+      max-height: 3rem;
+      max-width: 3rem;
+    }
+  }
 </style>

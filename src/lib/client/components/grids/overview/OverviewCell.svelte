@@ -74,4 +74,11 @@
   .overview-cell:hover {
     transform: scale(1.05);
   }
+
+  @media (pointer: coarse) {
+    .overview-cell {
+      min-height: 3rem;
+      min-width: 3rem;
+    }
+  }
 </style>

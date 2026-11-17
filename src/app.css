@@ -64,3 +64,11 @@ main {
   text-decoration-style: dashed;
   text-decoration-thickness: 2px;
 }
+
+/* Touch viewports get generous targets without inflating desktop density. */
+@media (pointer: coarse) {
+  .paper-btn.btn-small {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

@@ -24,6 +24,14 @@
 </ul>
 
 <style>
+  .breadcrumb {
+    margin: 0;
+  }
+
+  .breadcrumb li {
+    text-indent: 0;
+  }
+
   .breadcrumb a {
     color: var(--primary);
   }

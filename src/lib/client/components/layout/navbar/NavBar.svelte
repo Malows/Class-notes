@@ -30,9 +30,9 @@
         <a href="/" data-test-id="nav-brand-link">{$t("layout.brand")}</a>
       </h3>
     </div>
-    <div class="nav-breadcrumbs">
-      <Breadcrumbs />
-    </div>
+  </div>
+  <div class="nav-breadcrumbs">
+    <Breadcrumbs />
   </div>
   <div class="nav-actions">
     <div class="collapsible toggle-button">
@@ -55,15 +55,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 0;
   }
 
   .nav-left {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     min-width: 0;
-    flex: 1;
   }
 
   .nav-menu-toggle {
@@ -77,12 +78,43 @@
   }
 
   @media (max-width: 768px) {
-    .nav-left {
-      gap: 1rem;
-    }
-
     .nav-menu-toggle {
       display: inline-flex;
+    }
+
+    .nav-actions {
+      min-height: 44px;
+    }
+
+    /* The papercss collapsible is built for a wide navbar; on narrow screens
+       keep the language and theme controls inline instead of overlapping. */
+    .nav-actions :global(.collapsible) {
+      width: auto;
+    }
+
+    .nav-actions :global(.collapsible > label) {
+      display: none;
+    }
+
+    .nav-actions :global(.collapsible-body) {
+      display: flex;
+      gap: 0.5rem;
+      max-height: none;
+      opacity: 1;
+      overflow: visible;
+      padding: 0;
+    }
+
+    /* Keep the trail visible on its own row instead of squeezing it out. */
+    .nav-breadcrumbs {
+      order: 3;
+      flex-basis: 100%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .nav-brand {
+      display: none;
     }
   }
 
@@ -98,6 +130,7 @@
     align-items: center;
     min-width: 0;
     overflow: hidden;
+    flex: 1 1 auto;
   }
 
   .nav-actions {

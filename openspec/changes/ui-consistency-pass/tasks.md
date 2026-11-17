@@ -31,4 +31,4 @@
 ## 5. Integración
 
 - [x] 5.1 Run `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server` and `pnpm test:client`, fixing every failure.
-- [ ] 5.2 Walk the app at 1440×900 and 390×844 through dashboard → faculties → subjects → periods → commissions → roster → overview → attendance → take mode → students registry, and confirm each screen uses the page header, the row action pattern and the compact trail where applicable.
+- [x] 5.2 Walk the app at 1440×900 and 390×844 through dashboard → faculties → subjects → periods → commissions → roster → overview → attendance → take mode → students registry, and confirm each screen uses the page header, the row action pattern and the compact trail where applicable.

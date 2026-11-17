@@ -34,6 +34,20 @@ export class NavStore {
       crumbs.push({ key: "layout.faculties", href: "/faculties" });
     }
 
+    // 1b. Top-level registry: the trail still names where the user is.
+    if (pathname.startsWith("/periods") && !pathname.includes("/faculties")) {
+      crumbs.push({ key: "layout.periods", href: "/periods" });
+    }
+
+    if (pathname.startsWith("/persons")) {
+      const isDetail = /^\/persons\/[^/]+/.test(pathname);
+      crumbs.push(
+        isDetail
+          ? { key: "persons.detail_title", href: pathname }
+          : { key: "persons.index_title", href: "/persons" },
+      );
+    }
+
     // 2. Selected Subject subpath
     if (pathname.includes("/subjects") && ctx.facultySlug) {
       crumbs.push({ key: "layout.subjects", href: `/faculties/${ctx.facultySlug}/subjects` });
@@ -56,6 +70,12 @@ export class NavStore {
       if (pathname.includes("/assignments")) {
         crumbs.push({ key: "layout.define_tps", href: `${periodBase}/assignments` });
       }
+      if (!ctx.commissionSlug && pathname.includes("/attendance")) {
+        crumbs.push({ key: "attendance.cursada_title", href: `${periodBase}/attendance` });
+      }
+      if (!ctx.commissionSlug && pathname.includes("/overview")) {
+        crumbs.push({ key: "periods.period_overview_title", href: `${periodBase}/overview` });
+      }
     }
 
     // 5. Subpages inside commissions (Overview, Students, Correct)
@@ -75,6 +95,11 @@ export class NavStore {
       }
       if (pathname.includes("/correct")) {
         crumbs.push({ key: "layout.correct", href: pathname });
+      }
+      if (pathname.includes("/attendance/take")) {
+        crumbs.push({ key: "attendance.take_title", href: pathname });
+      } else if (pathname.includes("/attendance")) {
+        crumbs.push({ key: "attendance.commission_title", href: `${commissionBase}/attendance` });
       }
     }
 

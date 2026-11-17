@@ -62,6 +62,8 @@
     display: flex;
     align-items: center;
     gap: 2rem;
+    min-width: 0;
+    flex: 1;
   }
 
   .nav-menu-toggle {
@@ -94,18 +96,15 @@
   .nav-breadcrumbs {
     display: flex;
     align-items: center;
-  }
-
-  @media (max-width: 600px) {
-    .nav-breadcrumbs {
-      display: none;
-    }
+    min-width: 0;
+    overflow: hidden;
   }
 
   .nav-actions {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex-shrink: 0;
   }
 
   .toggle-button {

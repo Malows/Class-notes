@@ -26,6 +26,13 @@
   const periodBase = $derived(
     `/faculties/${grid.subject.faculty_slug}/subjects/${grid.subject.slug}/periods/${grid.period.year}/${grid.period.semester}`,
   );
+
+  const assignmentTitles = $derived(new Map(grid.assignments.map((item) => [item.id, item.title])));
+
+  const cellContext = (studentName: string, assignmentId: number) => {
+    const title = assignmentTitles.get(assignmentId);
+    return title ? `${studentName} — ${title}` : studentName;
+  };
 </script>
 
 {#if grid.rows.length === 0}
@@ -79,18 +86,19 @@
     <div class="attendance-grid__header">
       <div class="attendance-grid__student-head">{$t("attendance.column_student")}</div>
       {#each grid.assignments as assignment (assignment.id)}
+        {@const abbreviated = abbreviateTitle(assignment.title)}
         <div class="attendance-grid__assignment-head" data-test-id="attendance-head-{assignment.id}">
           {#if takeHref && takeHref(assignment.id)}
             <a
               href={takeHref(assignment.id)}
               title={assignment.title}
-              aria-label={assignment.title}
+              aria-label={`${abbreviated} — ${assignment.title}`}
             >
-              {abbreviateTitle(assignment.title)}
+              {abbreviated}
             </a>
           {:else}
-            <span title={assignment.title} aria-label={assignment.title}>
-              {abbreviateTitle(assignment.title)}
+            <span title={assignment.title} aria-label={`${abbreviated} — ${assignment.title}`}>
+              {abbreviated}
             </span>
           {/if}
         </div>
@@ -117,6 +125,7 @@
           <AttendanceCell
             status={cell.status}
             recordedOn={cell.recorded_on}
+            contextLabel={cellContext(row.name, cell.assignment_id)}
             testId="attendance-cell-{row.enrollment_id}-{cell.assignment_id}"
             onclick={canEdit
               ? () => handleCellClick(cell.assignment_id, row.enrollment_id, cell.status)

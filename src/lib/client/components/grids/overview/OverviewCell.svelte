@@ -6,10 +6,11 @@
     status: OverviewDeliveryStatus;
     aiLevel?: number;
     label?: string;
+    contextLabel?: string;
     testId?: string;
   }
 
-  let { href, status, aiLevel = 0, label = "", testId = "" }: Props = $props();
+  let { href, status, aiLevel = 0, label = "", contextLabel, testId = "" }: Props = $props();
 
   const aiEmoji = {
     1: "⚠️",
@@ -29,6 +30,12 @@
     }
     return statusIcon[status];
   });
+
+  const accessibleLabel = $derived(
+    contextLabel
+      ? `${label || statusIcon[status]} · ${contextLabel}`
+      : label || statusIcon[status],
+  );
 </script>
 
 {#if href}
@@ -42,7 +49,7 @@
     {href}
     data-test-id={testId}
     data-status={status}
-    aria-label={label || statusIcon[status]}
+    aria-label={accessibleLabel}
   >
     {cellContent()}
   </a>
@@ -56,7 +63,7 @@
     class:has-ai={aiLevel > 0}
     data-test-id={testId}
     data-status={status}
-    aria-label={label || statusIcon[status]}
+    aria-label={accessibleLabel}
   >
     {cellContent()}
   </span>

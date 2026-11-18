@@ -57,7 +57,8 @@ describe("overview components", () => {
     expect(cell.textContent?.trim()).toBe("🤖");
   });
 
-  test("OverviewRow renders the student name and delivery cells", () => {
+  test("OverviewRow renders the student name and delivery cells", async () => {
+    await loadTranslations("en", "/");
     const deliveries = [
       {
         assignment_id: 1,
@@ -80,6 +81,10 @@ describe("overview components", () => {
     render(OverviewRow, {
       name: "A very long student name that should ellipsize",
       deliveries,
+      assignments: [
+        { id: 1, subject_period_id: 1, title: "TP 1" },
+        { id: 2, subject_period_id: 1, title: "TP 2" },
+      ],
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
       periodYear: 2026,
@@ -96,6 +101,10 @@ describe("overview components", () => {
 
     expect(cell1).toBeInTheDocument();
     expect(cell1.textContent?.trim()).toBe("✅");
+    expect(cell1).toHaveAttribute(
+      "aria-label",
+      "Approved · A very long student name that should ellipsize — TP 1",
+    );
 
     expect(cell2).toBeInTheDocument();
     expect(cell2.textContent?.trim()).toBe("-");

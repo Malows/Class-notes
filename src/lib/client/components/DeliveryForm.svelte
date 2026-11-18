@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DeliveryWorkflowStatus, type Delivery } from "$lib/common/types";
+  import { t } from "$lib/common/i18n/config";
 
   import Button from "$lib/client/components/common/Button.svelte";
   import Card from "$lib/client/components/common/Card.svelte";
@@ -68,13 +69,13 @@
         }}
         data-test-id={deliveredTestId}
       />
-      <span>¿Entregó el trabajo?</span>
+      <span>{$t("assignments.delivered_label")}</span>
     </label>
 
     <hr />
 
     <fieldset class="m-0 flex flex-col gap-2 p-0">
-      <legend class="mb-1 text-label-md text-on-surface-variant">Resultado:</legend>
+      <legend class="mb-1 text-label-md text-on-surface-variant">{$t("assignments.result_label")}</legend>
       <label class="flex cursor-pointer items-center gap-2 text-body-md" for="approved-yes-{idSuffix}">
         <input
           type="radio"
@@ -88,7 +89,7 @@
           }}
           data-test-id={approvedTestId}
         />
-        <span>Aprobado</span>
+        <span>{$t("assignments.approved_label")}</span>
       </label>
       <label class="flex cursor-pointer items-center gap-2 text-body-md" for="approved-no-{idSuffix}">
         <input
@@ -103,12 +104,12 @@
           }}
           data-test-id={approvedTestId}
         />
-        <span>No Aprobado</span>
+        <span>{$t("assignments.rejected_label")}</span>
       </label>
     </fieldset>
 
     <div class="flex flex-col gap-1">
-      <label class="text-label-md text-on-surface-variant" for="grade-{idSuffix}">Nota:</label>
+      <label class="text-label-md text-on-surface-variant" for="grade-{idSuffix}">{$t("assignments.grade_label")}</label>
       <input
         type="number"
         id="grade-{idSuffix}"
@@ -119,17 +120,17 @@
     </div>
 
     <div class="flex flex-col gap-1">
-      <label class="text-label-md text-on-surface-variant" for="ai_level-{idSuffix}">Uso de IA:</label>
+      <label class="text-label-md text-on-surface-variant" for="ai_level-{idSuffix}">{$t("assignments.ai_usage_label")}</label>
       <select id="ai_level-{idSuffix}" bind:value={d.ai_level} data-test-id={aiLevelTestId}>
-        <option value={0}>0 - Ninguno</option>
-        <option value={1}>1 - Sospecha (!)</option>
-        <option value={2}>2 - Certeza (!!)</option>
+        <option value={0}>{$t("assignments.ai_none")}</option>
+        <option value={1}>{$t("assignments.ai_suspicion")}</option>
+        <option value={2}>{$t("assignments.ai_certainty")}</option>
       </select>
     </div>
 
     <div class="flex flex-col gap-1">
       <label class="text-label-md text-on-surface-variant" for="comments-{idSuffix}"
-        >Comentarios:</label
+        >{$t("assignments.comments_label")}</label
       >
       <textarea
         id="comments-{idSuffix}"
@@ -143,11 +144,11 @@
 
     <div class="flex flex-wrap gap-2">
       {#if onPrev}
-        <Button class="btn-ghost" onclick={onPrev} testId={prevTestId}>« Anterior</Button>
+        <Button class="btn-ghost" onclick={onPrev} testId={prevTestId}>{$t("assignments.previous")}</Button>
       {/if}
-      <Button class="btn-primary" onclick={() => onSave(d)} testId={submitTestId}>Guardar</Button>
+      <Button class="btn-primary" onclick={() => onSave(d)} testId={submitTestId}>{$t("assignments.save")}</Button>
       {#if onSkip}
-        <Button class="btn-ghost" onclick={onSkip} testId={skipTestId}>Saltar »</Button>
+        <Button class="btn-ghost" onclick={onSkip} testId={skipTestId}>{$t("assignments.skip")}</Button>
       {/if}
     </div>
   </div>

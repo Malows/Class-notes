@@ -2,12 +2,15 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
+import { loadTranslations } from "$lib/common/i18n/config";
+
 import OverviewHeaderCell from "./OverviewHeaderCell.svelte";
 
 configure({ testIdAttribute: "data-test-id" });
 
 describe("OverviewHeaderCell Component", () => {
-  test("renders abbreviated title, native tooltip, and pencil link", () => {
+  test("renders abbreviated title, native tooltip, and pencil link", async () => {
+    await loadTranslations("en", "/");
     const assignment = { id: 12, subject_period_id: 1, title: "Lab Exercise 10", subtitle: "Maths" };
 
     render(OverviewHeaderCell, {
@@ -22,6 +25,7 @@ describe("OverviewHeaderCell Component", () => {
     const titleEl = screen.getByTestId("overview-header-assignment-title-12");
     expect(titleEl).toBeInTheDocument();
     expect(titleEl).toHaveAttribute("title", "Lab Exercise 10 — Maths");
+    expect(titleEl).toHaveAttribute("aria-label", "LE10 — Lab Exercise 10 — Maths");
     expect(titleEl.textContent?.trim()).toBe("LE10");
 
     const link = screen.getByTestId("correct-assignment-btn-12");

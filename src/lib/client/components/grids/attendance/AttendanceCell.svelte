@@ -6,10 +6,11 @@
     status: AttendanceStatus | null;
     recordedOn: string | null;
     testId?: string;
+    contextLabel?: string;
     onclick?: () => void;
   }
 
-  let { status, recordedOn, testId, onclick }: Props = $props();
+  let { status, recordedOn, testId, contextLabel, onclick }: Props = $props();
 
   const icon = $derived(
     status === AttendanceStatus.PRESENT ? "✓" : status === AttendanceStatus.ABSENT ? "✗" : "–",
@@ -22,6 +23,8 @@
         ? $t("attendance.state_absent")
         : $t("attendance.state_unmarked"),
   );
+
+  const accessibleLabel = $derived(contextLabel ? `${label} · ${contextLabel}` : label);
 </script>
 
 <button
@@ -32,8 +35,8 @@
   class:is-unmarked={status === null}
   {onclick}
   disabled={!onclick}
-  aria-label={label}
-  title={recordedOn ? `${label} · ${recordedOn}` : label}
+  aria-label={accessibleLabel}
+  title={recordedOn ? `${accessibleLabel} · ${recordedOn}` : accessibleLabel}
   data-test-id={testId}
 >
   {icon}

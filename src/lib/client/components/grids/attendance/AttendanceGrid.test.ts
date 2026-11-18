@@ -70,6 +70,9 @@ test("renders the commission grid with cells and summaries", async () => {
   expect(screen.getByText("Ana Martínez")).toBeTruthy();
   expect(screen.getByTestId("attendance-cell-1-10").textContent?.trim()).toBe("✓");
   expect(screen.getByTestId("attendance-cell-1-11").textContent?.trim()).toBe("–");
+  expect(screen.getByTestId("attendance-cell-1-10").getAttribute("aria-label")).toBe(
+    "Presente · Ana Martínez — TP 1",
+  );
 
   expect(screen.getByTestId("attendance-row-summary-1").textContent?.trim()).toBe("1 / 1");
   expect(screen.getByTestId("attendance-column-10").textContent?.trim()).toBe("1 / 1");
@@ -126,7 +129,7 @@ test("links each assignment to take mode when a href builder is given", async ()
   const link = head.querySelector("a");
   expect(link?.getAttribute("href")).toBe("/take?assignment_id=10");
   expect(link?.getAttribute("title")).toBe("TP 1");
-  expect(link?.getAttribute("aria-label")).toBe("TP 1");
+  expect(link?.getAttribute("aria-label")).toBe("TP1 — TP 1");
 });
 
 test("abbreviates assignment headers while keeping the full title available", async () => {
@@ -146,7 +149,9 @@ test("abbreviates assignment headers while keeping the full title available", as
 
   const second = screen.getByTestId("attendance-head-11");
   expect(second.textContent?.trim()).toBe("GDP");
-  expect(second.querySelector("span")?.getAttribute("aria-label")).toBe("Guía de problemas");
+  expect(second.querySelector("span")?.getAttribute("aria-label")).toBe(
+    "GDP — Guía de problemas",
+  );
 });
 
 test("striping starts on the first data row, not on the header", async () => {

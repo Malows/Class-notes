@@ -1,5 +1,6 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
+  import type { Assignment } from "$lib/common/types/academic";
   import {
     getOverviewDeliveryStatus,
     OverviewDeliveryStatus,
@@ -11,6 +12,7 @@
   interface Props {
     name: string;
     deliveries: Delivery[];
+    assignments?: Assignment[];
     facultySlug: string;
     subjectSlug: string;
     periodYear: number;
@@ -18,8 +20,23 @@
     commissionSlug?: string;
   }
 
-  let { name, deliveries, facultySlug, subjectSlug, periodYear, periodSemester, commissionSlug }: Props =
-    $props();
+  let {
+    name,
+    deliveries,
+    assignments = [],
+    facultySlug,
+    subjectSlug,
+    periodYear,
+    periodSemester,
+    commissionSlug,
+  }: Props = $props();
+
+  const assignmentTitles = $derived(new Map(assignments.map((item) => [item.id, item.title])));
+
+  const cellContext = (delivery: Delivery) => {
+    const title = assignmentTitles.get(delivery.assignment_id);
+    return title ? `${name} — ${title}` : name;
+  };
 
   const correctHref = (delivery: Delivery) =>
     commissionSlug
@@ -53,6 +70,7 @@
       status={getOverviewDeliveryStatus(delivery)}
       aiLevel={delivery.ai_level}
       label={label(delivery)}
+      contextLabel={cellContext(delivery)}
       testId={`delivery-cell-${delivery.enrollment_id}-${delivery.assignment_id}`}
     />
   {/each}

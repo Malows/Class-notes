@@ -1,10 +1,15 @@
 import type { Delivery } from "$lib/common";
+import { loadTranslations } from "$lib/common/i18n/config";
 import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
 import { render, screen, fireEvent, configure } from "@testing-library/svelte";
-import { expect, test, vi } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import { flushSync } from "svelte";
 
 configure({ testIdAttribute: "data-test-id" });
+
+beforeEach(async () => {
+  await loadTranslations("es", "/");
+});
 
 test("DeliveryForm renders and saves", async () => {
   const delivery: Delivery = {

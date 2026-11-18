@@ -27,5 +27,18 @@
   "updated_success": "Trabajo práctico actualizado",
   "deleted_success": "Trabajo práctico eliminado",
   "status_advanced": "Estado avanzado",
-  "copied_success": "Trabajos prácticos copiados"
+  "copied_success": "Trabajos prácticos copiados",
+  "delivered_label": "¿Entregó el trabajo?",
+  "result_label": "Resultado",
+  "approved_label": "Aprobado",
+  "rejected_label": "No aprobado",
+  "grade_label": "Nota",
+  "ai_usage_label": "Uso de IA",
+  "ai_none": "0 - Ninguno",
+  "ai_suspicion": "1 - Sospecha (!)",
+  "ai_certainty": "2 - Certeza (!!)",
+  "comments_label": "Comentarios",
+  "previous": "« Anterior",
+  "save": "Guardar",
+  "skip": "Saltar »"
 }

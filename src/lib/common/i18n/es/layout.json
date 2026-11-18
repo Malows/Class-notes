@@ -40,5 +40,8 @@
   "save_changes": "Guardar cambios",
   "saving": "Guardando...",
   "go_to_faculty": "Ir a facultad",
-  "more_actions": "Más acciones"
+  "more_actions": "Más acciones",
+  "breadcrumb": "Ruta de navegación",
+  "active_term": "Cuatrimestre activo",
+  "no_context": "No hay contexto académico activo disponible."
 }

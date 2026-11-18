@@ -6,6 +6,7 @@
 
   import { initSentryClient } from "$lib/client/observability/sentry.client.js";
   import { trackPageView } from "$lib/client/observability/analytics.client.js";
+  import BottomNav from "$lib/client/components/layout/BottomNav.svelte";
   import ClassNoteFooter from "$lib/client/components/layout/ClassNoteFooter.svelte";
   import NavBar from "$lib/client/components/layout/navbar/NavBar.svelte";
   import Sidebar from "$lib/client/components/layout/sidebar/Sidebar.svelte";
@@ -48,70 +49,22 @@
   <title>{$t("layout.brand")} - {$t("layout.dashboard")}</title>
   <meta
     name="description"
-    content="Class Notes - A robust and accessible academic management system to organize faculties, subjects, periods, and student grading with a sketchy aesthetic."
+    content="Class Notes - A robust and accessible academic management system to organize faculties, subjects, periods, and student grading with an editorial academic aesthetic."
   />
   <meta name="robots" content="index, follow" />
 </svelte:head>
 
-<div class="paper">
-  <div class="container-fluid">
-    <NavBar />
-    <ToastContainer />
+<div class="min-h-dvh bg-surface">
+  <Sidebar />
+  <NavBar />
+  <ToastContainer />
 
-    <div class="layout-body">
-      <Sidebar />
-
-      <main class="main-content">
-        <div class="page-container">
-          {@render children()}
-        </div>
-      </main>
+  <main class="min-h-dvh pb-24 pt-16 md:pb-8 md:pl-60 md:pt-12" data-test-id="main-content">
+    <div class="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-9 md:py-8">
+      {@render children()}
+      <ClassNoteFooter />
     </div>
+  </main>
 
-    <ClassNoteFooter />
-  </div>
+  <BottomNav />
 </div>
-
-<style>
-  .paper {
-    margin: 0;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .container-fluid {
-    height: 100%;
-    padding: 0 1rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .layout-body {
-    height: 100%;
-    display: flex;
-    flex: 1;
-    gap: 1rem;
-  }
-
-  .main-content {
-    height: 100%;
-    flex: 1;
-    min-width: 0;
-    padding-top: 1rem;
-  }
-
-  .page-container {
-    padding: 1rem 0;
-    height: 100%;
-    width: 100%;
-    max-width: var(--content-measure);
-  }
-
-  @media (max-width: 768px) {
-    .layout-body {
-      flex-direction: column;
-    }
-  }
-</style>

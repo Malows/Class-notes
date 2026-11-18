@@ -2,14 +2,12 @@ import { loadTranslations } from "$lib/common/i18n/config";
 import { metadataStore } from "$lib/client/stores/metadata.svelte";
 import { mount, unmount, flushSync } from "svelte";
 import { expect, test, afterEach, vi, beforeEach } from "vitest";
-import { fireEvent } from "@testing-library/svelte";
 
 import { StoreKey } from "$lib/common";
 import { CommissionsStore } from "$lib/client/stores/commissions.svelte";
 import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
 import { NavStore } from "$lib/client/stores/nav.svelte";
 import { PeriodsStore } from "$lib/client/stores/periods.svelte";
-import { SidebarUiStore } from "$lib/client/stores/sidebar-ui.svelte";
 import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
 
 let mockParams = $state<Record<string, string>>({});
@@ -75,7 +73,6 @@ const commissions = [
 ];
 
 let component: ReturnType<typeof mount>;
-let sidebarUi: SidebarUiStore;
 const flush = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 function buildContext() {
@@ -85,8 +82,6 @@ function buildContext() {
   map.set(StoreKey.PERIODS, new PeriodsStore());
   map.set(StoreKey.COMMISSIONS, new CommissionsStore());
   map.set(StoreKey.NAV, new NavStore());
-  sidebarUi = new SidebarUiStore();
-  map.set(StoreKey.SIDEBAR_UI, sidebarUi);
   return map;
 }
 
@@ -114,27 +109,16 @@ beforeEach(() => {
   });
 });
 
-test("Sidebar follows the navbar menu state and handles collapse", async () => {
+test("Sidebar renders the editorial brand and static navigation", async () => {
   await loadTranslations("en", "/");
   mountWithContext();
   flushSync();
 
   const aside = document.body.querySelector("aside");
   expect(aside).toBeTruthy();
-  expect(aside?.classList.contains("open")).toBe(false);
-  expect(aside?.classList.contains("collapsed")).toBe(false);
-
-  // The navbar control owns the mobile open state; the sidebar follows it.
-  sidebarUi.toggle();
-  flushSync();
-  expect(aside?.classList.contains("open")).toBe(true);
-
-  // Toggle collapse sidebar (via header trigger inside SidebarHeader)
-  const collapseBtn = document.body.querySelector(".sidebar-header button") as HTMLButtonElement;
-  expect(collapseBtn).toBeTruthy();
-  await fireEvent.click(collapseBtn);
-  flushSync();
-  expect(aside?.classList.contains("collapsed")).toBe(true);
+  expect(document.body.querySelector('[data-test-id="sidebar-brand"]')).toBeTruthy();
+  expect(document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')).toBeTruthy();
+  expect(document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')?.getAttribute("href")).toBe("/");
 });
 
 test("Sidebar loads context stores and renders real sibling items as links", async () => {
@@ -197,7 +181,7 @@ test("Sidebar renders metadata context when available", async () => {
   mountWithContext();
   flushSync();
 
-  expect(document.body.textContent).toContain("Cuatrimestre Activo (2026 - Cuatrimestre I)");
+  expect(document.body.textContent).toContain("Active term (2026 - Cuatrimestre I)");
   const subjectLink = document.body.querySelector(
     'a[href="/faculties/1/subjects/1/periods"]',
   ) as HTMLAnchorElement;
@@ -211,7 +195,7 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   mountWithContext();
   flushSync();
 
-  expect(document.body.textContent).not.toContain("Cuatrimestre Activo");
+  expect(document.body.textContent).not.toContain("Active term");
 
   metadataStore.initializeStore({
     periodData: { year: 2026, term: "Cuatrimestre II" },
@@ -219,5 +203,5 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   });
   flushSync();
 
-  expect(document.body.textContent).toContain("Cuatrimestre Activo (2026 - Cuatrimestre II)");
+  expect(document.body.textContent).toContain("Active term (2026 - Cuatrimestre II)");
 });

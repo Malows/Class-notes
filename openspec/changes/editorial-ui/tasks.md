@@ -19,11 +19,11 @@
 
 ## 3. Shell
 
-- [ ] 3.1 Rebuild `+layout.svelte` as the editorial shell: fixed 240 px sidebar and 56 px header on desktop, fixed top header and bottom navigation on mobile, main offset and capped at 1600 px; verify no horizontal scroll at 1440 and 390.
-- [ ] 3.2 Restyle `NavBar`, brand, breadcrumbs, language and theme controls for the new header; verify the compact breadcrumb remains visible at 390 and the parent entry still navigates.
-- [ ] 3.3 Restyle the desktop `Sidebar` and its context sections with the editorial surfaces, labels and active tint; add `aria-current="page"` to the active destination and verify the context lists still switch subjects, periods and commissions.
-- [ ] 3.4 Replace the mobile menu toggle and drawer state with the four-destination bottom navigation (Inicio, Facultades, Periodos, Alumnos), safe-area padding and `aria-current`; remove the now-unused `SidebarUiStore`/drawer code and update the shell tests.
-- [ ] 3.5 Add the editorial shell tests: desktop sidebar/header render, mobile bottom navigation render, current destination state and theme switch; run them with `pnpm exec vitest run src/lib/client/components/layout src/routes`.
+- [x] 3.1 Rebuild `+layout.svelte` as the editorial shell: fixed 240 px sidebar and 48 px header on desktop, fixed top header and bottom navigation on mobile, main offset and capped at 1600 px; verify no horizontal scroll at 1440 and 390.
+- [x] 3.2 Restyle `NavBar`, brand, breadcrumbs, language and theme controls for the new header; verify the compact breadcrumb remains visible at 390 and the parent entry still navigates.
+- [x] 3.3 Restyle the desktop `Sidebar` and its context sections with the editorial surfaces, labels and active tint; add `aria-current="page"` to the active destination and verify the context lists still switch subjects, periods and commissions.
+- [x] 3.4 Replace the mobile menu toggle and drawer state with the four-destination bottom navigation (Inicio, Facultades, Periodos, Alumnos), safe-area padding and `aria-current`; remove the now-unused `SidebarUiStore`/drawer code and update the shell tests.
+- [x] 3.5 Add the editorial shell tests: desktop sidebar/header render, mobile bottom navigation render, current destination state and theme switch; run them with `pnpm exec vitest run src/lib/client/components/layout src/routes`.
 
 ## 4. Pages
 

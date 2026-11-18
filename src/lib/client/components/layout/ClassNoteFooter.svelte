@@ -2,14 +2,6 @@
   import { t } from "$lib/common/i18n/config";
 </script>
 
-<footer class="class-note-footer">
-  <p><small>{$t("layout.footer")}</small></p>
+<footer class="mt-8 border-t border-base-300 py-4 text-body-sm text-on-surface-variant">
+  <p class="m-0"><small>{$t("layout.footer")}</small></p>
 </footer>
-
-<style>
-  .class-note-footer {
-    border-top: 2px solid var(--border-color);
-    margin-top: 2rem;
-    padding: 1rem 0;
-  }
-</style>

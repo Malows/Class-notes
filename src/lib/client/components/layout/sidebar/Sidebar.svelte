@@ -6,7 +6,6 @@
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { NavStore } from "$lib/client/stores/nav.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
-  import type { SidebarUiStore } from "$lib/client/stores/sidebar-ui.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
   import { StoreKey } from "$lib/common";
@@ -15,11 +14,6 @@
   import SidebarContextSection from "./SidebarContextSection.svelte";
   import SidebarHeader from "./SidebarHeader.svelte";
   import SidebarStaticLinks from "./SidebarStaticLinks.svelte";
-
-  let isCollapsed = $state(false);
-
-  // The mobile menu control lives in the navbar; both read the same state.
-  const sidebarUi = getContext<SidebarUiStore>(StoreKey.SIDEBAR_UI);
 
   // The sidebar consumes the same store instances the pages use via Svelte
   // context (provided by initStoreContext in +layout.svelte) so the quick
@@ -66,10 +60,6 @@
       }
     }
   });
-
-  function toggleCollapse() {
-    isCollapsed = !isCollapsed;
-  }
 
   const metadataSubjectItems = $derived(
     metadataContext?.subjects?.length
@@ -137,98 +127,54 @@
   );
 </script>
 
-<!-- The menu control lives in the navbar so it never floats over page content. -->
 <aside
-  class="sidebar sketch-border sketch-shadow"
-  class:open={sidebarUi.isOpen}
-  class:collapsed={isCollapsed}
+  class="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col overflow-y-auto border-r border-base-300 bg-surface px-3 py-4 md:flex"
+  aria-label={$t("layout.quick_access")}
+  data-test-id="sidebar"
 >
-  <SidebarHeader {isCollapsed} onToggle={toggleCollapse} />
+  <SidebarHeader />
 
-  <div class="sidebar-content">
+  <div class="flex flex-col gap-4">
     {#if activeMetadataSubjects.length > 0}
       <SidebarContextSection
         heading={metadataContext?.periodData
-          ? `Cuatrimestre Activo (${metadataContext.periodData.year} - ${metadataContext.periodData.term})`
-          : "Cuatrimestre Activo"}
-        {isCollapsed}
+          ? `${$t("layout.active_term")} (${metadataContext.periodData.year} - ${metadataContext.periodData.term})`
+          : $t("layout.active_term")}
+        isCollapsed={false}
         items={activeMetadataSubjects}
       />
     {:else if context.facultySlug}
       <SidebarContextSection
         heading={`${$t("layout.subjects")} (${facultiesStore.bySlug.get(context.facultySlug)?.name ?? "..."})`}
-        {isCollapsed}
+        isCollapsed={false}
         items={subjectItems}
       />
     {/if}
 
     {#if context.subjectSlug}
-      <SidebarContextSection heading={$t("layout.periods")} {isCollapsed} items={periodItems} />
+      <SidebarContextSection
+        heading={$t("layout.periods")}
+        isCollapsed={false}
+        items={periodItems}
+      />
     {/if}
 
     {#if context.periodYear !== undefined && context.periodSemester !== undefined}
       <SidebarContextSection
         heading={$t("layout.commissions")}
-        {isCollapsed}
+        isCollapsed={false}
         items={commissionItems}
       />
     {/if}
 
     {#if !hasMetadataContext && !context.facultySlug && !context.subjectSlug && context.periodYear === undefined && context.periodSemester === undefined}
-      <div class="metadata-empty-state">
-        <p>No hay contexto académico activo disponible.</p>
+      <div
+        class="rounded-[var(--radius-box)] border border-dashed border-base-300 p-3 text-body-sm text-on-surface-variant"
+      >
+        <p class="m-0">{$t("layout.no_context")}</p>
       </div>
     {/if}
 
-    <SidebarStaticLinks {isCollapsed} />
+    <SidebarStaticLinks isCollapsed={false} />
   </div>
 </aside>
-
-<style>
-  .sidebar {
-    width: 250px;
-    /* background: var(--background-body); */
-    height: min-content;
-    overflow-y: auto;
-    padding: 1rem;
-    margin: 1rem 0 1rem 1rem;
-    transition:
-      width 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  .sidebar.collapsed {
-    width: 80px;
-    padding: 1rem 0.5rem;
-  }
-
-  .metadata-empty-state {
-    margin: 1rem 0;
-    padding: 0.75rem;
-    border: 1px dashed var(--border-color);
-    border-radius: 0.5rem;
-    color: var(--muted-color);
-    font-size: 0.85rem;
-  }
-
-  @media (max-width: 768px) {
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      z-index: 1000;
-      transform: translateX(-100%);
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-      margin: 0;
-      border-radius: 0;
-      border-right: 1px solid var(--border-color);
-    }
-    .sidebar.open {
-      transform: translateX(0);
-    }
-    .sidebar.collapsed {
-      width: 250px; /* Disable collapse on mobile */
-    }
-  }
-</style>

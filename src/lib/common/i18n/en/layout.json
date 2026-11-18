@@ -40,5 +40,8 @@
   "save_changes": "Save changes",
   "saving": "Saving...",
   "go_to_faculty": "Go to faculty",
-  "more_actions": "More actions"
+  "more_actions": "More actions",
+  "breadcrumb": "Breadcrumb",
+  "active_term": "Active term",
+  "no_context": "No active academic context available."
 }

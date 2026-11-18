@@ -16,8 +16,8 @@
   const rootPath = $derived(() => `/periods/${period.year}/${period.semester}`);
 </script>
 
-<td data-test-id="period-year-{period.id}">{period.year}</td>
-<td data-test-id="period-semester-{period.id}">{period.semester}º</td>
+<td data-label={$t("layout.year")} data-test-id="period-year-{period.id}">{period.year}</td>
+<td data-label={$t("layout.semester")} data-test-id="period-semester-{period.id}">{period.semester}º</td>
 <td>
   <RowActions label={`${period.year} - ${period.semester}º`} testId="row-actions-{period.id}">
     {#snippet primary()}

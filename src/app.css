@@ -368,6 +368,27 @@
 }
 
 @layer components {
+  .material-symbols-outlined {
+    display: inline-block;
+    direction: ltr;
+    font-family: var(--font-icon);
+    font-size: 24px;
+    font-style: normal;
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 1;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+  }
+
   .link-editorial {
     color: inherit;
     font-weight: 500;

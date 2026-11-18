@@ -92,6 +92,18 @@
     border: 0;
   }
 
+  :global(.mobile-row-table td[data-label]::before) {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.125rem;
+    color: var(--color-on-surface-variant);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 0.875rem;
+    text-transform: uppercase;
+  }
+
   :global(.mobile-row-table td:first-child) {
     padding-top: 0;
     font-weight: 500;

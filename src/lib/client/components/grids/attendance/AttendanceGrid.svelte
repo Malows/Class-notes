@@ -247,4 +247,10 @@
     padding-top: 0.5rem;
     border-top: 1px solid var(--color-outline-variant);
   }
+
+  @media (max-width: 768px) {
+    .attendance-grid {
+      grid-template-columns: 10rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
+    }
+  }
 </style>

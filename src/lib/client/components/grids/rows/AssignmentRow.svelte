@@ -15,9 +15,9 @@
   let { assignment, onEdit, onDelete, onBulkUpdate }: Props = $props();
 </script>
 
-<td data-test-id="assignment-title-{assignment.id}">{assignment.title}</td>
-<td>{assignment.subtitle ?? ""}</td>
-<td
+<td data-label={$t("layout.title")} data-test-id="assignment-title-{assignment.id}">{assignment.title}</td>
+<td data-label={$t("layout.subtitle")}>{assignment.subtitle ?? ""}</td>
+<td data-label={$t("layout.status")}
   >{assignment.workflow_status
     ? $t(`assignments.workflow_status.${assignment.workflow_status.toLowerCase()}`)
     : ""}</td

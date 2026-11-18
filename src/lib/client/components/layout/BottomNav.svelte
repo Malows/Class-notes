@@ -4,7 +4,7 @@
   import { t } from "$lib/common/i18n/config";
 
   const destinations = [
-    { key: "dashboard", href: "/", icon: "dashboard", label: "layout.dashboard" },
+    { key: "dashboard", href: "/", icon: "dashboard", label: "layout.home" },
     { key: "faculties", href: "/faculties", icon: "account_balance", label: "layout.faculties" },
     { key: "periods", href: "/periods", icon: "calendar_month", label: "layout.periods" },
     { key: "students", href: "/persons", icon: "groups", label: "layout.students" },

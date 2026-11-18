@@ -112,14 +112,14 @@
         <th>{$t("persons.column_last_cursada")}</th>
       {/snippet}
       {#snippet row(person)}
-        <td data-test-id="person-name-{person.id}">
+        <td data-label={$t("persons.column_name")} data-test-id="person-name-{person.id}">
           <a class="link-editorial" href="/persons/{person.id}" data-test-id="person-link-{person.id}"
             >{person.name}</a
           >
         </td>
-        <td class="tnum" data-test-id="person-legajo-{person.id}">{person.legajo ?? "—"}</td>
-        <td class="tnum" data-test-id="person-cursadas-{person.id}">{person.enrollment_count}</td>
-        <td>
+        <td class="tnum" data-label={$t("persons.column_legajo")} data-test-id="person-legajo-{person.id}">{person.legajo ?? "—"}</td>
+        <td class="tnum" data-label={$t("persons.column_cursadas")} data-test-id="person-cursadas-{person.id}">{person.enrollment_count}</td>
+        <td data-label={$t("persons.column_last_cursada")}>
           {#if lastCursada(person)}
             <span class="text-body-sm" data-test-id="person-last-cursada-{person.id}"
               >{lastCursada(person)}</span

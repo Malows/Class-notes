@@ -14,8 +14,8 @@
   let { subject, onEdit, onDelete }: Props = $props();
 </script>
 
-<td data-test-id="subject-name-{subject.id}">{subject.name}</td>
-<td data-test-id="subject-faculty-name-{subject.id}">{subject.faculty_name}</td>
+<td data-label={$t("layout.name")} data-test-id="subject-name-{subject.id}">{subject.name}</td>
+<td data-label={$t("layout.faculty")} data-test-id="subject-faculty-name-{subject.id}">{subject.faculty_name}</td>
 <td>
   <RowActions label={subject.name} testId="row-actions-{subject.id}">
     {#snippet primary()}

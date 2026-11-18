@@ -4,8 +4,8 @@
 
 - [ ] 1.1 Add `tailwindcss`, `@tailwindcss/vite`, `daisyui` and the self-hosted Inter, Newsreader and Material Symbols packages; add `tailwindcss()` to `vite.config.ts`; make `src/app.css` the Tailwind entry and remove `papercss` and its import; verify `pnpm build` succeeds and the dev server serves Tailwind utilities.
 - [ ] 1.2 Define the Academic Notebook light theme in `app.css` (`@theme` tokens plus `@plugin "daisyui/theme"`): warm paper canvas, white surfaces, ink text, Ink Blue primary, muted semantic colors, 4/8 px radii, 1 px border, no depth/noise; verify computed surfaces, primary button and typography on a migrated page.
-- [ ] 1.3 Add the dark theme from the Stitch dark pass as a second `@plugin "daisyui/theme"` with `prefersdark`; change `themeStore` to set `data-theme` instead of the `.dark` class; verify the toggle persists across reload and that text, secondary text and primary buttons meet AA in both themes.
-- [ ] 1.4 Add the editorial base layer: page canvas, body typography, heading scale, tabular-number utility, focus ring and hairline defaults; verify headings use Newsreader, UI uses Inter, and numeric table cells use tabular figures.
+- [ ] 1.3 Add the dark theme from the Stitch dark pass as a second `@plugin "daisyui/theme"` with `prefersdark`, plus the `--cn-*` dark surfaces; change `themeStore` to write `data-theme` instead of the `.dark` class and add the blocking `app.html` script that applies the stored theme before first paint; verify the toggle persists, there is no light flash on reload, and text, secondary text, primary buttons and semantic chips meet AA in both themes.
+- [ ] 1.4 Add the editorial base layer: page canvas, body typography, heading scale, tabular-number utility, focus ring, selection, hairline defaults and the `@media print` light-token override; verify headings use Newsreader, UI uses Inter, numeric table cells use tabular figures, and printing uses the light palette.
 
 ## 2. Primitives
 
@@ -13,7 +13,7 @@
 - [ ] 2.2 Rebuild the form primitives (inputs, selects, textareas, checkboxes, error text) on daisyUI with 32 px control height and the editorial focus ring; verify the faculty, subject, period, commission, assignment, enrollment and person modals still submit and show validation.
 - [ ] 2.3 Restyle `DialogBase` and `ConfirmDialog` with the editorial modal surface and ink backdrop, keeping the native `<dialog>` focus trap, Escape handling and focus return; verify the existing dialog tests and a delete confirmation.
 - [ ] 2.4 Restyle `Toast`, `ToastContainer`, `ErrorSpan` and `StatItem`; verify success, error and warning toasts keep their colors, auto-dismiss behavior and contrast in both themes.
-- [ ] 2.5 Rebuild the table layer (`ResponsiveTable` plus the table components) with daisyUI `table` and editorial density: 40 px rows, 32 px header, horizontal rules only; verify the roster, faculties and periods lists at 1440 and 390.
+- [ ] 2.5 Rebuild the table layer (`ResponsiveTable` plus the table components) with daisyUI `table` and editorial density: 40 px rows, 32 px header, horizontal rules only and no zebra striping in dark; verify the roster, faculties and periods lists at 1440 and 390 in both themes.
 - [ ] 2.6 Rebuild `PageHeader`, `RowActions`, `EmptyState` and the editorial display primitives (`Chip`, `Callout`, `MetricCard`/`MetricStrip`, `Tabs`, `ProgressBar`, `Avatar`) plus the overview/attendance cell primitives; verify the title scale, one primary row action plus disclosure, empty-state CTAs, tab links and the 44 px coarse-pointer targets.
 - [ ] 2.7 Update the unit tests that assert PaperCSS structure or classes (`overview.test.ts` `btn-success`, any shell or dialog DOM assumptions); verify the client suite passes before migrating pages.
 
@@ -31,7 +31,7 @@
 - [ ] 4.2 Migrate faculties, subjects and periods lists plus their modals and row actions; verify create, edit and delete flows and the 40 px table density at 1440 and 390.
 - [ ] 4.3 Migrate the commissions list, the pending-enrollment block and the commission roster; verify the pending assignment flow and the student links in both viewports.
 - [ ] 4.4 Migrate the period and commission overview grids, including headers, status cells, legend and sticky first column; verify the cursada cells still link to the correct commission and the grid scrolls inside its container at 390.
-- [ ] 4.5 Migrate the cursada attendance page, commission attendance page, attendance cells and take mode; verify striping, header labels, tap targets and the swipe/take flow at 390.
+- [ ] 4.5 Migrate the cursada attendance page, commission attendance page, attendance cells and take mode; verify striping, header labels, tap targets, the pending "sin registrar" state and the swipe/take flow at 390 in both themes.
 - [ ] 4.6 Migrate the assignments page, corrections flow, period-subjects page, persons registry and person detail, including their modals; verify every route renders with the editorial shell and no PaperCSS class remains.
 
 ## 5. Cleanup and verification

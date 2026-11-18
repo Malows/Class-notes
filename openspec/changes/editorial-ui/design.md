@@ -42,7 +42,9 @@ Why not keep PaperCSS alongside: daisyUI and PaperCSS both style `.card`, `.btn`
 
 Why two layers: daisyUI components need semantic names (primary, base-100), while the Stitch screens use surface/typography names. Keeping both avoids hard-coding daisyUI colors into Tailwind utilities.
 
-Light mapping: `base-100` = white content surface, `base-200` = warm paper canvas, `base-300` = `surface-container`; `base-content` = ink `#1b1c18`; `primary` = Ink Blue `#2f5fe0`; `secondary` = muted emerald `#006d3a`; `accent` = tertiary `#7c4300`; `neutral` = `#5c5c57`; `success` = `#1b8049`; `warning` = `#b26200`; `error` = `#c5221f`; `info` = `#0045c5`. Radii: field 4px, box 8px, selector 4px.
+Light mapping by role (not by ordinal): `base-100` = content surface (cards, panels, white), `base-200` = page canvas (warm paper `#fbf9f2`), `base-300` = hairline `#c3c5d7`; `base-content` = ink `#1b1c18`; `primary` = Ink Blue `#2f5fe0`; `secondary` = muted emerald `#006d3a`; `accent` = tertiary `#7c4300`; `neutral` = `#5c5c57`; `success` = `#1b8049`; `warning` = `#b26200`; `error` = `#c5221f`; `info` = `#0045c5`. Radii: field/selector 4px, box 8px. `body` uses `bg-base-200`; cards use `bg-base-100`.
+
+daisyUI does not expose a token for every editorial surface. Keep a small `--cn-*` layer for chrome, inputs, muted rows, overlays and chips: light `surface-input #ffffff`, `surface-chrome #fbf9f2`, `surface-muted #f5f4ed`, `surface-overlay #ffffff`, `border-control #747686`. Dark counterparts are listed in D7.
 
 ### D3. Self-hosted fonts and icons
 
@@ -87,15 +89,44 @@ Seven routes have no Stitch reference (`/faculties`, subjects, periods list, `/p
 
 ### D6. Theme switching
 
-`themeStore` stops toggling the `.dark` class and sets `data-theme="academic"` or `data-theme="academic-dark"` on `<html>`, preserving localStorage and the system preference fallback. The daisyUI theme declares both, with `academic` default and `academic-dark` as `prefersdark`.
+`themeStore` stops toggling the `.dark` class and writes `data-theme="classnotes"` or `data-theme="classnotes-dark"` on `<html>`. When no explicit preference is stored, the attribute is absent and daisyUI's `prefersdark` theme follows the system; the first manual toggle writes and persists an explicit value. Add a small blocking script in `app.html` that applies the stored `data-theme` before first paint, so dark mode does not flash the light canvas.
 
 Why not keep `.dark`: daisyUI themes are selected with `data-theme`; keeping a parallel `.dark` system would double the palette.
 
 ### D7. Dark palette
 
-Use a warm dark companion rather than a neutral black, preserving the archival paper idea:
+Use a warm charcoal companion, not neutral grey, to keep the "paper at night" identity. The page is the darkest plane; cards rise one step. Borders are mandatory because the surface deltas are subtle.
 
-`base-100 #1b1a17`, `base-200 #141310`, `base-300 #2a2823`, `base-content #eee9df`; primary `#b5c4ff` with `#00164e` content; secondary `#7cda99` / `#00210e`; accent `#ffb77a` / `#2e1500`; neutral `#c3c5d7` / `#1b1c18`; info `#9db4ff` / `#00164e`; success `#4ade80` / `#052e16`; warning `#fbbf24` / `#2e1500`; error `#f87171` / `#450a0a`. Hairlines use `#3a3730`; hover tints use `#262521`. The exact values are validated by the Stitch dark pass and WCAG checks before implementation.
+| Token | Dark value |
+|---|---|
+| page / `base-200` | `#14140F` |
+| card / `base-100` | `#1A1A14` |
+| hairline / `base-300` | `#3A3A31` |
+| sunken / progress track | `#0B0B08` |
+| input | `#17170F` |
+| chrome (sidebar/header/bottom nav) | `#191913` |
+| muted row / table header | `#1F1F18` |
+| overlay (menu, toast, modal box) | `#262620` |
+| pressed / active neutral | `#2D2D26` |
+| text | `#E8E6DC` |
+| secondary text | `#B9B7AB` |
+| muted text | `#8B8A7E` |
+| disabled text | `#6E6D62` |
+| icons / control border | `#8E8D80` / `#6B6A5E` |
+| primary | `#B5C4FF` on `#00164E` |
+| primary container | `#16408F` on `#DCE1FF` |
+| secondary | `#7CDA99` on `#00210E` |
+| accent | `#FFB77A` on `#2E1500` |
+| success | `#63D68F` on `#00391C` |
+| warning | `#F5B558` on `#2E1500` |
+| error | `#FFB4AB` on `#690005` |
+| info | `#8FD0F0` on `#00263A` |
+
+Chips use solid tinted fills, not alpha: primary `#1C2A52`/`#C3D3FF`, success `#12301F`/`#9FE8B6`, warning `#33230C`/`#FFCF8F`, error `#3A1212`/`#FFB4AB`, info `#10283A`/`#A9D8F5`, pending `#1F1F18`/`#B9B7AB`. The pending chip is the third attendance state and must not read as an error.
+
+Contrast: body text on page 14.8:1, secondary text 9.2:1, muted text 5.3:1, primary button 10.1:1, active sidebar 7.5:1, all semantic chips ≥8.2:1. The only low pair is the decorative hairline (1.6:1), so a hairline must never be the sole boundary of a control; control borders use `#6B6A5E` (3.0:1).
+
+Stitch generated three dark reference screens (`Inicio`, `Comisiones`, `Padrón mobile`) from this palette. Their HTML is a visual reference only — the generated variants still contain stray light values, so this table is the source of truth.
 
 ### D8. Migration strategy: vertical slices on a branch
 
@@ -121,6 +152,10 @@ Most tests already use `data-test-id` or text. Update the overview test that ass
 - **Density regression** → 40 px rows and 32 px controls are denser than today; verify touch targets remain 44 px on coarse pointers and that tables stay readable at 390 px.
 - **Font and icon payload** → Self-hosted variable fonts and a subsetted icon font; check bundle size and preload the two primary faces.
 - **Theme drift** → One token source; no ad-hoc hex values in components. Dark palette is validated for AA before merge.
+- **Dark elevation inverts** → Light cards are the brightest surface; dark cards rise above a darker page. Map surfaces by role, never by token ordinal; borders are mandatory because the surface deltas are ~1.1:1.
+- **Zebra disappears in dark** → Do not use daisyUI `table-zebra`; group rows with hairlines or section labels instead.
+- **Printing** → Force the light tokens under `@media print` so attendance/roster printouts do not render a dark canvas.
+- **Stitch dark variants contain stray light values** → Treat the generated screens as visual references; use the token table as the source of truth.
 - **Stitch HTML is static and uses CDN classes** → Treat it as a layout/reference source; translate to local tokens and Svelte components, never copy the HTML.
 - **Stitch has two desktop shells** → Adopt the canonical 240 px sidebar + 48 px header; do not copy the 256 px/56 px "Inicio" variant.
 - **Stitch HTML diverges per screen** → Every screen carries its own Tailwind CDN config, mock data, inline JS and custom utilities (`text-on-surface`, `font-headline-sm`, `pt-safe`). Translate to one theme and Svelte state; never copy markup wholesale.
@@ -135,5 +170,5 @@ No data, API or schema changes. Ship as a branch of commits gated by the full ch
 
 ## Open Questions
 
-- Final dark palette values and whether the dark canvas should be warm near-black (proposed) or neutral graphite — the Stitch dark pass will decide.
 - Whether the icon family should cover every existing emoji or only the navigation/action glyphs in the first pass. Default: cover navigation, actions, statuses and empty states; keep emoji only where no icon matches.
+- Whether the dark canvas should stay warm olive or fall back to neutral graphite if the visual review reads "military"; the warm palette is the current decision.

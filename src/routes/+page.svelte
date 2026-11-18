@@ -7,12 +7,12 @@
 </script>
 
 <CommonPage title={$t("dashboard.welcome")} lead={$t("dashboard.lead")}>
-  <div class="row">
-    <div class="col-8 col">
+  <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+    <section class="min-w-0 xl:col-span-7">
       <DashboardPending />
-    </div>
-    <div class="col-4 col">
+    </section>
+    <section class="min-w-0 xl:col-span-5">
       <DashboardStats />
-    </div>
+    </section>
   </div>
 </CommonPage>

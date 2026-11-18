@@ -14,7 +14,7 @@
 - [ ] 2.3 Restyle `DialogBase` and `ConfirmDialog` with the editorial modal surface and ink backdrop, keeping the native `<dialog>` focus trap, Escape handling and focus return; verify the existing dialog tests and a delete confirmation.
 - [ ] 2.4 Restyle `Toast`, `ToastContainer`, `ErrorSpan` and `StatItem`; verify success, error and warning toasts keep their colors, auto-dismiss behavior and contrast in both themes.
 - [ ] 2.5 Rebuild the table layer (`ResponsiveTable` plus the table components) with daisyUI `table` and editorial density: 40 px rows, 32 px header, horizontal rules only; verify the roster, faculties and periods lists at 1440 and 390.
-- [ ] 2.6 Rebuild `PageHeader`, `RowActions`, `EmptyState`, `Badge` usage and the overview/attendance cell primitives; verify the title scale, one primary row action plus disclosure, empty-state CTAs and the 44 px coarse-pointer targets.
+- [ ] 2.6 Rebuild `PageHeader`, `RowActions`, `EmptyState` and the editorial display primitives (`Chip`, `Callout`, `MetricCard`/`MetricStrip`, `Tabs`, `ProgressBar`, `Avatar`) plus the overview/attendance cell primitives; verify the title scale, one primary row action plus disclosure, empty-state CTAs, tab links and the 44 px coarse-pointer targets.
 - [ ] 2.7 Update the unit tests that assert PaperCSS structure or classes (`overview.test.ts` `btn-success`, any shell or dialog DOM assumptions); verify the client suite passes before migrating pages.
 
 ## 3. Shell

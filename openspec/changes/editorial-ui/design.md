@@ -52,9 +52,13 @@ Why not `lucide-svelte`: the Stitch language uses Material Symbols consistently,
 
 ### D4. Shell: fixed sidebar/header desktop, bottom navigation mobile
 
-Desktop: a 240 px fixed sidebar, a 56 px fixed header, and a main region offset by both, capped at 1600 px. Mobile (≤768 px): a fixed top header and a fixed bottom navigation with four primary destinations (Inicio, Facultades, Periodos, Alumnos). Content gets top/bottom padding equal to the bars plus the safe-area inset. No drawer.
+Desktop: use the canonical Stitch shell — a 240 px fixed sidebar (`w-60`), a 48 px fixed header (`h-12`) and a main region with 36 px horizontal / 32 px vertical padding, offset by both and capped at 1600 px. The "Inicio" screen uses a slightly different 256 px/56 px shell; do not copy that variant.
+
+Mobile (≤768 px): a fixed 64 px top header, a fixed 64 px bottom navigation with four primary destinations (Inicio, Facultades, Periodos, Alumnos), and content padded to `pb-28`-equivalent plus the safe-area inset. No drawer.
 
 The existing sidebar context sections (subjects, periods, commissions) remain inside the desktop sidebar and in the mobile header context; the bottom navigation only covers primary destinations. Current-destination state is exposed with `aria-current="page"` and the editorial active tint.
+
+The five commission-level routes (`students`, `attendance`, `overview`, `correct`, cursada `overview`) stay separate routes. Where Stitch uses a JS tab bar to switch between them, the app renders real links and marks the current one; tabs never hide routes.
 
 ### D5. Component mapping
 
@@ -70,7 +74,16 @@ The existing sidebar context sections (subjects, periods, commissions) remain in
 | `PageHeader` | serif `display-lg` / `display-lg-mobile`, optional Inter lead, primary action aligned right |
 | `RowActions` | one `btn-sm` primary + `menu`/`dropdown` disclosure; destructive item after a separator |
 | `EmptyState` | editorial card with icon, serif title, Inter description, one or two actions |
+| `StatItem` | `MetricCard`: uppercase label, icon, tabular value, sublabel; `MetricGrid` and `MetricStrip` for repeated metrics |
+| `Tabs` | real links with the active link marked; count badges styled as editorial stamps |
+| `DataTable` | `ResponsiveTable` keeps its desktop/mobile split but adopts the 40 px editorial rows, sticky first column and a single set of `data-test-id` hooks |
+| `SidePanel` / `InspectorRail` | optional 280–320 px contextual rail on commission screens; content column gets `min-width: 0` and its own scroll |
+| `Callout` | info/warning callout for pending states, with icon and editorial tint |
+| `ProgressBar` / `Avatar` | flat 6 px progress bar with optional marker; initials avatar for people |
+| `MobileHeader` / `BottomNav` | fixed top header and four-destination bottom navigation with safe-area padding |
 | Grids (`OverviewGrid`, `AttendanceGrid`) | keep CSS-grid layout; restyle cells, headers, zebra and status glyphs; sticky first column on horizontal scroll |
+
+Seven routes have no Stitch reference (`/faculties`, subjects, periods list, `/periods`, period subjects, cursada overview, plus one detail variant); they are composed from these primitives rather than from a new screen design.
 
 ### D6. Theme switching
 
@@ -87,11 +100,13 @@ Use a warm dark companion rather than a neutral black, preserving the archival p
 ### D8. Migration strategy: vertical slices on a branch
 
 1. Tooling: Tailwind/daisyUI, theme tokens, fonts, icons, `app.css`; remove PaperCSS.
-2. Primitives: Button, Card, Badge, forms, dialogs, toasts, table, page header, row actions, empty state.
+2. Primitives: Button, Card, Badge, Chip, Callout, MetricCard/MetricStrip, DataTable, forms, dialogs, toasts, PageHeader, RowActions, EmptyState, ProgressBar, Avatar.
 3. Shell: layout, sidebar, header, breadcrumbs, bottom navigation, theme toggle.
 4. Pages in order: dashboard → faculties → subjects → periods → commissions → roster → overview → attendance → take → registry → person detail → corrections.
 5. Grid-specific polish and status semantics last.
 6. Remove dead sketch utilities and PaperCSS references; run the full suite and the rendered walkthrough.
+
+The seven routes without a Stitch reference are composed from the primitives in step 2. The five commission-level routes remain separate links even where Stitch shows a tab bar.
 
 Each slice lands tests and a rendered check; the branch is not merged until every route is on the new system.
 
@@ -107,6 +122,11 @@ Most tests already use `data-test-id` or text. Update the overview test that ass
 - **Font and icon payload** → Self-hosted variable fonts and a subsetted icon font; check bundle size and preload the two primary faces.
 - **Theme drift** → One token source; no ad-hoc hex values in components. Dark palette is validated for AA before merge.
 - **Stitch HTML is static and uses CDN classes** → Treat it as a layout/reference source; translate to local tokens and Svelte components, never copy the HTML.
+- **Stitch has two desktop shells** → Adopt the canonical 240 px sidebar + 48 px header; do not copy the 256 px/56 px "Inicio" variant.
+- **Stitch HTML diverges per screen** → Every screen carries its own Tailwind CDN config, mock data, inline JS and custom utilities (`text-on-surface`, `font-headline-sm`, `pt-safe`). Translate to one theme and Svelte state; never copy markup wholesale.
+- **ResponsiveTable duplicates the DOM** → It renders desktop table and mobile cards at once today, so tests must keep scoping by `data-test-id`; verify text assertions still use `getAllBy*`.
+- **Seven routes have no Stitch reference** → Compose them from the primitives; do not invent new layouts or features.
+- **Stitch screens are 2560 px wide** → Re-measure density at 1280/1440; avoid the Stitch `min-w-[1200px]` table widths that cause horizontal scroll.
 - **Large diff** → Commit by slice (tooling, primitives, shell, pages) with the full suite green at each checkpoint.
 
 ## Migration Plan

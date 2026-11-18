@@ -17,9 +17,17 @@
 
   let { primary, overflow, destructive, label, testId }: Props = $props();
 
+  let detailsElement = $state<HTMLDetailsElement | null>(null);
+
   const disclosureLabel = $derived(
     label ? `${$t("layout.more_actions")} — ${label}` : $t("layout.more_actions"),
   );
+
+  function closeAndFocus(details: HTMLDetailsElement | null) {
+    if (!details) return;
+    details.open = false;
+    details.querySelector<HTMLElement>("summary")?.focus();
+  }
 
   // Close the disclosure after picking an action so the next interaction
   // starts from the row again. An action keeps the menu container inert,
@@ -27,8 +35,7 @@
   function closeOnAction(node: HTMLElement) {
     function handleClick(event: MouseEvent) {
       if (!(event.target as HTMLElement).closest("a, button")) return;
-      const details = node.closest("details");
-      if (details) details.open = false;
+      closeAndFocus(node.closest("details"));
     }
 
     node.addEventListener("click", handleClick);
@@ -37,6 +44,27 @@
         node.removeEventListener("click", handleClick);
       },
     };
+  }
+
+  function closeOnOutside(details: HTMLDetailsElement) {
+    function handlePointer(event: MouseEvent) {
+      if (!details.open) return;
+      if (details.contains(event.target as Node)) return;
+      details.open = false;
+    }
+
+    document.addEventListener("mousedown", handlePointer);
+    return {
+      destroy() {
+        document.removeEventListener("mousedown", handlePointer);
+      },
+    };
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== "Escape" || !detailsElement?.open) return;
+    event.preventDefault();
+    closeAndFocus(detailsElement);
   }
 </script>
 
@@ -48,7 +76,15 @@
   {/if}
 
   {#if overflow || destructive}
-    <details class="row-actions__disclosure" data-test-id={testId}>
+    <!-- The disclosure is keyboard-operable through its summary; Escape closes it. -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <details
+      bind:this={detailsElement}
+      class="row-actions__disclosure"
+      data-test-id={testId}
+      use:closeOnOutside
+      onkeydown={handleKeydown}
+    >
       <summary class="btn btn-ghost btn-sm btn-circle row-actions__summary" aria-label={disclosureLabel}>
         ⋯
       </summary>

@@ -8,6 +8,7 @@
 
   import AttendanceGrid from "$lib/client/components/grids/attendance/AttendanceGrid.svelte";
   import Button from "$lib/client/components/common/Button.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
@@ -23,6 +24,7 @@
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
@@ -47,6 +49,8 @@
     commissionSlug ? `${baseUrl}/attendance/take?assignment_id=${assignmentId}` : null;
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -57,6 +61,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -102,6 +107,8 @@
 
 {#if loading}
   <p>{$t("attendance.loading")}</p>
+{:else if failed}
+  <LoadError onRetry={loadData} />
 {:else if commissionID === undefined}
   <p>{$t("commissions.not_found_message")}</p>
 {:else if attendanceStore.grid}

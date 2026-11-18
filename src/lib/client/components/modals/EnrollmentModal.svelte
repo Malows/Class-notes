@@ -104,6 +104,7 @@
     <div class="mb-4 flex gap-2">
       <Button
         class={activeTab === "single" ? "btn-secondary" : "btn-ghost"}
+        aria-pressed={activeTab === "single"}
         onclick={() => {
           activeTab = "single";
           error = "";
@@ -113,6 +114,7 @@
       </Button>
       <Button
         class={activeTab === "bulk" ? "btn-secondary" : "btn-ghost"}
+        aria-pressed={activeTab === "bulk"}
         onclick={() => {
           activeTab = "bulk";
           error = "";
@@ -132,6 +134,8 @@
           oninput={(event) => handleSearch((event.currentTarget as HTMLInputElement).value)}
           placeholder={$t("enrollments.search_placeholder")}
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="enrollment-search-input"
         />
         {#if results.length > 0}
@@ -168,6 +172,8 @@
           bind:value={legajo}
           placeholder={$t("students.external_id_placeholder")}
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="student-external-id-input"
         />
       </div>
@@ -179,6 +185,8 @@
           bind:value={bulkNames}
           rows="5"
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="student-bulk-textarea"
         ></textarea>
       </div>

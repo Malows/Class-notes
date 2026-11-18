@@ -1,7 +1,14 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/newsreader";
-@import "@fontsource/material-symbols-outlined/400.css";
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/material-symbols-icons.woff2") format("woff2");
+}
 
 @source "./lib";
 @source "./routes";
@@ -66,7 +73,7 @@
   --color-surface-container-highest: #e4e2dc;
   --color-on-surface: #1b1c18;
   --color-on-surface-variant: #434654;
-  --color-muted: #6c757d;
+  --color-muted: #5f6a73;
   --color-outline: #747686;
   --color-outline-variant: #c3c5d7;
   --color-primary-fixed: #dce1ff;
@@ -385,6 +392,7 @@
     text-transform: none;
     white-space: nowrap;
     word-wrap: normal;
+    font-feature-settings: "liga";
     -webkit-font-feature-settings: "liga";
     -webkit-font-smoothing: antialiased;
   }
@@ -449,5 +457,16 @@
   body {
     background: #ffffff;
     color: #1b1c18;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

@@ -69,6 +69,7 @@
         placeholder={$t("persons.name_placeholder")}
         class="input-block"
         aria-invalid={!!validationError}
+        aria-describedby={validationError ? "error-person-name" : undefined}
         oninput={() => (validationError = "")}
         data-test-id="person-name-input"
       />
@@ -82,6 +83,8 @@
         bind:value={legajo}
         placeholder={$t("persons.legajo_placeholder")}
         class="input-block"
+        aria-invalid={!!serverError}
+        aria-describedby={serverError ? "error-person-server" : undefined}
         oninput={() => (serverError = "")}
         data-test-id="person-legajo-input"
       />
@@ -94,7 +97,12 @@
     />
 
     {#if serverError}
-      <span class="form-error-msg" role="alert" data-test-id="person-server-error">
+      <span
+        id="error-person-server"
+        class="form-error-msg"
+        role="alert"
+        data-test-id="person-server-error"
+      >
         {serverError}
       </span>
     {/if}

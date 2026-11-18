@@ -13,5 +13,11 @@
   "correction_saved": "Correction saved",
   "close": "Close",
   "notifications": "Notifications",
-  "no_data": "No data available."
+  "no_data": "No data available.",
+  "load_error": "The data could not be loaded.",
+  "retry": "Retry",
+  "error_code": "Error {{code}}",
+  "error_not_found": "We couldn't find that page.",
+  "error_generic": "Something went wrong while loading this page.",
+  "go_dashboard": "Go to dashboard"
 }

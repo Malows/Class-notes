@@ -14,9 +14,9 @@
 
 <div class="flex flex-col gap-1.5">
   {#if !isCollapsed}
-    <h6 class="m-0 px-2 text-label-sm uppercase tracking-[0.04em] text-on-surface-variant">
+    <p class="m-0 px-2 text-label-sm uppercase tracking-[0.04em] text-on-surface-variant" data-test-id="sidebar-context-heading">
       {heading}
-    </h6>
+    </p>
   {/if}
   <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
     {#each items as item (item.id)}

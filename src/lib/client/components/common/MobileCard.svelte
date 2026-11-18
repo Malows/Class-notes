@@ -30,7 +30,7 @@
         data-test-id={titleTestId}>{title}</a
       >
     {:else}
-      <h3 class="m-0 font-serif text-headline-sm" data-test-id={titleTestId}>{title}</h3>
+      <h2 class="m-0 font-serif text-headline-sm" data-test-id={titleTestId}>{title}</h2>
     {/if}
 
     {#if meta.length > 0}

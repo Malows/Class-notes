@@ -7,6 +7,7 @@
     class?: string;
     withHover?: boolean;
     onclick?: (event: MouseEvent) => void;
+    "aria-pressed"?: boolean | "true" | "false";
     children?: () => any;
   }
 

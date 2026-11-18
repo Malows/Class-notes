@@ -13,5 +13,11 @@
   "correction_saved": "Corrección guardada",
   "close": "Cerrar",
   "notifications": "Notificaciones",
-  "no_data": "No hay datos disponibles."
+  "no_data": "No hay datos disponibles.",
+  "load_error": "No se pudieron cargar los datos.",
+  "retry": "Reintentar",
+  "error_code": "Error {{code}}",
+  "error_not_found": "No encontramos esa página.",
+  "error_generic": "Algo salió mal al cargar esta página.",
+  "go_dashboard": "Ir al inicio"
 }

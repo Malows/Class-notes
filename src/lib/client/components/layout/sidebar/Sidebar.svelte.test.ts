@@ -139,7 +139,9 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
   await flush();
   flushSync();
 
-  const headers = Array.from(document.body.querySelectorAll("h6")).map((h) => h.textContent?.trim());
+  const headers = Array.from(
+    document.body.querySelectorAll('[data-test-id="sidebar-context-heading"]'),
+  ).map((h) => h.textContent?.trim());
   expect(headers).toContain("Subjects (Facultad de Ingeniería)");
   expect(headers).toContain("Periods");
   expect(headers).toContain("Commissions");

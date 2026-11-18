@@ -25,12 +25,12 @@
 
 <div class="overview-header" data-test-id="overview-header">
   <div class="sticky left-0 z-[1] grid grid-rows-[2rem_2.8rem] items-center bg-surface">
-    <h4
+    <p
       class="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-label-sm uppercase tracking-[0.04em] text-on-surface-variant"
       data-test-id="overview-header-students-title"
     >
       {$t("layout.students_label")}
-    </h4>
+    </p>
   </div>
 
   {#each assignments as assignment}

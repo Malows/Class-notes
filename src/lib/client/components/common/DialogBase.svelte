@@ -55,7 +55,7 @@
     data-test-id="modal-container"
   >
     <header class="modal-header">
-      <h3 class="modal-title">{title}</h3>
+      <h2 class="modal-title">{title}</h2>
       <button
         type="button"
         class="btn btn-ghost btn-sm btn-circle"

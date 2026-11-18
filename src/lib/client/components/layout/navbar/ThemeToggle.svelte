@@ -8,7 +8,10 @@
   type="button"
   class="btn btn-ghost btn-sm btn-circle"
   onclick={themeStore.toggleTheme}
-  aria-label={themeStore.currentTheme === "light" ? $t("layout.light") : $t("layout.dark")}
+  aria-label={themeStore.currentTheme === "light"
+    ? $t("layout.switch_to_dark")
+    : $t("layout.switch_to_light")}
+  aria-pressed={themeStore.currentTheme === "dark"}
   data-test-id="theme-toggle-btn"
 >
   <span class="material-symbols-outlined text-[18px]" aria-hidden="true"

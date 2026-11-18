@@ -43,5 +43,10 @@
   "more_actions": "Más acciones",
   "breadcrumb": "Ruta de navegación",
   "active_term": "Cuatrimestre activo",
-  "no_context": "No hay contexto académico activo disponible."
+  "no_context": "No hay contexto académico activo disponible.",
+  "skip_to_content": "Saltar al contenido",
+  "switch_to_dark": "Cambiar a tema oscuro",
+  "switch_to_light": "Cambiar a tema claro",
+  "switch_to_english": "Cambiar a inglés",
+  "switch_to_spanish": "Cambiar a español"
 }

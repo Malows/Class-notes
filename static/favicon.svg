@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Class Notes">
+  <rect width="64" height="64" rx="10" fill="#fbf9f2" />
+  <path d="M14 16h16a6 6 0 0 1 6 6v28a5 5 0 0 0-5-5H14z" fill="#2f5fe0" />
+  <path d="M50 16H34a6 6 0 0 0-6 6v28a5 5 0 0 1 5-5h17z" fill="#1b1c18" opacity="0.85" />
+  <path d="M32 22v28" stroke="#fbf9f2" stroke-width="2" />
+</svg>

@@ -7,6 +7,7 @@
   import Button from "$lib/client/components/common/Button.svelte";
   import Card from "$lib/client/components/common/Card.svelte";
   import Chip from "$lib/client/components/common/Chip.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
 
   interface PendingSubjectGroup {
@@ -45,11 +46,16 @@
       .sort((a, b) => b.total - a.total || a.subjectName.localeCompare(b.subjectName));
   });
 
+  let failed = $state(false);
+
   async function load() {
+    loading = true;
+    failed = false;
     try {
       pending = await overviewService.getPendingSummary();
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -59,10 +65,12 @@
 </script>
 
 <Card>
-  <h3 class="m-0 font-serif text-headline-md">{$t("dashboard.pending_title")}</h3>
+  <h2 class="m-0 font-serif text-headline-md">{$t("dashboard.pending_title")}</h2>
 
   {#if loading}
     <p class="text-body-md text-on-surface-variant">{$t("dashboard.pending_loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={load} />
   {:else if groups.length === 0}
     <p class="text-body-md text-on-surface-variant">{$t("dashboard.pending_empty_active")}</p>
   {:else}

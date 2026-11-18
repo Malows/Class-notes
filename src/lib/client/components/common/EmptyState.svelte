@@ -22,7 +22,7 @@
     {#if icon}
       <p class="m-0 text-2xl leading-none" aria-hidden="true">{icon}</p>
     {/if}
-    <h4 class="m-0 font-serif text-headline-md">{title}</h4>
+    <h2 class="m-0 font-serif text-headline-md">{title}</h2>
     {#if description}
       <p class="m-0 text-body-md text-on-surface-variant">{description}</p>
     {/if}

@@ -9,6 +9,7 @@
   import Button from "$lib/client/components/common/Button.svelte";
   import OverviewGrid from "$lib/client/components/grids/overview/OverviewGrid.svelte";
   import OverviewLegend from "$lib/client/components/grids/overview/OverviewLegend.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
@@ -28,8 +29,11 @@
 
   let data = $state<OverviewData | null>(null);
   let loading = $state(true);
+  let failed = $state(false);
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -45,6 +49,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -71,6 +76,8 @@
 
 {#if loading}
   <p>{$t("commissions.loading_info")}</p>
+{:else if failed}
+  <LoadError onRetry={loadData} />
 {:else if data}
   <div class="mt-4 min-w-0">
     <OverviewGrid

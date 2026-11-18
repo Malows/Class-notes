@@ -8,6 +8,7 @@
 
   import AttendanceGrid from "$lib/client/components/grids/attendance/AttendanceGrid.svelte";
   import Button from "$lib/client/components/common/Button.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
@@ -21,6 +22,7 @@
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
@@ -35,6 +37,8 @@
   const baseUrl = `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}`;
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -44,6 +48,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -89,6 +94,8 @@
 
 {#if loading}
   <p>{$t("attendance.loading")}</p>
+{:else if failed}
+  <LoadError onRetry={loadData} />
 {:else if subjectPeriodID === undefined}
   <p>{$t("periods.period_not_found")}</p>
 {:else if attendanceStore.grid}

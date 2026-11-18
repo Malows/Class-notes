@@ -5,17 +5,22 @@
   import { t } from "$lib/common/i18n/config";
 
   import Card from "$lib/client/components/common/Card.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import StatItem from "$lib/client/components/common/StatItem.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
 
   let stats = $state<any>(null);
   let loading = $state(true);
+  let failed = $state(false);
 
   async function load() {
+    loading = true;
+    failed = false;
     try {
       stats = await overviewService.getGlobalStats();
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -25,10 +30,12 @@
 </script>
 
 <Card>
-  <h3 class="card-title">{$t("dashboard.title")}</h3>
+  <h2 class="card-title">{$t("dashboard.title")}</h2>
 
   {#if loading}
     <p>{$t("dashboard.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={load} />
   {:else if !stats}
     <p>{$t("dashboard.no_data")}</p>
   {:else}

@@ -34,7 +34,9 @@
     {/if}
 
     {#if meta.length > 0}
-      <dl class="m-0 grid grid-cols-2 gap-x-4 gap-y-2">
+      <dl
+        class="m-0 grid gap-x-4 gap-y-2 {meta.length >= 2 ? 'grid-cols-2' : 'grid-cols-1'}"
+      >
         {#each meta as item (item.label)}
           <div>
             <dt

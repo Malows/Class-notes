@@ -4,7 +4,7 @@
 
 See `proposal.md` — Why.
 
-- Today the UI is PaperCSS 1.9 plus ~110 lines of custom sketch utilities in `src/app.css`. PaperCSS supplies element styles (body, headings, tables, buttons, forms) and classes such as `.row/.col-*`, `.card`, `.table-hover`, `.badge` and `.form-group`. The app adds `.paper-btn`, `.sketch-border`, `.sketch-shadow` and `.link-quiet`.
+- Today the UI is PaperCSS 1.9 plus ~110 lines of custom sketch utilities in `src/app.css`. PaperCSS supplies element styles (body, headings, tables, buttons, forms) and classes such as `.row/.col-*`, `.card`, `.table-hover`, `.badge`, `.paper-btn` and `.form-group`. The app adds `.sketch-border`, `.sketch-shadow` and `.link-quiet`, and several components already contain aspirational Stitch class names that resolve to nothing.
 - There is no Tailwind today. Vite is v8; `@tailwindcss/vite` 4.3.5 supports Vite 8 and daisyUI 5.8.1 is a Tailwind plugin.
 - Shared primitives live in `src/lib/client/components/common` and are consumed by 81 Svelte files across 17 routes. Most tests use `data-test-id` or visible text; only the overview grid test asserts a PaperCSS class (`btn-success`).
 - Stitch supplies the "Academic Notebook System" tokens and 19 reference screens. Its HTML uses Tailwind CDN, Material Symbols and a custom utility vocabulary (`bg-surface-container-lowest`, `text-on-surface`, `font-headline-sm`, `tnum`); the HTML is a reference, not copy-paste source.
@@ -143,7 +143,19 @@ Each slice lands tests and a rendered check; the branch is not merged until ever
 
 ### D9. Tests and verification
 
-Most tests already use `data-test-id` or text. Update the overview test that asserts `btn-success` and any shell structure tests. Add route smoke checks for the shell (desktop sidebar/header, mobile bottom nav) and the theme switch. Verify with `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server`, `pnpm test:client`, and a Playwright walkthrough at 1440×900 and 390×844 in light and dark.
+Tests are the contract: `data-test-id` stays, `<a>` stays an `<a>` where tests assert `href`, and `<details>/<summary>` stays the disclosure implementation so the row/table tests keep working. Update the assertions that depend on PaperCSS or emoji:
+
+- `overview.test.ts`: `btn-success`, the emoji content, the dead `data-popover-*` attributes and the cell `tagName`.
+- `AttendanceGrid.test.ts`: striping class, header `a`/`span` structure and the `✓`/`–` glyphs.
+- `StatItem.test.ts`: `badge`/`warning` class names.
+- `Sidebar.svelte.test.ts`: `aside`, `.open`/`.collapsed`, the `h6` headings and the removed drawer toggle.
+- `NavBar.test.ts` and `LanguageToggle.test.ts`: the first `<button>` and the flag emojis.
+- `theme.svelte.test.ts`: `.dark` becomes `data-theme`.
+- `RowActions`/row/table tests: keep `<details>/<summary>` and the existing `data-test-id`s.
+- `FacultySubjectCheckboxes.test.ts` and `DeliveryForm.svelte.test.ts`: keep real `input`/`select` elements.
+- Route tests: mostly `data-test-id`, `href` and text; verify they still pass after the shell rewrite.
+
+Add route smoke checks for the shell (desktop sidebar/header, mobile bottom nav) and the theme switch. Verify with `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server`, `pnpm test:client`, and a Playwright walkthrough at 1440×900 and 390×844 in light and dark.
 
 ## Risks / Trade-offs
 
@@ -152,6 +164,10 @@ Most tests already use `data-test-id` or text. Update the overview test that ass
 - **Density regression** → 40 px rows and 32 px controls are denser than today; verify touch targets remain 44 px on coarse pointers and that tables stay readable at 390 px.
 - **Font and icon payload** → Self-hosted variable fonts and a subsetted icon font; check bundle size and preload the two primary faces.
 - **Theme drift** → One token source; no ad-hoc hex values in components. Dark palette is validated for AA before merge.
+- **PaperCSS is unlayered** → Unlayered PaperCSS rules beat Tailwind's layers regardless of import order. Remove it in the same slice that adds Tailwind; do not attempt a long hybrid period.
+- **Dynamic class strings are invisible to Tailwind** → Build complete class strings in maps (`success: "badge badge-success"`) instead of concatenating partial names like `badge ${badge}` or `background-${type}`.
+- **`ResponsiveTable` renders `<td>` inside a `<div>` on mobile** → With SSR enabled this is invalid HTML. Replace the mobile rendering with a valid row snippet or a single table with block rows while migrating.
+- **`<style lang="scss">` without Sass** → `ResponsiveTable` declares SCSS but no preprocessor is installed. Remove the block and use utilities.
 - **Dark elevation inverts** → Light cards are the brightest surface; dark cards rise above a darker page. Map surfaces by role, never by token ordinal; borders are mandatory because the surface deltas are ~1.1:1.
 - **Zebra disappears in dark** → Do not use daisyUI `table-zebra`; group rows with hairlines or section labels instead.
 - **Printing** → Force the light tokens under `@media print` so attendance/roster printouts do not render a dark canvas.

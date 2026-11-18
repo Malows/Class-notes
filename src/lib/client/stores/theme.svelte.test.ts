@@ -22,12 +22,14 @@ describe("ThemeStore", () => {
     localStorage.clear();
     if (typeof document !== "undefined") {
       document.documentElement.classList.remove("dark");
+      document.documentElement.removeAttribute("data-theme");
     }
   });
 
   it("initializes with light theme by default", () => {
     const store = new ThemeStore();
     expect(store.current).toBe("light");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("classnotes");
   });
 
   it("toggles theme correctly", () => {
@@ -35,12 +37,13 @@ describe("ThemeStore", () => {
     store.toggle();
     expect(store.current).toBe("dark");
     if (typeof document !== "undefined") {
-      expect(document.documentElement.classList.contains("dark")).toBe(true);
+      expect(document.documentElement.getAttribute("data-theme")).toBe("classnotes-dark");
+      expect(document.documentElement.classList.contains("dark")).toBe(false);
     }
     store.toggle();
     expect(store.current).toBe("light");
     if (typeof document !== "undefined") {
-      expect(document.documentElement.classList.contains("dark")).toBe(false);
+      expect(document.documentElement.getAttribute("data-theme")).toBe("classnotes");
     }
   });
 

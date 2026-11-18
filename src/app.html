@@ -7,8 +7,18 @@
     <title>Class Notes</title>
     <script>
       (function () {
-        const theme = localStorage.getItem("theme") || "light";
-        document.documentElement.classList.toggle("dark", theme === "dark");
+        try {
+          const theme = localStorage.getItem("theme");
+          const root = document.documentElement;
+          root.classList.remove("dark");
+          if (theme === "dark") {
+            root.setAttribute("data-theme", "classnotes-dark");
+          } else if (theme === "light") {
+            root.setAttribute("data-theme", "classnotes");
+          }
+        } catch {
+          /* localStorage can be unavailable in private contexts */
+        }
       })();
     </script>
     <style>

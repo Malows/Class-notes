@@ -124,11 +124,73 @@
   --noise: 0;
 }
 
-@layer base {
-  html {
-    color-scheme: light;
-  }
+@plugin "daisyui/theme" {
+  name: "classnotes-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  themecontroller: false;
 
+  --color-base-100: #1a1a14;
+  --color-base-200: #14140f;
+  --color-base-300: #3a3a31;
+  --color-base-content: #e8e6dc;
+
+  --color-primary: #b5c4ff;
+  --color-primary-content: #00164e;
+  --color-secondary: #7cda99;
+  --color-secondary-content: #00210e;
+  --color-accent: #ffb77a;
+  --color-accent-content: #2e1500;
+  --color-neutral: #2d2d26;
+  --color-neutral-content: #e8e6dc;
+  --color-info: #8fd0f0;
+  --color-info-content: #00263a;
+  --color-success: #63d68f;
+  --color-success-content: #00391c;
+  --color-warning: #f5b558;
+  --color-warning-content: #2e1500;
+  --color-error: #ffb4ab;
+  --color-error-content: #690005;
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+[data-theme="classnotes-dark"] {
+  --color-surface: #14140f;
+  --color-surface-dim: #0b0b08;
+  --color-surface-bright: #1f1f18;
+  --color-surface-container-lowest: #1a1a14;
+  --color-surface-container-low: #191913;
+  --color-surface-container: #1f1f18;
+  --color-surface-container-high: #262620;
+  --color-surface-container-highest: #2d2d26;
+  --color-on-surface: #e8e6dc;
+  --color-on-surface-variant: #b9b7ab;
+  --color-muted: #8b8a7e;
+  --color-outline: #8e8d80;
+  --color-outline-variant: #3a3a31;
+  --color-primary-fixed: #16408f;
+  --color-primary-fixed-dim: #b5c4ff;
+  --color-on-primary-fixed: #dce1ff;
+  --color-primary-container: #16408f;
+  --color-on-primary-container: #dce1ff;
+  --color-secondary-container: #00522a;
+  --color-on-secondary-container: #98f7b4;
+  --color-tertiary-container: #6d3a00;
+  --color-on-tertiary-container: #ffdcc2;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+}
+
+@layer base {
   body {
     background-color: var(--color-surface);
     color: var(--color-on-surface);

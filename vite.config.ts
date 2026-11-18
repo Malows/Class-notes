@@ -1,8 +1,9 @@
 import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [sveltekit()],
+  plugins: [tailwindcss(), sveltekit()],
   test: {
     // If you are testing components client-side, you need to set up a DOM environment.
     // If not all your files should have this environment, you can use a

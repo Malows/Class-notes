@@ -13,7 +13,6 @@
   import ToastContainer from "$lib/client/components/common/ToastContainer.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
 
-  import "papercss/dist/paper.min.css";
   import "../app.css";
 
   let { data, children } = $props();

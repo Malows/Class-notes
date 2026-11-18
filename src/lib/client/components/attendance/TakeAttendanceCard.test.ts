@@ -163,3 +163,28 @@ test("pausing before release cancels the flick", () => {
 
   expect(onDecide).not.toHaveBeenCalled();
 });
+
+test("an invalid pointer id on release does not break the gesture", () => {
+  const { onDecide, card } = mountCard();
+  card.hasPointerCapture = () => true;
+  card.releasePointerCapture = () => {
+    throw new DOMException("Invalid pointer id", "NotFoundError");
+  };
+
+  drag(card, 100, 100, 240, 110);
+  vi.advanceTimersByTime(200);
+
+  expect(onDecide).toHaveBeenCalledWith("present");
+});
+
+test("losing pointer capture mid-gesture never decides", () => {
+  const { onDecide, card } = mountCard();
+
+  card.dispatchEvent(pointer("pointerdown", 100, 100, 0));
+  card.dispatchEvent(pointer("pointermove", 260, 110, 250));
+  card.dispatchEvent(pointer("lostpointercapture", 260, 110, 260));
+  vi.advanceTimersByTime(200);
+
+  expect(onDecide).not.toHaveBeenCalled();
+  expect(card.style.transform).toBe("translate(0px, 0px) rotate(0deg)");
+});

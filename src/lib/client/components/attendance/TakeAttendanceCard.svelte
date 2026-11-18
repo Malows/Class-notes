@@ -133,6 +133,26 @@
     }, 190);
   }
 
+  // Pointer capture can already be gone (pointer left the window, unmount,
+  // browser cancelled it), so both calls are defensive.
+  function capturePointer(id: number) {
+    try {
+      card?.setPointerCapture?.(id);
+    } catch {
+      // The browser can reject capture for an inactive pointer.
+    }
+  }
+
+  function releasePointer(id: number) {
+    try {
+      if (card?.hasPointerCapture?.(id)) {
+        card.releasePointerCapture(id);
+      }
+    } catch {
+      // The capture may have been released already.
+    }
+  }
+
   function handlePointerDown(event: PointerEvent) {
     if (flying || (event.pointerType === "mouse" && event.button !== 0)) return;
 
@@ -148,7 +168,7 @@
     lastY = event.clientY;
     lastTime = event.timeStamp;
     pointerId = event.pointerId;
-    card?.setPointerCapture?.(event.pointerId);
+    capturePointer(event.pointerId);
   }
 
   function handlePointerMove(event: PointerEvent) {
@@ -172,8 +192,10 @@
   function handlePointerUp(event: PointerEvent) {
     if (!dragging || event.pointerId !== pointerId) return;
 
-    card?.releasePointerCapture?.(event.pointerId);
+    const id = event.pointerId;
+    // Clear first: releasing can fire `lostpointercapture` synchronously.
     pointerId = null;
+    releasePointer(id);
 
     // A pause before releasing cancels the flick: the card is not moving anymore.
     const releaseSpeed = event.timeStamp - lastTime > 120 ? 0 : speed;
@@ -195,6 +217,13 @@
     // A cancelled gesture is not a decision: just put the card back.
     if (!dragging && !flying) return;
     reset();
+  }
+
+  function handleLostCapture(event: PointerEvent) {
+    // Losing capture mid-gesture (pointer left the window) is not a decision.
+    if (dragging && event.pointerId === pointerId) {
+      reset();
+    }
   }
 
   // Every new student starts from a clean card.
@@ -219,6 +248,7 @@
     onpointermove={handlePointerMove}
     onpointerup={handlePointerUp}
     onpointercancel={handlePointerCancel}
+    onlostpointercapture={handleLostCapture}
     data-test-id="take-card"
   >
     <span

@@ -4,8 +4,8 @@
 
 - [x] 1.1 Add `tailwindcss`, `@tailwindcss/vite`, `daisyui` and the self-hosted Inter, Newsreader and Material Symbols packages; add `tailwindcss()` to `vite.config.ts`; make `src/app.css` the Tailwind entry and remove `papercss` and its import; verify `pnpm build` succeeds and the dev server serves Tailwind utilities.
 - [x] 1.2 Define the Academic Notebook light theme in `app.css` (`@theme` tokens plus `@plugin "daisyui/theme"`): warm paper canvas, white surfaces, ink text, Ink Blue primary, muted semantic colors, 4/8 px radii, 1 px border, no depth/noise; verify computed surfaces, primary button and typography on a migrated page.
-- [ ] 1.3 Add the dark theme from the Stitch dark pass as a second `@plugin "daisyui/theme"` with `prefersdark`, plus the `--cn-*` dark surfaces; change `themeStore` and the `app.html` pre-paint script to write `data-theme` instead of the `.dark` class and update `theme.svelte.test.ts`; verify the toggle persists, there is no light flash on reload, and text, secondary text, primary buttons and semantic chips meet AA in both themes.
-- [ ] 1.4 Add the editorial base layer: page canvas, body typography, heading scale, tabular-number utility, focus ring, selection, hairline defaults and the `@media print` light-token override; verify headings use Newsreader, UI uses Inter, numeric table cells use tabular figures, and printing uses the light palette.
+- [x] 1.3 Add the dark theme from the Stitch dark pass as a second `@plugin "daisyui/theme"` with `prefersdark`, plus the `--cn-*` dark surfaces; change `themeStore` and the `app.html` pre-paint script to write `data-theme` instead of the `.dark` class and update `theme.svelte.test.ts`; verify the toggle persists, there is no light flash on reload, and text, secondary text, primary buttons and semantic chips meet AA in both themes.
+- [x] 1.4 Add the editorial base layer: page canvas, body typography, heading scale, tabular-number utility, focus ring, selection, hairline defaults and the `@media print` light-token override; verify headings use Newsreader, UI uses Inter, numeric table cells use tabular figures, and printing uses the light palette.
 
 ## 2. Primitives
 

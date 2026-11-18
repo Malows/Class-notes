@@ -295,6 +295,88 @@
   }
 }
 
+@layer base {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea {
+    width: 100%;
+    min-height: 2rem;
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  select {
+    height: 2rem;
+    padding-block: 0;
+  }
+
+  textarea {
+    min-height: 5rem;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 0.875rem;
+    height: 0.875rem;
+    accent-color: var(--color-primary);
+  }
+}
+
+@layer components {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-group label,
+  .field-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--color-on-surface-variant);
+  }
+
+  .input-block {
+    width: 100%;
+  }
+
+  .paper-check {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-primary);
+  }
+
+  .text-danger,
+  .form-error-msg {
+    color: var(--color-error);
+  }
+
+  .form-error-msg {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+}
+
 @layer components {
   .link-editorial,
   .link-quiet {

@@ -9,7 +9,7 @@
 
 ## 2. Primitives
 
-- [ ] 2.1 Rebuild `Button`, `Card` and `Badge` on daisyUI classes and the editorial tokens, using complete static class strings (not `badge ${tone}` or `background-${type}`) and mapping `btn-danger` to `btn-error`; keep the default button neutral rather than making every action primary; verify primary, ghost, outline, destructive and small variants render at 32 px, and cards use the white surface with a 1 px border and 8 px radius.
+- [x] 2.1 Rebuild `Button`, `Card` and `Badge` on daisyUI classes and the editorial tokens, using complete static class strings (not `badge ${tone}` or `background-${type}`) and mapping `btn-danger` to `btn-error`; keep the default button neutral rather than making every action primary; verify primary, ghost, outline, destructive and small variants render at 32 px, and cards use the white surface with a 1 px border and 8 px radius.
 - [ ] 2.2 Rebuild the form primitives (inputs, selects, textareas, checkboxes, error text) on daisyUI with 32 px control height and the editorial focus ring; verify the faculty, subject, period, commission, assignment, enrollment and person modals still submit and show validation.
 - [ ] 2.3 Restyle `DialogBase` and `ConfirmDialog` with the editorial modal surface and ink backdrop, keeping the native `<dialog>` focus trap, Escape handling and focus return; verify the existing dialog tests and a delete confirmation.
 - [ ] 2.4 Restyle `Toast`, `ToastContainer`, `ErrorSpan` and `StatItem`; verify success, error and warning toasts keep their colors, auto-dismiss behavior and contrast in both themes.

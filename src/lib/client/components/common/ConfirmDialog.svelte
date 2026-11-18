@@ -25,11 +25,17 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" onclick={onClose} data-test-id="confirm-dialog-cancel-btn"
-      >{cancelLabel}</button
+    <button
+      type="button"
+      class="btn btn-ghost"
+      onclick={onClose}
+      data-test-id="confirm-dialog-cancel-btn">{cancelLabel}</button
     >
-    <button class="btn-danger" onclick={onConfirm} data-test-id="confirm-dialog-confirm-btn"
-      >{confirmLabel}</button
+    <button
+      type="button"
+      class="btn btn-error"
+      onclick={onConfirm}
+      data-test-id="confirm-dialog-confirm-btn">{confirmLabel}</button
     >
   {/snippet}
 </DialogBase>

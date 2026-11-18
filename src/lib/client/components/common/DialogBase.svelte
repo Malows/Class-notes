@@ -2,6 +2,8 @@
   import type { Snippet } from "svelte";
   import { fade } from "svelte/transition";
 
+  import { t } from "$lib/common/i18n/config";
+
   interface Props {
     isOpen: boolean;
     title: string;
@@ -48,13 +50,22 @@
     onclose={handleClose}
     onclick={handleBackdropClick}
     transition:fade={{ duration: 150 }}
-    class="modal-body native-dialog"
+    class="native-dialog"
+    aria-label={title}
     data-test-id="modal-container"
   >
-    <button class="btn-close" onclick={onClose} aria-label="Close" data-test-id="modal-close-btn"
-      >&times;</button
-    >
-    <h3 class="modal-title">{title}</h3>
+    <header class="modal-header">
+      <h3 class="modal-title">{title}</h3>
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm btn-circle"
+        onclick={onClose}
+        aria-label={$t("common.close")}
+        data-test-id="modal-close-btn"
+      >
+        &times;
+      </button>
+    </header>
 
     <div class="modal-text" data-test-id="modal-body">
       {@render children()}
@@ -70,52 +81,50 @@
 
 <style>
   dialog.native-dialog {
-    border: 2px solid var(--border-color);
-    border-radius: var(--sketch-border-radius);
-    background-color: #fff; /* Replicate PaperCSS background */
-    max-width: 500px;
-    width: 90%;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--border-color);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-box);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    max-width: 36rem;
+    width: min(92vw, 36rem);
+    padding: 0;
+    box-shadow: none;
     position: fixed;
     margin: auto;
-    color: inherit;
-  }
-
-  /* Support dark mode theme */
-  :global(.dark) dialog.native-dialog {
-    background-color: #1a1c1c;
-    border-color: var(--border-color);
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--border-color);
   }
 
   dialog.native-dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(28, 28, 26, 0.4);
+  }
+
+  :global([data-theme="classnotes-dark"]) dialog.native-dialog::backdrop {
+    background-color: rgba(5, 5, 3, 0.72);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-outline-variant);
   }
 
   .modal-title {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin: 0;
     font-size: 1.25rem;
-    font-weight: bold;
+    line-height: 1.75rem;
+  }
+
+  .modal-text {
+    padding: 1.25rem;
   }
 
   .modal-footer {
-    margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
-  }
-
-  .btn-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    line-height: 1;
-    padding: 0;
-    cursor: pointer;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--color-outline-variant);
   }
 </style>

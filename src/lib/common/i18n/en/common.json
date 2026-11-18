@@ -11,5 +11,6 @@
   "loading": "Loading...",
   "bulk_update": "Advance Status",
   "correction_saved": "Correction saved",
-  "close": "Close"
+  "close": "Close",
+  "notifications": "Notifications"
 }

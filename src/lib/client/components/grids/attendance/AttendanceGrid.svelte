@@ -105,7 +105,7 @@
         data-test-id="attendance-row-{row.enrollment_id}"
       >
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
-          <a class="link-quiet" href="/persons/{row.person_id}">{row.name}</a>
+          <a class="link-editorial" href="/persons/{row.person_id}">{row.name}</a>
           {#if grid.scope === "cursada"}
             <span class="attendance-grid__commission" data-test-id="attendance-commission-{row.enrollment_id}">
               {row.commission_name ?? $t("attendance.no_commission")}
@@ -170,59 +170,81 @@
   }
 
   .attendance-grid__header {
-    font-weight: 700;
-    min-height: 3.2rem;
+    min-height: 3rem;
+    border-bottom: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .attendance-grid__assignment-head,
   .attendance-grid__summary-head {
-    text-align: center;
-    font-size: 0.8rem;
-    white-space: nowrap;
     overflow: hidden;
+    text-align: center;
+    font-size: 0.6875rem;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .attendance-grid__row--striped {
-    background-color: #f3f4f6;
+    background-color: var(--color-surface-container-low);
   }
 
-  :global(.dark) .attendance-grid__row--striped {
-    background-color: #4c4b49;
+  :global([data-theme="classnotes-dark"]) .attendance-grid__row--striped {
+    background-color: transparent;
   }
 
-  .attendance-grid__student {
+  .attendance-grid__student,
+  .attendance-grid__student-head {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+    background-color: var(--color-surface);
     font-weight: 600;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .attendance-grid__row--striped .attendance-grid__student {
+    background-color: var(--color-surface-container-low);
+  }
+
+  :global([data-theme="classnotes-dark"]) .attendance-grid__row--striped .attendance-grid__student {
+    background-color: var(--color-surface);
+  }
+
+  .attendance-grid__student-head {
+    text-transform: uppercase;
   }
 
   .attendance-grid__commission {
     display: block;
-    font-weight: 400;
-    font-size: 0.75rem;
-    opacity: 0.8;
-    white-space: nowrap;
     overflow: hidden;
+    color: var(--color-on-surface-variant);
+    font-size: 0.75rem;
+    font-weight: 400;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .attendance-grid__summary,
   .attendance-grid__column-count {
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.8125rem;
     font-variant-numeric: tabular-nums;
   }
 
   .attendance-grid__empty-column {
-    font-size: 0.7rem;
-    opacity: 0.6;
+    font-size: 0.6875rem;
+    color: var(--color-muted);
   }
 
   .attendance-grid__row--counts {
-    border-top: 1px solid var(--border-color, #ccc);
     margin-top: 0.25rem;
     padding-top: 0.5rem;
+    border-top: 1px solid var(--color-outline-variant);
   }
 </style>

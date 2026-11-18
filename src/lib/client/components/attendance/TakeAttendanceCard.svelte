@@ -115,7 +115,7 @@
 <div class="take-actions">
   <button
     type="button"
-    class="paper-btn btn-danger"
+    class="btn btn-outline btn-error"
     onclick={() => onDecide("absent")}
     data-test-id="take-absent"
   >
@@ -123,7 +123,7 @@
   </button>
   <button
     type="button"
-    class="paper-btn"
+    class="btn btn-ghost"
     onclick={() => onDecide("skip")}
     data-test-id="take-skip"
   >
@@ -131,7 +131,7 @@
   </button>
   <button
     type="button"
-    class="paper-btn btn-secondary"
+    class="btn btn-primary"
     onclick={() => onDecide("present")}
     data-test-id="take-present"
   >
@@ -139,7 +139,7 @@
   </button>
   <button
     type="button"
-    class="paper-btn"
+    class="btn btn-ghost"
     onclick={onUndo}
     disabled={!canUndo}
     data-test-id="take-undo"
@@ -157,54 +157,66 @@
     justify-content: center;
     gap: 0.25rem;
     padding: 1.5rem;
-    border: 2px solid var(--border-color, #333);
-    border-radius: 0.5rem;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-box);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
     touch-action: none;
     user-select: none;
     transition: background-color 0.1s ease;
-    background: #fff;
-  }
-
-  :global(.dark) .take-card {
-    background: #1a1c1c;
   }
 
   .take-card.is-present {
-    background: #d6f5d6;
+    background-color: color-mix(
+      in srgb,
+      var(--color-success) 12%,
+      var(--color-surface-container-lowest)
+    );
   }
 
   .take-card.is-absent {
-    background: #fbd5d5;
+    background-color: color-mix(
+      in srgb,
+      var(--color-error) 12%,
+      var(--color-surface-container-lowest)
+    );
   }
 
   .take-card.is-skip {
-    background: #e5e7eb;
+    background-color: var(--color-surface-container-low);
   }
 
   .take-card__progress {
-    font-size: 0.85rem;
-    opacity: 0.7;
+    margin: 0;
+    color: var(--color-on-surface-variant);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .take-card__name {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
     margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-align: center;
   }
 
   .take-card__meta,
   .take-card__state {
-    font-size: 0.9rem;
-    opacity: 0.8;
     margin: 0;
+    color: var(--color-on-surface-variant);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
   }
 
   .take-card__hint {
-    font-size: 0.8rem;
-    opacity: 0.6;
-    text-align: center;
     margin: 0.5rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-align: center;
   }
 
   .take-actions {

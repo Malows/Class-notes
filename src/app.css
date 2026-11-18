@@ -399,6 +399,18 @@
   }
 }
 
+@media (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]),
+  select {
+    min-height: 44px;
+  }
+}
+
 @media print {
   :root,
   [data-theme="classnotes"],

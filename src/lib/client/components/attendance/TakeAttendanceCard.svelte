@@ -2,7 +2,7 @@
   import { t } from "$lib/common/i18n/config";
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
-  import { resolveSwipe, swipeThreshold } from "$lib/client/utils/swipe";
+  import { deadZone, resolveIntent, resolveSwipe, swipeThreshold } from "$lib/client/utils/swipe";
 
   type Decision = "present" | "absent" | "skip";
 
@@ -33,29 +33,38 @@
   let card = $state<HTMLDivElement | null>(null);
   let dragging = $state(false);
   let flying = $state<Decision | null>(null);
+  let intent = $state<Decision | null>(null);
   let dx = $state(0);
   let dy = $state(0);
   let pointerId = $state<number | null>(null);
+  let speed = $state(0);
   let startX = 0;
   let startY = 0;
+  let lastX = 0;
+  let lastY = 0;
+  let lastTime = 0;
 
   let width = $derived(card?.offsetWidth ?? 320);
   let height = $derived(card?.offsetHeight ?? 200);
 
-  const pending = $derived(
-    dragging && !flying ? resolveSwipe(dx, dy, width) : null,
-  );
+  // The tint only commits at the real decision threshold; the stamp appears
+  // earlier but always for a single, locked direction.
+  const pending = $derived(dragging && !flying ? resolveSwipe(dx, dy, width) : null);
 
   const threshold = $derived(swipeThreshold(width));
+  const revealSpan = $derived(Math.max(1, threshold - deadZone));
+
+  const revealStrength = (distance: number) =>
+    Math.min(1, Math.max(0, (distance - deadZone) / revealSpan));
 
   const presentReveal = $derived(
-    flying === "present" ? 1 : dragging && dx > 0 ? Math.min(1, dx / threshold) : 0,
+    flying === "present" ? 1 : intent === "present" ? revealStrength(dx) : 0,
   );
   const absentReveal = $derived(
-    flying === "absent" ? 1 : dragging && dx < 0 ? Math.min(1, -dx / threshold) : 0,
+    flying === "absent" ? 1 : intent === "absent" ? revealStrength(-dx) : 0,
   );
   const skipReveal = $derived(
-    flying === "skip" ? 1 : dragging && dy < 0 ? Math.min(1, -dy / threshold) : 0,
+    flying === "skip" ? 1 : intent === "skip" ? revealStrength(-dy) : 0,
   );
 
   const rotation = $derived(flying ? 0 : dx / 22);
@@ -93,8 +102,10 @@
     clearSettle();
     dragging = false;
     flying = null;
+    intent = null;
     dx = 0;
     dy = 0;
+    speed = 0;
     pointerId = null;
   }
 
@@ -127,10 +138,15 @@
 
     event.preventDefault();
     dragging = true;
+    intent = null;
+    speed = 0;
     dx = 0;
     dy = 0;
     startX = event.clientX;
     startY = event.clientY;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    lastTime = event.timeStamp;
     pointerId = event.pointerId;
     card?.setPointerCapture?.(event.pointerId);
   }
@@ -141,6 +157,16 @@
     event.preventDefault();
     dx = event.clientX - startX;
     dy = event.clientY - startY;
+
+    const elapsed = Math.max(16, event.timeStamp - lastTime);
+    const instant = Math.hypot(event.clientX - lastX, event.clientY - lastY) / elapsed;
+    // Smoothed so a single jittery sample cannot flip the hint.
+    speed = speed * 0.6 + instant * 0.4;
+    lastX = event.clientX;
+    lastY = event.clientY;
+    lastTime = event.timeStamp;
+
+    intent = resolveIntent(dx, dy, intent);
   }
 
   function handlePointerUp(event: PointerEvent) {
@@ -149,7 +175,9 @@
     card?.releasePointerCapture?.(event.pointerId);
     pointerId = null;
 
-    const decision = resolveSwipe(dx, dy, width);
+    // A pause before releasing cancels the flick: the card is not moving anymore.
+    const releaseSpeed = event.timeStamp - lastTime > 120 ? 0 : speed;
+    const decision = resolveSwipe(dx, dy, width, releaseSpeed);
     if (decision) {
       settle(decision);
       return;
@@ -157,8 +185,10 @@
 
     // Snaps back and keeps the same student.
     dragging = false;
+    intent = null;
     dx = 0;
     dy = 0;
+    speed = 0;
   }
 
   function handlePointerCancel() {

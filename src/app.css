@@ -6,4 +6,141 @@
 @source "./lib";
 @source "./routes";
 
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: false;
+}
+
+/*
+ * Academic Notebook tokens.
+ *
+ * The surface scale follows the Stitch design system by role, not by ordinal:
+ * base-100 is the content surface, base-200 is the page canvas and base-300
+ * is the hairline. Editorial surfaces that daisyUI does not expose live in
+ * the --color-surface-* custom properties so they can flip in dark mode.
+ */
+@theme {
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader Variable", "Newsreader", ui-serif, Georgia, serif;
+  --font-icon: "Material Symbols Outlined";
+
+  --text-display-lg: 2.25rem;
+  --text-display-lg--line-height: 2.75rem;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg-mobile: 1.75rem;
+  --text-display-lg-mobile--line-height: 2.25rem;
+  --text-display-lg-mobile--letter-spacing: -0.015em;
+  --text-headline-lg: 1.5rem;
+  --text-headline-lg--line-height: 2rem;
+  --text-headline-lg--letter-spacing: -0.015em;
+  --text-headline-md: 1.25rem;
+  --text-headline-md--line-height: 1.75rem;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-sm: 1.125rem;
+  --text-headline-sm--line-height: 1.5rem;
+  --text-headline-sm--letter-spacing: -0.005em;
+  --text-title-md: 0.9375rem;
+  --text-title-md--line-height: 1.25rem;
+  --text-title-md--letter-spacing: -0.005em;
+  --text-body-lg: 0.9375rem;
+  --text-body-lg--line-height: 1.375rem;
+  --text-body-md: 0.8125rem;
+  --text-body-md--line-height: 1.25rem;
+  --text-body-sm: 0.75rem;
+  --text-body-sm--line-height: 1rem;
+  --text-label-md: 0.75rem;
+  --text-label-md--line-height: 1rem;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-sm: 0.6875rem;
+  --text-label-sm--line-height: 0.875rem;
+  --text-label-sm--letter-spacing: 0.04em;
+  --text-code-num: 0.8125rem;
+  --text-code-num--line-height: 1.25rem;
+
+  --color-surface: #fbf9f2;
+  --color-surface-dim: #dcdad3;
+  --color-surface-bright: #fbf9f2;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f4ed;
+  --color-surface-container: #f0eee7;
+  --color-surface-container-high: #eae8e1;
+  --color-surface-container-highest: #e4e2dc;
+  --color-on-surface: #1b1c18;
+  --color-on-surface-variant: #434654;
+  --color-muted: #6c757d;
+  --color-outline: #747686;
+  --color-outline-variant: #c3c5d7;
+  --color-primary-fixed: #dce1ff;
+  --color-primary-fixed-dim: #b5c4ff;
+  --color-on-primary-fixed: #00164e;
+  --color-primary-container: #2f5fe0;
+  --color-on-primary-container: #e6e9ff;
+  --color-secondary-container: #95f4b1;
+  --color-on-secondary-container: #00723d;
+  --color-tertiary-container: #9f5700;
+  --color-on-tertiary-container: #ffe5d3;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+}
+
+@plugin "daisyui/theme" {
+  name: "classnotes";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  themecontroller: false;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #fbf9f2;
+  --color-base-300: #c3c5d7;
+  --color-base-content: #1b1c18;
+
+  --color-primary: #2f5fe0;
+  --color-primary-content: #ffffff;
+  --color-secondary: #006d3a;
+  --color-secondary-content: #ffffff;
+  --color-accent: #7c4300;
+  --color-accent-content: #ffffff;
+  --color-neutral: #5c5c57;
+  --color-neutral-content: #ffffff;
+  --color-info: #0045c5;
+  --color-info-content: #ffffff;
+  --color-success: #1b8049;
+  --color-success-content: #ffffff;
+  --color-warning: #b26200;
+  --color-warning-content: #ffffff;
+  --color-error: #c5221f;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+  }
+}

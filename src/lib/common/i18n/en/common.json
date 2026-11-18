@@ -12,5 +12,6 @@
   "bulk_update": "Advance Status",
   "correction_saved": "Correction saved",
   "close": "Close",
-  "notifications": "Notifications"
+  "notifications": "Notifications",
+  "no_data": "No data available."
 }

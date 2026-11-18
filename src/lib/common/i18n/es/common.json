@@ -12,5 +12,6 @@
   "bulk_update": "Avanzar Estado",
   "correction_saved": "Corrección guardada",
   "close": "Cerrar",
-  "notifications": "Notificaciones"
+  "notifications": "Notificaciones",
+  "no_data": "No hay datos disponibles."
 }

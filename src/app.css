@@ -360,26 +360,15 @@
     width: 100%;
   }
 
-  .paper-check {
-    width: 1rem;
-    height: 1rem;
-    accent-color: var(--color-primary);
-  }
-
-  .text-danger,
   .form-error-msg {
     color: var(--color-error);
-  }
-
-  .form-error-msg {
     font-size: 0.75rem;
     line-height: 1rem;
   }
 }
 
 @layer components {
-  .link-editorial,
-  .link-quiet {
+  .link-editorial {
     color: inherit;
     font-weight: 500;
     text-decoration: underline;
@@ -388,8 +377,7 @@
     text-underline-offset: 0.18em;
   }
 
-  .link-editorial:hover,
-  .link-quiet:hover {
+  .link-editorial:hover {
     text-decoration-color: currentColor;
     text-decoration-thickness: 2px;
   }

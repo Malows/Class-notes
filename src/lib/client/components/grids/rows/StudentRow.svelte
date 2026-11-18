@@ -14,7 +14,7 @@
 
 <td data-test-id="student-name-{enrollment.id}">
   <a
-    class="link-quiet"
+    class="link-editorial"
     href="/persons/{enrollment.person_id}"
     data-test-id="student-person-link-{enrollment.id}">{enrollment.name}</a
   >

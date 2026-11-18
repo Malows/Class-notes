@@ -87,7 +87,7 @@
     <span data-test-id="person-detail-legajo">{detail.person.legajo ?? "—"}</span>
   </p>
 
-  <div class="row gap-2 margin-bottom-small">
+  <div class="mb-4 flex flex-wrap gap-2">
     <Button testId="edit-person-btn" onclick={() => detail && modal.openEdit(detail.person)} withHover>
       {$t("common.edit")}
     </Button>

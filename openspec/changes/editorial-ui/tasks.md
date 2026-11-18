@@ -36,7 +36,7 @@
 
 ## 5. Cleanup and verification
 
-- [ ] 5.1 Remove the dead sketch utilities, PaperCSS references, local `gap-2`, dead popover/collapsible classes and unused CSS from `app.css`; update the stack references in `AGENTS.md`/`README.md` if they mention PaperCSS or the sketch system; verify `grep -R "paper-btn\|sketch-\|papercss" src` returns nothing.
+- [x] 5.1 Remove the dead sketch utilities, PaperCSS references, local `gap-2`, dead popover/collapsible classes and unused CSS from `app.css`; update the stack references in `AGENTS.md`/`README.md` if they mention PaperCSS or the sketch system; verify `grep -R "paper-btn\|sketch-\|papercss" src` returns nothing.
 - [ ] 5.2 Run `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server` and `pnpm test:client`, fixing every failure.
 - [ ] 5.3 Run the full route walkthrough at 1440×900 and 390×844 in light and dark: dashboard, faculties, subjects, periods, commissions, roster, overview, attendance, take mode, registry and person detail; capture screenshots and confirm the shell, density, focus states and theme switch.
 - [ ] 5.4 Confirm the change did not add Stitch-only features or alter routes, data or i18n keys; compare the route list and the rendered copy before closing the change.

@@ -29,8 +29,8 @@
 
 - [x] 4.1 Migrate the dashboard to the editorial 12-column layout with module cards, the pending list and the statistics block; verify 1440 uses the editorial grid, 390 stacks without horizontal scroll and the statistics stay readable.
 - [x] 4.2 Migrate faculties, subjects and periods lists plus their modals and row actions; verify create, edit and delete flows and the 40 px table density at 1440 and 390.
-- [ ] 4.3 Migrate the commissions list, the pending-enrollment block and the commission roster; verify the pending assignment flow and the student links in both viewports.
-- [ ] 4.4 Migrate the period and commission overview grids, including headers, status cells, legend and sticky first column; replace the dead popover legend and align the status glyphs, colors and accessible names with the legend; verify the cursada cells still link to the correct commission and the grid scrolls inside its container at 390.
+- [x] 4.3 Migrate the commissions list, the pending-enrollment block and the commission roster; verify the pending assignment flow and the student links in both viewports.
+- [x] 4.4 Migrate the period and commission overview grids, including headers, status cells, legend and sticky first column; replace the dead popover legend and align the status glyphs, colors and accessible names with the legend; verify the cursada cells still link to the correct commission and the grid scrolls inside its container at 390.
 - [ ] 4.5 Migrate the cursada attendance page, commission attendance page, attendance cells and take mode; verify striping, header labels, tap targets, the pending "sin registrar" state and the swipe/take flow at 390 in both themes.
 - [ ] 4.6 Migrate the assignments page, corrections flow, period-subjects page, persons registry (converting the manual table to the shared `DataTable`), person detail and their modals; verify every route renders with the editorial shell and no PaperCSS class remains.
 

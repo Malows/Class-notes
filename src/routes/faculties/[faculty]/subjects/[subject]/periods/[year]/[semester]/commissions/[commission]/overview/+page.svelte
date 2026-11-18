@@ -77,7 +77,7 @@
 {#if loading}
   <p>{$t("commissions.loading_info")}</p>
 {:else if data}
-  <div style="overflow-x: auto;">
+  <div class="min-w-0">
     <OverviewGrid
       assignments={data.assignments}
       grid={data.grid}

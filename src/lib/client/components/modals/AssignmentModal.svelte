@@ -57,11 +57,8 @@
 >
   {#snippet children()}
     {#if mode === "create"}
-      <div
-        class="alert alert-warning margin-bottom-small padding-small"
-        data-test-id="assignment-warning-alert"
-      >
-        <p style="margin: 0; font-weight: bold;">{$t("assignments.warning_alert")}</p>
+      <div class="alert alert-warning mb-3 p-3" data-test-id="assignment-warning-alert">
+        <p class="m-0 font-semibold">{$t("assignments.warning_alert")}</p>
       </div>
     {/if}
     <div class="form-group">

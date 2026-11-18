@@ -2,6 +2,8 @@
   import { t } from "$lib/common/i18n/config";
   import type { EnrollmentWithPerson } from "$lib/common/types/enrollment";
 
+  import Button from "$lib/client/components/common/Button.svelte";
+  import MobileCard from "$lib/client/components/common/MobileCard.svelte";
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import StudentRow from "../rows/StudentRow.svelte";
 
@@ -21,5 +23,24 @@
   {/snippet}
   {#snippet row(enrollment)}
     <StudentRow {enrollment} {onDelete} />
+  {/snippet}
+  {#snippet card(enrollment)}
+    <MobileCard
+      title={enrollment.name}
+      href="/persons/{enrollment.person_id}"
+      titleTestId="student-card-link-{enrollment.id}"
+      meta={[{ label: $t("students.external_id_label"), value: enrollment.legajo ?? "—" }]}
+      testId="student-card-{enrollment.id}"
+    >
+      {#snippet actions()}
+        <Button
+          class="btn-ghost btn-sm"
+          onclick={() => onDelete(enrollment)}
+          testId="mobile-delete-btn-{enrollment.id}"
+        >
+          {$t("common.delete")}
+        </Button>
+      {/snippet}
+    </MobileCard>
   {/snippet}
 </ResponsiveTable>

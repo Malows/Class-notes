@@ -6,6 +6,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import MobileCard from "$lib/client/components/common/MobileCard.svelte";
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PersonModal from "$lib/client/components/modals/PersonModal.svelte";
@@ -130,6 +131,22 @@
             >
           {/if}
         </td>
+      {/snippet}
+      {#snippet card(person)}
+        <MobileCard
+          title={person.name}
+          href="/persons/{person.id}"
+          titleTestId="person-card-link-{person.id}"
+          meta={[
+            { label: $t("persons.column_legajo"), value: person.legajo ?? "—" },
+            { label: $t("persons.column_cursadas"), value: person.enrollment_count },
+            {
+              label: $t("persons.column_last_cursada"),
+              value: lastCursada(person) ?? $t("persons.no_cursadas"),
+            },
+          ]}
+          testId="person-card-{person.id}"
+        />
       {/snippet}
     </ResponsiveTable>
 

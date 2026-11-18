@@ -1,5 +1,6 @@
 <script lang="ts">
   import { afterNavigate } from "$app/navigation";
+  import { page } from "$app/state";
   import { onMount } from "svelte";
 
   import { locale, t } from "$lib/common/i18n/config";
@@ -17,6 +18,8 @@
   import "../app.css";
 
   let { data, children } = $props();
+
+  const isDashboard = $derived(page.url.pathname === "/");
 
   initStoreContext();
 
@@ -59,12 +62,22 @@
   <NavBar />
   <ToastContainer />
 
-  <main class="min-h-dvh pb-24 pt-16 md:pb-8 md:pl-60 md:pt-12" data-test-id="main-content">
+  <main
+    class="min-h-dvh pt-16 md:pl-60 md:pt-12 {isDashboard ? 'pb-44 md:pb-24' : 'pb-24 md:pb-8'}"
+    data-test-id="main-content"
+  >
     <div class="mx-auto w-full max-w-[1600px] px-4 py-6 md:px-9 md:py-8">
       {@render children()}
-      <ClassNoteFooter />
     </div>
   </main>
+
+  {#if isDashboard}
+    <div
+      class="fixed inset-x-0 bottom-20 z-30 border-t border-base-300 bg-surface px-4 py-2 md:bottom-0 md:left-60 md:px-9"
+    >
+      <ClassNoteFooter />
+    </div>
+  {/if}
 
   <BottomNav />
 </div>

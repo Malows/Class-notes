@@ -31,7 +31,7 @@ See `proposal.md` — Why.
 
 ### D1. Tailwind 4 + daisyUI as the only styling layer
 
-Install `tailwindcss`, `@tailwindcss/vite` and `daisyui`; add `tailwindcss()` to `vite.config.ts`; make `src/app.css` the Tailwind entry (`@import "tailwindcss"; @plugin "daisyui";`). Remove the PaperCSS import and the `papercss` dependency.
+Install `tailwindcss`, `@tailwindcss/vite` and `daisyui`; add `tailwindcss()` to `vite.config.ts`; make `src/app.css` the Tailwind entry (`@import "tailwindcss"; @plugin "daisyui" { themes: false; }` plus the two custom themes). Remove the PaperCSS import and the `papercss` dependency.
 
 Why not keep PaperCSS alongside: daisyUI and PaperCSS both style `.card`, `.btn`, `.badge`, `.input` and element selectors. A long hybrid period would make every screen unpredictable. The migration happens on a branch; PaperCSS is removed in the first commit, and pages are restyled before merge.
 

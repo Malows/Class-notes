@@ -15,8 +15,10 @@
   import AssignmentTable from "$lib/client/components/grids/tables/AssignmentTable.svelte";
   import AssignmentModal from "$lib/client/components/modals/AssignmentModal.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
-  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
+  import Button from "$lib/client/components/common/Button.svelte";
   import DialogBase from "$lib/client/components/common/DialogBase.svelte";
+  import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
   const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
@@ -153,11 +155,13 @@
 </svelte:head>
 
 <PageWithAdd title={$t("assignments.manage_assignments_title")} onAdd={() => modal.openCreate()}>
-  <p>
-    <a href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods" class="paper-btn btn-small"
-      >{$t("layout.back_to_periods")}</a
-    >
-  </p>
+  <Button
+    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
+    class="btn-ghost"
+    testId="back-to-periods-btn"
+  >
+    {$t("layout.back_to_periods")}
+  </Button>
 
   <GuardWrapper
     condition={periodsStore.items.some((p) => p.id === periodID)}
@@ -169,26 +173,27 @@
       <p>{$t("assignments.loading_assignments")}</p>
     {:else}
       {#if assignmentsStore.items.length === 0}
-        <div class="card margin-top-small">
-          <div class="card-body text-center">
-            <p>
-              {$t("assignments.loading_assignments") === "Cargando TPs..."
-                ? "No hay trabajos prácticos definidos para este período."
-                : "No assignments defined for this period."}
-            </p>
+        <EmptyState
+          icon="✏️"
+          title={$t("assignments.loading_assignments") === "Cargando TPs..."
+            ? "No hay trabajos prácticos definidos para este período."
+            : "No assignments defined for this period."}
+          testId="assignments-empty"
+        >
+          {#snippet actions()}
             {#if previousPeriod}
-              <button
-                class="paper-btn btn-secondary"
+              <Button
+                class="btn-secondary"
                 onclick={() => {
                   isCopyModalOpen = true;
                 }}
-                data-test-id="copy-assignments-btn"
+                testId="copy-assignments-btn"
               >
                 {$t("assignments.copy_previous_btn")}
-              </button>
+              </Button>
             {/if}
-          </div>
-        </div>
+          {/snippet}
+        </EmptyState>
       {:else}
         <AssignmentTable
           assignments={assignmentsStore.items}
@@ -240,21 +245,17 @@
       </p>
     {/snippet}
     {#snippet footer()}
-      <button
-        class="paper-btn"
+      <Button
+        class="btn-ghost"
         onclick={() => {
           isAdvanceModalOpen = false;
         }}
       >
         {$t("common.cancel")}
-      </button>
-      <button
-        class="paper-btn btn-secondary"
-        onclick={confirmAdvanceStatus}
-        data-test-id="confirm-advance-btn"
-      >
+      </Button>
+      <Button class="btn-primary" onclick={confirmAdvanceStatus} testId="confirm-advance-btn">
         {$t("common.save")}
-      </button>
+      </Button>
     {/snippet}
   </DialogBase>
 
@@ -269,17 +270,17 @@
       <p>{$t("assignments.copy_previous_message")}</p>
     {/snippet}
     {#snippet footer()}
-      <button
-        class="paper-btn"
+      <Button
+        class="btn-ghost"
         onclick={() => {
           isCopyModalOpen = false;
         }}
       >
         {$t("common.cancel")}
-      </button>
-      <button class="paper-btn btn-secondary" onclick={confirmCopy} data-test-id="confirm-copy-btn">
+      </Button>
+      <Button class="btn-primary" onclick={confirmCopy} testId="confirm-copy-btn">
         {$t("common.save")}
-      </button>
+      </Button>
     {/snippet}
   </DialogBase>
 </PageWithAdd>

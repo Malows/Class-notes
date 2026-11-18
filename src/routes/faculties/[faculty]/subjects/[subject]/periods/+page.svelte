@@ -7,6 +7,7 @@
   import type { Period } from "$lib/common/types/academic";
 
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import Button from "$lib/client/components/common/Button.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
   import SubjectPeriodTable from "$lib/client/components/grids/tables/SubjectPeriodTable.svelte";
@@ -73,11 +74,13 @@
 </svelte:head>
 
 <PageWithAdd title={$t("periods.manage_periods_title")} onAdd={() => modal.openCreate()}>
-  <p>
-    <a href="/faculties/{facultySlug}/subjects" class="paper-btn btn-small"
-      >{$t("layout.back_to_subjects")}</a
-    >
-  </p>
+  <Button
+    href="/faculties/{facultySlug}/subjects"
+    class="btn-ghost"
+    testId="back-to-subjects-btn"
+  >
+    {$t("layout.back_to_subjects")}
+  </Button>
 
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
   import type { Subject } from "$lib/common/types/academic";
+  import Button from "$lib/client/components/common/Button.svelte";
   import CheckboxInput from "$lib/client/components/periods/CheckboxInput.svelte";
 
   interface Props {
@@ -14,12 +15,15 @@
   let { facultyName, facultySlug, subjects, selectedSubjectIds, onToggle }: Props = $props();
 </script>
 
-<fieldset class="form-group mt-4 faculty-subjects">
-  <legend class="row between gap-2 items-center legend-title">
+<fieldset
+  class="m-0 flex w-full flex-col gap-2 rounded-[var(--radius-box)] border border-base-300 bg-base-100 p-4"
+  style="max-width: var(--faculty-subjects-column-max-width);"
+>
+  <legend class="mb-2 flex w-full items-center justify-between gap-2 text-title-md font-semibold">
     <span>{facultyName}</span>
-    <a href="/faculties/{facultySlug}/subjects" class="paper-btn btn-small">
+    <Button href="/faculties/{facultySlug}/subjects" class="btn-ghost btn-sm">
       {$t("layout.go_to_faculty")}
-    </a>
+    </Button>
   </legend>
 
   {#each subjects as subject}
@@ -31,16 +35,3 @@
     />
   {/each}
 </fieldset>
-
-<style>
-  .faculty-subjects {
-    max-width: var(--faculty-subjects-column-max-width);
-    width: 100%;
-  }
-
-  .legend-title {
-    font-weight: 700;
-    font-size: 1.05rem;
-    margin-bottom: 0.5rem;
-  }
-</style>

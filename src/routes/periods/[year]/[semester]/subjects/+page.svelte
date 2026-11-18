@@ -82,12 +82,12 @@
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>
   {:else if period}
-    <div class="margin-top">
-      <div class="row gap-2 page-header">
-        <h2 class="text-lg font-semibold page-title">{$t("layout.associated_subjects")}</h2>
-        <button class="paper-btn btn-secondary" onclick={handleSave} disabled={saving}>
+    <div class="mt-4">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="m-0 font-serif text-headline-md">{$t("layout.associated_subjects")}</h2>
+        <Button class="btn-primary" onclick={handleSave} disabled={saving}>
           {saving ? $t("layout.saving") : $t("layout.save_changes")}
-        </button>
+        </Button>
       </div>
 
       <div class="faculty-grid">
@@ -108,16 +108,6 @@
 </CommonPage>
 
 <style>
-  .page-header {
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .page-title {
-    margin: 0;
-    text-align: left;
-  }
-
   .faculty-grid {
     --faculty-subjects-column-max-width: 440px;
     display: grid;

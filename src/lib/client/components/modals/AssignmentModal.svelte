@@ -5,6 +5,7 @@
   import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
 
   import DialogBase from "../common/DialogBase.svelte";
+  import Button from "../common/Button.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
 
   interface Props {
@@ -115,11 +116,9 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">
-      {$t("common.cancel")}
-    </button>
-    <button class="paper-btn btn-secondary" onclick={handleSaveClick} data-test-id="modal-save-btn">
+    <Button class="btn-ghost" testId="modal-cancel-btn" onclick={onClose}>{$t("common.cancel")}</Button>
+    <Button class="btn-primary" testId="modal-save-btn" onclick={handleSaveClick}>
       {mode === "create" ? $t("common.create") : $t("common.save")}
-    </button>
+    </Button>
   {/snippet}
 </DialogBase>

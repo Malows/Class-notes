@@ -1,6 +1,9 @@
 <script lang="ts">
   import { DeliveryWorkflowStatus, type Delivery } from "$lib/common/types";
 
+  import Button from "$lib/client/components/common/Button.svelte";
+  import Card from "$lib/client/components/common/Card.svelte";
+
   interface Props {
     delivery: Delivery;
     onSave: (d: Delivery) => void;
@@ -48,32 +51,34 @@
   const idSuffix = Math.random().toString(36).substring(2, 9);
 </script>
 
-<div class="card">
-  <div class="card-body">
-    <div class="form-group">
-      <label for="is_delivered-{idSuffix}">
-        <input
-          type="checkbox"
-          id="is_delivered-{idSuffix}"
-          checked={d.workflow_status !== DeliveryWorkflowStatus.NOT_DICTATED &&
-            d.workflow_status !== DeliveryWorkflowStatus.WAITING_FOR_STUDENTS}
-          onchange={(event) => {
-            const checked = event.currentTarget.checked;
-            d.workflow_status = checked
-              ? DeliveryWorkflowStatus.WAITING_FOR_CORRECTION
-              : DeliveryWorkflowStatus.WAITING_FOR_STUDENTS;
-          }}
-          data-test-id={deliveredTestId}
-        />
-        <span>¿Entregó el trabajo?</span>
-      </label>
-    </div>
+<Card>
+  <div class="flex flex-col gap-4">
+    <label class="flex cursor-pointer items-center gap-2 text-body-md" for="is_delivered-{idSuffix}">
+      <input
+        type="checkbox"
+        class="checkbox checkbox-sm"
+        id="is_delivered-{idSuffix}"
+        checked={d.workflow_status !== DeliveryWorkflowStatus.NOT_DICTATED &&
+          d.workflow_status !== DeliveryWorkflowStatus.WAITING_FOR_STUDENTS}
+        onchange={(event) => {
+          const checked = event.currentTarget.checked;
+          d.workflow_status = checked
+            ? DeliveryWorkflowStatus.WAITING_FOR_CORRECTION
+            : DeliveryWorkflowStatus.WAITING_FOR_STUDENTS;
+        }}
+        data-test-id={deliveredTestId}
+      />
+      <span>¿Entregó el trabajo?</span>
+    </label>
+
     <hr />
-    <div class="form-group">
-      <span class="d-block mb-1">Resultado:</span>
-      <label for="approved-yes-{idSuffix}">
+
+    <fieldset class="m-0 flex flex-col gap-2 p-0">
+      <legend class="mb-1 text-label-md text-on-surface-variant">Resultado:</legend>
+      <label class="flex cursor-pointer items-center gap-2 text-body-md" for="approved-yes-{idSuffix}">
         <input
           type="radio"
+          class="radio radio-sm"
           id="approved-yes-{idSuffix}"
           name="approved-{idSuffix}"
           value={true}
@@ -85,9 +90,10 @@
         />
         <span>Aprobado</span>
       </label>
-      <label for="approved-no-{idSuffix}">
+      <label class="flex cursor-pointer items-center gap-2 text-body-md" for="approved-no-{idSuffix}">
         <input
           type="radio"
+          class="radio radio-sm"
           id="approved-no-{idSuffix}"
           name="approved-{idSuffix}"
           value={false}
@@ -99,69 +105,50 @@
         />
         <span>No Aprobado</span>
       </label>
-    </div>
-    <div class="form-group">
-      <label for="grade-{idSuffix}">Nota:</label>
+    </fieldset>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-label-md text-on-surface-variant" for="grade-{idSuffix}">Nota:</label>
       <input
         type="number"
         id="grade-{idSuffix}"
         step="0.1"
         bind:value={d.grade}
-        class="input-block"
         data-test-id={gradeTestId}
       />
     </div>
-    <div class="form-group">
-      <label for="ai_level-{idSuffix}">Uso de IA:</label>
-      <select
-        id="ai_level-{idSuffix}"
-        bind:value={d.ai_level}
-        class="input-block"
-        data-test-id={aiLevelTestId}
-      >
+
+    <div class="flex flex-col gap-1">
+      <label class="text-label-md text-on-surface-variant" for="ai_level-{idSuffix}">Uso de IA:</label>
+      <select id="ai_level-{idSuffix}" bind:value={d.ai_level} data-test-id={aiLevelTestId}>
         <option value={0}>0 - Ninguno</option>
         <option value={1}>1 - Sospecha (!)</option>
         <option value={2}>2 - Certeza (!!)</option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="comments-{idSuffix}">Comentarios:</label>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-label-md text-on-surface-variant" for="comments-{idSuffix}"
+        >Comentarios:</label
+      >
       <textarea
         id="comments-{idSuffix}"
         bind:value={d.comments}
         rows="3"
-        class="input-block"
         data-test-id={commentsTestId}
       ></textarea>
     </div>
+
     <hr />
-    <div class="row">
-      <div class="col-4 col">
-        {#if onPrev}<button class="paper-btn btn-block" onclick={onPrev} data-test-id={prevTestId}
-            >« Anterior</button
-          >{/if}
-      </div>
-      <div class="col-4 col">
-        <button
-          class="paper-btn btn-success btn-block"
-          onclick={() => onSave(d)}
-          data-test-id={submitTestId}>GUARDAR</button
-        >
-      </div>
-      <div class="col-4 col">
-        {#if onSkip}<button class="paper-btn btn-block" onclick={onSkip} data-test-id={skipTestId}
-            >Saltar »</button
-          >{/if}
-      </div>
+
+    <div class="flex flex-wrap gap-2">
+      {#if onPrev}
+        <Button class="btn-ghost" onclick={onPrev} testId={prevTestId}>« Anterior</Button>
+      {/if}
+      <Button class="btn-primary" onclick={() => onSave(d)} testId={submitTestId}>Guardar</Button>
+      {#if onSkip}
+        <Button class="btn-ghost" onclick={onSkip} testId={skipTestId}>Saltar »</Button>
+      {/if}
     </div>
   </div>
-</div>
-
-<style>
-  .d-block {
-    display: block;
-  }
-  .mb-1 {
-    margin-bottom: 0.25rem;
-  }
-</style>
+</Card>

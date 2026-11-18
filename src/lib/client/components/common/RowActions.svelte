@@ -49,7 +49,7 @@
 
   {#if overflow || destructive}
     <details class="row-actions__disclosure" data-test-id={testId}>
-      <summary class="paper-btn btn-small row-actions__summary" aria-label={disclosureLabel}>
+      <summary class="btn btn-ghost btn-sm btn-circle row-actions__summary" aria-label={disclosureLabel}>
         ⋯
       </summary>
       <div
@@ -87,13 +87,6 @@
   }
 
   .row-actions__summary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.25rem;
-    min-width: 2.25rem;
-    padding: 0 0.5rem;
-    cursor: pointer;
     list-style: none;
     line-height: 1;
   }
@@ -116,18 +109,14 @@
     gap: 0.25rem;
     min-width: 11rem;
     padding: 0.5rem;
-    background-color: #fff;
-    border: 2px solid var(--border-color);
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--border-color);
+    background-color: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-box);
   }
 
-  :global(.dark) .row-actions__menu {
-    background-color: #1a1c1c;
-  }
-
-  .row-actions__menu :global(.paper-btn) {
+  .row-actions__menu :global(.btn) {
     width: 100%;
+    justify-content: flex-start;
     margin: 0;
     text-align: left;
   }
@@ -136,7 +125,7 @@
     width: 100%;
     margin: 0.25rem 0;
     border: 0;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--color-outline-variant);
   }
 
   @media (pointer: coarse) {

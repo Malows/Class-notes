@@ -45,14 +45,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.4rem;
-    min-width: 2.4rem;
-    border: 1px solid var(--border-color, #333);
-    border-radius: 0.25rem;
-    background: transparent;
-    font-weight: 700;
+    min-height: 2rem;
+    min-width: 2rem;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-weight: 600;
     line-height: 1;
     cursor: pointer;
+    transition: background-color 0.15s ease;
   }
 
   .attendance-cell:disabled {
@@ -60,27 +62,28 @@
   }
 
   .attendance-cell.is-present {
-    background: #d6f5d6;
-    color: #14532d;
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-outline-variant));
+    background-color: color-mix(
+      in srgb,
+      var(--color-success) 12%,
+      var(--color-surface-container-lowest)
+    );
+    color: var(--color-success);
   }
 
   .attendance-cell.is-absent {
-    background: #fbd5d5;
-    color: #7f1d1d;
+    border-color: color-mix(in srgb, var(--color-error) 35%, var(--color-outline-variant));
+    background-color: color-mix(
+      in srgb,
+      var(--color-error) 12%,
+      var(--color-surface-container-lowest)
+    );
+    color: var(--color-error);
   }
 
   .attendance-cell.is-unmarked {
-    color: #6b7280;
-  }
-
-  :global(.dark) .attendance-cell.is-present {
-    background: #14532d;
-    color: #d6f5d6;
-  }
-
-  :global(.dark) .attendance-cell.is-absent {
-    background: #7f1d1d;
-    color: #fbd5d5;
+    background-color: var(--color-surface-container-low);
+    color: var(--color-muted);
   }
 
   @media (pointer: coarse) {

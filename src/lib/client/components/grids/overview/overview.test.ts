@@ -2,6 +2,8 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
+import { loadTranslations } from "$lib/common/i18n/config";
+
 import OverviewCell from "./OverviewCell.svelte";
 import OverviewGrid from "./OverviewGrid.svelte";
 import OverviewLegend from "./OverviewLegend.svelte";
@@ -49,7 +51,8 @@ describe("overview components", () => {
 
     const cell = screen.getByTestId("approved-cell");
     expect(cell).toHaveAttribute("href", "/correct");
-    expect(cell).toHaveClass("btn-success");
+    expect(cell).toHaveAttribute("data-status", "approved");
+    expect(cell).toHaveClass("is-approved");
     expect(cell).toHaveAttribute("aria-label", "approved");
     expect(cell.textContent?.trim()).toBe("🤖");
   });
@@ -139,13 +142,17 @@ describe("overview components", () => {
     expect(screen.getByTestId("delivery-cell-1-1")).toBeInTheDocument();
   });
 
-  test("OverviewLegend renders the popover trigger", () => {
-    render(OverviewLegend, { title: "Legend" } as never);
+  test("OverviewLegend renders a working disclosure with the legend text", async () => {
+    await loadTranslations("en", "/");
+    render(OverviewLegend);
 
-    const button = screen.getByTestId("overview-legend-popover-btn");
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute("data-popover-position", "bottom");
-    expect(button).toHaveAttribute("data-popover-content");
+    const toggle = screen.getByTestId("overview-legend-toggle");
+    expect(toggle).toBeInTheDocument();
+    expect(toggle.textContent?.trim()).toBe("Legend:");
+
+    const details = screen.getByTestId("overview-legend");
+    expect(details.tagName).toBe("DETAILS");
+    expect(screen.getByTestId("overview-legend-text").textContent).toContain("Approved");
   });
 
   test("OverviewGrid renders empty assignments card and CTA", () => {

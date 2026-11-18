@@ -2,27 +2,29 @@
   import { t } from "$lib/common/i18n/config";
 </script>
 
-<div class="overview-legend">
-  <button
-    class="paper-btn btn-small popover"
-    data-popover-content="Approved ✓  • Rejected ✗  • Pending –  • AI warning ⚠️/🤖"
-    data-popover-position="bottom"
-    data-test-id="overview-legend-popover-btn"
+<details class="overview-legend" data-test-id="overview-legend">
+  <summary
+    class="btn btn-ghost btn-sm cursor-pointer list-none"
+    data-test-id="overview-legend-toggle"
   >
     {$t("commissions.legend")}
-  </button>
-  <p>
-    <small>{$t("commissions.legend_text")}</small>
+  </summary>
+  <p class="mt-2 max-w-xl text-body-sm text-on-surface-variant" data-test-id="overview-legend-text">
+    {$t("commissions.legend_text")}
   </p>
-</div>
+</details>
 
 <style>
   .overview-legend {
-    display: inline-flex;
+    display: inline-block;
     margin-top: 0.75rem;
   }
 
-  .overview-legend :global(.popover) {
-    cursor: help;
+  .overview-legend > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .overview-legend > summary::marker {
+    content: "";
   }
 </style>

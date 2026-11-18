@@ -2,12 +2,15 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
+import { loadTranslations } from "$lib/common/i18n/config";
+
 import OverviewHeader from "./OverviewHeader.svelte";
 
 configure({ testIdAttribute: "data-test-id" });
 
 describe("OverviewHeader Component", () => {
-  test("renders students label and dynamic abbreviated assignment columns with pencil emoji links and standard titles", () => {
+  test("renders students label and dynamic abbreviated assignment columns with pencil emoji links and standard titles", async () => {
+    await loadTranslations("en", "/");
     const assignments = [
       { id: 10, subject_period_id: 1, title: "Lab 1", subtitle: "" },
       { id: 20, subject_period_id: 1, title: "Lab Exercise 12", subtitle: "Physics II" },

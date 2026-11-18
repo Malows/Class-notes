@@ -33,23 +33,29 @@
 
 {#if href}
   <a
-    class="paper-btn overview-cell"
-    class:btn-success={status === OverviewDeliveryStatus.APPROVED}
-    class:btn-danger={status === OverviewDeliveryStatus.REJECTED}
-    class:btn-secondary={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    class="overview-cell"
+    class:is-approved={status === OverviewDeliveryStatus.APPROVED}
+    class:is-rejected={status === OverviewDeliveryStatus.REJECTED}
+    class:is-pending={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    class:is-empty={status === OverviewDeliveryStatus.PENDING_DELIVERY}
+    class:has-ai={aiLevel > 0}
     {href}
     data-test-id={testId}
+    data-status={status}
     aria-label={label || statusIcon[status]}
   >
     {cellContent()}
   </a>
 {:else}
   <span
-    class="paper-btn overview-cell"
-    class:btn-success={status === OverviewDeliveryStatus.APPROVED}
-    class:btn-danger={status === OverviewDeliveryStatus.REJECTED}
-    class:btn-secondary={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    class="overview-cell"
+    class:is-approved={status === OverviewDeliveryStatus.APPROVED}
+    class:is-rejected={status === OverviewDeliveryStatus.REJECTED}
+    class:is-pending={status === OverviewDeliveryStatus.PENDING_CORRECTION}
+    class:is-empty={status === OverviewDeliveryStatus.PENDING_DELIVERY}
+    class:has-ai={aiLevel > 0}
     data-test-id={testId}
+    data-status={status}
     aria-label={label || statusIcon[status]}
   >
     {cellContent()}
@@ -62,17 +68,58 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.8rem;
-    min-width: 2.8rem;
-    text-decoration: none;
-    font-weight: 700;
-    background-image: none;
-    transition: transform 0.15s ease;
+    min-height: 2.5rem;
+    min-width: 2.5rem;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-weight: 600;
     line-height: 1;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
   }
 
   .overview-cell:hover {
-    transform: scale(1.05);
+    background-color: var(--color-surface-container-low);
+  }
+
+  .overview-cell.is-approved {
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-outline-variant));
+    background-color: color-mix(
+      in srgb,
+      var(--color-success) 12%,
+      var(--color-surface-container-lowest)
+    );
+    color: var(--color-success);
+  }
+
+  .overview-cell.is-rejected {
+    border-color: color-mix(in srgb, var(--color-error) 35%, var(--color-outline-variant));
+    background-color: color-mix(
+      in srgb,
+      var(--color-error) 12%,
+      var(--color-surface-container-lowest)
+    );
+    color: var(--color-error);
+  }
+
+  .overview-cell.is-pending {
+    border-color: color-mix(in srgb, var(--color-warning) 35%, var(--color-outline-variant));
+    background-color: color-mix(
+      in srgb,
+      var(--color-warning) 12%,
+      var(--color-surface-container-lowest)
+    );
+    color: var(--color-warning);
+  }
+
+  .overview-cell.is-empty {
+    color: var(--color-muted);
+  }
+
+  .overview-cell.has-ai {
+    border-color: var(--color-warning);
   }
 
   @media (pointer: coarse) {

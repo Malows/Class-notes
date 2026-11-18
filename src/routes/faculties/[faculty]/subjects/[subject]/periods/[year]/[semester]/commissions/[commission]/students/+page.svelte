@@ -13,6 +13,7 @@
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
 
   import StudentTable from "$lib/client/components/grids/tables/StudentTable.svelte";
+  import Button from "$lib/client/components/common/Button.svelte";
   import EnrollmentModal from "$lib/client/components/modals/EnrollmentModal.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
@@ -100,12 +101,13 @@
 </svelte:head>
 
 <PageWithAdd title={$t("enrollments.manage_title")} onAdd={() => modal.openCreate()}>
-  <p>
-    <a
-      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions"
-      class="paper-btn btn-small">{$t("layout.back_to_commissions")}</a
-    >
-  </p>
+  <Button
+    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions"
+    class="btn-ghost"
+    testId="back-to-commissions-btn"
+  >
+    {$t("layout.back_to_commissions")}
+  </Button>
 
   {#if loading}
     <p>{$t("enrollments.loading")}</p>

@@ -110,11 +110,13 @@
 </svelte:head>
 
 <PageWithAdd title={$t("commissions.manage_commissions_title")} onAdd={() => modal.openCreate()}>
-  <p>
-    <a href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods" class="paper-btn btn-small"
-      >{$t("layout.back_to_periods")}</a
-    >
-  </p>
+  <Button
+    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
+    class="btn-ghost"
+    testId="back-to-periods-btn"
+  >
+    {$t("layout.back_to_periods")}
+  </Button>
 
   <GuardWrapper
     condition={periodsStore.items.some(
@@ -138,23 +140,29 @@
       />
 
       {#if enrollmentsStore.pending.length > 0}
-        <section class="pending-enrollments" data-test-id="pending-enrollments">
-          <h3>
+        <section class="mt-6" data-test-id="pending-enrollments">
+          <h3 class="m-0 font-serif text-headline-sm">
             {$t("enrollments.pending_title")}
             ({enrollmentsStore.pending.length})
           </h3>
-          <p class="text-small">{$t("enrollments.pending_count", {
-            count: enrollmentsStore.pending.length,
-          } as never)}</p>
-          <ul>
+          <p class="mt-1 text-body-sm text-on-surface-variant">
+            {$t("enrollments.pending_count", {
+              count: enrollmentsStore.pending.length,
+            } as never)}
+          </p>
+          <ul class="m-0 mt-3 flex list-none flex-col gap-2 p-0">
             {#each enrollmentsStore.pending as enrollment (enrollment.id)}
-              <li class="pending-enrollments__row">
-                <span class="pending-enrollments__name" data-test-id="pending-name-{enrollment.id}">
+              <li class="flex flex-wrap items-center gap-3">
+                <span
+                  class="min-w-[12rem] flex-1 text-body-md"
+                  data-test-id="pending-name-{enrollment.id}"
+                >
                   {enrollment.name}{enrollment.legajo ? ` · ${enrollment.legajo}` : ""}
                 </span>
                 <select
                   bind:value={pendingTargets[enrollment.id]}
                   aria-label={$t("enrollments.assign_commission_label")}
+                  class="max-w-[16rem]"
                   data-test-id="pending-target-{enrollment.id}"
                 >
                   <option value={0}>{$t("enrollments.assign_commission_label")}...</option>
@@ -163,9 +171,9 @@
                   {/each}
                 </select>
                 <Button
+                  class="btn-primary"
                   testId="pending-assign-{enrollment.id}"
                   onclick={() => assignPending(enrollment.id)}
-                  withHover
                 >
                   {$t("enrollments.assign_btn")}
                 </Button>
@@ -195,28 +203,3 @@
     onClose={() => modal.close()}
   />
 </PageWithAdd>
-<style>
-  .pending-enrollments {
-    margin-top: 1.5rem;
-  }
-
-  .pending-enrollments ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .pending-enrollments__row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .pending-enrollments__name {
-    flex: 1 1 12rem;
-  }
-</style>

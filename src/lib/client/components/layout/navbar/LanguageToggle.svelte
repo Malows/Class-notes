@@ -20,7 +20,7 @@
   <span class="text-[0.8125rem] leading-none tracking-[-0.12em]" aria-hidden="true"
     >{$locale === "es" ? "🇦🇷🇨🇴" : "🇬🇧"}</span
   >
-  <span class="text-[0.625rem] font-semibold leading-none text-on-surface-variant"
+  <span class="text-label-sm font-semibold leading-none text-on-surface-variant"
     >{$locale === "es" ? "ES" : "EN"}</span
   >
 </button>

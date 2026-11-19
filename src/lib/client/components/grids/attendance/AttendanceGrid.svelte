@@ -98,7 +98,11 @@
               {abbreviated}
             </a>
           {:else}
-            <span title={assignment.title} aria-label={`${abbreviated} — ${assignment.title}`}>
+            <span
+              role="img"
+              title={assignment.title}
+              aria-label={`${abbreviated} — ${assignment.title}`}
+            >
               {abbreviated}
             </span>
           {/if}

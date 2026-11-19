@@ -4,7 +4,7 @@
 
 :root {
   /* Shared shell measurement: the footer docks to exactly this height. */
-  --bottom-nav-height: 64px;
+  --bottom-nav-height: 4rem;
 }
 
 @font-face {

@@ -187,14 +187,15 @@ test("Sidebar links the current term to the global period view", async () => {
   mountWithContext();
   flushSync();
 
-  expect(document.body.textContent).toContain("Go to current term · 2026 · Term 1");
+  expect(document.body.textContent).toContain("2026 · Term 1");
   const shortcut = document.body.querySelector(
     '[data-test-id="sidebar-current-term-link"]',
   ) as HTMLAnchorElement;
   expect(shortcut).not.toBeNull();
   expect(shortcut.getAttribute("href")).toBe("/periods/2026/1/subjects");
   expect(shortcut.getAttribute("aria-current")).toBeNull();
-  expect(shortcut.textContent).toContain("Go to current term · 2026 · Term 1");
+  expect(shortcut.getAttribute("aria-label")).toBe("Go to current term · 2026 · Term 1");
+  expect(shortcut.textContent).toContain("2026 · Term 1");
   // The shortcut uses a typographic arrow, not a missing icon ligature.
   expect(shortcut.textContent).toContain("→");
   expect(shortcut.textContent).not.toContain("arrow_forward");
@@ -219,7 +220,7 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   });
   flushSync();
 
-  expect(document.body.textContent).toContain("Go to current term · 2026 · Term 2");
+  expect(document.body.textContent).toContain("2026 · Term 2");
   expect(
     document.body.querySelector('[data-test-id="sidebar-current-term-link"]')?.getAttribute(
       "href",
@@ -276,7 +277,8 @@ test("Sidebar mirrors the viewed cursada and keeps the current-term shortcut sep
   // never becomes part of the "You are viewing" trail.
   const shortcut = document.body.querySelector('[data-test-id="sidebar-current-term"]');
   expect(shortcut?.className).toContain("border-t");
-  expect(shortcut?.textContent).toContain("Go to current term · 2026 · Term 2");
+  expect(shortcut?.querySelector('[data-test-id="sidebar-current-term-link"]')?.getAttribute("aria-label")).toBe("Go to current term · 2026 · Term 2");
+  expect(shortcut?.textContent).toContain("2026 · Term 2");
   const shortcutLink = shortcut?.querySelector(
     '[data-test-id="sidebar-current-term-link"]',
   ) as HTMLAnchorElement;

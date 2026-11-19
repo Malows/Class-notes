@@ -42,10 +42,17 @@
     getIsDirty: () => boolean;
     saveForLeave: () => Promise<boolean>;
   } | null>(null);
+  let gradeSheet = $state<{
+    getIsDirty: () => boolean;
+    saveAllDirty: () => Promise<boolean>;
+  } | null>(null);
 
   const guard = useNavigationGuard({
-    isDirty: () => deliveryForm?.getIsDirty() ?? false,
-    save: () => deliveryForm?.saveForLeave() ?? Promise.resolve(true),
+    isDirty: () => deliveryForm?.getIsDirty() ?? gradeSheet?.getIsDirty() ?? false,
+    save: () =>
+      deliveryForm?.saveForLeave() ??
+      gradeSheet?.saveAllDirty() ??
+      Promise.resolve(true),
   });
 
   const facultySlug = $derived(page.params.faculty ?? "");
@@ -294,6 +301,7 @@
 {:else if !singleMode}
   <div class="mt-6">
     <GradeSheet
+      bind:this={gradeSheet}
       {assignment}
       {enrollments}
       {deliveries}

@@ -124,6 +124,20 @@
     }
   }
 
+  /** Read by the page's unsaved-changes guard. */
+  export function getIsDirty(): boolean {
+    return rows.some((row) => isRowDirty(row));
+  }
+
+  /** Saves every dirty row; false when one is invalid or the save fails. */
+  export async function saveAllDirty(): Promise<boolean> {
+    for (const row of rows.filter((item) => isRowDirty(item))) {
+      const outcome = await commit(row);
+      if (outcome === "invalid" || outcome === "failed") return false;
+    }
+    return true;
+  }
+
   async function saveAndAdvance(row: GradeRow, index: number) {
     const outcome = await commit(row);
     if (outcome === "invalid") {

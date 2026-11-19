@@ -44,6 +44,17 @@
     } as never)}`;
   });
 
+  // Lead with the destination so the term is never the truncated part; the
+  // full sentence stays in the accessible name and the tooltip.
+  const currentTermLabel = $derived.by(() => {
+    const periodData = metadataContext?.periodData;
+    if (!periodData) return $t("layout.go_to_current_term");
+    return $t("layout.period_short", {
+      year: periodData.year,
+      semester: termToSemester(periodData.term),
+    } as never);
+  });
+
   // The active term is global, so the shortcut opens the period's subject list
   // rather than an arbitrary subject's period index.
   const currentTermLink = $derived.by(() => {
@@ -239,11 +250,12 @@
         <a
           href={currentTermLink}
           title={currentTermHeading}
+          aria-label={currentTermHeading}
           class="mt-1 flex items-center gap-2 rounded-[var(--radius-field)] px-2 py-1.5 text-body-sm text-on-surface-variant transition-colors hover:bg-base-200 hover:text-base-content"
           data-test-id="sidebar-current-term-link"
         >
           <span class="shrink-0 text-body-md" aria-hidden="true">→</span>
-          <span class="min-w-0 truncate">{currentTermHeading}</span>
+          <span class="min-w-0 truncate">{currentTermLabel}</span>
         </a>
       </div>
     {:else if context.facultySlug}

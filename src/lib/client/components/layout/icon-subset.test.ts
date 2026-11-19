@@ -10,17 +10,18 @@ const srcRoot = path.join(process.cwd(), "src");
 /** Icon names that are chosen in a ternary rather than passed as a literal prop. */
 const ternaryIcons = ["light_mode", "dark_mode"];
 
-function svelteFiles(dir: string): string[] {
+function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return svelteFiles(full);
-    return entry.name.endsWith(".svelte") ? [full] : [];
+    if (entry.isDirectory()) return sourceFiles(full);
+    if (entry.name.includes(".test.") || entry.name.endsWith(".d.ts")) return [];
+    return /\.(svelte|ts)$/.test(entry.name) ? [full] : [];
   });
 }
 
 function usedIconNames(): Set<string> {
   const names = new Set<string>(ternaryIcons);
-  for (const file of svelteFiles(srcRoot)) {
+  for (const file of sourceFiles(srcRoot)) {
     const source = readFileSync(file, "utf8");
     for (const match of source.matchAll(
       /material-symbols-outlined[^>]*>\s*([a-z_]+)\s*</g,

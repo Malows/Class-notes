@@ -369,3 +369,61 @@ test("stays when the save fails", async () => {
   expect(nav.goto).not.toHaveBeenCalled();
   expect(document.querySelector('[data-test-id="unsaved-save-btn"]')).toBeTruthy();
 });
+
+async function mountSheetForm() {
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4",
+  );
+  apiFetchMock.mockImplementation((path: string) => {
+    if (path === "/correct?commission_id=1") {
+      return Promise.resolve([
+        {
+          assignment_id: 4,
+          enrollment_id: 15,
+          grade: 9,
+          ai_level: 0,
+          comments: "",
+          workflow_status: "APPROVED",
+        },
+        {
+          assignment_id: 4,
+          enrollment_id: 16,
+          grade: 8,
+          ai_level: 0,
+          comments: "",
+          workflow_status: "APPROVED",
+        },
+      ]);
+    }
+    const match = routes.find(([prefix]) => path.startsWith(prefix));
+    return Promise.resolve(match ? match[1] : []);
+  });
+
+  component = mount(CorrectionPage, { target: document.body, context: buildContext() });
+  flushSync();
+  await flush();
+  flushSync();
+}
+
+test("guards an unsaved grade in the sheet and saves it before leaving", async () => {
+  await mountSheetForm();
+
+  const input = document.querySelector('[data-test-id="grade-input-15"]') as HTMLInputElement;
+  input.value = "7";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  flushSync();
+
+  const cancel = tryLeave();
+  expect(cancel).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('[data-test-id="unsaved-save-btn"]')).toBeTruthy();
+
+  (document.querySelector('[data-test-id="unsaved-save-btn"]') as HTMLButtonElement).click();
+  await flush();
+  flushSync();
+
+  expect(apiFetchMock).toHaveBeenCalledWith(
+    "/correct",
+    expect.objectContaining({ method: "POST" }),
+  );
+  expect(nav.goto).toHaveBeenCalledWith("http://localhost/faculties/other");
+});

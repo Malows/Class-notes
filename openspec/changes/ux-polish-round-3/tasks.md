@@ -26,11 +26,11 @@
 
 ## 4. Commission summary
 
-- [ ] 4.1 Add pure helpers for grade counts, correction progress and attendance rate (recorded-only denominator)
-- [ ] 4.2 Build `CommissionSummary` with count/rate modules, labelled `Correct commission` action and independent attendance loading/retry
-- [ ] 4.3 Mount the summary on the commission overview and keep the grid below it
-- [ ] 4.4 Cover empty roster, no assignments, no deliveries, no attendance and attendance failure states
-- [ ] 4.5 Test the arithmetic and the independent failure behavior
+- [x] 4.1 Add pure helpers for grade counts, correction progress and attendance rate (recorded-only denominator)
+- [x] 4.2 Build `CommissionSummary` with count/rate modules, labelled `Correct commission` action and independent attendance loading/retry
+- [x] 4.3 Mount the summary on the commission overview and keep the grid below it
+- [x] 4.4 Cover empty roster, no assignments, no deliveries, no attendance and attendance failure states
+- [x] 4.5 Test the arithmetic and the independent failure behavior
 
 ## 5. Registry density
 

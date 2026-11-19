@@ -32,9 +32,8 @@
           { mark: "✗", label: $t("help.legend_rejected"), tone: "absent" },
           { mark: "…", label: $t("help.legend_pending"), tone: "pending" },
           { mark: "–", label: $t("help.legend_not_delivered"), tone: "empty" },
-          // The label already carries the cell mark, so no second badge is drawn.
-          { mark: "", label: $t("help.legend_ai_suspicion"), tone: "ai" },
-          { mark: "", label: $t("help.legend_ai_certainty"), tone: "ai" },
+          { mark: "IA!", label: $t("help.legend_ai_suspicion"), tone: "ai" },
+          { mark: "IA!!", label: $t("help.legend_ai_certainty"), tone: "ai" },
         ],
   );
 

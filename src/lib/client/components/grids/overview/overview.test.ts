@@ -184,7 +184,7 @@ describe("overview components", () => {
     expect(legend.tagName).toBe("SECTION");
     expect(legend.textContent).toContain("Legend");
     expect(legend.textContent).toContain("Approved");
-    expect(legend.textContent).toContain("Rejected");
+    expect(legend.textContent).toContain("Not approved");
     expect(legend.textContent).toContain("Pending correction");
     expect(legend.textContent).toContain("Not delivered");
     expect(legend.textContent).toContain("IA!!");

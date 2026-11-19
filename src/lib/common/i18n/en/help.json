@@ -20,10 +20,10 @@
   "legend_absent": "Absent",
   "legend_not_taken": "Not taken",
   "legend_approved": "Approved",
-  "legend_rejected": "Rejected",
+  "legend_rejected": "Not approved",
   "legend_pending": "Pending correction",
   "legend_not_delivered": "Not delivered",
-  "legend_ai_suspicion": "AI suspicion (IA!)",
-  "legend_ai_certainty": "AI certainty (IA!!)",
+  "legend_ai_suspicion": "AI suspicion",
+  "legend_ai_certainty": "AI certainty",
   "legend_summary": "3 / 4 = present / recorded"
 }

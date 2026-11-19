@@ -36,11 +36,13 @@ describe("GridLegend", () => {
 
     const text = screen.getByTestId("overview-legend").textContent ?? "";
     expect(text).toContain("Aprobado");
-    expect(text).toContain("Desaprobado");
+    expect(text).toContain("No aprobado");
     expect(text).toContain("Pendiente de corrección");
     expect(text).toContain("Sin entregar");
-    expect(text).toContain("Sospecha de IA (IA!)");
-    expect(text).toContain("Certeza de IA (IA!!)");
+    expect(text).toContain("Sospecha de IA");
+    expect(text).toContain("IA!");
+    expect(text).toContain("Certeza de IA");
+    expect(text).toContain("IA!!");
     expect(text).not.toContain("3 / 4");
   });
 

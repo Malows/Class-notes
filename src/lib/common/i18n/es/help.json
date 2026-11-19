@@ -20,10 +20,10 @@
   "legend_absent": "Ausente",
   "legend_not_taken": "Sin tomar",
   "legend_approved": "Aprobado",
-  "legend_rejected": "Desaprobado",
+  "legend_rejected": "No aprobado",
   "legend_pending": "Pendiente de corrección",
   "legend_not_delivered": "Sin entregar",
-  "legend_ai_suspicion": "Sospecha de IA (IA!)",
-  "legend_ai_certainty": "Certeza de IA (IA!!)",
+  "legend_ai_suspicion": "Sospecha de IA",
+  "legend_ai_certainty": "Certeza de IA",
   "legend_summary": "3 / 4 = presentes / registradas"
 }

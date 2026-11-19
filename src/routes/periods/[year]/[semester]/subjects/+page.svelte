@@ -72,7 +72,7 @@
   <title>{$t("periods.manage_periods_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<CommonPage title={period ? `${$t("layout.period")}: ${period.year} / ${period.semester}` : $t("periods.manage_periods_title")}>
+<CommonPage title={period ? $t("layout.period_short", { year: period.year, semester: period.semester } as never) : $t("periods.manage_periods_title")}>
   <div>
     <Button href="/periods" class="btn-small">
       {$t("layout.back_to_periods")}

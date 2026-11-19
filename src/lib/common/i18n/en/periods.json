@@ -13,7 +13,7 @@
   "loading_periods": "Loading periods...",
   "confirm_delete": "Delete period?",
   "confirm_delete_title": "Delete Academic Period",
-  "confirm_delete_message": "Are you sure you want to delete the academic period {{year}} · {{semester}}?",
+  "confirm_delete_message": "Are you sure you want to delete the academic period {{year}} · Term {{semester}}?",
   "period_not_found": "The selected period does not exist or could not be loaded.",
   "load_period_error": "Could not load the period information.",
   "save_subjects_success": "Subjects updated successfully.",

@@ -97,6 +97,8 @@ test("renders the person and their cursadas with the commission link", async () 
   expect(document.body.textContent).toContain("Juan Pérez");
   expect(document.body.textContent).toContain("ING-001");
   expect(document.body.textContent).toContain("Álgebra Lineal");
+  expect(document.body.textContent).toContain("2025 · 1º");
+  expect(document.body.textContent).not.toContain("2025 - 1º");
 
   const link = document.body.querySelector(
     '[data-test-id="person-cursada-link-10"]',
@@ -227,6 +229,17 @@ test("deletes the person after confirming and returns to the registry", async ()
     '[data-test-id="delete-person-btn"]',
   ) as HTMLElement;
   expect(deleteButton).not.toBeNull();
+
+  // Delete is behind the page's disclosure, not a filled page-level button.
+  const actions = document.body.querySelector(
+    '[data-test-id="person-actions"]',
+  ) as HTMLDetailsElement;
+  expect(actions).not.toBeNull();
+  expect(actions.open).toBe(false);
+  expect(deleteButton.closest("details")).toBe(actions);
+  expect(deleteButton.className).not.toContain("btn-error");
+
+  actions.open = true;
   deleteButton.click();
   flushSync();
 

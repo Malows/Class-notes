@@ -113,3 +113,75 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
     }),
   );
 });
+
+function draft(overrides: Partial<Delivery> = {}): Delivery {
+  return {
+    assignment_id: 1,
+    enrollment_id: 1,
+    workflow_status: "WAITING_FOR_CORRECTION" as Delivery["workflow_status"],
+    grade: 0,
+    ai_level: 0,
+    comments: "",
+    ...overrides,
+  };
+}
+
+test("keeps an out-of-range grade, marks the field and shows the scale", async () => {
+  const onSave = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave });
+  flushSync();
+
+  const grade = screen.getByTestId("delivery-grade-input") as HTMLInputElement;
+  await fireEvent.input(grade, { target: { value: "11" } });
+  await fireEvent.click(screen.getByTestId("delivery-submit-btn"));
+  flushSync();
+
+  const error = screen.getByTestId("delivery-grade-error");
+  expect(error.textContent).toContain("La nota tiene que estar entre 0 y 10.");
+  expect(grade.value).toBe("11");
+  expect(grade.getAttribute("aria-invalid")).toBe("true");
+  expect(grade.getAttribute("aria-describedby")).toContain(error.id);
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+test("asks for a grade when a verdict is chosen", async () => {
+  const onSave = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave });
+  flushSync();
+
+  await fireEvent.click(screen.getByTestId("delivery-approved-radio"));
+  await fireEvent.click(screen.getByTestId("delivery-submit-btn"));
+  flushSync();
+
+  expect(screen.getByTestId("delivery-grade-error").textContent).toContain("Ingresá una nota.");
+  expect(onSave).not.toHaveBeenCalled();
+});
+
+test("accepts a comma decimal and saves with Enter", async () => {
+  const onSave = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave });
+  flushSync();
+
+  await fireEvent.click(screen.getByTestId("delivery-rejected-radio"));
+  const grade = screen.getByTestId("delivery-grade-input") as HTMLInputElement;
+  await fireEvent.input(grade, { target: { value: "4,5" } });
+  await fireEvent.keyDown(grade, { key: "Enter" });
+  flushSync();
+
+  expect(onSave).toHaveBeenCalledWith(
+    expect.objectContaining({
+      grade: 4.5,
+      workflow_status: "REJECTED",
+    }),
+  );
+});
+
+test("renders next navigation when a following student exists", async () => {
+  const onSave = vi.fn();
+  const onNext = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave, onNext });
+  flushSync();
+
+  await fireEvent.click(screen.getByTestId("delivery-next-btn"));
+  expect(onNext).toHaveBeenCalled();
+});

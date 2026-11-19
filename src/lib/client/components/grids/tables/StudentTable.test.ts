@@ -23,8 +23,21 @@ test("StudentTable renders enrollments and calls onDelete", async () => {
   expect(screen.getAllByText("Student A")[0]).toBeDefined();
   expect(document.body.querySelector('[data-test-id="edit-btn-1"]')).toBeNull();
 
-  const deleteButtons = screen.getAllByText("Borrar");
-  await fireEvent.click(deleteButtons[0]);
+  // The card's destructive action lives behind its disclosure, not as a
+  // full-width button on the card.
+  const disclosure = document.body.querySelector(
+    '[data-test-id="student-card-actions-1"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  expect(disclosure.open).toBe(false);
+
+  const deleteBtn = document.body.querySelector(
+    '[data-test-id="mobile-delete-btn-1"]',
+  ) as HTMLElement;
+  expect(deleteBtn.closest("details")).toBe(disclosure);
+
+  disclosure.open = true;
+  await fireEvent.click(deleteBtn);
 
   expect(onDelete).toHaveBeenCalledWith(enrollments[0]);
 });

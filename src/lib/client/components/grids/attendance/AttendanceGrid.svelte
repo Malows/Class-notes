@@ -6,6 +6,7 @@
   import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
   import Button from "$lib/client/components/common/Button.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import GridLegend from "$lib/client/components/grids/GridLegend.svelte";
 
   import AttendanceCell from "./AttendanceCell.svelte";
 
@@ -37,7 +38,6 @@
 
 {#if grid.rows.length === 0}
   <EmptyState
-    icon="👤"
     title={$t("attendance.empty_students")}
     testId="attendance-empty-students"
   >
@@ -63,7 +63,6 @@
   </EmptyState>
 {:else if grid.assignments.length === 0}
   <EmptyState
-    icon="✏️"
     title={$t("attendance.empty_assignments")}
     testId="attendance-empty-assignments"
   >
@@ -157,6 +156,7 @@
       <div></div>
     </div>
   </div>
+  <GridLegend variant="attendance" testId="attendance-legend" />
 {/if}
 
 <style>

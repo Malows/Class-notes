@@ -63,7 +63,7 @@ export function buildPeriodItems(
       href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.year}/${period.semester}/commissions`,
       label: formatPeriod
         ? formatPeriod(period.year, period.semester)
-        : `${period.year} - ${period.semester}º`,
+        : `${period.year} · ${period.semester}º`,
       shortLabel: `${period.year % 100}-${period.semester}`,
       isActive: activePeriodYear === period.year && activePeriodSemester === period.semester,
     }));

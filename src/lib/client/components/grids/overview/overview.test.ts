@@ -54,7 +54,7 @@ describe("overview components", () => {
     expect(cell).toHaveAttribute("data-status", "approved");
     expect(cell).toHaveClass("is-approved");
     expect(cell).toHaveAttribute("aria-label", "approved");
-    expect(cell.textContent).toContain("✅");
+    expect(cell.textContent).toContain("✓");
     expect(cell.textContent).toContain("IA!!");
   });
 
@@ -72,7 +72,7 @@ describe("overview components", () => {
     expect(chip).toHaveAttribute("aria-hidden", "true");
     expect(chip?.textContent).toBe("IA!!");
     expect(cell).toHaveAttribute("aria-label", "approved");
-    expect(cell.querySelector(".overview-cell__status")?.textContent).toBe("✅");
+    expect(cell.querySelector(".overview-cell__status")?.textContent).toBe("✓");
 
     const noMark = render(OverviewCell, {
       status: "pending_delivery" as OverviewDeliveryStatus,
@@ -125,14 +125,14 @@ describe("overview components", () => {
     const cell2 = screen.getByTestId("delivery-cell-7-2");
 
     expect(cell1).toBeInTheDocument();
-    expect(cell1.textContent?.trim()).toBe("✅");
+    expect(cell1.textContent?.trim()).toBe("✓");
     expect(cell1).toHaveAttribute(
       "aria-label",
       "Approved · A very long student name that should ellipsize — TP 1",
     );
 
     expect(cell2).toBeInTheDocument();
-    expect(cell2.textContent?.trim()).toBe("-");
+    expect(cell2.textContent?.trim()).toBe("–");
   });
 
   test("OverviewGrid renders assignment headers and student rows", () => {
@@ -176,17 +176,19 @@ describe("overview components", () => {
     expect(screen.getByTestId("delivery-cell-1-1")).toBeInTheDocument();
   });
 
-  test("OverviewLegend renders a working disclosure with the legend text", async () => {
+  test("OverviewLegend renders the expanded legend with every mark", async () => {
     await loadTranslations("en", "/");
     render(OverviewLegend);
 
-    const toggle = screen.getByTestId("overview-legend-toggle");
-    expect(toggle).toBeInTheDocument();
-    expect(toggle.textContent?.trim()).toBe("Legend:");
-
-    const details = screen.getByTestId("overview-legend");
-    expect(details.tagName).toBe("DETAILS");
-    expect(screen.getByTestId("overview-legend-text").textContent).toContain("Approved");
+    const legend = screen.getByTestId("overview-legend");
+    expect(legend.tagName).toBe("SECTION");
+    expect(legend.textContent).toContain("Legend");
+    expect(legend.textContent).toContain("Approved");
+    expect(legend.textContent).toContain("Rejected");
+    expect(legend.textContent).toContain("Pending correction");
+    expect(legend.textContent).toContain("Not delivered");
+    expect(legend.textContent).toContain("IA!!");
+    expect(screen.queryByTestId("overview-legend-toggle")).toBeNull();
   });
 
   test("OverviewGrid renders empty assignments card and CTA", () => {

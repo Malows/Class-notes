@@ -35,20 +35,26 @@
 <td>
   <RowActions label={commission.name} testId="row-actions-{commission.id}">
     {#snippet primary()}
-      <Button testId="view-students-btn-{commission.id}" href="{rootPath()}/students" withHover>
-        {$t("layout.students_list")}
-      </Button>
-    {/snippet}
-    {#snippet overflow()}
-      <Button testId="view-overview-btn-{commission.id}" href="{rootPath()}/overview" withHover>
-        {$t("layout.overview")}
-      </Button>
       <Button
         testId="view-attendance-btn-{commission.id}"
         href="{rootPath()}/attendance"
         withHover
+        class="btn-primary"
       >
         {$t("attendance.commission_title")}
+      </Button>
+      <Button
+        testId="view-overview-btn-{commission.id}"
+        href="{rootPath()}/overview"
+        withHover
+        class="btn-ghost"
+      >
+        {$t("layout.overview")}
+      </Button>
+    {/snippet}
+    {#snippet overflow()}
+      <Button testId="view-students-btn-{commission.id}" href="{rootPath()}/students" withHover>
+        {$t("layout.students_list")}
       </Button>
       <Button testId="edit-btn-{commission.id}" withHover onclick={() => onEdit(commission)}>
         {$t("common.edit")}

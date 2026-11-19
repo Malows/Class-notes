@@ -66,6 +66,10 @@ const grid = {
   columns: [{ assignment_id: 10, present_count: 0, taken_count: 0 }],
 };
 
+// The store mutates the grid it receives, so each test starts from a fresh copy.
+const freshGrid = () => structuredClone(grid);
+let activeGrid = freshGrid();
+
 const staticRoutes: Array<[string, unknown]> = [
   ["/faculties", [{ id: 1, name: "Facultad de Ingeniería", slug: "facultad-de-ingenieria" }]],
   [
@@ -137,6 +141,7 @@ beforeEach(async () => {
     removeEventListener: vi.fn(),
   })) as never;
   await loadTranslations("es", "/");
+  activeGrid = freshGrid();
   mockParams = {
     faculty: "facultad-de-ingenieria",
     subject: "algebra-lineal",
@@ -144,9 +149,23 @@ beforeEach(async () => {
     semester: "1",
     commission: "comision-manana",
   };
-  apiFetchMock.mockImplementation((path: string, init?: { method?: string }) => {
+  apiFetchMock.mockImplementation((path: string, init?: { method?: string; body?: string }) => {
     if (init?.method === "DELETE") {
       return Promise.resolve(undefined);
+    }
+
+    if (init?.method === "POST" && path === "/attendance/bulk") {
+      const body = JSON.parse(init.body ?? "{}");
+      return Promise.resolve(
+        body.entries.map((entry: { enrollment_id: number; status: string }) => ({
+          assignment_id: body.assignment_id,
+          enrollment_id: entry.enrollment_id,
+          subject_period_id: 1,
+          commission_id: 1,
+          status: entry.status,
+          recorded_on: "2026-10-23",
+        })),
+      );
     }
 
     if (init?.method === "PUT") {
@@ -164,7 +183,7 @@ beforeEach(async () => {
 
     const match = staticRoutes.find(([prefix]) => path.startsWith(prefix));
     if (match) return Promise.resolve(match[1]);
-    if (path.startsWith("/attendance")) return Promise.resolve(grid);
+    if (path.startsWith("/attendance")) return Promise.resolve(activeGrid);
 
     return Promise.resolve([]);
   });
@@ -231,5 +250,75 @@ test("undo restores the previous value and returns to that student", async () =>
   await key("z", { ctrlKey: true });
 
   expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/1", { method: "DELETE" });
+  expect(document.body.textContent).toContain("Juan Pérez");
+});
+
+test("confirms the bulk mark with its count and undoes the whole column in one step", async () => {
+  // One student is already present: undoing the bulk must put that back too.
+  (activeGrid.rows[0].cells[0] as { status: string | null }).status = "PRESENT";
+  activeGrid.columns[0].present_count = 1;
+  activeGrid.columns[0].taken_count = 1;
+
+  await mountPage();
+
+  const markAll = document.querySelector('[data-test-id="take-all-present"]') as HTMLElement;
+  markAll.click();
+  flushSync();
+
+  // Nothing is written before confirming, and the question states the count.
+  expect(apiFetchMock).not.toHaveBeenCalledWith("/attendance/bulk", expect.anything());
+  expect(document.body.textContent).toContain("Marcar 2 presentes");
+
+  const confirm = document.querySelector(
+    '[data-test-id="confirm-dialog-confirm-btn"]',
+  ) as HTMLElement;
+  confirm.click();
+  flushSync();
+  await flush();
+  flushSync();
+
+  expect(apiFetchMock).toHaveBeenCalledWith("/attendance/bulk", {
+    method: "POST",
+    body: JSON.stringify({
+      assignment_id: 10,
+      entries: [
+        { enrollment_id: 1, status: "PRESENT" },
+        { enrollment_id: 2, status: "PRESENT" },
+      ],
+    }),
+  });
+
+  // A single undo restores the previous column: the present student stays
+  // present (written back), the unmarked one is cleared again.
+  await key("z", { ctrlKey: true });
+
+  expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/1", {
+    method: "PUT",
+    body: JSON.stringify({ status: "PRESENT" }),
+  });
+  expect(apiFetchMock).toHaveBeenCalledWith("/attendance/10/2", { method: "DELETE" });
+});
+
+test("Finalizar is the filled primary action of the take toolbar", async () => {
+  await mountPage();
+
+  const finish = document.querySelector('[data-test-id="take-finish"]') as HTMLElement;
+  const markAll = document.querySelector('[data-test-id="take-all-present"]') as HTMLElement;
+  const back = document.querySelector('[data-test-id="take-back-toolbar"]') as HTMLElement;
+
+  expect(finish.className).toContain("btn-primary");
+  expect(markAll.className).toContain("btn-ghost");
+  expect(back.className).toContain("btn-ghost");
+});
+
+test("keyboard shortcuts stay inert while the bulk confirmation is open", async () => {
+  await mountPage();
+
+  (document.querySelector('[data-test-id="take-all-present"]') as HTMLElement).click();
+  flushSync();
+
+  await key("ArrowRight");
+
+  expect(apiFetchMock).not.toHaveBeenCalledWith("/attendance/10/1", expect.anything());
   expect(document.body.textContent).toContain("Juan Pérez");
 });

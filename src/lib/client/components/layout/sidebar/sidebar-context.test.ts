@@ -85,7 +85,7 @@ test("buildPeriodItems filters and maps periods correctly", () => {
   expect(result[0]).toEqual({
     id: 10,
     href: "/faculties/facultad-1/subjects/matematica/periods/2026/1/commissions",
-    label: "2026 - 1º",
+    label: "2026 · 1º",
     shortLabel: "26-1",
     isActive: true,
   });

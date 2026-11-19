@@ -26,7 +26,7 @@ test("NavBar renderiza marca y controles", async () => {
   expect(document.body.querySelector('[data-test-id="breadcrumbs"]')).toBeTruthy();
 });
 
-test("NavBar renderiza el selector de idioma y responde al clic alternando banderas", async () => {
+test("NavBar renderiza el selector de idioma con las banderas de Argentina y Colombia", async () => {
   await loadTranslations("en", "/");
   let currentLocale = "";
   const unsubscribe = locale.subscribe((val) => {
@@ -43,13 +43,13 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   // Inverted logic: If in English, the button displays only the UK flag!
   expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
 
-  // First click: English -> Spanish (Click count increments to 1: odd -> Colombia 🇨🇴)
+  // Spanish always shows both flags: the wink is Argentina + Colombia together.
   await fireEvent.click(toggleBtn);
   await new Promise((resolve) => setTimeout(resolve, 100));
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toBe("🇨🇴");
+  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴");
 
   // Second click: Spanish -> English
   await fireEvent.click(toggleBtn);
@@ -59,13 +59,13 @@ test("NavBar renderiza el selector de idioma y responde al clic alternando bande
   expect(currentLocale).toBe("en");
   expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
 
-  // Third click: English -> Spanish (Click count increments to 2: even -> Argentina 🇦🇷)
+  // Returning to Spanish shows the pair again.
   await fireEvent.click(toggleBtn);
   await new Promise((resolve) => setTimeout(resolve, 100));
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷");
+  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴");
 
   unsubscribe();
 });

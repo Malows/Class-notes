@@ -13,10 +13,10 @@
   let { href, status, aiLevel = 0, label = "", contextLabel, testId = "" }: Props = $props();
 
   const statusIcon = {
-    [OverviewDeliveryStatus.APPROVED]: "✅",
-    [OverviewDeliveryStatus.REJECTED]: "❌",
-    [OverviewDeliveryStatus.PENDING_CORRECTION]: "⏳",
-    [OverviewDeliveryStatus.PENDING_DELIVERY]: "-",
+    [OverviewDeliveryStatus.APPROVED]: "✓",
+    [OverviewDeliveryStatus.REJECTED]: "✗",
+    [OverviewDeliveryStatus.PENDING_CORRECTION]: "…",
+    [OverviewDeliveryStatus.PENDING_DELIVERY]: "–",
   } as const;
 
   // The status glyph stays the primary mark; the AI level is a corner chip

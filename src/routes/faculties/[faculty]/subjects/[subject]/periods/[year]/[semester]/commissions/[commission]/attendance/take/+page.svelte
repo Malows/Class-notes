@@ -7,6 +7,7 @@
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
   import TakeAttendanceCard from "$lib/client/components/attendance/TakeAttendanceCard.svelte";
+  import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
@@ -25,13 +26,22 @@
   let currentIndex = $state(0);
   let done = $state(false);
 
-  interface UndoEntry {
+  interface SingleUndoEntry {
+    kind: "single";
     enrollmentId: number;
     previous: AttendanceStatus | null;
     wrote: boolean;
   }
 
+  interface BulkUndoEntry {
+    kind: "bulk";
+    entries: Array<{ enrollmentId: number; previous: AttendanceStatus | null }>;
+  }
+
+  type UndoEntry = SingleUndoEntry | BulkUndoEntry;
+
   let undoStack = $state<UndoEntry[]>([]);
+  let confirmingBulk = $state(false);
 
   const facultySlug = page.params.faculty ?? "";
   const subjectSlug = page.params.subject ?? "";
@@ -110,15 +120,29 @@
 
     try {
       if (decision === "skip") {
-        undoStack = [...undoStack, { enrollmentId: row.enrollment_id, previous, wrote: false }];
+        undoStack = [
+          ...undoStack,
+          { kind: "single", enrollmentId: row.enrollment_id, previous, wrote: false },
+        ];
       } else {
         const status = decision === "present" ? AttendanceStatus.PRESENT : AttendanceStatus.ABSENT;
         await attendanceStore.mark(assignmentId, row.enrollment_id, status);
-        undoStack = [...undoStack, { enrollmentId: row.enrollment_id, previous, wrote: true }];
+        undoStack = [
+          ...undoStack,
+          { kind: "single", enrollmentId: row.enrollment_id, previous, wrote: true },
+        ];
       }
       advance();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
+    }
+  }
+
+  async function restore(enrollmentId: number, previous: AttendanceStatus | null) {
+    if (previous === null) {
+      await attendanceStore.unmark(assignmentId, enrollmentId);
+    } else {
+      await attendanceStore.mark(assignmentId, enrollmentId, previous);
     }
   }
 
@@ -127,18 +151,21 @@
     if (!last || commissionID === undefined) return;
 
     try {
-      if (last.wrote) {
-        if (last.previous === null) {
-          await attendanceStore.unmark(assignmentId, last.enrollmentId);
-        } else {
-          await attendanceStore.mark(assignmentId, last.enrollmentId, last.previous);
+      if (last.kind === "bulk") {
+        for (const entry of last.entries) {
+          await restore(entry.enrollmentId, entry.previous);
         }
+      } else if (last.wrote) {
+        await restore(last.enrollmentId, last.previous);
       }
 
       undoStack = undoStack.slice(0, -1);
       done = false;
 
-      const index = rows.findIndex((row) => row.enrollment_id === last.enrollmentId);
+      const targetId = last.kind === "bulk" ? last.entries[0]?.enrollmentId : last.enrollmentId;
+      const index = targetId === undefined
+        ? -1
+        : rows.findIndex((row) => row.enrollment_id === targetId);
       if (index >= 0) {
         currentIndex = index;
       }
@@ -148,16 +175,31 @@
   }
 
   async function markAllPresent() {
+    // Snapshot every previous state before the server write so one undo can put
+    // the whole column back exactly as it was.
+    const snapshot = rows.map((row) => ({
+      enrollmentId: row.enrollment_id,
+      previous: row.cells.find((cell) => cell.assignment_id === assignmentId)?.status ?? null,
+    }));
+
     try {
       await attendanceStore.bulkMarkPresent(assignmentId);
+      undoStack = [...undoStack, { kind: "bulk", entries: snapshot }];
       notificationsStore.addSuccess($t("attendance.take_all_present"));
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
     }
   }
 
+  function requestMarkAllPresent() {
+    if (rows.length === 0) return;
+    confirmingBulk = true;
+  }
+
   function handleKeydown(event: KeyboardEvent) {
-    if (done) return;
+    // The confirm dialog owns the keyboard while it is open: shortcuts behind a
+    // modal would change the column the teacher is being asked about.
+    if (done || confirmingBulk) return;
 
     const isUndo = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z";
     if (isUndo || event.key === "Backspace") {
@@ -239,12 +281,17 @@
   />
 
   <div class="take-toolbar">
-    <button type="button" class="btn btn-ghost btn-sm" onclick={markAllPresent} data-test-id="take-all-present">
+    <button
+      type="button"
+      class="btn btn-ghost btn-sm"
+      onclick={requestMarkAllPresent}
+      data-test-id="take-all-present"
+    >
       {$t("attendance.take_all_present")}
     </button>
     <button
       type="button"
-      class="btn btn-ghost btn-sm"
+      class="btn btn-primary btn-sm"
       onclick={() => {
         done = true;
       }}
@@ -252,9 +299,28 @@
     >
       {$t("attendance.take_finish")}
     </button>
-    <a href="{baseUrl}/attendance" class="btn btn-ghost btn-sm">{$t("attendance.take_back")}</a>
+    <a
+      href="{baseUrl}/attendance"
+      class="btn btn-ghost btn-sm"
+      data-test-id="take-back-toolbar">{$t("attendance.take_back")}</a
+    >
   </div>
 {/if}
+
+<ConfirmDialog
+  isOpen={confirmingBulk}
+  title={$t("attendance.take_all_present_title")}
+  message={$t("attendance.take_all_present_message", { count: rows.length } as never)}
+  confirmText={$t("attendance.take_all_present_confirm", { count: rows.length } as never)}
+  tone="neutral"
+  onConfirm={() => {
+    confirmingBulk = false;
+    void markAllPresent();
+  }}
+  onClose={() => {
+    confirmingBulk = false;
+  }}
+/>
 
 <style>
   .take-toolbar,

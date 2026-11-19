@@ -437,6 +437,44 @@
   }
 }
 
+/*
+ * The One Blue Voice Rule for secondary actions.
+ *
+ * daisyUI paints `btn-secondary` with the emerald mark, which made a second
+ * filled colour compete with the primary action. Secondary actions are now
+ * Ink Blue text on an outline: only the true primary is filled, and
+ * destructive actions keep the error fill. Utilities outrank daisyUI's own
+ * button layer, so the override lives here rather than in components.
+ */
+@layer utilities {
+  .btn.btn-secondary {
+    --btn-bg: transparent;
+    --btn-border: var(--color-primary);
+    --btn-color: var(--color-primary);
+    --btn-fg: var(--color-primary);
+    background-color: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn.btn-secondary:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .btn.btn-secondary:active {
+    background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    color: var(--color-primary);
+  }
+
+  .btn.btn-secondary:is(:disabled, [disabled], [aria-disabled="true"]) {
+    background-color: transparent;
+    border-color: var(--color-outline-variant);
+    color: var(--color-muted);
+  }
+}
+
 @media (pointer: coarse) {
   .btn {
     min-height: 44px;

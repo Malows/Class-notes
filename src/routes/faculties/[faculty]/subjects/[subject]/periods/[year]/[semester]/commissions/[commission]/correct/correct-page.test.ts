@@ -166,3 +166,78 @@ test("guards a missing or invalid assignment_id instead of rendering nothing", a
   expect(document.querySelector('[data-test-id="correction-delivery-missing"]')).toBeNull();
   expect(apiFetchMock).not.toHaveBeenCalledWith("/correct?assignment_id=NaN&enrollment_id=15");
 });
+
+test("opens the commission-level grading sheet when no student is linked", async () => {
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4",
+  );
+  apiFetchMock.mockImplementation((path: string) => {
+    if (path === "/correct?commission_id=1") {
+      return Promise.resolve([
+        {
+          assignment_id: 4,
+          enrollment_id: 15,
+          grade: 9,
+          ai_level: 0,
+          comments: "",
+          workflow_status: "APPROVED",
+        },
+      ]);
+    }
+    const match = routes.find(([prefix]) => path.startsWith(prefix));
+    return Promise.resolve(match ? match[1] : []);
+  });
+
+  component = mount(CorrectionPage, { target: document.body, context: buildContext() });
+  flushSync();
+  await flush();
+  flushSync();
+
+  const progress = document.querySelector('[data-test-id="grade-sheet-progress"]');
+  expect(progress?.textContent?.trim()).toBe("1 de 2 corregidas");
+
+  const firstRow = document.querySelector('[data-test-id="grade-row-15"]');
+  expect(firstRow).toBeTruthy();
+  expect(document.querySelector('[data-test-id="grade-row-16"]')).toBeTruthy();
+  expect(document.querySelector('[data-test-id="correction-delivery-missing"]')).toBeNull();
+
+  const detail = document.querySelector('[data-test-id="grade-detail-15"]') as HTMLAnchorElement;
+  expect(detail.getAttribute("href")).toBe(
+    "/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4&enrollment_id=15&mode=single",
+  );
+});
+
+test("keeps the detailed form as the fallback with next and a link to the sheet", async () => {
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4&enrollment_id=15&mode=single",
+  );
+  apiFetchMock.mockImplementation((path: string) => {
+    if (path === "/correct?assignment_id=4&enrollment_id=15") {
+      return Promise.resolve({
+        assignment_id: 4,
+        enrollment_id: 15,
+        grade: 9.5,
+        ai_level: 0,
+        comments: "Buen trabajo",
+        workflow_status: "APPROVED",
+      });
+    }
+    const match = routes.find(([prefix]) => path.startsWith(prefix));
+    return Promise.resolve(match ? match[1] : []);
+  });
+
+  component = mount(CorrectionPage, { target: document.body, context: buildContext() });
+  flushSync();
+  await flush();
+  flushSync();
+
+  const grade = document.querySelector('[data-test-id="delivery-grade-input"]') as HTMLInputElement;
+  expect(grade?.value).toBe("9,5");
+  expect(document.querySelector('[data-test-id="delivery-next-btn"]')).toBeTruthy();
+  expect(document.querySelector('[data-test-id="delivery-prev-btn"]')).toBeNull();
+
+  const sheetLink = document.querySelector('[data-test-id="correction-sheet-link"]') as HTMLAnchorElement;
+  expect(sheetLink.getAttribute("href")).toBe(
+    "/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4",
+  );
+});

@@ -449,6 +449,15 @@
     border-color: var(--color-outline-variant);
     color: var(--color-muted);
   }
+
+  /* Keep a blocked action legible: daisyUI fades it to ~1.5:1. */
+  .btn:is(:disabled, [disabled], [aria-disabled="true"]) {
+    opacity: 1;
+    border-color: var(--color-outline-variant);
+    background-color: var(--color-surface-container);
+    color: var(--color-muted);
+    cursor: not-allowed;
+  }
 }
 
 @media (pointer: coarse) {

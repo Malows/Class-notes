@@ -195,6 +195,9 @@ test("Sidebar links the current term to the global period view", async () => {
   expect(shortcut.getAttribute("href")).toBe("/periods/2026/1/subjects");
   expect(shortcut.getAttribute("aria-current")).toBeNull();
   expect(shortcut.textContent).toContain("Go to current term · 2026 · Term 1");
+  // The shortcut uses a typographic arrow, not a missing icon ligature.
+  expect(shortcut.textContent).toContain("→");
+  expect(shortcut.textContent).not.toContain("arrow_forward");
   // The metadata subject entry is not a destination of the shortcut any more.
   expect(
     document.body.querySelector('a[href="/faculties/1/subjects/1/periods"]'),

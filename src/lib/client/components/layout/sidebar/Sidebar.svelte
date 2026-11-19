@@ -242,9 +242,7 @@
           class="mt-1 flex items-center gap-2 rounded-[var(--radius-field)] px-2 py-1.5 text-body-sm text-on-surface-variant transition-colors hover:bg-base-200 hover:text-base-content"
           data-test-id="sidebar-current-term-link"
         >
-          <span class="material-symbols-outlined shrink-0 text-[18px]" aria-hidden="true">
-            arrow_forward
-          </span>
+          <span class="shrink-0 text-body-md" aria-hidden="true">→</span>
           <span class="min-w-0 truncate">{currentTermHeading}</span>
         </a>
       </div>

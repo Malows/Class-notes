@@ -18,5 +18,9 @@
   "no_students_message": "Aún no hay alumnos matriculados.",
   "enroll_students_cta": "Gestionar Alumnos",
   "define_commissions_cta": "Gestionar Comisiones",
-  "not_found_message": "La comisión seleccionada no existe o no pudo ser cargada."
+  "not_found_message": "La comisión seleccionada no existe o no pudo ser cargada.",
+  "created_success": "Comisión creada",
+  "updated_success": "Comisión actualizada",
+  "deleted_success": "Comisión eliminada",
+  "assigned_success": "Alumno asignado"
 }

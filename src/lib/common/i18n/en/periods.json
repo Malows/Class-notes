@@ -19,5 +19,8 @@
   "save_subjects_success": "Subjects updated successfully.",
   "save_subjects_error": "Could not save the selection.",
   "period_overview_title": "Period Overview",
-  "error_already_exists": "A period is already registered for this subject in the chosen year and semester."
+  "error_already_exists": "A period is already registered for this subject in the chosen year and semester.",
+  "created_success": "Period created",
+  "updated_success": "Period updated",
+  "deleted_success": "Period deleted"
 }

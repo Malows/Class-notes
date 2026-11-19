@@ -18,5 +18,9 @@
   "no_students_message": "No students have been enrolled yet.",
   "enroll_students_cta": "Manage Students",
   "define_commissions_cta": "Manage Commissions",
-  "not_found_message": "The selected commission does not exist or could not be loaded."
+  "not_found_message": "The selected commission does not exist or could not be loaded.",
+  "created_success": "Commission created",
+  "updated_success": "Commission updated",
+  "deleted_success": "Commission deleted",
+  "assigned_success": "Student assigned"
 }

@@ -80,3 +80,80 @@ test("navStore.breadcrumbs includes faculties subpath step when faculties is pre
   expect(crumbs).toHaveLength(2);
   expect(crumbs[1]).toEqual({ key: "layout.faculties", href: "/faculties" });
 });
+
+test("navStore.breadcrumbs names the commission attendance view", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = {
+    faculty: "facultad-de-ingenieria",
+    subject: "algebra-lineal",
+    year: "2026",
+    semester: "1",
+    commission: "comision-manana",
+  };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/attendance",
+  );
+
+  const last = navStore.breadcrumbs.at(-1);
+  expect(last).toEqual({
+    key: "attendance.commission_title",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/attendance",
+  });
+});
+
+test("navStore.breadcrumbs names take mode and the cursada attendance view", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = {
+    faculty: "facultad-de-ingenieria",
+    subject: "algebra-lineal",
+    year: "2026",
+    semester: "1",
+  };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/attendance",
+  );
+  expect(navStore.breadcrumbs.at(-1)?.key).toBe("attendance.cursada_title");
+
+  mockParams = {
+    faculty: "facultad-de-ingenieria",
+    subject: "algebra-lineal",
+    year: "2026",
+    semester: "1",
+    commission: "comision-manana",
+  };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/attendance/take?assignment_id=1",
+  );
+  expect(navStore.breadcrumbs.at(-1)?.key).toBe("attendance.take_title");
+});
+
+test("navStore.breadcrumbs names the period overview", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = {
+    faculty: "facultad-de-ingenieria",
+    subject: "algebra-lineal",
+    year: "2026",
+    semester: "1",
+  };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/overview",
+  );
+
+  expect(navStore.breadcrumbs.at(-1)?.key).toBe("periods.period_overview_title");
+});
+
+test("navStore.breadcrumbs names the students registry and a person detail", async () => {
+  await loadTranslations("en", "/");
+
+  mockUrl = new URL("http://localhost/persons");
+  expect(navStore.breadcrumbs.at(-1)).toEqual({
+    key: "persons.index_title",
+    href: "/persons",
+  });
+
+  mockUrl = new URL("http://localhost/persons/7");
+  expect(navStore.breadcrumbs.at(-1)?.key).toBe("persons.detail_title");
+});

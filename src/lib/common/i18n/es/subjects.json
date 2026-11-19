@@ -6,5 +6,8 @@
   "placeholder": "Ej: Programación I",
   "loading": "Cargando materias...",
   "confirm_delete_title": "Borrar Materia",
-  "confirm_delete_message": "¿Está seguro que desea borrar la materia {{name}}?"
+  "confirm_delete_message": "¿Está seguro que desea borrar la materia {{name}}?",
+  "created_success": "Materia creada",
+  "updated_success": "Materia actualizada",
+  "deleted_success": "Materia eliminada"
 }

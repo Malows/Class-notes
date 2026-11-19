@@ -1,6 +1,8 @@
 <script lang="ts">
   import type { Assignment } from "$lib/common/types/academic";
 
+  import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
+
   interface Props {
     assignment: Assignment;
     facultySlug: string;
@@ -19,26 +21,6 @@
     commissionSlug,
   }: Props = $props();
 
-  // Rules:
-  // - Split title by words.
-  // - If a word is a number, it stays complete.
-  // - Otherwise, take its first letter capitalised.
-  // - Concatenate everything.
-  function abbreviateTitle(title: string): string {
-    if (!title) return "";
-    return title
-      .split(/\s+/)
-      .filter((word) => word.length > 0)
-      .map((word) => {
-        const isNum = /^\d+$/.test(word);
-        if (isNum) {
-          return word;
-        }
-        return word.charAt(0).toUpperCase();
-      })
-      .join("");
-  }
-
   // Format combined title and subtitle for standard HTML hover tooltip
   function getFullTitle(assignment: Assignment): string {
     return assignment.subtitle ? `${assignment.title} — ${assignment.subtitle}` : assignment.title;
@@ -49,6 +31,7 @@
   <span
     class="overview-header-cell__title"
     title={getFullTitle(assignment)}
+    aria-label={getFullTitle(assignment)}
     data-test-id="overview-header-assignment-title-{assignment.id}"
   >
     {abbreviateTitle(assignment.title)}
@@ -71,6 +54,8 @@
     justify-items: center;
     text-align: center;
     width: 100%;
+    min-height: 4.8rem;
+    overflow: hidden;
   }
 
   .overview-header-cell__title {
@@ -101,5 +86,14 @@
 
   .overview-header-cell__correct-btn:hover {
     transform: scale(1.05);
+  }
+
+  @media (pointer: coarse) {
+    .overview-header-cell__correct-btn {
+      min-height: 3rem;
+      min-width: 3rem;
+      max-height: 3rem;
+      max-width: 3rem;
+    }
   }
 </style>

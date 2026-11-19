@@ -13,6 +13,10 @@ test("AssignmentTable renders assignments and handles callbacks", async () => {
 
   expect(screen.getAllByText("Test TP")[0]).toBeDefined();
 
+  document.body
+    .querySelectorAll("details")
+    .forEach((details) => ((details as HTMLDetailsElement).open = true));
+
   // Test Edit
   const editButtons = screen.getAllByText("Editar");
   await fireEvent.click(editButtons[0]);

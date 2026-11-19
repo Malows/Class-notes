@@ -45,10 +45,10 @@
       if (modal.isCreate) {
         if (facultyID === undefined) return;
         await subjectsStore.create(facultyID, name);
-        notificationsStore.addSuccess("Materia creada con éxito");
+        notificationsStore.addSuccess($t("subjects.created_success"));
       } else if (modal.isEdit && id) {
         await subjectsStore.updateItem(id, name);
-        notificationsStore.addSuccess("Materia actualizada con éxito");
+        notificationsStore.addSuccess($t("subjects.updated_success"));
       }
       modal.close();
     } catch (e: any) {
@@ -60,7 +60,7 @@
     if (!modal.target) return;
     try {
       await subjectsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Materia eliminada con éxito");
+      notificationsStore.addSuccess($t("subjects.deleted_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

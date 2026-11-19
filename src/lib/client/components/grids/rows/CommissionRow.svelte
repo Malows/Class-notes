@@ -1,5 +1,6 @@
 <script lang="ts">
   import Button from "$lib/client/components/common/Button.svelte";
+  import RowActions from "$lib/client/components/common/RowActions.svelte";
   import { t } from "$lib/common/i18n/config";
   import type { Commission } from "$lib/common/types/academic";
 
@@ -32,25 +33,31 @@
 <td data-test-id="commission-name-{commission.id}">{commission.name}</td>
 <td>{commission.student_count}</td>
 <td>
-  <div class="row flex-right gap-2">
-    <Button testId="view-students-btn-{commission.id}" href="{rootPath()}/students" withHover>
-      {$t("layout.students_list")}
-    </Button>
-    <Button testId="view-overview-btn-{commission.id}" href="{rootPath()}/overview" withHover>
-      {$t("layout.overview")}
-    </Button>
-    <Button
-      testId="view-attendance-btn-{commission.id}"
-      href="{rootPath()}/attendance"
-      withHover
-    >
-      {$t("attendance.commission_title")}
-    </Button>
-    <Button testId="edit-btn-{commission.id}" withHover onclick={() => onEdit(commission)}>
-      {$t("common.edit")}
-    </Button>
-    <Button testId="delete-btn-{commission.id}" withHover onclick={() => onDelete(commission)}>
-      {$t("common.delete")}
-    </Button>
-  </div>
+  <RowActions label={commission.name} testId="row-actions-{commission.id}">
+    {#snippet primary()}
+      <Button testId="view-students-btn-{commission.id}" href="{rootPath()}/students" withHover>
+        {$t("layout.students_list")}
+      </Button>
+    {/snippet}
+    {#snippet overflow()}
+      <Button testId="view-overview-btn-{commission.id}" href="{rootPath()}/overview" withHover>
+        {$t("layout.overview")}
+      </Button>
+      <Button
+        testId="view-attendance-btn-{commission.id}"
+        href="{rootPath()}/attendance"
+        withHover
+      >
+        {$t("attendance.commission_title")}
+      </Button>
+      <Button testId="edit-btn-{commission.id}" withHover onclick={() => onEdit(commission)}>
+        {$t("common.edit")}
+      </Button>
+    {/snippet}
+    {#snippet destructive()}
+      <Button testId="delete-btn-{commission.id}" withHover onclick={() => onDelete(commission)}>
+        {$t("common.delete")}
+      </Button>
+    {/snippet}
+  </RowActions>
 </td>

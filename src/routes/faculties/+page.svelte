@@ -33,10 +33,10 @@
     try {
       if (modal.mode === "create") {
         await facultiesStore.create(name);
-        notificationsStore.addSuccess("Facultad creada con éxito");
+        notificationsStore.addSuccess($t("faculties.created_success"));
       } else if (modal.mode === "edit" && id) {
         await facultiesStore.updateItem(id, name);
-        notificationsStore.addSuccess("Facultad actualizada con éxito");
+        notificationsStore.addSuccess($t("faculties.updated_success"));
       }
       modal.close();
     } catch (e: any) {
@@ -48,7 +48,7 @@
     if (!modal.target) return;
     try {
       await facultiesStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Facultad eliminada con éxito");
+      notificationsStore.addSuccess($t("faculties.deleted_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

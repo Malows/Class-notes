@@ -6,5 +6,8 @@
   "placeholder": "e.g. Programming I",
   "loading": "Loading subjects...",
   "confirm_delete_title": "Delete Subject",
-  "confirm_delete_message": "Are you sure you want to delete the subject {{name}}?"
+  "confirm_delete_message": "Are you sure you want to delete the subject {{name}}?",
+  "created_success": "Subject created",
+  "updated_success": "Subject updated",
+  "deleted_success": "Subject deleted"
 }

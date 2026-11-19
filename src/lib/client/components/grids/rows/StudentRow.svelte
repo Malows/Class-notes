@@ -13,8 +13,10 @@
 </script>
 
 <td data-test-id="student-name-{enrollment.id}">
-  <a href="/persons/{enrollment.person_id}" data-test-id="student-person-link-{enrollment.id}"
-    >{enrollment.name}</a
+  <a
+    class="link-quiet"
+    href="/persons/{enrollment.person_id}"
+    data-test-id="student-person-link-{enrollment.id}">{enrollment.name}</a
   >
 </td>
 <td data-test-id="student-legajo-{enrollment.id}">{enrollment.legajo ?? "—"}</td>

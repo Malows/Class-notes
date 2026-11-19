@@ -28,6 +28,12 @@ test("FacultyRow renders and handles callbacks", async () => {
   expect(screen.getAllByText("Faculty A")[0]).toBeDefined();
 
   // Test Edit
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-1"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(faculty);

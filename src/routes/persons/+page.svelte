@@ -110,7 +110,11 @@
         {#each items as person (person.id)}
           <tr data-test-id="person-row-{person.id}">
             <td>
-              <a href="/persons/{person.id}" data-test-id="person-link-{person.id}">{person.name}</a>
+              <a
+                class="link-quiet"
+                href="/persons/{person.id}"
+                data-test-id="person-link-{person.id}">{person.name}</a
+              >
             </td>
             <td data-test-id="person-legajo-{person.id}">{person.legajo ?? "—"}</td>
             <td data-test-id="person-cursadas-{person.id}">{person.enrollment_count}</td>

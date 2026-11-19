@@ -33,7 +33,22 @@ test("SubjectPeriodRow 'Materias' navigates to the period subjects and does not 
   expect(subjectsLink.getAttribute("href")).toBe("/periods/2025/2/subjects");
   expect(onEdit).not.toHaveBeenCalled();
 
+  // The cursada's attendance lives next to its other views.
+  const attendanceLink = document.body.querySelector(
+    '[data-test-id="view-attendance-btn-2"]',
+  ) as HTMLAnchorElement;
+  expect(attendanceLink).not.toBeNull();
+  expect(attendanceLink.getAttribute("href")).toBe(
+    "/faculties/facultad-1/subjects/materia-1/periods/2025/2/attendance",
+  );
+
   // Edit still opens the edit flow
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-2"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-2"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(period);

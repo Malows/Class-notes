@@ -7,6 +7,8 @@
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
   import AttendanceGrid from "$lib/client/components/grids/attendance/AttendanceGrid.svelte";
+  import Button from "$lib/client/components/common/Button.svelte";
+  import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import type { AttendanceStore } from "$lib/client/stores/attendance.svelte";
   import type { CommissionsStore } from "$lib/client/stores/commissions.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
@@ -90,10 +92,13 @@
   <title>{$t("attendance.commission_title")} - {$t("layout.brand")}</title>
 </svelte:head>
 
-<h2>{$t("attendance.commission_title")}</h2>
-<p>
-  <a href="{baseUrl}/overview" class="paper-btn btn-small">{$t("attendance.back_to_commission")}</a>
-</p>
+<PageHeader title={$t("attendance.commission_title")}>
+  {#snippet secondary()}
+    <Button href="{baseUrl}/overview" class="btn-small">
+      {$t("attendance.back_to_commission")}
+    </Button>
+  {/snippet}
+</PageHeader>
 
 {#if loading}
   <p>{$t("attendance.loading")}</p>

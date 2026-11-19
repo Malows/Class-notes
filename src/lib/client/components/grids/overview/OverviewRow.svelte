@@ -10,18 +10,23 @@
     subjectSlug: string;
     periodYear: number;
     periodSemester: number;
-    commissionSlug: string;
+    commissionSlug?: string;
   }
 
   let { name, deliveries, facultySlug, subjectSlug, periodYear, periodSemester, commissionSlug }: Props =
     $props();
+
+  const correctHref = (delivery: Delivery) =>
+    commissionSlug
+      ? `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commissionSlug}/correct?assignment_id=${delivery.assignment_id}&enrollment_id=${delivery.enrollment_id}&mode=single`
+      : undefined;
 </script>
 
 <div class="overview-row" data-test-id="overview-row">
   <div class="overview-row__name" title={name} data-test-id="overview-row-student-name">{name}</div>
   {#each deliveries as delivery}
     <OverviewCell
-      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods/{periodYear}/{periodSemester}/commissions/{commissionSlug}/correct?assignment_id={delivery.assignment_id}&enrollment_id={delivery.enrollment_id}&mode=single"
+      href={correctHref(delivery)}
       status={getOverviewDeliveryStatus(delivery)}
       aiLevel={delivery.ai_level}
       label={getOverviewDeliveryStatus(delivery)}

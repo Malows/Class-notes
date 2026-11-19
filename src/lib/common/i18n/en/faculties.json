@@ -10,5 +10,8 @@
   "confirm_delete_title": "Delete Faculty",
   "confirm_delete_message": "Are you sure you want to delete the faculty {{name}}?",
   "not_found_message": "The selected faculty does not exist or could not be loaded.",
-  "back_to_faculties": "Back to faculties"
+  "back_to_faculties": "Back to faculties",
+  "created_success": "Faculty created",
+  "updated_success": "Faculty updated",
+  "deleted_success": "Faculty deleted"
 }

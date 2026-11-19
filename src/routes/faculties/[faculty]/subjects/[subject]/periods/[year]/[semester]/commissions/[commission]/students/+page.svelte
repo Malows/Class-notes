@@ -85,7 +85,7 @@
     if (!modal.target) return;
     try {
       await enrollmentsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Alumno quitado de la comisión");
+      notificationsStore.addSuccess($t("enrollments.removed_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

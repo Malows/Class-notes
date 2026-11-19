@@ -121,6 +121,77 @@ test("links each assignment to take mode when a href builder is given", async ()
     takeHref: (assignmentId: number) => `/take?assignment_id=${assignmentId}`,
   });
 
-  const link = screen.getByText("TP 1").closest("a");
+  const head = screen.getByTestId("attendance-head-10");
+  expect(head.textContent?.trim()).toBe("TP1");
+  const link = head.querySelector("a");
   expect(link?.getAttribute("href")).toBe("/take?assignment_id=10");
+  expect(link?.getAttribute("title")).toBe("TP 1");
+  expect(link?.getAttribute("aria-label")).toBe("TP 1");
+});
+
+test("abbreviates assignment headers while keeping the full title available", async () => {
+  await loadTranslations("es", "/");
+
+  const grid = baseGrid();
+  grid.assignments = [
+    { id: 10, subject_period_id: 1, title: "Trabajo Práctico 3" },
+    { id: 11, subject_period_id: 1, title: "Guía de problemas" },
+  ];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const first = screen.getByTestId("attendance-head-10");
+  expect(first.textContent?.trim()).toBe("TP3");
+  expect(first.querySelector("span")?.getAttribute("title")).toBe("Trabajo Práctico 3");
+
+  const second = screen.getByTestId("attendance-head-11");
+  expect(second.textContent?.trim()).toBe("GDP");
+  expect(second.querySelector("span")?.getAttribute("aria-label")).toBe("Guía de problemas");
+});
+
+test("striping starts on the first data row, not on the header", async () => {
+  await loadTranslations("es", "/");
+
+  const grid = baseGrid();
+  grid.rows = [
+    { ...grid.rows[0]!, enrollment_id: 1, person_id: 1, name: "Ana Martínez" },
+    { ...grid.rows[0]!, enrollment_id: 2, person_id: 2, name: "Beto Suárez" },
+  ];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const first = screen.getByTestId("attendance-row-1");
+  const second = screen.getByTestId("attendance-row-2");
+
+  expect(first.classList.contains("attendance-grid__row--striped")).toBe(false);
+  expect(second.classList.contains("attendance-grid__row--striped")).toBe(true);
+});
+
+test("an empty roster offers a way to manage its students", async () => {
+  await loadTranslations("es", "/");
+  const grid = baseGrid();
+  grid.rows = [];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  const card = screen.getByTestId("attendance-empty-students");
+  expect(card).toBeTruthy();
+  const cta = screen.getByTestId("attendance-empty-students-cta") as HTMLAnchorElement;
+  expect(cta.getAttribute("href")).toBe(
+    "/faculties/facultad/subjects/algebra-lineal/periods/2025/1/commissions/comision-manana/students",
+  );
+});
+
+test("an empty assignment list offers defining the assignments", async () => {
+  await loadTranslations("es", "/");
+  const grid = baseGrid();
+  grid.assignments = [];
+
+  render(AttendanceGrid, { grid, canEdit: false });
+
+  expect(screen.getByTestId("attendance-empty-assignments")).toBeTruthy();
+  const cta = screen.getByTestId("attendance-empty-assignments-cta") as HTMLAnchorElement;
+  expect(cta.getAttribute("href")).toBe(
+    "/faculties/facultad/subjects/algebra-lineal/periods/2025/1/assignments",
+  );
 });

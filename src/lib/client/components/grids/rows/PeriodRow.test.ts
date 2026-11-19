@@ -39,6 +39,12 @@ test("PeriodRow renders and handles callbacks", async () => {
   expect(subjectsLink.getAttribute("href")).toBe("/periods/2026/1/subjects");
 
   // Test Edit
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-1"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(period);

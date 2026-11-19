@@ -86,11 +86,11 @@
     try {
       if (id) {
         await assignmentsStore.updateItem(id, title, subtitle);
-        notificationsStore.addSuccess("Trabajo práctico actualizado con éxito");
+        notificationsStore.addSuccess($t("assignments.updated_success"));
       } else {
         if (subjectPeriodID === undefined) return;
         await assignmentsStore.create(subjectPeriodID, title, subtitle, workflowStatus);
-        notificationsStore.addSuccess("Trabajo práctico creado con éxito");
+        notificationsStore.addSuccess($t("assignments.created_success"));
       }
       modal.close();
     } catch (e: any) {
@@ -102,7 +102,7 @@
     if (!modal.target) return;
     try {
       await assignmentsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess("Trabajo práctico eliminado con éxito");
+      notificationsStore.addSuccess($t("assignments.deleted_success"));
       modal.close();
     } catch (e: any) {
       notificationsStore.addError(e.message || e);
@@ -126,7 +126,7 @@
     if (!next) return;
     try {
       await assignmentsStore.updateStatus(advanceTarget.id, next);
-      notificationsStore.addSuccess("Estado avanzado con éxito");
+      notificationsStore.addSuccess($t("assignments.status_advanced"));
       isAdvanceModalOpen = false;
       advanceTarget = null;
     } catch (e: any) {
@@ -138,7 +138,7 @@
     if (!previousPeriod?.subject_period_id || subjectPeriodID === undefined) return;
     try {
       await assignmentsStore.copy(previousPeriod.subject_period_id, subjectPeriodID);
-      notificationsStore.addSuccess("Trabajos prácticos copiados con éxito");
+      notificationsStore.addSuccess($t("assignments.copied_success"));
       isCopyModalOpen = false;
     } catch (e: any) {
       notificationsStore.addError(e.message || e);

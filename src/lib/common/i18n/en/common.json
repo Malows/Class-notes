@@ -9,5 +9,6 @@
   "remove": "Remove",
   "of": "of",
   "loading": "Loading...",
-  "bulk_update": "Advance Status"
+  "bulk_update": "Advance Status",
+  "correction_saved": "Correction saved"
 }

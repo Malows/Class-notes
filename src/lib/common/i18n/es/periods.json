@@ -19,5 +19,8 @@
   "save_subjects_success": "Materias actualizadas con éxito.",
   "save_subjects_error": "No se pudo guardar la selección.",
   "period_overview_title": "Resumen del Periodo",
-  "error_already_exists": "Ya existe un período registrado para esta materia en el año y cuatrimestre seleccionados."
+  "error_already_exists": "Ya existe un período registrado para esta materia en el año y cuatrimestre seleccionados.",
+  "created_success": "Período creado",
+  "updated_success": "Período actualizado",
+  "deleted_success": "Período eliminado"
 }

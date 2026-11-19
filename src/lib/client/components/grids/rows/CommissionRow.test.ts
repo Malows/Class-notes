@@ -41,6 +41,21 @@ test("CommissionRow renders and handles callbacks", async () => {
   ) as HTMLAnchorElement;
   expect(attendanceBtn.getAttribute("href")).toContain("/attendance");
 
+  // Edit and delete live inside the row disclosure.
+  const disclosure = document.body.querySelector(
+    '[data-test-id="row-actions-1"]',
+  ) as HTMLDetailsElement;
+  expect(disclosure).not.toBeNull();
+  disclosure.open = true;
+
+  // One direct primary action, the rest behind the disclosure.
+  const primary = disclosure.parentElement?.querySelector(".row-actions__primary");
+  expect(primary?.querySelectorAll("a, button")).toHaveLength(1);
+
+  const summary = disclosure.querySelector("summary");
+  expect(summary?.getAttribute("aria-label")).toContain("Más acciones");
+  expect(disclosure.querySelector(".row-actions__separator")).not.toBeNull();
+
   const editBtn = document.body.querySelector('[data-test-id="edit-btn-1"]') as HTMLElement;
   await fireEvent.click(editBtn);
   expect(onEdit).toHaveBeenCalledWith(commission);

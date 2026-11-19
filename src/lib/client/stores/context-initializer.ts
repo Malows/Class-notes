@@ -6,6 +6,7 @@ import { PeriodsStore } from "$lib/client/stores/periods.svelte";
 import { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
 import { AttendanceStore } from "$lib/client/stores/attendance.svelte";
 import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
+import { SidebarUiStore } from "$lib/client/stores/sidebar-ui.svelte";
 import { StoreKey } from "$lib/common";
 import { setContext } from "svelte";
 
@@ -21,4 +22,5 @@ export function initStoreContext() {
   setContext(StoreKey.ATTENDANCE, new AttendanceStore());
   setContext(StoreKey.NAV, new NavStore());
   setContext(StoreKey.METADATA, new MetadataStore());
+  setContext(StoreKey.SIDEBAR_UI, new SidebarUiStore());
 }

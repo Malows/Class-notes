@@ -3,6 +3,10 @@
   import type { AttendanceGrid } from "$lib/common/types/attendance";
   import { AttendanceStatus } from "$lib/common/types/attendance";
 
+  import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
+  import Button from "$lib/client/components/common/Button.svelte";
+  import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+
   import AttendanceCell from "./AttendanceCell.svelte";
 
   interface Props {
@@ -18,12 +22,54 @@
     if (!canEdit || !onCycleCell) return;
     onCycleCell(assignmentId, enrollmentId, current);
   };
+
+  const periodBase = $derived(
+    `/faculties/${grid.subject.faculty_slug}/subjects/${grid.subject.slug}/periods/${grid.period.year}/${grid.period.semester}`,
+  );
 </script>
 
 {#if grid.rows.length === 0}
-  <p data-test-id="attendance-empty-students">{$t("attendance.empty_students")}</p>
+  <EmptyState
+    icon="👤"
+    title={$t("attendance.empty_students")}
+    testId="attendance-empty-students"
+  >
+    {#snippet actions()}
+      {#if grid.commission?.slug}
+        <Button
+          href="{periodBase}/commissions/{grid.commission.slug}/students"
+          class="btn-secondary"
+          testId="attendance-empty-students-cta"
+        >
+          {$t("commissions.enroll_students_cta")}
+        </Button>
+      {:else}
+        <Button
+          href="{periodBase}/commissions"
+          class="btn-secondary"
+          testId="attendance-empty-commissions-cta"
+        >
+          {$t("commissions.define_commissions_cta")}
+        </Button>
+      {/if}
+    {/snippet}
+  </EmptyState>
 {:else if grid.assignments.length === 0}
-  <p data-test-id="attendance-empty-assignments">{$t("attendance.empty_assignments")}</p>
+  <EmptyState
+    icon="✏️"
+    title={$t("attendance.empty_assignments")}
+    testId="attendance-empty-assignments"
+  >
+    {#snippet actions()}
+      <Button
+        href="{periodBase}/assignments"
+        class="btn-secondary"
+        testId="attendance-empty-assignments-cta"
+      >
+        {$t("commissions.define_assignments_cta")}
+      </Button>
+    {/snippet}
+  </EmptyState>
 {:else}
   <div
     class="attendance-grid"
@@ -35,21 +81,31 @@
       {#each grid.assignments as assignment (assignment.id)}
         <div class="attendance-grid__assignment-head" data-test-id="attendance-head-{assignment.id}">
           {#if takeHref && takeHref(assignment.id)}
-            <a href={takeHref(assignment.id)} title={$t("attendance.open_take")}>
-              {assignment.title}
+            <a
+              href={takeHref(assignment.id)}
+              title={assignment.title}
+              aria-label={assignment.title}
+            >
+              {abbreviateTitle(assignment.title)}
             </a>
           {:else}
-            {assignment.title}
+            <span title={assignment.title} aria-label={assignment.title}>
+              {abbreviateTitle(assignment.title)}
+            </span>
           {/if}
         </div>
       {/each}
       <div class="attendance-grid__summary-head">{$t("attendance.column_summary")}</div>
     </div>
 
-    {#each grid.rows as row (row.enrollment_id)}
-      <div class="attendance-grid__row" data-test-id="attendance-row-{row.enrollment_id}">
+    {#each grid.rows as row, index (row.enrollment_id)}
+      <div
+        class="attendance-grid__row"
+        class:attendance-grid__row--striped={index % 2 === 1}
+        data-test-id="attendance-row-{row.enrollment_id}"
+      >
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
-          <a href="/persons/{row.person_id}">{row.name}</a>
+          <a class="link-quiet" href="/persons/{row.person_id}">{row.name}</a>
           {#if grid.scope === "cursada"}
             <span class="attendance-grid__commission" data-test-id="attendance-commission-{row.enrollment_id}">
               {row.commission_name ?? $t("attendance.no_commission")}
@@ -95,7 +151,7 @@
 <style>
   .attendance-grid {
     display: grid;
-    grid-template-columns: 12rem repeat(var(--cols, 1), 2.8rem) 4.5rem;
+    grid-template-columns: 12rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;
@@ -115,21 +171,23 @@
 
   .attendance-grid__header {
     font-weight: 700;
+    min-height: 3.2rem;
   }
 
   .attendance-grid__assignment-head,
   .attendance-grid__summary-head {
     text-align: center;
     font-size: 0.8rem;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .attendance-grid__row:nth-child(odd) {
+  .attendance-grid__row--striped {
     background-color: #f3f4f6;
   }
 
-  :global(.dark) .attendance-grid__row:nth-child(odd) {
+  :global(.dark) .attendance-grid__row--striped {
     background-color: #4c4b49;
   }
 

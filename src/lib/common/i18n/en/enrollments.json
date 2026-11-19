@@ -14,5 +14,6 @@
   "pending_count": "{{count}} without commission",
   "loading": "Loading enrollments...",
   "remove_confirm_title": "Remove student",
-  "remove_confirm_message": "Remove {{name}} from this commission? The student stays in the registry."
+  "remove_confirm_message": "Remove {{name}} from this commission? The student stays in the registry.",
+  "removed_success": "Student removed from the commission"
 }

@@ -21,6 +21,7 @@
   import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const assignmentsStore = getContext<AssignmentsStore>(StoreKey.ASSIGNMENTS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
@@ -42,6 +43,12 @@
   );
   const periodID = $derived(currentPeriod?.id);
   const subjectPeriodID = $derived(currentPeriod?.subject_period_id);
+
+  // Rows removed from the view while their server deletion waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visibleAssignments = $derived(
+    assignmentsStore.items.filter((assignment) => !pendingDeletes.includes(assignment.id)),
+  );
 
   // Status transition state
   let isAdvanceModalOpen = $state(false);
@@ -105,15 +112,31 @@
     }
   }
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await assignmentsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("assignments.deleted_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  async function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await assignmentsStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("assignments.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.title} — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   function handleBulkUpdate(assignment: Assignment) {
@@ -181,7 +204,7 @@
       linkHref="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
       linkText={$t("layout.back_to_periods")}
     >
-      {#if assignmentsStore.items.length === 0}
+      {#if visibleAssignments.length === 0}
         <EmptyState
           icon="✏️"
           title={$t("assignments.loading_assignments") === "Cargando TPs..."
@@ -205,7 +228,7 @@
         </EmptyState>
       {:else}
         <AssignmentTable
-          assignments={assignmentsStore.items}
+          assignments={visibleAssignments}
           onEdit={(assignment) => modal.openEdit(assignment)}
           onDelete={(assignment) => modal.openDelete(assignment)}
           onBulkUpdate={handleBulkUpdate}
@@ -228,7 +251,7 @@
     message={$t("assignments.confirm_delete_message", {
       title: modal.target?.title || "",
     } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 

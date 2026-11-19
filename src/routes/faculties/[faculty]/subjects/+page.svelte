@@ -17,6 +17,7 @@
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
@@ -29,6 +30,11 @@
 
   let loading = $state(true);
   let failed = $state(false);
+  // Rows removed from the view while their server deletion waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visibleSubjects = $derived(
+    subjectsOfFaculty.filter((subject) => !pendingDeletes.includes(subject.id)),
+  );
 
   const modal = new ModalManager<Subject>();
 
@@ -61,15 +67,31 @@
     }
   }
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await subjectsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("subjects.deleted_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  async function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await subjectsStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("subjects.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.name} — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   onMount(load);
@@ -98,7 +120,7 @@
       linkText={$t("faculties.back_to_faculties")}
     >
       <SubjectTable
-        subjects={subjectsOfFaculty}
+        subjects={visibleSubjects}
         onEdit={(s) => modal.openEdit(s)}
         onDelete={(s) => modal.openDelete(s)}
       />
@@ -117,7 +139,7 @@
     isOpen={modal.isDelete}
     title={$t("subjects.confirm_delete_title")}
     message={$t("subjects.confirm_delete_message", { name: modal.target?.name || "" } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 </PageWithAdd>

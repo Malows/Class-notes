@@ -17,11 +17,11 @@
 
 ## 3. Undoable deletions
 
-- [ ] 3.1 Wire deferred deletion into faculties, subjects, periods and commissions lists
+- [x] 3.1 Wire deferred deletion into faculties, subjects, periods and commissions lists
 - [ ] 3.2 Wire deferred deletion into persons (index and detail) and assign the correct post-delete destination
-- [ ] 3.3 Wire deferred deletion into assignments and roster enrollment removal
-- [ ] 3.4 Restore the row at its previous position on undo and refetch on commit failure with a retryable error
-- [ ] 3.5 Flush pending deletions on in-app navigation and attempt a keepalive commit on `pagehide`
+- [x] 3.3 Wire deferred deletion into assignments and roster enrollment removal
+- [x] 3.4 Restore the row at its previous position on undo and refetch on commit failure with a retryable error
+- [x] 3.5 Flush pending deletions on in-app navigation and attempt a keepalive commit on `pagehide`
 - [ ] 3.6 Test undo, timeout, navigation flush and failed commit per entity group
 
 ## 4. Commission summary

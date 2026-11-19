@@ -19,6 +19,7 @@
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import type { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
@@ -43,6 +44,12 @@
 
   const cursadaCommissions = $derived(
     commissionsStore.items.filter((c) => c.period_id === periodID && c.subject_id === subjectID),
+  );
+
+  // Rows removed from the view while their server deletion waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visibleCommissions = $derived(
+    cursadaCommissions.filter((commission) => !pendingDeletes.includes(commission.id)),
   );
 
   let pendingTargets = $state<Record<number, number>>({});
@@ -91,15 +98,31 @@
     }
   }
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await commissionsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("commissions.deleted_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  async function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await commissionsStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("commissions.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.name} — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   onMount(loadData);
@@ -132,7 +155,7 @@
       <p>{$t("commissions.loading_commissions")}</p>
     {:else}
       <CommissionTable
-        commissions={cursadaCommissions}
+        commissions={visibleCommissions}
         {facultySlug}
         {subjectSlug}
         {periodYear}
@@ -168,7 +191,7 @@
                   data-test-id="pending-target-{enrollment.id}"
                 >
                   <option value={0}>{$t("enrollments.assign_commission_label")}...</option>
-                  {#each cursadaCommissions as commission (commission.id)}
+                  {#each visibleCommissions as commission (commission.id)}
                     <option value={commission.id}>{commission.name}</option>
                   {/each}
                 </select>
@@ -201,7 +224,7 @@
     isOpen={modal.isDelete}
     title={$t("commissions.confirm_delete_title")}
     message={$t("commissions.confirm_delete_message", { name: modal.target?.name || "" } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 </PageWithAdd>

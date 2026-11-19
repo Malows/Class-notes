@@ -6,6 +6,7 @@ import { loadTranslations } from "$lib/common/i18n/config";
 import { CommissionsStore } from "$lib/client/stores/commissions.svelte";
 import { EnrollmentsStore } from "$lib/client/stores/enrollments.svelte";
 import { FacultiesStore } from "$lib/client/stores/faculties.svelte";
+import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 import { PeriodsStore } from "$lib/client/stores/periods.svelte";
 import { SubjectsStore } from "$lib/client/stores/subjects.svelte";
 
@@ -114,6 +115,15 @@ const routes: Array<[string, unknown]> = [
 ];
 
 beforeEach(async () => {
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+  Element.prototype.animate = vi.fn(() => ({
+    cancel: vi.fn(),
+    finish: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as never;
+  notificationsStore.items = [];
   await loadTranslations("es", "/");
   mockParams = {
     faculty: "facultad-de-ingenieria",
@@ -129,6 +139,7 @@ beforeEach(async () => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   if (component) unmount(component);
   document.body.innerHTML = "";
   vi.clearAllMocks();
@@ -144,4 +155,33 @@ test("renders the enrollment roster of a commission with the person legajo", asy
   expect(document.body.textContent).toContain("Juan Pérez");
   expect(document.body.textContent).toContain("ING-001");
   expect(apiFetchMock).toHaveBeenCalledWith("/enrollments?commission_id=1");
+});
+
+test("removing a student hides the row, and undo restores it without a request", async () => {
+  component = mount(StudentsPage, { target: document.body, context: buildContext() });
+  flushSync();
+  await flush();
+  flushSync();
+
+  const row = () => document.body.querySelector('[data-test-id="student-name-1"]');
+  expect(row()).not.toBeNull();
+
+  vi.useFakeTimers();
+
+  (document.body.querySelector('[data-test-id="delete-btn-1"]') as HTMLButtonElement).click();
+  flushSync();
+  (document.body.querySelector(
+    '[data-test-id="confirm-dialog-confirm-btn"]',
+  ) as HTMLButtonElement).click();
+  flushSync();
+
+  expect(row()).toBeNull();
+  expect(apiFetchMock).not.toHaveBeenCalledWith("/enrollments/1", { method: "DELETE" });
+
+  notificationsStore.items[0]?.action?.onAction();
+  flushSync();
+  expect(row()).not.toBeNull();
+
+  await vi.advanceTimersByTimeAsync(6000);
+  expect(apiFetchMock).not.toHaveBeenCalledWith("/enrollments/1", { method: "DELETE" });
 });

@@ -14,11 +14,17 @@
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
 
   let loading = $state(true);
   let failed = $state(false);
+  // Rows removed from the view while their server deletion waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visibleFaculties = $derived(
+    facultiesStore.items.filter((faculty) => !pendingDeletes.includes(faculty.id)),
+  );
   let modal = new ModalManager<Faculty>();
 
   async function load() {
@@ -49,15 +55,31 @@
     }
   }
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await facultiesStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("faculties.deleted_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await facultiesStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("faculties.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.name} — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   onMount(load);
@@ -80,7 +102,7 @@
     <LoadError onRetry={load} />
   {:else}
     <FacultyTable
-      faculties={facultiesStore.items}
+      faculties={visibleFaculties}
       onEdit={(f) => modal.openEdit(f)}
       onDelete={(f) => modal.openDelete(f)}
     />
@@ -98,7 +120,7 @@
     isOpen={modal.mode === "delete"}
     title={$t("faculties.confirm_delete_title")}
     message={$t("faculties.confirm_delete_message", { name: modal.target?.name || "" } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 </PageWithAdd>

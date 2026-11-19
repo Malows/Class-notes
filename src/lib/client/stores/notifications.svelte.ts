@@ -16,6 +16,28 @@ export class NotificationsStore {
     this.items.push({ id, message, type: "error", autoDismiss: false });
   }
 
+  /** A persistent error with one recovery action (for example, Retry). */
+  addErrorAction(message: string, action: { label: string; onAction: () => void }) {
+    const id = this.nextId++;
+    let used = false;
+    this.items.push({
+      id,
+      message,
+      type: "error",
+      autoDismiss: false,
+      action: {
+        label: action.label,
+        onAction: () => {
+          if (used) return;
+          used = true;
+          this.dismiss(id);
+          action.onAction();
+        },
+      },
+    });
+    return id;
+  }
+
   addWarning(message: string) {
     const id = this.nextId++;
     // Warnings do NOT auto-dismiss

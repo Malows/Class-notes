@@ -80,6 +80,20 @@ describe("NotificationsStore", () => {
     expect(notificationsStore.items).toHaveLength(0);
   });
 
+  it("shows a persistent error with a recovery action", () => {
+    const onRetry = vi.fn();
+    notificationsStore.addErrorAction("No se pudo borrar", { label: "Reintentar", onAction: onRetry });
+
+    const toast = notificationsStore.items[0];
+    expect(toast.type).toBe("error");
+    expect(toast.autoDismiss).toBe(false);
+    expect(toast.action?.label).toBe("Reintentar");
+
+    toast.action?.onAction();
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(notificationsStore.items).toHaveLength(0);
+  });
+
   it("auto-dismisses an action toast after its window", () => {
     const onAction = vi.fn();
     notificationsStore.addAction("Deleted", { label: "Undo", onAction }, 6000);

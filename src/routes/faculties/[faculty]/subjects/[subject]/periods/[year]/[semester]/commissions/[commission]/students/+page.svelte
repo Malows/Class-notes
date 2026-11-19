@@ -20,6 +20,7 @@
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import { personService } from "$lib/client/services/person.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const enrollmentsStore = getContext<EnrollmentsStore>(StoreKey.ENROLLMENTS);
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
@@ -48,6 +49,12 @@
     subjectID !== undefined && periodID !== undefined && commissionSlug
       ? commissionsStore.findInScope(subjectID, periodID, commissionSlug)?.id
       : undefined,
+  );
+
+  // Rows removed from the view while their server removal waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visibleEnrollments = $derived(
+    enrollmentsStore.items.filter((enrollment) => !pendingDeletes.includes(enrollment.id)),
   );
 
   async function loadData() {
@@ -87,15 +94,31 @@
   }
 
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await enrollmentsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("enrollments.removed_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  async function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await enrollmentsStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("enrollments.removed_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.name} — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   onMount(loadData);
@@ -122,7 +145,7 @@
     <p>{$t("commissions.not_found_message")}</p>
   {:else}
     <StudentTable
-      enrollments={enrollmentsStore.items}
+      enrollments={visibleEnrollments}
       onDelete={(enrollment) => modal.openDelete(enrollment)}
     />
   {/if}
@@ -140,7 +163,7 @@
     message={$t("enrollments.remove_confirm_message", {
       name: modal.target?.name || "",
     } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 </PageWithAdd>

@@ -105,5 +105,13 @@ test("renders the server error and stays open when the legajo is rejected", asyn
   const error = document.body.querySelector('[data-test-id="person-server-error"]');
   expect(error).not.toBeNull();
   expect(error?.textContent).toContain("Legajo already registered");
+  expect(error?.getAttribute("role")).toBe("alert");
+
+  const legajoInput = document.body.querySelector(
+    '[data-test-id="person-legajo-input"]',
+  ) as HTMLInputElement;
+  expect(legajoInput.getAttribute("aria-describedby")).toBe("error-person-server");
+  expect(legajoInput.getAttribute("aria-invalid")).toBe("true");
+  expect(error?.closest(".form-group")?.contains(legajoInput)).toBe(true);
   expect(onClose).not.toHaveBeenCalled();
 });

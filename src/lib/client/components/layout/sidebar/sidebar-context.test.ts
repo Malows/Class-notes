@@ -1,5 +1,10 @@
 import { expect, test } from "vitest";
-import { buildSubjectItems, buildPeriodItems, buildCommissionItems } from "./sidebar-context";
+import {
+  buildSubjectItems,
+  buildPeriodItems,
+  buildCommissionItems,
+  termToSemester,
+} from "./sidebar-context";
 import type { Subject, Period, Commission } from "$lib/common";
 
 const subjectFixture = (overrides: Partial<Subject> & Pick<Subject, "id">): Subject => ({
@@ -9,6 +14,12 @@ const subjectFixture = (overrides: Partial<Subject> & Pick<Subject, "id">): Subj
   faculty_slug: "facultad-1",
   slug: "materia",
   ...overrides,
+});
+
+test("termToSemester maps metadata terms to the period semester number", () => {
+  expect(termToSemester("Cuatrimestre I")).toBe(1);
+  expect(termToSemester("Cuatrimestre II")).toBe(2);
+  expect(termToSemester(" Cuatrimestre II ")).toBe(2);
 });
 
 test("buildSubjectItems filters and maps subjects correctly", () => {
@@ -81,9 +92,7 @@ test("buildPeriodItems filters and maps periods correctly", () => {
 });
 
 test("buildCommissionItems filters and maps commissions correctly", () => {
-  const subjects: Subject[] = [
-    subjectFixture({ id: 1, name: "Matematica", slug: "matematica" }),
-  ];
+  const subjects: Subject[] = [subjectFixture({ id: 1, name: "Matematica", slug: "matematica" })];
   const commissions: Commission[] = [
     {
       id: 100,

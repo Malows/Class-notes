@@ -72,7 +72,8 @@
       var(--color-success) 12%,
       var(--color-surface-container-lowest)
     );
-    color: var(--color-success);
+    /* The glyph uses success-ink: the mark on its 12% tint is only 4.24:1. */
+    color: var(--color-success-ink);
   }
 
   .attendance-cell.is-absent {
@@ -82,12 +83,12 @@
       var(--color-error) 12%,
       var(--color-surface-container-lowest)
     );
-    color: var(--color-error);
+    color: var(--color-error-ink);
   }
 
   .attendance-cell.is-unmarked {
     background-color: var(--color-surface-container-low);
-    color: var(--color-muted);
+    color: var(--color-unmarked-ink);
   }
 
   @media (pointer: coarse) {

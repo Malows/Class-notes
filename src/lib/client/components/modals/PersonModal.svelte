@@ -21,6 +21,7 @@
   let legajo = $state("");
   let validationError = $state("");
   let serverError = $state("");
+  let errorField = $state<"name" | "legajo" | "form">("name");
   let saving = $state(false);
 
   $effect(() => {
@@ -29,6 +30,7 @@
       legajo = mode === "edit" && person ? (person.legajo ?? "") : "";
       validationError = "";
       serverError = "";
+      errorField = "name";
       saving = false;
     }
   });
@@ -39,7 +41,9 @@
 
     const parsed = EnrollmentEntrySchema.safeParse({ name, legajo });
     if (!parsed.success) {
-      validationError = parsed.error.issues[0]?.message ?? "";
+      const issue = parsed.error.issues[0];
+      errorField = issue?.path[0] === "legajo" ? "legajo" : "name";
+      validationError = issue?.message ?? "";
       return;
     }
 
@@ -47,7 +51,11 @@
     try {
       await onSave(name.trim(), legajo.trim());
     } catch (e: any) {
-      serverError = e?.message || String(e);
+      const message = e?.message || String(e);
+      // Legajo is the only unique field here, so a conflict lands on it; any
+      // other failure is form-level rather than blaming an innocent input.
+      errorField = /legajo/i.test(message) ? "legajo" : "form";
+      serverError = message;
     } finally {
       saving = false;
     }
@@ -68,10 +76,17 @@
         bind:value={name}
         placeholder={$t("persons.name_placeholder")}
         class="input-block"
-        aria-invalid={!!validationError}
-        aria-describedby={validationError ? "error-person-name" : undefined}
+        aria-invalid={errorField === "name" && !!validationError}
+        aria-describedby={
+          errorField === "name" && validationError ? "error-person-name" : undefined
+        }
         oninput={() => (validationError = "")}
         data-test-id="person-name-input"
+      />
+      <ErrorSpan
+        message={errorField === "name" ? validationError : ""}
+        id="error-person-name"
+        testId="person-validation-error"
       />
     </div>
 
@@ -83,20 +98,26 @@
         bind:value={legajo}
         placeholder={$t("persons.legajo_placeholder")}
         class="input-block"
-        aria-invalid={!!serverError}
-        aria-describedby={serverError ? "error-person-server" : undefined}
+        aria-invalid={errorField === "legajo" && !!serverError}
+        aria-describedby={
+          errorField === "legajo" && serverError ? "error-person-server" : undefined
+        }
         oninput={() => (serverError = "")}
         data-test-id="person-legajo-input"
       />
+      {#if errorField === "legajo" && serverError}
+        <span
+          id="error-person-server"
+          class="form-error-msg"
+          role="alert"
+          data-test-id="person-server-error"
+        >
+          {serverError}
+        </span>
+      {/if}
     </div>
 
-    <ErrorSpan
-      message={validationError}
-      id="error-person-name"
-      testId="person-validation-error"
-    />
-
-    {#if serverError}
+    {#if errorField === "form" && serverError}
       <span
         id="error-person-server"
         class="form-error-msg"

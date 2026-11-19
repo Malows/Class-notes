@@ -10,7 +10,13 @@
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
   import { StoreKey } from "$lib/common";
 
-  import { buildCommissionItems, buildPeriodItems, buildSubjectItems } from "./sidebar-context";
+  import {
+    buildCommissionItems,
+    buildPeriodItems,
+    buildSubjectItems,
+    termToSemester,
+    type SidebarContextLink,
+  } from "./sidebar-context";
   import SidebarContextSection from "./SidebarContextSection.svelte";
   import SidebarHeader from "./SidebarHeader.svelte";
   import SidebarStaticLinks from "./SidebarStaticLinks.svelte";
@@ -25,6 +31,17 @@
   const commissionsStore = getContext<CommissionsStore>(StoreKey.COMMISSIONS);
   const metadataContext = $derived(metadataStore.context);
   const context = $derived(navStore.context);
+
+  // The current-term shortcut is a destination, not a description of where the
+  // user is, so it carries its own label and its own period.
+  const currentTermHeading = $derived.by(() => {
+    const periodData = metadataContext?.periodData;
+    if (!periodData) return $t("layout.go_to_current_term");
+    return `${$t("layout.go_to_current_term")} · ${$t("layout.period_short", {
+      year: periodData.year,
+      semester: termToSemester(periodData.term),
+    } as never)}`;
+  });
 
   // Trigger guarded loads for the current context so empty stores populated
   // by the pages still get fetched here when needed.
@@ -82,13 +99,83 @@
       : [],
   );
 
-  const activePeriodId = $derived(
+  const viewedPeriod = $derived(
     context.periodYear !== undefined && context.periodSemester !== undefined
       ? periodsStore.items.find(
           (p) => p.year === context.periodYear && p.semester === context.periodSemester,
-        )?.id
+        )
       : undefined,
   );
+
+  const activePeriodId = $derived(viewedPeriod?.id);
+
+  const viewedSubject = $derived(
+    context.subjectSlug ? subjectsStore.bySlug.get(context.subjectSlug) : undefined,
+  );
+
+  const viewedCommission = $derived(
+    viewedSubject && viewedPeriod && context.commissionSlug
+      ? commissionsStore.findInScope(viewedSubject.id, viewedPeriod.id, context.commissionSlug)
+      : undefined,
+  );
+
+  // "You are viewing": the cursada trail read from the same stores the pages
+  // populate. The deepest known level is the current one.
+  const locationItems = $derived.by(() => {
+    const items: SidebarContextLink[] = [];
+    if (!context.facultySlug) return items;
+
+    const facultyName =
+      facultiesStore.bySlug.get(context.facultySlug)?.name ?? viewedSubject?.faculty_name;
+    if (facultyName) {
+      items.push({
+        id: 1,
+        href: `/faculties/${context.facultySlug}/subjects`,
+        label: facultyName,
+        shortLabel: facultyName.substring(0, 2).toUpperCase(),
+        isActive: false,
+      });
+    }
+
+    if (context.subjectSlug && viewedSubject) {
+      items.push({
+        id: 2,
+        href: `/faculties/${context.facultySlug}/subjects/${context.subjectSlug}/periods`,
+        label: viewedSubject.name,
+        shortLabel: viewedSubject.name.substring(0, 2).toUpperCase(),
+        isActive: false,
+      });
+    }
+
+    if (viewedPeriod) {
+      const label = $t("layout.period_short", {
+        year: viewedPeriod.year,
+        semester: viewedPeriod.semester,
+      } as never);
+      items.push({
+        id: 3,
+        href: `/faculties/${context.facultySlug}/subjects/${context.subjectSlug}/periods/${viewedPeriod.year}/${viewedPeriod.semester}/commissions`,
+        label,
+        shortLabel: `${viewedPeriod.year % 100}-${viewedPeriod.semester}`,
+        isActive: false,
+      });
+    }
+
+    if (context.commissionSlug && viewedCommission) {
+      items.push({
+        id: 4,
+        href: `/faculties/${context.facultySlug}/subjects/${context.subjectSlug}/periods/${context.periodYear}/${context.periodSemester}/commissions/${context.commissionSlug}/overview`,
+        label: viewedCommission.name,
+        shortLabel: viewedCommission.name.substring(0, 2).toUpperCase(),
+        isActive: false,
+      });
+    }
+
+    if (items.length > 0) {
+      items[items.length - 1]!.isActive = true;
+    }
+    return items;
+  });
 
   const periodItems = $derived(
     context.facultySlug && context.subjectSlug
@@ -97,6 +184,7 @@
           subjectSlug: context.subjectSlug,
           activePeriodYear: context.periodYear,
           activePeriodSemester: context.periodSemester,
+          formatPeriod: (year, semester) => $t("layout.period_short", { year, semester } as never),
         })
       : [],
   );
@@ -136,14 +224,25 @@
   <SidebarHeader />
 
   <div class="flex flex-col gap-4">
-    {#if activeMetadataSubjects.length > 0}
+    {#if locationItems.length > 0}
       <SidebarContextSection
-        heading={metadataContext?.periodData
-          ? `${$t("layout.active_term")} (${metadataContext.periodData.year} - ${metadataContext.periodData.term})`
-          : $t("layout.active_term")}
+        heading={$t("layout.current_context")}
         isCollapsed={false}
-        items={activeMetadataSubjects}
+        items={locationItems}
       />
+    {/if}
+
+    {#if activeMetadataSubjects.length > 0}
+      <div
+        class={locationItems.length > 0 ? "border-t border-base-300 pt-3" : ""}
+        data-test-id="sidebar-current-term"
+      >
+        <SidebarContextSection
+          heading={currentTermHeading}
+          isCollapsed={false}
+          items={activeMetadataSubjects}
+        />
+      </div>
     {:else if context.facultySlug}
       <SidebarContextSection
         heading={`${$t("layout.subjects")} (${facultiesStore.bySlug.get(context.facultySlug)?.name ?? "..."})`}

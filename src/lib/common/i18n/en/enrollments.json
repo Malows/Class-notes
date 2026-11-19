@@ -3,6 +3,7 @@
   "new_title": "Enroll student",
   "search_label": "Search an existing student",
   "search_placeholder": "Name or legajo",
+  "search_failed": "The student search could not be completed. Try again.",
   "reuse_hint": "This student already exists in the registry and will be enrolled.",
   "new_hint": "No match selected: a new student will be created.",
   "paste_list_label": "Paste a list (one name per line):",

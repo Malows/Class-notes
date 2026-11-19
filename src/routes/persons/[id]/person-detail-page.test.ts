@@ -132,7 +132,37 @@ test("shows the not-found state for an unknown person", async () => {
 
   const notFound = document.body.querySelector('[data-test-id="person-detail-not-found"]');
   expect(notFound).not.toBeNull();
-  expect(document.body.textContent).toContain("no existe");
+  expect(notFound?.textContent).toContain("No encontramos a este alumno");
+  expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')?.textContent).not.toContain(
+    "no pudo cargarse",
+  );
+});
+
+test("distinguishes a load failure from a missing person and retries", async () => {
+  apiFetchMock
+    .mockRejectedValueOnce(new Error("Simulated server failure"))
+    .mockResolvedValueOnce(detail);
+
+  component = mount(PersonDetailPage, { target: document.body });
+  flushSync();
+  await flush();
+  flushSync();
+
+  expect(document.body.textContent).toContain("No se pudo cargar el alumno");
+  expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')).toBeNull();
+
+  const retry = [...document.body.querySelectorAll("button")].find((button) =>
+    button.textContent?.includes("Reintentar"),
+  );
+  expect(retry).toBeDefined();
+  retry?.click();
+  flushSync();
+  await flush();
+  flushSync();
+
+  expect(apiFetchMock).toHaveBeenCalledTimes(2);
+  expect(document.body.textContent).toContain("Juan Pérez");
+  expect(document.body.textContent).not.toContain("No se pudo cargar el alumno");
 });
 
 test("edits the person from the registry detail", async () => {

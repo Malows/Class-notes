@@ -91,25 +91,29 @@
     line-height: 1;
   }
 
-  /* Secondary, corner-placed AI marker: the status glyph keeps the centre. */
+  /*
+   * Secondary AI marker: a legible 11px stamp in the bottom-right corner,
+   * clear of the centred status glyph even in a 40px cell. The solid sheet
+   * keeps it readable on every status tint, in both themes.
+   */
   .overview-cell__ai {
     position: absolute;
-    top: 2px;
-    right: 2px;
+    right: 1px;
+    bottom: 1px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 12px;
-    min-width: 12px;
-    padding: 0 1px;
+    height: 13px;
+    min-width: 13px;
+    padding: 0 2px;
     border: 1px solid var(--color-outline);
     border-radius: var(--radius-field);
-    background-color: var(--color-surface-container-low);
+    background-color: var(--color-surface-container-lowest);
     color: var(--color-on-surface);
     font-family: var(--font-sans);
-    font-size: 8px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     line-height: 1;
   }
 
@@ -124,7 +128,7 @@
       var(--color-success) 12%,
       var(--color-surface-container-lowest)
     );
-    color: var(--color-success);
+    color: var(--color-success-ink);
   }
 
   .overview-cell.is-rejected {
@@ -134,7 +138,7 @@
       var(--color-error) 12%,
       var(--color-surface-container-lowest)
     );
-    color: var(--color-error);
+    color: var(--color-error-ink);
   }
 
   .overview-cell.is-pending {
@@ -144,11 +148,11 @@
       var(--color-warning) 12%,
       var(--color-surface-container-lowest)
     );
-    color: var(--color-warning);
+    color: var(--color-warning-ink);
   }
 
   .overview-cell.is-empty {
-    color: var(--color-muted);
+    color: var(--color-unmarked-ink);
   }
 
   @media (pointer: coarse) {

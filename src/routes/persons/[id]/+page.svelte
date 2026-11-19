@@ -8,6 +8,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import PersonModal from "$lib/client/components/modals/PersonModal.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
@@ -18,6 +19,7 @@
 
   let detail = $state<PersonDetail | null>(null);
   let loading = $state(true);
+  let failure = $state<"not-found" | "error" | null>(null);
 
   const personID = Number(page.params.id);
 
@@ -25,15 +27,22 @@
     `/faculties/${cursada.faculty_slug}/subjects/${cursada.subject_slug}/periods/${cursada.period_year}/${cursada.period_semester}/commissions/${cursada.commission_slug}/overview`;
 
   async function load() {
+    loading = true;
+    failure = null;
+
     try {
       if (!Number.isFinite(personID) || personID <= 0) {
         detail = null;
+        failure = "not-found";
         return;
       }
       detail = await personService.getById(personID);
     } catch (e) {
-      console.error(e);
       detail = null;
+      // apiFetch throws the API's message, not a status: a missing person is the
+      // one 404 this endpoint has, and it arrives as "Person not found".
+      failure = e instanceof Error && /not found/i.test(e.message) ? "not-found" : "error";
+      if (failure === "error") console.error(e);
     } finally {
       loading = false;
     }
@@ -73,11 +82,24 @@
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
   <p>{$t("persons.loading")}</p>
+{:else if failure === "not-found"}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
+  <div role="status" data-test-id="person-detail-not-found">
+    <p class="font-serif text-headline-sm">{$t("persons.not_found_title")}</p>
+    <p class="text-on-surface-variant">{$t("persons.not_found_body")}</p>
+  </div>
+{:else if failure === "error"}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
+  <LoadError message={$t("persons.load_failed")} onRetry={load} />
 {:else if !detail}
   <PageHeader title={$t("persons.detail_title")}>
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
-  <p data-test-id="person-detail-not-found">{$t("persons.not_found")}</p>
+  <p data-test-id="person-detail-not-found">{$t("persons.not_found_title")}</p>
 {:else}
   <PageHeader title={detail.person.name} testId="person-detail-name">
     {#snippet secondary()}{@render backLink()}{/snippet}

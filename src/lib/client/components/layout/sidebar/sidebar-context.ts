@@ -8,6 +8,11 @@ export type SidebarContextLink = {
   isActive: boolean;
 };
 
+/** Academic metadata terms arrive as "Cuatrimestre I" | "Cuatrimestre II". */
+export function termToSemester(term: string): number {
+  return term.trim().endsWith("II") ? 2 : 1;
+}
+
 type SubjectContext = {
   facultySlug: string;
   activeSubjectSlug?: string;
@@ -18,6 +23,8 @@ type PeriodContext = {
   subjectSlug: string;
   activePeriodYear?: number;
   activePeriodSemester?: number;
+  /** Localized label for the year/semester pair. */
+  formatPeriod?: (year: number, semester: number) => string;
 };
 
 type CommissionContext = {
@@ -47,14 +54,16 @@ export function buildSubjectItems(
 
 export function buildPeriodItems(
   periods: Period[],
-  { facultySlug, subjectSlug, activePeriodYear, activePeriodSemester }: PeriodContext,
+  { facultySlug, subjectSlug, activePeriodYear, activePeriodSemester, formatPeriod }: PeriodContext,
 ): SidebarContextLink[] {
   return periods
     .filter((period) => period.subject_slug === subjectSlug)
     .map((period) => ({
       id: period.id,
       href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${period.year}/${period.semester}/commissions`,
-      label: `${period.year} - ${period.semester}º`,
+      label: formatPeriod
+        ? formatPeriod(period.year, period.semester)
+        : `${period.year} - ${period.semester}º`,
       shortLabel: `${period.year % 100}-${period.semester}`,
       isActive: activePeriodYear === period.year && activePeriodSemester === period.semester,
     }));

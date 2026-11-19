@@ -58,6 +58,30 @@ describe("overview components", () => {
     expect(cell.textContent).toContain("IA!!");
   });
 
+  test("the AI mark is a separate, decorative chip inside the cell", () => {
+    const { container } = render(OverviewCell, {
+      status: "approved" as OverviewDeliveryStatus,
+      aiLevel: 2,
+      label: "approved",
+      testId: "ai-cell",
+    });
+
+    const cell = screen.getByTestId("ai-cell");
+    const chip = container.querySelector(".overview-cell__ai");
+    expect(chip).not.toBeNull();
+    expect(chip).toHaveAttribute("aria-hidden", "true");
+    expect(chip?.textContent).toBe("IA!!");
+    expect(cell).toHaveAttribute("aria-label", "approved");
+    expect(cell.querySelector(".overview-cell__status")?.textContent).toBe("✅");
+
+    const noMark = render(OverviewCell, {
+      status: "pending_delivery" as OverviewDeliveryStatus,
+      aiLevel: 0,
+      testId: "no-ai-cell",
+    });
+    expect(noMark.container.querySelector(".overview-cell__ai")).toBeNull();
+  });
+
   test("OverviewRow renders the student name and delivery cells", async () => {
     await loadTranslations("en", "/");
     const deliveries = [

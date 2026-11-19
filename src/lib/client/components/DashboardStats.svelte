@@ -1,15 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  import { APPROVAL_RATE_THRESHOLD } from "$lib/common/constants";
   import { t } from "$lib/common/i18n/config";
+  import type { GlobalStats } from "$lib/common/types/dashboard";
 
-  import Card from "$lib/client/components/common/Card.svelte";
   import LoadError from "$lib/client/components/common/LoadError.svelte";
   import StatItem from "$lib/client/components/common/StatItem.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
 
-  let stats = $state<any>(null);
+  let stats = $state<GlobalStats | null>(null);
   let loading = $state(true);
   let failed = $state(false);
 
@@ -29,38 +28,52 @@
   onMount(load);
 </script>
 
-<Card>
-  <h2 class="card-title">{$t("dashboard.title")}</h2>
+<section
+  class="border-t border-base-300 pt-4"
+  aria-labelledby="stats-title"
+  data-test-id="dashboard-stats"
+>
+  <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+    <h2 id="stats-title" class="m-0 font-serif text-headline-sm">
+      {$t("dashboard.stats_title")}
+    </h2>
+    <p class="m-0 text-body-sm text-on-surface-variant">{$t("dashboard.stats_scope")}</p>
+  </div>
 
   {#if loading}
-    <p>{$t("dashboard.loading")}</p>
+    <p class="m-0 mt-3 text-body-md text-on-surface-variant" role="status">
+      {$t("dashboard.stats_loading")}
+    </p>
   {:else if failed}
-    <LoadError onRetry={load} />
+    <div class="mt-3">
+      <LoadError onRetry={load} />
+    </div>
   {:else if !stats}
-    <p>{$t("dashboard.no_data")}</p>
+    <p class="m-0 mt-3 text-body-md text-on-surface-variant">
+      {$t("dashboard.stats_no_data")}
+    </p>
   {:else}
-    <div class="grid grid-cols-2 gap-4">
+    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 md:grid-cols-4">
       <StatItem
-        label={$t("dashboard.total_students")}
+        label={$t("dashboard.stats_enrollments")}
         value={stats.totalStudents}
-        data-test-id="total-students-stat"
+        data-test-id="stats-enrollments"
       />
       <StatItem
-        label={$t("dashboard.subjects")}
+        label={$t("dashboard.stats_subjects")}
         value={stats.totalSubjects}
-        data-test-id="total-subjects-stat"
+        data-test-id="stats-subjects"
       />
       <StatItem
-        label={$t("dashboard.approval_rate")}
+        label={$t("dashboard.stats_approval_rate")}
         value={`${stats.approvalRate}%`}
-        badge={stats.approvalRate > APPROVAL_RATE_THRESHOLD ? "success" : "warning"}
-        data-test-id="approval-rate-stat"
+        data-test-id="stats-approval-rate"
       />
       <StatItem
-        label={$t("dashboard.deliveries")}
+        label={$t("dashboard.stats_deliveries")}
         value={stats.totalDeliveries}
-        data-test-id="total-deliveries-stat"
+        data-test-id="stats-deliveries"
       />
     </div>
   {/if}
-</Card>
+</section>

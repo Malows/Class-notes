@@ -74,6 +74,18 @@
   --color-on-surface: #1b1c18;
   --color-on-surface-variant: #434654;
   --color-muted: #5f6a73;
+  /*
+   * Mark inks carry the status glyph inside its own 12% tint. The mark itself
+   * stays on the border and the fill; at 15px it only reaches 3.9-4.2:1 there,
+   * so the glyph uses one step darker (lighter at night).
+   */
+  --color-success-ink: #0b5f36;
+  --color-error-ink: #9e1b18;
+  --color-warning-ink: #7a4300;
+  /* The quiet third state: muted on paper, secondary ink at night. */
+  --color-unmarked-ink: #5f6a73;
+  /* The only translucent surface: the native dialog scrim. */
+  --color-scrim: rgb(28 28 26 / 40%);
   --color-outline: #747686;
   --color-outline-variant: #c3c5d7;
   --color-primary-fixed: #dce1ff;
@@ -182,6 +194,11 @@
   --color-on-surface: #e8e6dc;
   --color-on-surface-variant: #b9b7ab;
   --color-muted: #8b8a7e;
+  --color-success-ink: #7ee6a2;
+  --color-error-ink: #ffc6bf;
+  --color-warning-ink: #ffd08d;
+  --color-unmarked-ink: #b9b7ab;
+  --color-scrim: rgb(5 5 3 / 72%);
   --color-outline: #8e8d80;
   --color-outline-variant: #3a3a31;
   --color-primary-fixed: #16408f;
@@ -198,6 +215,14 @@
 }
 
 @layer base {
+  /*
+   * The root carries the paper too: overscroll on iOS and the canvas beyond
+   * `body` otherwise fall back to the browser's white.
+   */
+  html {
+    background-color: var(--color-surface);
+  }
+
   body {
     background-color: var(--color-surface);
     color: var(--color-on-surface);
@@ -291,14 +316,10 @@
     outline-offset: 3px;
   }
 
+  /* Selection is the primary-fixed pair in both themes; the dark tokens flip. */
   ::selection {
     background: var(--color-primary-fixed);
     color: var(--color-on-primary-fixed);
-  }
-
-  [data-theme="classnotes-dark"] ::selection {
-    background: #16408f;
-    color: #dce1ff;
   }
 }
 
@@ -425,6 +446,27 @@
   input:not([type="checkbox"]):not([type="radio"]),
   select {
     min-height: 44px;
+  }
+
+  /*
+   * Text links are 17px tall at rest. Grow the hit area to 24px without
+   * changing where the text sits: the negative margin gives the padding back,
+   * and the 4px inline padding lands inside the row's own padding.
+   */
+  .link-editorial {
+    display: inline-block;
+    min-height: 1.5rem;
+    min-width: 1.5rem;
+    padding-block: 0.25rem;
+    margin-block: -0.25rem;
+    padding-inline: 0.25rem;
+    margin-inline: -0.25rem;
+  }
+
+  /* Breadcrumbs keep their 12px label; only the vertical target grows. */
+  [data-test-id="breadcrumbs"] a {
+    padding-block: 0.25rem;
+    margin-block: -0.25rem;
   }
 }
 

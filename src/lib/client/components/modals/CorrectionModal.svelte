@@ -3,6 +3,7 @@
   import type { Delivery } from "$lib/common/types/student";
 
   import DialogBase from "../common/DialogBase.svelte";
+  import Button from "../common/Button.svelte";
   import DeliveryForm from "../DeliveryForm.svelte";
 
   interface Props {
@@ -39,8 +40,8 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">
+    <Button class="btn-ghost" testId="modal-cancel-btn" onclick={onClose}>
       {$t("common.cancel")}
-    </button>
+    </Button>
   {/snippet}
 </DialogBase>

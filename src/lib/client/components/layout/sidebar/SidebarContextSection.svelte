@@ -12,11 +12,13 @@
   let { heading, isCollapsed, items }: Props = $props();
 </script>
 
-<div class="context-section">
+<div class="flex flex-col gap-1.5">
   {#if !isCollapsed}
-    <h6>{heading}</h6>
+    <p class="m-0 px-2 text-label-sm uppercase tracking-[0.04em] text-on-surface-variant" data-test-id="sidebar-context-heading">
+      {heading}
+    </p>
   {/if}
-  <ul>
+  <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
     {#each items as item (item.id)}
       <SidebarContextItem
         href={item.href}
@@ -28,26 +30,3 @@
     {/each}
   </ul>
 </div>
-
-<style>
-  .context-section {
-    margin-bottom: 1.5rem;
-  }
-
-  .context-section h6 {
-    margin-bottom: 0.5rem;
-    color: var(--muted-color);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .context-section :global(li.collapsed) {
-    text-align: center;
-  }
-</style>

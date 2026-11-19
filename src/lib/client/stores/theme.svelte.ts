@@ -92,7 +92,15 @@ export class ThemeStore {
 
   #updateDOMTheme() {
     if (typeof document !== "undefined") {
-      document.documentElement.classList.toggle("dark", this.#currentTheme === "dark");
+      const root = document.documentElement;
+      // The editorial theme is selected through data-theme; drop the legacy
+      // class so the two systems never coexist.
+      root.classList.remove("dark");
+      root.setAttribute("data-theme", this.#currentTheme === "dark" ? "classnotes-dark" : "classnotes");
+      // The browser chrome follows the chosen theme, not the OS preference.
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", this.#currentTheme === "dark" ? "#14140f" : "#fbf9f2");
     }
   }
 }

@@ -96,6 +96,7 @@
       <OverviewRow
         name={student.name}
         deliveries={student.deliveries}
+        {assignments}
         {facultySlug}
         {subjectSlug}
         {periodYear}

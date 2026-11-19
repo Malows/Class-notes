@@ -1,10 +1,15 @@
 import type { Delivery } from "$lib/common";
+import { loadTranslations } from "$lib/common/i18n/config";
 import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
 import { render, screen, fireEvent, configure } from "@testing-library/svelte";
-import { expect, test, vi } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import { flushSync } from "svelte";
 
 configure({ testIdAttribute: "data-test-id" });
+
+beforeEach(async () => {
+  await loadTranslations("es", "/");
+});
 
 test("DeliveryForm renders and saves", async () => {
   const delivery: Delivery = {
@@ -49,14 +54,12 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   await fireEvent.click(isDeliveredCheckbox);
   flushSync();
 
-  // Test radio buttons (Approved vs Rejected)
-  const approvedRadioOptions = screen.getAllByTestId(
-    "delivery-approved-checkbox",
-  ) as HTMLInputElement[];
-  expect(approvedRadioOptions).toHaveLength(2);
-
-  const approvedRadio = approvedRadioOptions[0]; // value === true
-  const rejectedRadio = approvedRadioOptions[1]; // value === false
+  // Test radio buttons (Approved vs Rejected), each with its own test id
+  const approvedRadio = screen.getByTestId("delivery-approved-radio") as HTMLInputElement;
+  const rejectedRadio = screen.getByTestId("delivery-rejected-radio") as HTMLInputElement;
+  expect(approvedRadio).toBeTruthy();
+  expect(rejectedRadio).toBeTruthy();
+  expect(approvedRadio).not.toBe(rejectedRadio);
 
   await fireEvent.click(approvedRadio);
   flushSync();

@@ -10,7 +10,7 @@ afterEach(() => {
   document.body.innerHTML = "";
 });
 
-test("StatItem renderizado con label y valor", () => {
+test("StatItem renderiza label y valor sin tono", () => {
   component = mount(StatItem, {
     target: document.body,
     props: {
@@ -22,13 +22,12 @@ test("StatItem renderizado con label y valor", () => {
   flushSync();
 
   expect(document.body.textContent).toContain("Test Label");
-  expect(document.body.textContent).toContain("100");
-
-  const span = document.body.querySelector("span");
-  expect(span?.className).not.toContain("badge");
+  const value = document.body.querySelector(".stat-value");
+  expect(value?.textContent).toContain("100");
+  expect(value?.querySelector(".stat-tone")).toBeNull();
 });
 
-test("StatItem renderizado con badge", () => {
+test("StatItem renderiza el tono como indicador separado", () => {
   component = mount(StatItem, {
     target: document.body,
     props: {
@@ -40,7 +39,9 @@ test("StatItem renderizado con badge", () => {
 
   flushSync();
 
-  const span = document.body.querySelector("span");
-  expect(span?.className).toContain("badge");
-  expect(span?.className).toContain("warning");
+  const value = document.body.querySelector(".stat-value");
+  expect(value?.textContent).toContain("100");
+  const tone = document.body.querySelector(".stat-tone");
+  expect(tone).not.toBeNull();
+  expect(tone?.getAttribute("data-tone")).toBe("warning");
 });

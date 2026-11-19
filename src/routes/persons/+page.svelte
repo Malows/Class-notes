@@ -5,6 +5,10 @@
   import type { Person, PersonRegistryRow } from "$lib/common/types/enrollment";
 
   import Button from "$lib/client/components/common/Button.svelte";
+  import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
+  import MobileCard from "$lib/client/components/common/MobileCard.svelte";
+  import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PersonModal from "$lib/client/components/modals/PersonModal.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
@@ -20,6 +24,7 @@
   let query = $state("");
   let loading = $state(true);
   let loadingMore = $state(false);
+  let failed = $state(false);
 
   let requestToken = 0;
 
@@ -29,6 +34,7 @@
       loadingMore = true;
     } else {
       loading = true;
+      failed = false;
     }
 
     try {
@@ -40,6 +46,11 @@
       total = page.total;
     } catch (e) {
       console.error(e);
+      // A failed "load more" keeps the rows already on screen; only the first
+      // page turns the view into a retryable error.
+      if (!append && token === requestToken) {
+        failed = true;
+      }
     } finally {
       if (token === requestToken) {
         loading = false;
@@ -75,65 +86,82 @@
 </svelte:head>
 
 <PageWithAdd title={$t("persons.index_title")} onAdd={() => modal.openCreate()}>
-  <div class="form-group">
-    <label for="persons-search">{$t("persons.search_label")}</label>
+  <div class="max-w-md">
+    <label for="persons-search" class="mb-1 block text-label-md text-on-surface-variant"
+      >{$t("persons.search_label")}</label
+    >
     <input
       type="search"
       id="persons-search"
       value={query}
       oninput={handleSearch}
       placeholder={$t("persons.search_placeholder")}
-      class="input-block"
       data-test-id="persons-search-input"
     />
   </div>
 
   {#if loading}
-    <p>{$t("persons.loading")}</p>
+    <p class="text-body-md text-on-surface-variant">{$t("persons.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={() => load()} />
   {:else if items.length === 0}
-    <p data-test-id="persons-empty">{$t("persons.empty_state")}</p>
+    <EmptyState
+      icon="👤"
+      title={$t("persons.empty_state")}
+      testId="persons-empty"
+    />
   {:else}
-    <p class="text-small" data-test-id="persons-showing">
+    <p class="text-body-sm text-on-surface-variant" data-test-id="persons-showing">
       {$t("persons.showing", { shown: items.length, total } as never)}
     </p>
 
-    <table class="table-hover" data-test-id="persons-table">
-      <thead>
-        <tr>
-          <th>{$t("persons.column_name")}</th>
-          <th>{$t("persons.column_legajo")}</th>
-          <th>{$t("persons.column_cursadas")}</th>
-          <th>{$t("persons.column_last_cursada")}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each items as person (person.id)}
-          <tr data-test-id="person-row-{person.id}">
-            <td>
-              <a
-                class="link-quiet"
-                href="/persons/{person.id}"
-                data-test-id="person-link-{person.id}">{person.name}</a
-              >
-            </td>
-            <td data-test-id="person-legajo-{person.id}">{person.legajo ?? "—"}</td>
-            <td data-test-id="person-cursadas-{person.id}">{person.enrollment_count}</td>
-            <td>
-              {#if lastCursada(person)}
-                <span data-test-id="person-last-cursada-{person.id}">{lastCursada(person)}</span>
-              {:else}
-                <span class="text-small" data-test-id="person-no-cursadas-{person.id}"
-                  >{$t("persons.no_cursadas")}</span
-                >
-              {/if}
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
+    <ResponsiveTable items={items}>
+      {#snippet header()}
+        <th>{$t("persons.column_name")}</th>
+        <th>{$t("persons.column_legajo")}</th>
+        <th>{$t("persons.column_cursadas")}</th>
+        <th>{$t("persons.column_last_cursada")}</th>
+      {/snippet}
+      {#snippet row(person)}
+        <td data-label={$t("persons.column_name")} data-test-id="person-name-{person.id}">
+          <a class="link-editorial" href="/persons/{person.id}" data-test-id="person-link-{person.id}"
+            >{person.name}</a
+          >
+        </td>
+        <td class="tnum" data-label={$t("persons.column_legajo")} data-test-id="person-legajo-{person.id}">{person.legajo ?? "—"}</td>
+        <td class="tnum" data-label={$t("persons.column_cursadas")} data-test-id="person-cursadas-{person.id}">{person.enrollment_count}</td>
+        <td data-label={$t("persons.column_last_cursada")}>
+          {#if lastCursada(person)}
+            <span class="text-body-sm" data-test-id="person-last-cursada-{person.id}"
+              >{lastCursada(person)}</span
+            >
+          {:else}
+            <span class="text-body-sm text-on-surface-variant" data-test-id="person-no-cursadas-{person.id}"
+              >{$t("persons.no_cursadas")}</span
+            >
+          {/if}
+        </td>
+      {/snippet}
+      {#snippet card(person)}
+        <MobileCard
+          title={person.name}
+          href="/persons/{person.id}"
+          titleTestId="person-card-link-{person.id}"
+          meta={[
+            { label: $t("persons.column_legajo"), value: person.legajo ?? "—" },
+            { label: $t("persons.column_cursadas"), value: person.enrollment_count },
+            {
+              label: $t("persons.column_last_cursada"),
+              value: lastCursada(person) ?? $t("persons.no_cursadas"),
+            },
+          ]}
+          testId="person-card-{person.id}"
+        />
+      {/snippet}
+    </ResponsiveTable>
 
     {#if hasMore}
-      <div class="row flex-center margin-top-small">
+      <div class="mt-4 flex justify-center">
         <Button testId="persons-load-more" onclick={() => load({ append: true })} withHover>
           {loadingMore ? $t("common.loading") : $t("persons.load_more")}
         </Button>

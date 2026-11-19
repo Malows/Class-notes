@@ -8,6 +8,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import GuardWrapper from "$lib/client/components/GuardWrapper.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import SubjectModal from "$lib/client/components/modals/SubjectModal.svelte";
@@ -27,14 +28,18 @@
   );
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const modal = new ModalManager<Subject>();
 
   async function load() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -81,22 +86,24 @@
     </Button>
   </div>
 
-  <GuardWrapper
-    condition={facultiesStore.bySlug.has(facultySlug)}
-    message={$t("faculties.not_found_message")}
-    linkHref="/faculties"
-    linkText={$t("faculties.back_to_faculties")}
-  >
-    {#if loading}
-      <p>{$t("subjects.loading")}</p>
-    {:else}
+  {#if loading}
+    <p>{$t("subjects.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={load} />
+  {:else}
+    <GuardWrapper
+      condition={facultiesStore.bySlug.has(facultySlug)}
+      message={$t("faculties.not_found_message")}
+      linkHref="/faculties"
+      linkText={$t("faculties.back_to_faculties")}
+    >
       <SubjectTable
         subjects={subjectsOfFaculty}
         onEdit={(s) => modal.openEdit(s)}
         onDelete={(s) => modal.openDelete(s)}
       />
-    {/if}
-  </GuardWrapper>
+    </GuardWrapper>
+  {/if}
 
   <SubjectModal
     isOpen={modal.isCreate || modal.isEdit}

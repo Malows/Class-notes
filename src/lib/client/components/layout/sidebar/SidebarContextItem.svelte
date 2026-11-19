@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { page } from "$app/state";
+
   type Props = {
     href: string;
     label: string;
@@ -8,47 +10,27 @@
   };
 
   let { href, label, shortLabel, isCollapsed, isActive = false }: Props = $props();
+
+  const isSameDocument = (pathname: string) =>
+    pathname.replace(/\/+$/, "") === href.replace(/\/+$/, "");
+
+  // Contextual shortcuts mark the current item in the set, but their href often
+  // points at an overview or index rather than the page on screen. Only claim
+  // `aria-current="page"` when the location actually matches.
+  const ariaCurrent = $derived(
+    isActive ? (isSameDocument(page.url.pathname) ? "page" : "true") : undefined,
+  );
 </script>
 
-<li class:active={isActive} class:collapsed={isCollapsed}>
-  <a {href} title={label}>
+<li class={isCollapsed ? "text-center" : ""}>
+  <a
+    {href}
+    title={label}
+    aria-current={ariaCurrent}
+    class="block truncate rounded-[var(--radius-field)] px-2 py-1.5 text-body-sm transition-colors {isActive
+      ? 'bg-primary/10 font-medium text-primary'
+      : 'text-on-surface-variant hover:bg-base-200 hover:text-base-content'}"
+  >
     {isCollapsed ? shortLabel : label}
   </a>
 </li>
-
-<style>
-  li {
-    /* margin-bottom: 0.25rem; */
-    font-size: 0.9rem;
-    /* border-radius: 4px; */
-  }
-
-  li::before {
-    display: none;
-  }
-
-  li.active {
-    border-bottom-left-radius: 15px 3px;
-    border-bottom-right-radius: 15px 5px;
-    border-bottom: solid 2px var(--border-color);
-  }
-
-  li.active a {
-    font-weight: bold;
-  }
-
-  a {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    padding: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background-image: none;
-  }
-
-  li.collapsed {
-    text-align: center;
-  }
-</style>

@@ -5,6 +5,7 @@
   import { useFormValidation } from "$lib/client/composables/useFormValidation.svelte";
 
   import DialogBase from "../common/DialogBase.svelte";
+  import Button from "../common/Button.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
 
   interface Props {
@@ -56,11 +57,8 @@
 >
   {#snippet children()}
     {#if mode === "create"}
-      <div
-        class="alert alert-warning margin-bottom-small padding-small"
-        data-test-id="assignment-warning-alert"
-      >
-        <p style="margin: 0; font-weight: bold;">{$t("assignments.warning_alert")}</p>
+      <div class="alert alert-warning mb-3 p-3" data-test-id="assignment-warning-alert">
+        <p class="m-0 font-semibold">{$t("assignments.warning_alert")}</p>
       </div>
     {/if}
     <div class="form-group">
@@ -115,11 +113,9 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" onclick={onClose} data-test-id="modal-cancel-btn">
-      {$t("common.cancel")}
-    </button>
-    <button class="paper-btn btn-secondary" onclick={handleSaveClick} data-test-id="modal-save-btn">
+    <Button class="btn-ghost" testId="modal-cancel-btn" onclick={onClose}>{$t("common.cancel")}</Button>
+    <Button class="btn-primary" testId="modal-save-btn" onclick={handleSaveClick}>
       {mode === "create" ? $t("common.create") : $t("common.save")}
-    </button>
+    </Button>
   {/snippet}
 </DialogBase>

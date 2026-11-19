@@ -17,9 +17,17 @@
 
   let { primary, overflow, destructive, label, testId }: Props = $props();
 
+  let detailsElement = $state<HTMLDetailsElement | null>(null);
+
   const disclosureLabel = $derived(
     label ? `${$t("layout.more_actions")} — ${label}` : $t("layout.more_actions"),
   );
+
+  function closeAndFocus(details: HTMLDetailsElement | null) {
+    if (!details) return;
+    details.open = false;
+    details.querySelector<HTMLElement>("summary")?.focus();
+  }
 
   // Close the disclosure after picking an action so the next interaction
   // starts from the row again. An action keeps the menu container inert,
@@ -27,8 +35,7 @@
   function closeOnAction(node: HTMLElement) {
     function handleClick(event: MouseEvent) {
       if (!(event.target as HTMLElement).closest("a, button")) return;
-      const details = node.closest("details");
-      if (details) details.open = false;
+      closeAndFocus(node.closest("details"));
     }
 
     node.addEventListener("click", handleClick);
@@ -37,6 +44,27 @@
         node.removeEventListener("click", handleClick);
       },
     };
+  }
+
+  function closeOnOutside(details: HTMLDetailsElement) {
+    function handlePointer(event: MouseEvent) {
+      if (!details.open) return;
+      if (details.contains(event.target as Node)) return;
+      details.open = false;
+    }
+
+    document.addEventListener("mousedown", handlePointer);
+    return {
+      destroy() {
+        document.removeEventListener("mousedown", handlePointer);
+      },
+    };
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key !== "Escape" || !detailsElement?.open) return;
+    event.preventDefault();
+    closeAndFocus(detailsElement);
   }
 </script>
 
@@ -48,8 +76,16 @@
   {/if}
 
   {#if overflow || destructive}
-    <details class="row-actions__disclosure" data-test-id={testId}>
-      <summary class="paper-btn btn-small row-actions__summary" aria-label={disclosureLabel}>
+    <!-- The disclosure is keyboard-operable through its summary; Escape closes it. -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <details
+      bind:this={detailsElement}
+      class="row-actions__disclosure"
+      data-test-id={testId}
+      use:closeOnOutside
+      onkeydown={handleKeydown}
+    >
+      <summary class="btn btn-ghost btn-sm btn-circle row-actions__summary" aria-label={disclosureLabel}>
         ⋯
       </summary>
       <div
@@ -87,13 +123,6 @@
   }
 
   .row-actions__summary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 2.25rem;
-    min-width: 2.25rem;
-    padding: 0 0.5rem;
-    cursor: pointer;
     list-style: none;
     line-height: 1;
   }
@@ -116,18 +145,14 @@
     gap: 0.25rem;
     min-width: 11rem;
     padding: 0.5rem;
-    background-color: #fff;
-    border: 2px solid var(--border-color);
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0 var(--border-color);
+    background-color: var(--color-surface-container-lowest);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-box);
   }
 
-  :global(.dark) .row-actions__menu {
-    background-color: #1a1c1c;
-  }
-
-  .row-actions__menu :global(.paper-btn) {
+  .row-actions__menu :global(.btn) {
     width: 100%;
+    justify-content: flex-start;
     margin: 0;
     text-align: left;
   }
@@ -136,7 +161,7 @@
     width: 100%;
     margin: 0.25rem 0;
     border: 0;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--color-outline-variant);
   }
 
   @media (pointer: coarse) {

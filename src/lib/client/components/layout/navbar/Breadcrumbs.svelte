@@ -11,67 +11,42 @@
   );
 </script>
 
-<ul class="breadcrumb" data-test-id="breadcrumbs">
-  {#each breadcrumbs as crumb, i}
-    <li data-test-id="breadcrumb-step-{i}">
-      {#if i === breadcrumbs.length - 1}
-        <span data-test-id="breadcrumb-text-{i}">{crumb.label}</span>
-      {:else}
-        <a href={crumb.href} data-test-id="breadcrumb-link-{i}">{crumb.label}</a>
-      {/if}
-    </li>
-  {/each}
-</ul>
+<nav aria-label={$t("layout.breadcrumb")} data-test-id="breadcrumbs">
+  <ol class="m-0 flex list-none items-center gap-1 overflow-hidden whitespace-nowrap p-0">
+    {#each breadcrumbs as crumb, i (crumb.href)}
+      <li
+        class="flex min-w-0 items-center gap-1 text-[min(0.75rem,12px)] text-on-surface-variant"
+        data-test-id="breadcrumb-step-{i}"
+      >
+        {#if i > 0}
+          <span class="text-outline-variant" aria-hidden="true">/</span>
+        {/if}
+        {#if i === breadcrumbs.length - 1}
+          <span
+            class="overflow-hidden text-ellipsis font-medium text-base-content"
+            aria-current="page"
+            data-test-id="breadcrumb-text-{i}">{crumb.label}</span
+          >
+        {:else}
+          <a
+            href={crumb.href}
+            class="overflow-hidden text-ellipsis text-on-surface-variant hover:text-primary hover:underline"
+            data-test-id="breadcrumb-link-{i}">{crumb.label}</a
+          >
+        {/if}
+      </li>
+    {/each}
+  </ol>
+</nav>
 
 <style>
-  .breadcrumb {
-    margin: 0;
-  }
-
-  .breadcrumb li {
-    text-indent: 0;
-  }
-
-  .breadcrumb a {
-    color: var(--primary);
-  }
-
-  .breadcrumb a:hover {
-    text-decoration: none;
-  }
-
-  /* Narrow viewports keep the current resource and its parent instead of
-     losing the trail entirely. */
   @media (max-width: 600px) {
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      font-size: 0.9rem;
-    }
-
-    .breadcrumb li {
+    li:not(:nth-last-child(-n + 2)) {
       display: none;
-      font-size: 0.9rem;
-      min-width: 0;
     }
 
-    .breadcrumb li:nth-last-child(-n + 2) {
-      display: inline-flex;
-      align-items: center;
-    }
-
-    .breadcrumb li:nth-last-child(2)::before {
-      content: none;
-      padding: 0;
-    }
-
-    .breadcrumb li:last-child span {
-      overflow: hidden;
-      text-overflow: ellipsis;
+    li:nth-last-child(2) > span:first-child {
+      display: none;
     }
   }
 </style>

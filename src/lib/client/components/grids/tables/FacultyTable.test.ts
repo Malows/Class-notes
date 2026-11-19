@@ -13,7 +13,6 @@ test("FacultyTable renders faculties and handles callbacks", async () => {
   render(FacultyTable, { faculties, onEdit, onDelete });
 
   expect(screen.getAllByText("Facultad A")[0]).toBeDefined();
-  expect(screen.getAllByText("1")[0]).toBeDefined();
 
   document.body
     .querySelectorAll("details")

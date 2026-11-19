@@ -1,6 +1,7 @@
 <script lang="ts">
   import { t } from "$lib/common/i18n/config";
   import type { Subject } from "$lib/common/types/academic";
+  import Button from "$lib/client/components/common/Button.svelte";
   import CheckboxInput from "$lib/client/components/periods/CheckboxInput.svelte";
 
   interface Props {
@@ -14,33 +15,29 @@
   let { facultyName, facultySlug, subjects, selectedSubjectIds, onToggle }: Props = $props();
 </script>
 
-<fieldset class="form-group mt-4 faculty-subjects">
-  <legend class="row between gap-2 items-center legend-title">
-    <span>{facultyName}</span>
-    <a href="/faculties/{facultySlug}/subjects" class="paper-btn btn-small">
-      {$t("layout.go_to_faculty")}
-    </a>
-  </legend>
+<div
+  class="w-full rounded-[var(--radius-box)] border border-base-300 bg-base-100 p-4"
+  style="max-width: var(--faculty-subjects-column-max-width);"
+>
+  <fieldset class="m-0 min-w-0 border-0 p-0">
+    <legend
+      class="mb-2 flex w-full flex-wrap items-center justify-between gap-2 text-title-md font-semibold"
+    >
+      <span>{facultyName}</span>
+      <Button href="/faculties/{facultySlug}/subjects" class="btn-ghost btn-sm">
+        {$t("layout.go_to_faculty")}
+      </Button>
+    </legend>
 
-  {#each subjects as subject}
-    <CheckboxInput
-      id={`subject-${subject.id}`}
-      label={subject.name}
-      checked={selectedSubjectIds.includes(subject.id)}
-      onToggle={() => onToggle(subject.id)}
-    />
-  {/each}
-</fieldset>
-
-<style>
-  .faculty-subjects {
-    max-width: var(--faculty-subjects-column-max-width);
-    width: 100%;
-  }
-
-  .legend-title {
-    font-weight: 700;
-    font-size: 1.05rem;
-    margin-bottom: 0.5rem;
-  }
-</style>
+    <div class="flex flex-col gap-2">
+      {#each subjects as subject}
+        <CheckboxInput
+          id={`subject-${subject.id}`}
+          label={subject.name}
+          checked={selectedSubjectIds.includes(subject.id)}
+          onToggle={() => onToggle(subject.id)}
+        />
+      {/each}
+    </div>
+  </fieldset>
+</div>

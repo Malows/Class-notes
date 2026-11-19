@@ -21,6 +21,7 @@ type PeriodContext = {
 };
 
 type CommissionContext = {
+  subjects: Subject[];
   facultySlug: string;
   subjectSlug: string;
   periodId: number;
@@ -59,9 +60,17 @@ export function buildPeriodItems(
     }));
 }
 
+/**
+ * Commissions hang off (subject, period), and `periods` are shared by every
+ * subject. Filtering by `period_id` alone therefore leaks another subject's
+ * commissions into this cursada's list, and the link then points at the
+ * current subject with a foreign slug. Scope by both ids and resolve each
+ * href from the commission's own subject payload.
+ */
 export function buildCommissionItems(
   commissions: Commission[],
   {
+    subjects,
     facultySlug,
     subjectSlug,
     periodId,
@@ -70,13 +79,29 @@ export function buildCommissionItems(
     activeCommissionSlug,
   }: CommissionContext,
 ): SidebarContextLink[] {
+  const currentSubject = subjects.find(
+    (subject) => subject.slug === subjectSlug && subject.faculty_slug === facultySlug,
+  );
+
+  if (!currentSubject) {
+    return [];
+  }
+
   return commissions
-    .filter((commission) => commission.period_id === periodId)
-    .map((commission) => ({
-      id: commission.id,
-      href: `/faculties/${facultySlug}/subjects/${subjectSlug}/periods/${periodYear}/${periodSemester}/commissions/${commission.slug}/overview`,
-      label: commission.name,
-      shortLabel: commission.name.substring(0, 2).toUpperCase(),
-      isActive: activeCommissionSlug === commission.slug,
-    }));
+    .filter(
+      (commission) =>
+        commission.period_id === periodId && commission.subject_id === currentSubject.id,
+    )
+    .map((commission) => {
+      const owner =
+        subjects.find((subject) => subject.id === commission.subject_id) ?? currentSubject;
+
+      return {
+        id: commission.id,
+        href: `/faculties/${owner.faculty_slug}/subjects/${owner.slug}/periods/${periodYear}/${periodSemester}/commissions/${commission.slug}/overview`,
+        label: commission.name,
+        shortLabel: commission.name.substring(0, 2).toUpperCase(),
+        isActive: activeCommissionSlug === commission.slug,
+      };
+    });
 }

@@ -1,74 +1,472 @@
-/* Global Sketchy Design System */
-:root {
-  /* --background-body: #f9f9f9;
-    --on-background: #1a1c1c; */
-  --primary: #2b2a28;
-  --secondary: #005db8;
-  --border-color: #41403e;
-  --muted-color: #6c757d; /* Darkened for AA */
-  --warning-bg: #d4c252;
-  --warning-text: #5a4f00; /* Darker for better contrast */
-  --sketch-border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
-  --shadow-offset: 4px;
-  --content-measure: 72rem;
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/newsreader";
+
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/material-symbols-icons.woff2") format("woff2");
 }
 
-.dark {
-  /* --background-body: #1a1c1c;
-    --on-background: #f9f9f9; */
-  --primary: #e5e2df;
-  --secondary: #aac7ff;
-  --border-color: #fff;
-  --muted-color: #adb5bd; /* Lightened for AA */
-  --warning-bg: #d4c252;
-  --warning-text: #fff;
+@source "./lib";
+@source "./routes";
+
+@plugin "daisyui" {
+  themes: false;
 }
 
-main {
-  margin: 0;
-  min-height: 100vh;
-  /* background-color: var(--background-body); */
-  /* color: var(--on-background); */
+/*
+ * Academic Notebook tokens.
+ *
+ * The surface scale follows the Stitch design system by role, not by ordinal:
+ * base-100 is the content surface, base-200 is the page canvas and base-300
+ * is the hairline. Editorial surfaces that daisyUI does not expose live in
+ * the --color-surface-* custom properties so they can flip in dark mode.
+ */
+@theme {
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader Variable", "Newsreader", ui-serif, Georgia, serif;
+  --font-icon: "Material Symbols Outlined";
+
+  --text-display-lg: 2.25rem;
+  --text-display-lg--line-height: 2.75rem;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg-mobile: 1.75rem;
+  --text-display-lg-mobile--line-height: 2.25rem;
+  --text-display-lg-mobile--letter-spacing: -0.015em;
+  --text-headline-lg: 1.5rem;
+  --text-headline-lg--line-height: 2rem;
+  --text-headline-lg--letter-spacing: -0.015em;
+  --text-headline-md: 1.25rem;
+  --text-headline-md--line-height: 1.75rem;
+  --text-headline-md--letter-spacing: -0.01em;
+  --text-headline-sm: 1.125rem;
+  --text-headline-sm--line-height: 1.5rem;
+  --text-headline-sm--letter-spacing: -0.005em;
+  --text-title-md: 0.9375rem;
+  --text-title-md--line-height: 1.25rem;
+  --text-title-md--letter-spacing: -0.005em;
+  --text-body-lg: 0.9375rem;
+  --text-body-lg--line-height: 1.375rem;
+  --text-body-md: 0.8125rem;
+  --text-body-md--line-height: 1.25rem;
+  --text-body-sm: 0.75rem;
+  --text-body-sm--line-height: 1rem;
+  --text-label-md: 0.75rem;
+  --text-label-md--line-height: 1rem;
+  --text-label-md--letter-spacing: 0.02em;
+  --text-label-sm: 0.6875rem;
+  --text-label-sm--line-height: 0.875rem;
+  --text-label-sm--letter-spacing: 0.04em;
+  --text-code-num: 0.8125rem;
+  --text-code-num--line-height: 1.25rem;
+
+  --color-surface: #fbf9f2;
+  --color-surface-dim: #dcdad3;
+  --color-surface-bright: #fbf9f2;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f5f4ed;
+  --color-surface-container: #f0eee7;
+  --color-surface-container-high: #eae8e1;
+  --color-surface-container-highest: #e4e2dc;
+  --color-on-surface: #1b1c18;
+  --color-on-surface-variant: #434654;
+  --color-muted: #5f6a73;
+  --color-outline: #747686;
+  --color-outline-variant: #c3c5d7;
+  --color-primary-fixed: #dce1ff;
+  --color-primary-fixed-dim: #b5c4ff;
+  --color-on-primary-fixed: #00164e;
+  --color-primary-container: #2f5fe0;
+  --color-on-primary-container: #e6e9ff;
+  --color-secondary-container: #95f4b1;
+  --color-on-secondary-container: #00723d;
+  --color-tertiary-container: #9f5700;
+  --color-on-tertiary-container: #ffe5d3;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
 }
 
-/* Sketchy Utilities */
-.sketch-border {
-  border: 2px solid var(--border-color);
-  border-radius: var(--sketch-border-radius);
+@plugin "daisyui/theme" {
+  name: "classnotes";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  themecontroller: false;
+
+  --color-base-100: #ffffff;
+  --color-base-200: #fbf9f2;
+  --color-base-300: #c3c5d7;
+  --color-base-content: #1b1c18;
+
+  --color-primary: #2f5fe0;
+  --color-primary-content: #ffffff;
+  --color-secondary: #006d3a;
+  --color-secondary-content: #ffffff;
+  --color-accent: #7c4300;
+  --color-accent-content: #ffffff;
+  --color-neutral: #5c5c57;
+  --color-neutral-content: #ffffff;
+  --color-info: #0045c5;
+  --color-info-content: #ffffff;
+  --color-success: #1b8049;
+  --color-success-content: #ffffff;
+  --color-warning: #b26200;
+  --color-warning-content: #ffffff;
+  --color-error: #c5221f;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
 }
 
-.sketch-shadow {
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0px 0px var(--border-color);
+@plugin "daisyui/theme" {
+  name: "classnotes-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  themecontroller: false;
+
+  --color-base-100: #1a1a14;
+  --color-base-200: #14140f;
+  --color-base-300: #3a3a31;
+  --color-base-content: #e8e6dc;
+
+  --color-primary: #b5c4ff;
+  --color-primary-content: #00164e;
+  --color-secondary: #7cda99;
+  --color-secondary-content: #00210e;
+  --color-accent: #ffb77a;
+  --color-accent-content: #2e1500;
+  --color-neutral: #2d2d26;
+  --color-neutral-content: #e8e6dc;
+  --color-info: #8fd0f0;
+  --color-info-content: #00263a;
+  --color-success: #63d68f;
+  --color-success-content: #00391c;
+  --color-warning: #f5b558;
+  --color-warning-content: #2e1500;
+  --color-error: #ffb4ab;
+  --color-error-content: #690005;
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
 }
 
-.sketch-shadow-hover:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px 0px var(--border-color);
-}
-.gap-2 {
-  gap: 0.5rem;
+[data-theme="classnotes-dark"] {
+  --color-surface: #14140f;
+  --color-surface-dim: #0b0b08;
+  --color-surface-bright: #1f1f18;
+  --color-surface-container-lowest: #1a1a14;
+  --color-surface-container-low: #191913;
+  --color-surface-container: #1f1f18;
+  --color-surface-container-high: #262620;
+  --color-surface-container-highest: #2d2d26;
+  --color-on-surface: #e8e6dc;
+  --color-on-surface-variant: #b9b7ab;
+  --color-muted: #8b8a7e;
+  --color-outline: #8e8d80;
+  --color-outline-variant: #3a3a31;
+  --color-primary-fixed: #16408f;
+  --color-primary-fixed-dim: #b5c4ff;
+  --color-on-primary-fixed: #dce1ff;
+  --color-primary-container: #16408f;
+  --color-on-primary-container: #dce1ff;
+  --color-secondary-container: #00522a;
+  --color-on-secondary-container: #98f7b4;
+  --color-tertiary-container: #6d3a00;
+  --color-on-tertiary-container: #ffdcc2;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
 }
 
-/* Navigating values (a person's name, a cursada) look like part of the
-   application, not like the browser's default link next to sketch controls. */
-.link-quiet {
-  color: inherit;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
-  background-image: none;
+@layer base {
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.375rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--color-on-surface);
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    letter-spacing: -0.005em;
+  }
+
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 1.75rem;
+      line-height: 2.25rem;
+      letter-spacing: -0.015em;
+    }
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--color-outline-variant);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .btn-primary:focus-visible,
+  .bg-primary:focus-visible {
+    outline-color: var(--color-base-content);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-primary-fixed);
+    color: var(--color-on-primary-fixed);
+  }
+
+  [data-theme="classnotes-dark"] ::selection {
+    background: #16408f;
+    color: #dce1ff;
+  }
 }
 
-.link-quiet:hover {
-  text-decoration-style: dashed;
-  text-decoration-thickness: 2px;
+@layer base {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea {
+    width: 100%;
+    min-height: 2rem;
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-on-surface);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  select {
+    height: 2rem;
+    padding-block: 0;
+  }
+
+  textarea {
+    min-height: 5rem;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-muted);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 22%, transparent);
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 0.875rem;
+    height: 0.875rem;
+    accent-color: var(--color-primary);
+  }
 }
 
-/* Touch viewports get generous targets without inflating desktop density. */
+@layer components {
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-group label,
+  .field-label {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--color-on-surface-variant);
+  }
+
+  .input-block {
+    width: 100%;
+  }
+
+  .form-error-msg {
+    color: var(--color-error);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+}
+
+@layer components {
+  .material-symbols-outlined {
+    display: inline-block;
+    direction: ltr;
+    font-family: var(--font-icon);
+    font-size: 24px;
+    font-style: normal;
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 1;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    font-feature-settings: "liga";
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .link-editorial {
+    color: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 0.18em;
+  }
+
+  .link-editorial:hover {
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 2px;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 @media (pointer: coarse) {
-  .paper-btn.btn-small {
+  .btn {
     min-height: 44px;
     min-width: 44px;
+  }
+
+  input:not([type="checkbox"]):not([type="radio"]),
+  select {
+    min-height: 44px;
+  }
+}
+
+@media print {
+  :root,
+  [data-theme="classnotes"],
+  [data-theme="classnotes-dark"] {
+    --color-surface: #fbf9f2;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f5f4ed;
+    --color-surface-container: #f0eee7;
+    --color-surface-container-high: #eae8e1;
+    --color-surface-container-highest: #e4e2dc;
+    --color-on-surface: #1b1c18;
+    --color-on-surface-variant: #434654;
+    --color-outline: #747686;
+    --color-outline-variant: #c3c5d7;
+    --color-base-100: #ffffff;
+    --color-base-200: #fbf9f2;
+    --color-base-300: #c3c5d7;
+    --color-base-content: #1b1c18;
+    --color-primary: #2f5fe0;
+    --color-primary-content: #ffffff;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background: #ffffff;
+    color: #1b1c18;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

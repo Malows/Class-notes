@@ -68,7 +68,7 @@ Todas las páginas comparten el mismo esqueleto:
 ```
 +----------------------------------------------------------------------+
 | NAVBAR   Clase Notas | Inicio > Álgebra Lineal > 2025 > Comisión...  |
-|                                   🇦🇷  ☀️/🌙        (☰ en mobile)    |
+|                                   🇦🇷  ☀️/🌙       (bottom nav mobile)|
 +---------------+------------------------------------------------------+
 | SIDEBAR       |                                                      |
 |  Inicio       |   CONTENIDO DE LA PÁGINA                             |
@@ -84,12 +84,13 @@ Todas las páginas comparten el mismo esqueleto:
 ```
 
 - **Navbar**: breadcrumbs derivados de la URL; selector de idioma (ES/EN) y de tema
-  (claro/oscuro). En mobile se colapsa con un ☰.
-- **Sidebar**: accesos globales fijos (Inicio, Facultades, Periodos, **Alumnos**) y, cuando
-  estás dentro de una jerarquía, tres secciones de contexto — Materias, Periodos,
-  Comisiones — que resaltan la activa y permiten saltar lateralmente. Es colapsable.
-- **Estética**: PaperCSS "sketch" (bordes irregulares, sombras duras) sobre CSS propio, con
-  variables para claro/oscuro.
+  (claro/oscuro). En mobile es un header fijo y la navegación principal vive en una barra
+  inferior de cuatro destinos.
+- **Sidebar**: rail fijo de escritorio con los accesos globales (Inicio, Facultades, Periodos,
+  **Alumnos**) y, cuando estás dentro de una jerarquía, tres secciones de contexto — Materias,
+  Periodos, Comisiones — que resaltan la activa y permiten saltar lateralmente.
+- **Estética**: Tailwind CSS 4 + daisyUI 5 sobre los tokens "Academic Notebook" (papel cálido,
+  tinta, Newsreader/Inter, hairlines de 1 px, densidad de 40 px).
 - **Mobile**: las tablas se convierten en tarjetas (`ResponsiveTable`); las grillas hacen
   scroll horizontal; el modo de toma de asistencia está pensado para el teléfono.
 - **Estados comunes**: `Cargando…`, estado vacío con CTA, mensaje de "no existe", y toasts
@@ -540,7 +541,7 @@ reporte → `Volver a la grilla`.
 
 | Componente | Para qué |
 |---|---|
-| `Button` | botón o link (`href`/`onclick`, `withHover`, `class`), se ve como botón PaperCSS |
+| `Button` | botón o link (`href`/`onclick`, `withHover`, `class`), con las variantes editoriales |
 | `PageWithAdd` / `CommonPage` | layout de página: título, lead, acción "+ Agregar", contenido |
 | `Card`, `Badge`, `StatItem` | contenedores y métricas |
 | `ResponsiveTable` | tabla en escritorio, tarjetas en mobile (renderiza **ambas** en el DOM) |

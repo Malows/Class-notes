@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { t } from "$lib/common/i18n/config";
   import type { Assignment } from "$lib/common/types/academic";
 
   import OverviewHeaderCell from "./OverviewHeaderCell.svelte";
@@ -23,10 +24,13 @@
 </script>
 
 <div class="overview-header" data-test-id="overview-header">
-  <div class="overview-header__students">
-    <h4 class="overview-header__students-title" data-test-id="overview-header-students-title">
-      Students
-    </h4>
+  <div class="sticky left-0 z-[1] grid grid-rows-[2rem_2.8rem] items-center bg-surface">
+    <p
+      class="m-0 overflow-hidden text-ellipsis whitespace-nowrap text-label-sm uppercase tracking-[0.04em] text-on-surface-variant"
+      data-test-id="overview-header-students-title"
+    >
+      {$t("layout.students_label")}
+    </p>
   </div>
 
   {#each assignments as assignment}
@@ -40,23 +44,8 @@
     display: grid;
     grid-template-columns: subgrid;
     gap: inherit;
-    padding: 0.25rem 0.5rem;
-    border-bottom: 1px solid #ddd;
     width: 100%;
-  }
-
-  .overview-header__students {
-    display: grid;
-    grid-template-rows: 2rem 2.8rem;
-    align-items: center;
-  }
-
-  .overview-header__students-title {
-    font-weight: 700;
-    white-space: nowrap;
-    grid-column: 1 / -1;
-    grid-row: 1 / 2;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid var(--color-outline-variant);
   }
 </style>

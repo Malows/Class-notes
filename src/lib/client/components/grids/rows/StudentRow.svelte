@@ -12,14 +12,14 @@
   let { enrollment, onDelete }: Props = $props();
 </script>
 
-<td data-test-id="student-name-{enrollment.id}">
+<td data-label={$t("layout.name")} data-test-id="student-name-{enrollment.id}">
   <a
-    class="link-quiet"
+    class="link-editorial"
     href="/persons/{enrollment.person_id}"
     data-test-id="student-person-link-{enrollment.id}">{enrollment.name}</a
   >
 </td>
-<td data-test-id="student-legajo-{enrollment.id}">{enrollment.legajo ?? "—"}</td>
+<td data-label={$t("students.external_id_label")} data-test-id="student-legajo-{enrollment.id}">{enrollment.legajo ?? "—"}</td>
 <td>
   <div class="row flex-right gap-2">
     <Button testId="delete-btn-{enrollment.id}" onclick={() => onDelete(enrollment)} withHover>

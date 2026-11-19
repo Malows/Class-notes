@@ -2,6 +2,8 @@ import "@testing-library/jest-dom/vitest";
 import { render, screen, configure } from "@testing-library/svelte";
 import { describe, expect, test } from "vitest";
 
+import { loadTranslations } from "$lib/common/i18n/config";
+
 import OverviewCell from "./OverviewCell.svelte";
 import OverviewGrid from "./OverviewGrid.svelte";
 import OverviewLegend from "./OverviewLegend.svelte";
@@ -49,12 +51,15 @@ describe("overview components", () => {
 
     const cell = screen.getByTestId("approved-cell");
     expect(cell).toHaveAttribute("href", "/correct");
-    expect(cell).toHaveClass("btn-success");
+    expect(cell).toHaveAttribute("data-status", "approved");
+    expect(cell).toHaveClass("is-approved");
     expect(cell).toHaveAttribute("aria-label", "approved");
-    expect(cell.textContent?.trim()).toBe("🤖");
+    expect(cell.textContent).toContain("✅");
+    expect(cell.textContent).toContain("IA!!");
   });
 
-  test("OverviewRow renders the student name and delivery cells", () => {
+  test("OverviewRow renders the student name and delivery cells", async () => {
+    await loadTranslations("en", "/");
     const deliveries = [
       {
         assignment_id: 1,
@@ -77,6 +82,10 @@ describe("overview components", () => {
     render(OverviewRow, {
       name: "A very long student name that should ellipsize",
       deliveries,
+      assignments: [
+        { id: 1, subject_period_id: 1, title: "TP 1" },
+        { id: 2, subject_period_id: 1, title: "TP 2" },
+      ],
       facultySlug: "fac-1",
       subjectSlug: "sub-2",
       periodYear: 2026,
@@ -93,6 +102,10 @@ describe("overview components", () => {
 
     expect(cell1).toBeInTheDocument();
     expect(cell1.textContent?.trim()).toBe("✅");
+    expect(cell1).toHaveAttribute(
+      "aria-label",
+      "Approved · A very long student name that should ellipsize — TP 1",
+    );
 
     expect(cell2).toBeInTheDocument();
     expect(cell2.textContent?.trim()).toBe("-");
@@ -139,13 +152,17 @@ describe("overview components", () => {
     expect(screen.getByTestId("delivery-cell-1-1")).toBeInTheDocument();
   });
 
-  test("OverviewLegend renders the popover trigger", () => {
-    render(OverviewLegend, { title: "Legend" } as never);
+  test("OverviewLegend renders a working disclosure with the legend text", async () => {
+    await loadTranslations("en", "/");
+    render(OverviewLegend);
 
-    const button = screen.getByTestId("overview-legend-popover-btn");
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute("data-popover-position", "bottom");
-    expect(button).toHaveAttribute("data-popover-content");
+    const toggle = screen.getByTestId("overview-legend-toggle");
+    expect(toggle).toBeInTheDocument();
+    expect(toggle.textContent?.trim()).toBe("Legend:");
+
+    const details = screen.getByTestId("overview-legend");
+    expect(details.tagName).toBe("DETAILS");
+    expect(screen.getByTestId("overview-legend-text").textContent).toContain("Approved");
   });
 
   test("OverviewGrid renders empty assignments card and CTA", () => {

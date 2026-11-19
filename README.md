@@ -32,7 +32,7 @@ for a detailed, screen-by-screen description (in Spanish).
 - **Attendance** — a tri-state record per assignment and enrollment (present / absent / not taken),
   read as a grid per commission and per cursada, with a gesture-driven take mode for phones.
 - **Dashboard** — global stats and pending corrections grouped by subject.
-- **Dual-language UI** (Spanish/English), light/dark theme, and a responsive "sketch" look.
+- **Dual-language UI** (Spanish/English), light/dark theme, and a responsive editorial look.
 
 ## Screens
 
@@ -53,7 +53,7 @@ for a detailed, screen-by-screen description (in Spanish).
 ## Tech stack
 
 - **Framework**: [Svelte 5](https://svelte.dev/) (runes) on [SvelteKit](https://kit.svelte.dev/)
-- **Styling**: [PaperCSS](https://www.getpapercss.com/) + custom CSS
+- **Styling**: Tailwind CSS 4 + daisyUI 5 with the Academic Notebook design tokens
 - **Database**: SQLite via `better-sqlite3` + [Drizzle ORM](https://orm.drizzle.team/)
 - **Validation**: Zod, on both client and server
 - **Tests**: Vitest + Svelte Testing Library

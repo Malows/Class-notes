@@ -3,6 +3,8 @@
 
   import { t } from "$lib/common/i18n/config";
 
+  import Button from "$lib/client/components/common/Button.svelte";
+
   import CommonPage from "./CommonPage.svelte";
 
   let {
@@ -20,9 +22,10 @@
 
 <CommonPage {title}>
   {#snippet extra()}
-    <button data-test-id="add-btn" class="paper-btn btn-primary-outline" onclick={onAdd}>
-      + {$t(addLabelKey)}
-    </button>
+    <Button class="btn-primary" testId="add-btn" onclick={onAdd}>
+      <span class="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
+      {$t(addLabelKey)}
+    </Button>
   {/snippet}
 
   {@render children()}

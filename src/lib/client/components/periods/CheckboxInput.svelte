@@ -9,19 +9,14 @@
   let { id, label, checked, onToggle }: Props = $props();
 </script>
 
-<label for={id} class="paper-check row gap-2 items-center checkbox-input">
+<label for={id} class="flex w-full cursor-pointer items-center gap-2">
   <input
     type="checkbox"
+    class="checkbox checkbox-sm"
     name="subject-checks"
     {id}
     {checked}
     onchange={onToggle}
   />
-  <span>{label}</span>
+  <span class="text-body-sm">{label}</span>
 </label>
-
-<style>
-  .checkbox-input {
-    width: 100%;
-  }
-</style>

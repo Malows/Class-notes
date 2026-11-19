@@ -26,6 +26,13 @@
   const periodBase = $derived(
     `/faculties/${grid.subject.faculty_slug}/subjects/${grid.subject.slug}/periods/${grid.period.year}/${grid.period.semester}`,
   );
+
+  const assignmentTitles = $derived(new Map(grid.assignments.map((item) => [item.id, item.title])));
+
+  const cellContext = (studentName: string, assignmentId: number) => {
+    const title = assignmentTitles.get(assignmentId);
+    return title ? `${studentName} — ${title}` : studentName;
+  };
 </script>
 
 {#if grid.rows.length === 0}
@@ -79,18 +86,21 @@
     <div class="attendance-grid__header">
       <div class="attendance-grid__student-head">{$t("attendance.column_student")}</div>
       {#each grid.assignments as assignment (assignment.id)}
+        {@const abbreviated = abbreviateTitle(assignment.title)}
+        {@const href = takeHref?.(assignment.id) ?? null}
         <div class="attendance-grid__assignment-head" data-test-id="attendance-head-{assignment.id}">
-          {#if takeHref && takeHref(assignment.id)}
+          {#if href}
             <a
-              href={takeHref(assignment.id)}
+              class="attendance-grid__take"
+              {href}
               title={assignment.title}
-              aria-label={assignment.title}
+              aria-label={`${abbreviated} — ${assignment.title} · ${$t("attendance.take_title")}`}
             >
-              {abbreviateTitle(assignment.title)}
+              {abbreviated}
             </a>
           {:else}
-            <span title={assignment.title} aria-label={assignment.title}>
-              {abbreviateTitle(assignment.title)}
+            <span title={assignment.title} aria-label={`${abbreviated} — ${assignment.title}`}>
+              {abbreviated}
             </span>
           {/if}
         </div>
@@ -105,7 +115,7 @@
         data-test-id="attendance-row-{row.enrollment_id}"
       >
         <div class="attendance-grid__student" data-test-id="attendance-row-name-{row.enrollment_id}">
-          <a class="link-quiet" href="/persons/{row.person_id}">{row.name}</a>
+          <a class="link-editorial" href="/persons/{row.person_id}">{row.name}</a>
           {#if grid.scope === "cursada"}
             <span class="attendance-grid__commission" data-test-id="attendance-commission-{row.enrollment_id}">
               {row.commission_name ?? $t("attendance.no_commission")}
@@ -117,6 +127,7 @@
           <AttendanceCell
             status={cell.status}
             recordedOn={cell.recorded_on}
+            contextLabel={cellContext(row.name, cell.assignment_id)}
             testId="attendance-cell-{row.enrollment_id}-{cell.assignment_id}"
             onclick={canEdit
               ? () => handleCellClick(cell.assignment_id, row.enrollment_id, cell.status)
@@ -151,7 +162,9 @@
 <style>
   .attendance-grid {
     display: grid;
-    grid-template-columns: 12rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
+    grid-template-columns:
+      clamp(148px, 40vw, 192px) repeat(var(--cols, 1), clamp(2.75rem, 3.2rem, 96px))
+      clamp(3.5rem, 4.5rem, 96px);
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;
@@ -170,59 +183,107 @@
   }
 
   .attendance-grid__header {
-    font-weight: 700;
-    min-height: 3.2rem;
+    min-height: 3rem;
+    border-bottom: 1px solid var(--color-outline-variant);
+    color: var(--color-on-surface-variant);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .attendance-grid__assignment-head,
   .attendance-grid__summary-head {
-    text-align: center;
-    font-size: 0.8rem;
-    white-space: nowrap;
     overflow: hidden;
+    text-align: center;
+    font-size: 0.6875rem;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .attendance-grid__row--striped {
-    background-color: #f3f4f6;
+  .attendance-grid__take {
+    display: flex;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-field);
+    color: var(--color-primary);
+    font: inherit;
+    letter-spacing: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.15s ease;
   }
 
-  :global(.dark) .attendance-grid__row--striped {
-    background-color: #4c4b49;
+  .attendance-grid__take:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    text-decoration-thickness: 2px;
+  }
+
+  .attendance-grid__row--striped {
+    background-color: var(--color-surface-container-low);
+  }
+
+  :global([data-theme="classnotes-dark"]) .attendance-grid__row--striped {
+    background-color: transparent;
+  }
+
+  .attendance-grid__student,
+  .attendance-grid__student-head {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    overflow: hidden;
+    background-color: var(--color-surface);
+    font-weight: 600;
   }
 
   .attendance-grid__student {
-    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .attendance-grid__row--striped .attendance-grid__student {
+    background-color: var(--color-surface-container-low);
+  }
+
+  :global([data-theme="classnotes-dark"]) .attendance-grid__row--striped .attendance-grid__student {
+    background-color: var(--color-surface);
+  }
+
+  .attendance-grid__student-head {
+    text-transform: uppercase;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .attendance-grid__commission {
     display: block;
-    font-weight: 400;
+    overflow-wrap: anywhere;
+    color: var(--color-on-surface-variant);
     font-size: 0.75rem;
-    opacity: 0.8;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-weight: 400;
   }
 
   .attendance-grid__summary,
   .attendance-grid__column-count {
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.8125rem;
     font-variant-numeric: tabular-nums;
   }
 
   .attendance-grid__empty-column {
-    font-size: 0.7rem;
-    opacity: 0.6;
+    font-size: 0.6875rem;
+    color: var(--color-muted);
   }
 
   .attendance-grid__row--counts {
-    border-top: 1px solid var(--border-color, #ccc);
     margin-top: 0.25rem;
     padding-top: 0.5rem;
+    border-top: 1px solid var(--color-outline-variant);
   }
 </style>

@@ -5,6 +5,7 @@
   import { CreateSubjectSchema } from "$lib/common/schemas";
 
   import DialogBase from "../common/DialogBase.svelte";
+  import Button from "../common/Button.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
 
   interface Props {
@@ -69,11 +70,9 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}
-      >{$t("common.cancel")}</button
-    >
-    <button class="paper-btn btn-secondary" data-test-id="submit-btn" onclick={handleSaveClick}>
+    <Button class="btn-ghost" testId="cancel-btn" onclick={onClose}>{$t("common.cancel")}</Button>
+    <Button class="btn-primary" testId="submit-btn" onclick={handleSaveClick}>
       {mode === "create" ? $t("common.create") : $t("common.save")}
-    </button>
+    </Button>
   {/snippet}
 </DialogBase>

@@ -1,14 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="text-scale" content="scale" />
-    <title>Class Notes</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#fbf9f2" />
     <script>
       (function () {
-        const theme = localStorage.getItem("theme") || "light";
-        document.documentElement.classList.toggle("dark", theme === "dark");
+        try {
+          const saved = localStorage.getItem("theme");
+          const prefersDark =
+            typeof matchMedia === "function" &&
+            matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = saved === "dark" || saved === "light" ? saved : prefersDark ? "dark" : "light";
+          const root = document.documentElement;
+          root.classList.remove("dark");
+          root.setAttribute("data-theme", theme === "dark" ? "classnotes-dark" : "classnotes");
+          // Keep the single, non-media theme-color in sync with the first paint.
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", theme === "dark" ? "#14140f" : "#fbf9f2");
+        } catch {
+          /* localStorage can be unavailable in private contexts */
+        }
       })();
     </script>
     <style>

@@ -87,7 +87,7 @@
     <span data-test-id="person-detail-legajo">{detail.person.legajo ?? "—"}</span>
   </p>
 
-  <div class="row gap-2 margin-bottom-small">
+  <div class="mb-4 flex flex-wrap gap-2">
     <Button testId="edit-person-btn" onclick={() => detail && modal.openEdit(detail.person)} withHover>
       {$t("common.edit")}
     </Button>
@@ -101,7 +101,7 @@
     </Button>
   </div>
 
-  <h3>{$t("persons.cursadas_title")}</h3>
+  <h2>{$t("persons.cursadas_title")}</h2>
 
   {#if detail.enrollments.length === 0}
     <p data-test-id="person-detail-no-enrollments">{$t("persons.no_enrollments")}</p>
@@ -110,20 +110,20 @@
       {#each detail.enrollments as cursada (cursada.id)}
         <li data-test-id="person-cursada-{cursada.id}">
           <strong>{cursada.subject_name}</strong>
-          <span class="text-small">
+          <span class="text-body-sm">
             · {cursada.period_year} - {cursada.period_semester}º
           </span>
           <span class="cursada-list__commission">
             {#if cursada.commission_slug && cursada.commission_name}
               <a
-                class="link-quiet"
+                class="link-editorial"
                 href={commissionHref(cursada)}
                 data-test-id="person-cursada-link-{cursada.id}"
               >
                 {cursada.commission_name}
               </a>
             {:else}
-              <span class="text-small" data-test-id="person-cursada-sin-comision-{cursada.id}"
+              <span class="text-body-sm" data-test-id="person-cursada-sin-comision-{cursada.id}"
                 >{$t("persons.sin_comision")}</span
               >
             {/if}

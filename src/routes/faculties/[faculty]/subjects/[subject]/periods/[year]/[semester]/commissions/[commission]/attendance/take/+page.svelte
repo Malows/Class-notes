@@ -197,7 +197,7 @@
   <p data-test-id="take-empty">{$t("attendance.empty_students")}</p>
 {:else if done}
   <section data-test-id="take-report">
-    <h3>{$t("attendance.take_done_title")}</h3>
+    <h2>{$t("attendance.take_done_title")}</h2>
     <p data-test-id="take-result-present">
       {$t("attendance.take_result_present", { count: totals.present } as never)}
     </p>
@@ -211,7 +211,7 @@
     <div class="take-report-actions">
       <button
         type="button"
-        class="paper-btn"
+        class="btn btn-ghost"
         onclick={() => {
           done = false;
           currentIndex = 0;
@@ -220,7 +220,7 @@
       >
         {$t("attendance.take_title")}
       </button>
-      <a href="{baseUrl}/attendance" class="paper-btn btn-small" data-test-id="take-back">
+      <a href="{baseUrl}/attendance" class="btn btn-ghost btn-sm" data-test-id="take-back">
         {$t("attendance.take_back")}
       </a>
     </div>
@@ -239,12 +239,12 @@
   />
 
   <div class="take-toolbar">
-    <button type="button" class="paper-btn btn-small" onclick={markAllPresent} data-test-id="take-all-present">
+    <button type="button" class="btn btn-ghost btn-sm" onclick={markAllPresent} data-test-id="take-all-present">
       {$t("attendance.take_all_present")}
     </button>
     <button
       type="button"
-      class="paper-btn btn-small"
+      class="btn btn-ghost btn-sm"
       onclick={() => {
         done = true;
       }}
@@ -252,7 +252,7 @@
     >
       {$t("attendance.take_finish")}
     </button>
-    <a href="{baseUrl}/attendance" class="paper-btn btn-small">{$t("attendance.take_back")}</a>
+    <a href="{baseUrl}/attendance" class="btn btn-ghost btn-sm">{$t("attendance.take_back")}</a>
   </div>
 {/if}
 

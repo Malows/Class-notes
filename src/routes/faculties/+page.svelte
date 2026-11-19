@@ -7,6 +7,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import FacultyModal from "$lib/client/components/modals/FacultyModal.svelte";
   import FacultyTable from "$lib/client/components/grids/tables/FacultyTable.svelte";
@@ -17,13 +18,17 @@
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
 
   let loading = $state(true);
+  let failed = $state(false);
   let modal = new ModalManager<Faculty>();
 
   async function load() {
+    loading = true;
+    failed = false;
     try {
       await facultiesStore.load();
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -71,6 +76,8 @@
 
   {#if loading}
     <p>{$t("faculties.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={load} />
   {:else}
     <FacultyTable
       faculties={facultiesStore.items}

@@ -4,7 +4,10 @@
   import { t } from "$lib/common/i18n/config";
   import type { PendingSummary } from "$lib/common/types/dashboard";
 
+  import Button from "$lib/client/components/common/Button.svelte";
   import Card from "$lib/client/components/common/Card.svelte";
+  import Chip from "$lib/client/components/common/Chip.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import { overviewService } from "$lib/client/services/overview.service";
 
   interface PendingSubjectGroup {
@@ -43,11 +46,16 @@
       .sort((a, b) => b.total - a.total || a.subjectName.localeCompare(b.subjectName));
   });
 
+  let failed = $state(false);
+
   async function load() {
+    loading = true;
+    failed = false;
     try {
       pending = await overviewService.getPendingSummary();
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -57,46 +65,64 @@
 </script>
 
 <Card>
-  <h3 class="card-title">{$t("dashboard.pending_title")}</h3>
+  <h2 class="m-0 font-serif text-headline-md">{$t("dashboard.pending_title")}</h2>
 
   {#if loading}
-    <p>{$t("dashboard.pending_loading")}</p>
+    <p class="text-body-md text-on-surface-variant">{$t("dashboard.pending_loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={load} />
   {:else if groups.length === 0}
-    <p>{$t("dashboard.pending_empty_active")}</p>
+    <p class="text-body-md text-on-surface-variant">{$t("dashboard.pending_empty_active")}</p>
   {:else}
-    <ul class="no-bullet" data-test-id="pending-list">
+    <ul class="m-0 flex list-none flex-col gap-4 p-0" data-test-id="pending-list">
       {#each groups as group (group.subjectId)}
-        <li class="pending-subject" data-test-id="pending-subject-group-{group.subjectId}">
-          <div class="pending-subject__header">
-            <strong data-test-id="pending-subject-{group.subjectId}">{group.subjectName}</strong>
-            <span class="badge secondary" data-test-id="pending-subject-total-{group.subjectId}"
-              >{group.total}</span
+        <li
+          class="border-b border-base-300 pb-3 last:border-0 last:pb-0"
+          data-test-id="pending-subject-group-{group.subjectId}"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <strong
+              class="font-sans text-title-md font-semibold text-base-content"
+              data-test-id="pending-subject-{group.subjectId}">{group.subjectName}</strong
+            >
+            <Chip tone="neutral" testId="pending-subject-total-{group.subjectId}"
+              >{group.total}</Chip
             >
           </div>
 
           <ul
-            class="no-bullet pending-commissions"
+            class="m-0 mt-2 flex list-none flex-col gap-1.5 border-l border-base-300 pl-3"
             data-test-id="pending-commissions-{group.subjectId}"
           >
             {#each group.items as item (item.commission_id)}
-              <li class="pending-commission" data-test-id="pending-row-{item.commission_id}">
-                <div class="pending-commission__info">
-                  <span data-test-id="pending-commission-{item.commission_id}"
+              <li
+                class="flex items-center justify-between gap-3"
+                data-test-id="pending-row-{item.commission_id}"
+              >
+                <div class="flex min-w-0 items-baseline gap-1.5">
+                  <span
+                    class="truncate text-body-md text-base-content"
+                    data-test-id="pending-commission-{item.commission_id}"
                     >{item.commission_name}</span
                   >
-                  <small class="text-muted" data-test-id="pending-period-{item.commission_id}"
+                  <small
+                    class="whitespace-nowrap text-body-sm text-on-surface-variant"
+                    data-test-id="pending-period-{item.commission_id}"
                     >{item.period_year} · {item.period_semester}º</small
                   >
                 </div>
-                <div class="pending-commission__actions">
-                  <span class="badge secondary" data-test-id="pending-count-{item.commission_id}"
-                    >{item.pending_count}</span
+                <div class="flex shrink-0 items-center gap-2">
+                  <Chip tone="primary" testId="pending-count-{item.commission_id}"
+                    >{item.pending_count}</Chip
                   >
-                  <a
+                  <Button
                     href="/faculties/{item.faculty_slug}/subjects/{item.subject_slug}/periods/{item.period_year}/{item.period_semester}/commissions/{item.commission_slug}/overview"
-                    class="paper-btn btn-small"
-                    data-test-id="view-pending-btn-{item.commission_id}">{$t("dashboard.go")}</a
+                    class="btn-sm"
+                    withHover
+                    testId="view-pending-btn-{item.commission_id}"
                   >
+                    {$t("dashboard.go")}
+                  </Button>
                 </div>
               </li>
             {/each}
@@ -106,58 +132,3 @@
     </ul>
   {/if}
 </Card>
-
-<style>
-  .no-bullet {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .pending-subject {
-    padding: 0.6rem 0;
-    border-bottom: 1px solid #eee;
-  }
-
-  .pending-subject:last-child {
-    border-bottom: none;
-  }
-
-  .pending-subject__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .pending-commissions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    margin: 0.45rem 0 0;
-    padding-left: 0.75rem;
-    border-left: 2px solid #eee;
-  }
-
-  .pending-commission {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.15rem 0;
-  }
-
-  .pending-commission__info {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    min-width: 0;
-  }
-
-  .pending-commission__actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-shrink: 0;
-  }
-</style>

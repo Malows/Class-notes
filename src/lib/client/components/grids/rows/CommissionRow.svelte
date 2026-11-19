@@ -30,8 +30,8 @@
   );
 </script>
 
-<td data-test-id="commission-name-{commission.id}">{commission.name}</td>
-<td>{commission.student_count}</td>
+<td data-label={$t("layout.name")} data-test-id="commission-name-{commission.id}">{commission.name}</td>
+<td data-label={$t("layout.students")}>{commission.student_count}</td>
 <td>
   <RowActions label={commission.name} testId="row-actions-{commission.id}">
     {#snippet primary()}

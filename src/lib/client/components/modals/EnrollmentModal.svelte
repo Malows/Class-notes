@@ -4,6 +4,7 @@
   import type { EnrollmentInput, Person } from "$lib/common/types/enrollment";
 
   import DialogBase from "../common/DialogBase.svelte";
+  import Button from "../common/Button.svelte";
   import ErrorSpan from "../common/ErrorSpan.svelte";
 
   interface Props {
@@ -100,31 +101,27 @@
 
 <DialogBase {isOpen} title={$t("enrollments.new_title")} {onClose}>
   {#snippet children()}
-    <div class="row flex-center gap-2 mb-1" style="margin-bottom: 1.5rem;">
-      <button
-        type="button"
-        class="paper-btn btn-small {activeTab === 'single'
-          ? 'btn-secondary'
-          : 'btn-secondary-outline'}"
+    <div class="mb-4 flex gap-2">
+      <Button
+        class={activeTab === "single" ? "btn-secondary" : "btn-ghost"}
+        aria-pressed={activeTab === "single"}
         onclick={() => {
           activeTab = "single";
           error = "";
         }}
       >
         {$t("students.single_name_label")}
-      </button>
-      <button
-        type="button"
-        class="paper-btn btn-small {activeTab === 'bulk'
-          ? 'btn-secondary'
-          : 'btn-secondary-outline'}"
+      </Button>
+      <Button
+        class={activeTab === "bulk" ? "btn-secondary" : "btn-ghost"}
+        aria-pressed={activeTab === "bulk"}
         onclick={() => {
           activeTab = "bulk";
           error = "";
         }}
       >
         {$t("students.upload_students_title")}
-      </button>
+      </Button>
     </div>
 
     {#if activeTab === "single"}
@@ -137,15 +134,17 @@
           oninput={(event) => handleSearch((event.currentTarget as HTMLInputElement).value)}
           placeholder={$t("enrollments.search_placeholder")}
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="enrollment-search-input"
         />
         {#if results.length > 0}
-          <ul class="enrollment-search-results" data-test-id="enrollment-search-results">
+          <ul class="m-0 mt-2 flex list-none flex-col gap-1 p-0" data-test-id="enrollment-search-results">
             {#each results as person (person.id)}
               <li>
                 <button
                   type="button"
-                  class="paper-btn btn-small"
+                  class="btn btn-ghost btn-sm w-full justify-start"
                   onclick={() => pickPerson(person)}
                   data-test-id="enrollment-search-result-{person.id}"
                 >
@@ -156,9 +155,9 @@
           </ul>
         {/if}
         {#if selected}
-          <p class="text-small" data-test-id="enrollment-reuse-hint">
+          <p class="text-body-sm text-on-surface-variant" data-test-id="enrollment-reuse-hint">
             {$t("enrollments.reuse_hint")}
-            <button type="button" class="paper-btn btn-small" onclick={clearSelection}>
+            <button type="button" class="btn btn-ghost btn-sm" onclick={clearSelection}>
               {$t("common.cancel")}
             </button>
           </p>
@@ -173,6 +172,8 @@
           bind:value={legajo}
           placeholder={$t("students.external_id_placeholder")}
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="student-external-id-input"
         />
       </div>
@@ -184,6 +185,8 @@
           bind:value={bulkNames}
           rows="5"
           class="input-block"
+          aria-invalid={!!error}
+          aria-describedby={error ? "error-enrollment" : undefined}
           data-test-id="student-bulk-textarea"
         ></textarea>
       </div>
@@ -193,22 +196,9 @@
   {/snippet}
 
   {#snippet footer()}
-    <button class="paper-btn" data-test-id="cancel-btn" onclick={onClose}
-      >{$t("common.cancel")}</button
-    >
-    <button class="paper-btn btn-secondary" data-test-id="submit-btn" onclick={handleSaveClick}>
+    <Button class="btn-ghost" testId="cancel-btn" onclick={onClose}>{$t("common.cancel")}</Button>
+    <Button class="btn-primary" testId="submit-btn" onclick={handleSaveClick}>
       {$t("common.create")}
-    </button>
+    </Button>
   {/snippet}
 </DialogBase>
-
-<style>
-  .enrollment-search-results {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-</style>

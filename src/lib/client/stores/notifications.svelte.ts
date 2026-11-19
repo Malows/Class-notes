@@ -22,6 +22,35 @@ export class NotificationsStore {
     this.items.push({ id, message, type: "warning", autoDismiss: false });
   }
 
+  /**
+   * A transient message with one inline action (for example, Undo). The action
+   * runs at most once; the toast then dismisses itself.
+   */
+  addAction(
+    message: string,
+    action: { label: string; onAction: () => void },
+    duration = 6000,
+  ) {
+    const id = this.nextId++;
+    let used = false;
+    this.items.push({
+      id,
+      message,
+      type: "success",
+      autoDismiss: true,
+      action: {
+        label: action.label,
+        onAction: () => {
+          if (used) return;
+          used = true;
+          this.dismiss(id);
+          action.onAction();
+        },
+      },
+    });
+    setTimeout(() => this.dismiss(id), duration);
+  }
+
   dismiss(id: number) {
     this.items = this.items.filter((item) => item.id !== id);
   }

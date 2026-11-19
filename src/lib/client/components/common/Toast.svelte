@@ -23,15 +23,27 @@
 >
   <div class="toast-body">
     <p class="toast-text" data-test-id={`toast-text-${toast.id}`}>{toast.message}</p>
-    <button
-      type="button"
-      class="btn btn-ghost btn-sm btn-circle"
-      onclick={() => onDismiss(toast.id)}
-      aria-label={$t("common.close")}
-      data-test-id={`toast-close-btn-${toast.id}`}
-    >
-      ×
-    </button>
+    <div class="toast-actions">
+      {#if toast.action}
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onclick={() => toast.action?.onAction()}
+          data-test-id={`toast-action-${toast.id}`}
+        >
+          {toast.action.label}
+        </button>
+      {/if}
+      <button
+        type="button"
+        class="btn btn-ghost btn-sm btn-circle"
+        onclick={() => onDismiss(toast.id)}
+        aria-label={$t("common.close")}
+        data-test-id={`toast-close-btn-${toast.id}`}
+      >
+        ×
+      </button>
+    </div>
   </div>
 </div>
 
@@ -65,6 +77,13 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 0.75rem 1rem;
+  }
+
+  .toast-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
   }
 
   .toast-text {

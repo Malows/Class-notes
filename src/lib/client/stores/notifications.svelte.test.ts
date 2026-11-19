@@ -64,4 +64,31 @@ describe("NotificationsStore", () => {
     notificationsStore.dismiss(targetId);
     expect(notificationsStore.items).toHaveLength(0);
   });
+
+  it("runs an action toast once and dismisses it", () => {
+    const onAction = vi.fn();
+    notificationsStore.addAction("Deleted", { label: "Undo", onAction });
+
+    const toast = notificationsStore.items[0];
+    expect(toast.action?.label).toBe("Undo");
+    expect(toast.autoDismiss).toBe(true);
+
+    toast.action?.onAction();
+    toast.action?.onAction();
+
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(notificationsStore.items).toHaveLength(0);
+  });
+
+  it("auto-dismisses an action toast after its window", () => {
+    const onAction = vi.fn();
+    notificationsStore.addAction("Deleted", { label: "Undo", onAction }, 6000);
+
+    vi.advanceTimersByTime(5999);
+    expect(notificationsStore.items).toHaveLength(1);
+
+    vi.advanceTimersByTime(1);
+    expect(notificationsStore.items).toHaveLength(0);
+    expect(onAction).not.toHaveBeenCalled();
+  });
 });

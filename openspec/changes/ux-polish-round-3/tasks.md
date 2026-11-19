@@ -47,8 +47,8 @@
 
 ## 7. Design system and docs
 
-- [ ] 7.1 Audit token references and remove only aliases with zero usages, keeping daisyUI role tokens
-- [ ] 7.2 Document the ink, scrim and icon-family tokens in `DESIGN.md`; keep the compact map
+- [x] 7.1 Audit token references and remove only aliases with zero usages, keeping daisyUI role tokens
+- [x] 7.2 Document the ink, scrim and icon-family tokens in `DESIGN.md`; keep the compact map
 - [ ] 7.3 Refresh `.impeccable/design.json` with the `document` workflow after the code lands
 - [ ] 7.4 Verify both themes and the detector after the cleanup
 

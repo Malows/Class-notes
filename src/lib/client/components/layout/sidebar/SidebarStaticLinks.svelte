@@ -11,8 +11,17 @@
 
   let { isCollapsed }: Props = $props();
 
-  const path = $derived(page.url.pathname);
-  const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+  const normalize = (pathname: string) => pathname.replace(/\/+$/, "") || "/";
+
+  const path = $derived(normalize(page.url.pathname));
+
+  // Section links stay highlighted on their subpages, but only the exact route
+  // is the current page. A prefix match is `aria-current="true"`, never "page".
+  const isActive = (href: string) =>
+    href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
+
+  const ariaCurrent = (href: string): "page" | "true" | undefined =>
+    isActive(href) ? (path === normalize(href) ? "page" : "true") : undefined;
 </script>
 
 <div class="flex flex-col gap-1">
@@ -22,6 +31,7 @@
     icon="dashboard"
     {isCollapsed}
     active={isActive("/")}
+    ariaCurrent={ariaCurrent("/")}
   />
   <SidebarItem
     href="/faculties"
@@ -29,6 +39,7 @@
     icon="account_balance"
     {isCollapsed}
     active={isActive("/faculties")}
+    ariaCurrent={ariaCurrent("/faculties")}
   />
   <SidebarItem
     href="/periods"
@@ -36,6 +47,7 @@
     icon="calendar_month"
     {isCollapsed}
     active={isActive("/periods")}
+    ariaCurrent={ariaCurrent("/periods")}
   />
   <SidebarItem
     href="/persons"
@@ -43,5 +55,6 @@
     icon="groups"
     {isCollapsed}
     active={isActive("/persons")}
+    ariaCurrent={ariaCurrent("/persons")}
   />
 </div>

@@ -18,6 +18,7 @@
   import Button from "$lib/client/components/common/Button.svelte";
   import DialogBase from "$lib/client/components/common/DialogBase.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
@@ -27,6 +28,7 @@
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const modal = new ModalManager<Assignment>();
 
@@ -64,6 +66,8 @@
   });
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -74,6 +78,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -155,23 +160,27 @@
 </svelte:head>
 
 <PageWithAdd title={$t("assignments.manage_assignments_title")} onAdd={() => modal.openCreate()}>
-  <Button
-    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
-    class="btn-ghost"
-    testId="back-to-periods-btn"
-  >
-    {$t("layout.back_to_periods")}
-  </Button>
+  <div class="flex flex-wrap items-center gap-2">
+    <Button
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
+      class="btn-small"
+      testId="back-to-periods-btn"
+    >
+      {$t("layout.back_to_periods")}
+    </Button>
+  </div>
 
-  <GuardWrapper
-    condition={periodsStore.items.some((p) => p.id === periodID)}
-    message={$t("periods.period_not_found")}
-    linkHref="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
-    linkText={$t("layout.back_to_periods")}
-  >
-    {#if loading}
-      <p>{$t("assignments.loading_assignments")}</p>
-    {:else}
+  {#if loading}
+    <p>{$t("assignments.loading_assignments")}</p>
+  {:else if failed}
+    <LoadError onRetry={loadData} />
+  {:else}
+    <GuardWrapper
+      condition={periodsStore.items.some((p) => p.id === periodID)}
+      message={$t("periods.period_not_found")}
+      linkHref="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
+      linkText={$t("layout.back_to_periods")}
+    >
       {#if assignmentsStore.items.length === 0}
         <EmptyState
           icon="✏️"
@@ -202,8 +211,8 @@
           onBulkUpdate={handleBulkUpdate}
         />
       {/if}
-    {/if}
-  </GuardWrapper>
+    </GuardWrapper>
+  {/if}
 
   <AssignmentModal
     isOpen={modal.isCreate || modal.isEdit}

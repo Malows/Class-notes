@@ -4,13 +4,15 @@
   import { themeStore } from "$lib/client/stores/theme.svelte";
 </script>
 
+<!--
+  Stable name ("Dark theme") plus `aria-pressed` for the state, instead of an
+  action label paired with a pressed value that read backwards.
+-->
 <button
   type="button"
   class="btn btn-ghost btn-sm btn-circle"
   onclick={themeStore.toggleTheme}
-  aria-label={themeStore.currentTheme === "light"
-    ? $t("layout.switch_to_dark")
-    : $t("layout.switch_to_light")}
+  aria-label={$t("layout.theme_dark")}
   aria-pressed={themeStore.currentTheme === "dark"}
   data-test-id="theme-toggle-btn"
 >

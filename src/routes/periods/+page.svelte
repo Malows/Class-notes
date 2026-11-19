@@ -6,6 +6,7 @@
   import type { Period } from "$lib/common/types/academic";
 
   import Button from "$lib/client/components/common/Button.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodTable from "$lib/client/components/grids/tables/PeriodTable.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
@@ -16,13 +17,17 @@
 
   const periodsStore = getContext<PeriodsStore>(StoreKey.PERIODS);
   let loading = $state(true);
+  let failed = $state(false);
   const modal = new ModalManager<Period>();
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await periodsStore.load();
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -66,6 +71,8 @@
 
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>
+  {:else if failed}
+    <LoadError onRetry={loadData} />
   {:else}
     <PeriodTable
       periods={periodsStore.items}

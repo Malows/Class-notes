@@ -197,7 +197,7 @@
   <p data-test-id="take-empty">{$t("attendance.empty_students")}</p>
 {:else if done}
   <section data-test-id="take-report">
-    <h3>{$t("attendance.take_done_title")}</h3>
+    <h2>{$t("attendance.take_done_title")}</h2>
     <p data-test-id="take-result-present">
       {$t("attendance.take_result_present", { count: totals.present } as never)}
     </p>

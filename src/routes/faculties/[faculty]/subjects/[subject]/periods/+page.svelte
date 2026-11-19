@@ -8,6 +8,7 @@
 
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import Button from "$lib/client/components/common/Button.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
   import PeriodModal from "$lib/client/components/modals/PeriodModal.svelte";
   import SubjectPeriodTable from "$lib/client/components/grids/tables/SubjectPeriodTable.svelte";
@@ -26,10 +27,13 @@
   const subjectID = $derived(subjectsStore.bySlug.get(subjectSlug)?.id);
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const modal = new ModalManager<Period>();
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -38,6 +42,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -74,16 +79,20 @@
 </svelte:head>
 
 <PageWithAdd title={$t("periods.manage_periods_title")} onAdd={() => modal.openCreate()}>
-  <Button
-    href="/faculties/{facultySlug}/subjects"
-    class="btn-ghost"
-    testId="back-to-subjects-btn"
-  >
-    {$t("layout.back_to_subjects")}
-  </Button>
+  <div class="flex flex-wrap items-center gap-2">
+    <Button
+      href="/faculties/{facultySlug}/subjects"
+      class="btn-small"
+      testId="back-to-subjects-btn"
+    >
+      {$t("layout.back_to_subjects")}
+    </Button>
+  </div>
 
   {#if loading}
     <p>{$t("periods.loading_periods")}</p>
+  {:else if failed}
+    <LoadError onRetry={loadData} />
   {:else}
     <SubjectPeriodTable
       periods={periodsStore.items}

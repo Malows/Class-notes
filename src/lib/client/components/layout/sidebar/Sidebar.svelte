@@ -108,6 +108,7 @@
       context.periodSemester !== undefined &&
       activePeriodId !== undefined
       ? buildCommissionItems(commissionsStore.items, {
+          subjects: subjectsStore.items,
           facultySlug: context.facultySlug,
           subjectSlug: context.subjectSlug,
           periodId: activePeriodId,

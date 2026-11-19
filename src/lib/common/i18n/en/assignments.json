@@ -40,5 +40,13 @@
   "comments_label": "Comments",
   "previous": "« Previous",
   "save": "Save",
-  "skip": "Skip »"
+  "skip": "Skip »",
+  "correction_assignment_missing_title": "This assignment is not available",
+  "correction_assignment_missing_message": "It may have been removed, or the link lost its assignment. Open the commission overview and pick another assignment.",
+  "correction_no_students_title": "No students enrolled yet",
+  "correction_no_students_message": "Register the commission's students first; the correction sheet appears once the roster exists.",
+  "correction_delivery_missing_title": "No delivery sheet for this student",
+  "correction_delivery_missing_message": "The student may have enrolled after the assignment was created. Skip to the next student, or go back to the overview and check the roster.",
+  "back_to_overview": "Back to overview",
+  "back_to_students": "Manage students"
 }

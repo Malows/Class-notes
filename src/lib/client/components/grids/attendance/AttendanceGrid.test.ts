@@ -129,7 +129,7 @@ test("links each assignment to take mode when a href builder is given", async ()
   const link = head.querySelector("a");
   expect(link?.getAttribute("href")).toBe("/take?assignment_id=10");
   expect(link?.getAttribute("title")).toBe("TP 1");
-  expect(link?.getAttribute("aria-label")).toBe("TP1 — TP 1");
+  expect(link?.getAttribute("aria-label")).toBe("TP1 — TP 1 · Tomar asistencia");
 });
 
 test("abbreviates assignment headers while keeping the full title available", async () => {

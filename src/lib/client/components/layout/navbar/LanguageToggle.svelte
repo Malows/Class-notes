@@ -4,11 +4,16 @@
   import { themeStore } from "$lib/client/stores/theme.svelte";
 </script>
 
+<!--
+  The name describes the Spanish option in both locales; `aria-pressed` carries
+  the state. Pairing an action name ("Switch to English") with `aria-pressed`
+  announced the opposite language.
+-->
 <button
   type="button"
   class="btn btn-ghost btn-sm btn-circle"
   onclick={themeStore.toggleLanguage}
-  aria-label={$locale === "es" ? $t("layout.switch_to_english") : $t("layout.switch_to_spanish")}
+  aria-label={$t("layout.language_spanish")}
   aria-pressed={$locale === "es"}
   data-test-id="language-toggle-btn"
 >

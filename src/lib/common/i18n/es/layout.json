@@ -48,5 +48,8 @@
   "switch_to_dark": "Cambiar a tema oscuro",
   "switch_to_light": "Cambiar a tema claro",
   "switch_to_english": "Cambiar a inglés",
-  "switch_to_spanish": "Cambiar a español"
+  "switch_to_spanish": "Cambiar a español",
+  "language_spanish": "Idioma: español",
+  "theme_dark": "Tema oscuro",
+  "description": "Gestión docente: un cuaderno académico para organizar facultades, materias, períodos, comisiones y calificaciones."
 }

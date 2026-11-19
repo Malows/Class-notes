@@ -101,7 +101,7 @@
     </Button>
   </div>
 
-  <h3>{$t("persons.cursadas_title")}</h3>
+  <h2>{$t("persons.cursadas_title")}</h2>
 
   {#if detail.enrollments.length === 0}
     <p data-test-id="person-detail-no-enrollments">{$t("persons.no_enrollments")}</p>

@@ -11,7 +11,11 @@
 </script>
 
 <svelte:head>
-  <title>{isNotFound ? $t("common.error_not_found") : $t("common.error_generic")}</title>
+  {#if isNotFound}
+    <title>{$t("common.error_not_found")} - {$t("layout.brand")}</title>
+  {:else}
+    <title>{$t("common.error_generic")} - {$t("layout.brand")}</title>
+  {/if}
 </svelte:head>
 
 <div class="mx-auto flex max-w-xl flex-col gap-4 py-10">

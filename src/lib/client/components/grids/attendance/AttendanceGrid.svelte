@@ -87,12 +87,14 @@
       <div class="attendance-grid__student-head">{$t("attendance.column_student")}</div>
       {#each grid.assignments as assignment (assignment.id)}
         {@const abbreviated = abbreviateTitle(assignment.title)}
+        {@const href = takeHref?.(assignment.id) ?? null}
         <div class="attendance-grid__assignment-head" data-test-id="attendance-head-{assignment.id}">
-          {#if takeHref && takeHref(assignment.id)}
+          {#if href}
             <a
-              href={takeHref(assignment.id)}
+              class="attendance-grid__take"
+              {href}
               title={assignment.title}
-              aria-label={`${abbreviated} — ${assignment.title}`}
+              aria-label={`${abbreviated} — ${assignment.title} · ${$t("attendance.take_title")}`}
             >
               {abbreviated}
             </a>
@@ -160,7 +162,9 @@
 <style>
   .attendance-grid {
     display: grid;
-    grid-template-columns: 12rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
+    grid-template-columns:
+      clamp(148px, 40vw, 192px) repeat(var(--cols, 1), clamp(2.75rem, 3.2rem, 96px))
+      clamp(3.5rem, 4.5rem, 96px);
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;
@@ -197,6 +201,29 @@
     text-overflow: ellipsis;
   }
 
+  .attendance-grid__take {
+    display: flex;
+    width: 100%;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-field);
+    color: var(--color-primary);
+    font: inherit;
+    letter-spacing: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 0.15s ease;
+  }
+
+  .attendance-grid__take:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    text-decoration-thickness: 2px;
+  }
+
   .attendance-grid__row--striped {
     background-color: var(--color-surface-container-low);
   }
@@ -213,8 +240,11 @@
     overflow: hidden;
     background-color: var(--color-surface);
     font-weight: 600;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  }
+
+  .attendance-grid__student {
+    line-height: 1.3;
+    overflow-wrap: anywhere;
   }
 
   .attendance-grid__row--striped .attendance-grid__student {
@@ -227,16 +257,16 @@
 
   .attendance-grid__student-head {
     text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .attendance-grid__commission {
     display: block;
-    overflow: hidden;
+    overflow-wrap: anywhere;
     color: var(--color-on-surface-variant);
     font-size: 0.75rem;
     font-weight: 400;
-    white-space: nowrap;
-    text-overflow: ellipsis;
   }
 
   .attendance-grid__summary,
@@ -255,11 +285,5 @@
     margin-top: 0.25rem;
     padding-top: 0.5rem;
     border-top: 1px solid var(--color-outline-variant);
-  }
-
-  @media (max-width: 768px) {
-    .attendance-grid {
-      grid-template-columns: 10rem repeat(var(--cols, 1), 3.2rem) 4.5rem;
-    }
   }
 </style>

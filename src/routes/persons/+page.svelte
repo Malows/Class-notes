@@ -6,6 +6,7 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import MobileCard from "$lib/client/components/common/MobileCard.svelte";
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
@@ -23,6 +24,7 @@
   let query = $state("");
   let loading = $state(true);
   let loadingMore = $state(false);
+  let failed = $state(false);
 
   let requestToken = 0;
 
@@ -32,6 +34,7 @@
       loadingMore = true;
     } else {
       loading = true;
+      failed = false;
     }
 
     try {
@@ -43,6 +46,11 @@
       total = page.total;
     } catch (e) {
       console.error(e);
+      // A failed "load more" keeps the rows already on screen; only the first
+      // page turns the view into a retryable error.
+      if (!append && token === requestToken) {
+        failed = true;
+      }
     } finally {
       if (token === requestToken) {
         loading = false;
@@ -94,6 +102,8 @@
 
   {#if loading}
     <p class="text-body-md text-on-surface-variant">{$t("persons.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={() => load()} />
   {:else if items.length === 0}
     <EmptyState
       icon="👤"

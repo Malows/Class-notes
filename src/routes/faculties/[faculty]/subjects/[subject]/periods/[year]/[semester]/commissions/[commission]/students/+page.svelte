@@ -14,6 +14,7 @@
 
   import StudentTable from "$lib/client/components/grids/tables/StudentTable.svelte";
   import Button from "$lib/client/components/common/Button.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
   import EnrollmentModal from "$lib/client/components/modals/EnrollmentModal.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
   import PageWithAdd from "$lib/client/components/layout/PageWithAdd.svelte";
@@ -27,6 +28,7 @@
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
 
   let loading = $state(true);
+  let failed = $state(false);
 
   const modal = new ModalManager<EnrollmentWithPerson>();
 
@@ -49,6 +51,8 @@
   );
 
   async function loadData() {
+    loading = true;
+    failed = false;
     try {
       await Promise.all([facultiesStore.load(), subjectsStore.load()]);
       const sid = subjectsStore.bySlug.get(subjectSlug)?.id;
@@ -59,6 +63,7 @@
       }
     } catch (e) {
       console.error(e);
+      failed = true;
     } finally {
       loading = false;
     }
@@ -111,6 +116,8 @@
 
   {#if loading}
     <p>{$t("enrollments.loading")}</p>
+  {:else if failed}
+    <LoadError onRetry={loadData} />
   {:else if commissionID === undefined}
     <p>{$t("commissions.not_found_message")}</p>
   {:else}

@@ -49,11 +49,10 @@
 </script>
 
 <svelte:head>
-  <title>{$t("layout.brand")} - {$t("layout.dashboard")}</title>
-  <meta
-    name="description"
-    content="Gestión Docente: sistema de gestión académica para organizar facultades, materias, períodos y calificaciones de estudiantes con una estética académica editorial."
-  />
+  {#if isDashboard}
+    <title>{$t("layout.dashboard")} - {$t("layout.brand")}</title>
+  {/if}
+  <meta name="description" content={$t("layout.description")} />
   <meta name="robots" content="index, follow" />
 </svelte:head>
 

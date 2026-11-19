@@ -110,13 +110,15 @@
 </svelte:head>
 
 <PageWithAdd title={$t("commissions.manage_commissions_title")} onAdd={() => modal.openCreate()}>
-  <Button
-    href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
-    class="btn-ghost"
-    testId="back-to-periods-btn"
-  >
-    {$t("layout.back_to_periods")}
-  </Button>
+  <div class="flex flex-wrap items-center gap-2">
+    <Button
+      href="/faculties/{facultySlug}/subjects/{subjectSlug}/periods"
+      class="btn-small"
+      testId="back-to-periods-btn"
+    >
+      {$t("layout.back_to_periods")}
+    </Button>
+  </div>
 
   <GuardWrapper
     condition={periodsStore.items.some(
@@ -141,10 +143,10 @@
 
       {#if enrollmentsStore.pending.length > 0}
         <section class="mt-6" data-test-id="pending-enrollments">
-          <h3 class="m-0 font-serif text-headline-sm">
+          <h2 class="m-0 font-serif text-headline-sm">
             {$t("enrollments.pending_title")}
             ({enrollmentsStore.pending.length})
-          </h3>
+          </h2>
           <p class="mt-1 text-body-sm text-on-surface-variant">
             {$t("enrollments.pending_count", {
               count: enrollmentsStore.pending.length,

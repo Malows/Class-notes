@@ -30,5 +30,6 @@
   "deleted_success": "Alumno borrado",
   "edit_title": "Editar alumno",
   "delete_confirm_title": "Borrar alumno",
-  "delete_confirm_message": "¿Borrar a {{name}}? Se lo quitará de todas sus cursadas y el legajo volverá a estar disponible."
+  "delete_confirm_message": "¿Borrar a {{name}}? Se lo quitará de todas sus cursadas y el legajo volverá a estar disponible.",
+  "delete_failed": "No se pudo borrar al alumno. Revisá la conexión y reintentá."
 }

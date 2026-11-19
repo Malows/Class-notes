@@ -18,11 +18,11 @@
 ## 3. Undoable deletions
 
 - [x] 3.1 Wire deferred deletion into faculties, subjects, periods and commissions lists
-- [ ] 3.2 Wire deferred deletion into persons (index and detail) and assign the correct post-delete destination
+- [x] 3.2 Wire deferred deletion into persons (index and detail) and assign the correct post-delete destination
 - [x] 3.3 Wire deferred deletion into assignments and roster enrollment removal
 - [x] 3.4 Restore the row at its previous position on undo and refetch on commit failure with a retryable error
 - [x] 3.5 Flush pending deletions on in-app navigation and attempt a keepalive commit on `pagehide`
-- [ ] 3.6 Test undo, timeout, navigation flush and failed commit per entity group
+- [x] 3.6 Test undo, timeout, navigation flush and failed commit per entity group
 
 ## 4. Commission summary
 
@@ -34,10 +34,10 @@
 
 ## 5. Registry density
 
-- [ ] 5.1 Choose page size by viewport (20 phone / 50 desktop) and reset to page one on query change
-- [ ] 5.2 Compact the mobile person card to two text lines while keeping touch-sized actions
-- [ ] 5.3 Make the search field stay reachable while the registry scrolls
-- [ ] 5.4 Test responsive page size, reset-on-search, compact card and no desktop regression
+- [x] 5.1 Choose page size by viewport (20 phone / 50 desktop) and reset to page one on query change
+- [x] 5.2 Compact the mobile person card to two text lines while keeping touch-sized actions
+- [x] 5.3 Make the search field stay reachable while the registry scrolls
+- [x] 5.4 Test responsive page size, reset-on-search, compact card and no desktop regression
 
 ## 6. Term context
 

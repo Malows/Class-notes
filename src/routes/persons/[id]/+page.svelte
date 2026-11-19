@@ -15,12 +15,19 @@
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
   import { personService } from "$lib/client/services/person.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import {
+    scheduleDeferredDelete,
+    type DeferredDeleteHandle,
+  } from "$lib/client/utils/deferred-delete";
 
   const modal = new ModalManager<Person>();
 
   let detail = $state<PersonDetail | null>(null);
   let loading = $state(true);
   let failure = $state<"not-found" | "error" | null>(null);
+  let deleted = $state(false);
+  let deleteFailed = $state(false);
+  let deleteHandle: DeferredDeleteHandle | null = null;
 
   const personID = Number(page.params.id);
 
@@ -56,15 +63,46 @@
     modal.close();
   }
 
-  async function handleDelete() {
-    try {
-      await personService.remove(personID);
-      notificationsStore.addSuccess($t("persons.deleted_success"));
-      modal.close();
-      await goto("/persons");
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  // Confirmed deletion is scheduled, not sent: the page stays here with the
+  // person hidden until the window closes, then the registry becomes the
+  // destination once the server actually deleted the record.
+  function handleDelete() {
+    const snapshot = detail;
+    if (!snapshot) return;
+
+    modal.close();
+    deleteFailed = false;
+    deleted = true;
+    detail = null;
+
+    deleteHandle = scheduleDeferredDelete({
+      commit: async () => {
+        await personService.remove(snapshot.person.id);
+        await goto("/persons");
+      },
+      restore: () => {
+        detail = snapshot;
+        deleted = false;
+      },
+      message: $t("persons.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: () => {
+        deleteFailed = true;
+      },
+    });
+  }
+
+  function undoDelete() {
+    deleteHandle?.undo();
+    deleteHandle = null;
+  }
+
+  // A failed commit puts the person back; retrying reopens the same
+  // confirmation instead of deleting silently on a second click.
+  function retryDelete() {
+    if (!detail) return;
+    deleteFailed = false;
+    modal.openDelete(detail.person);
   }
 
   onMount(load);
@@ -78,7 +116,26 @@
   <Button href="/persons" class="btn-small">{$t("persons.back_to_registry")}</Button>
 {/snippet}
 
-{#if loading}
+{#if deleted}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
+  <div
+    role="status"
+    class="rounded-[var(--radius-box)] border border-base-300 bg-base-100 p-4"
+    data-test-id="person-detail-deleted"
+  >
+    <p class="m-0 font-serif text-headline-sm">{$t("persons.deleted_success")}</p>
+    <Button
+      class="btn-ghost btn-sm mt-2"
+      testId="person-delete-undo-btn"
+      onclick={undoDelete}
+      withHover
+    >
+      {$t("common.undo")}
+    </Button>
+  </div>
+{:else if loading}
   <PageHeader title={$t("persons.detail_title")}>
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
@@ -127,6 +184,13 @@
     {/snippet}
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
+
+  {#if deleteFailed}
+    <div data-test-id="person-delete-error">
+      <LoadError message={$t("persons.delete_failed")} onRetry={retryDelete} />
+    </div>
+  {/if}
+
   <p>
     {$t("persons.legajo_label")}:
     <span data-test-id="person-detail-legajo">{detail.person.legajo ?? "—"}</span>

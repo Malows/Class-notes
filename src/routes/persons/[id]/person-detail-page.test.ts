@@ -2,6 +2,7 @@ import { mount, unmount, flushSync } from "svelte";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { loadTranslations } from "$lib/common/i18n/config";
+import { notificationsStore } from "$lib/client/stores/notifications.svelte";
 
 let mockParams: Record<string, string> = {};
 
@@ -67,6 +68,9 @@ const detail = {
   ],
 };
 
+const deleteCalls = () =>
+  apiFetchMock.mock.calls.filter(([, init]) => (init as { method?: string })?.method === "DELETE");
+
 beforeEach(async () => {
   HTMLDialogElement.prototype.showModal = vi.fn();
   HTMLDialogElement.prototype.close = vi.fn();
@@ -76,6 +80,7 @@ beforeEach(async () => {
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
   })) as never;
+  notificationsStore.items = [];
   await loadTranslations("es", "/");
   mockParams = { id: "1" };
   apiFetchMock.mockResolvedValue(detail);
@@ -84,14 +89,43 @@ beforeEach(async () => {
 afterEach(() => {
   if (component) unmount(component);
   document.body.innerHTML = "";
+  vi.useRealTimers();
   vi.clearAllMocks();
 });
 
-test("renders the person and their cursadas with the commission link", async () => {
+async function mountPage() {
   component = mount(PersonDetailPage, { target: document.body });
   flushSync();
   await flush();
   flushSync();
+}
+
+async function mountPageWithFakeTimers() {
+  vi.useFakeTimers();
+  component = mount(PersonDetailPage, { target: document.body });
+  flushSync();
+  await vi.advanceTimersByTimeAsync(0);
+  flushSync();
+}
+
+async function confirmDelete() {
+  const actions = document.body.querySelector(
+    '[data-test-id="person-actions"]',
+  ) as HTMLDetailsElement;
+  actions.open = true;
+  (
+    document.body.querySelector('[data-test-id="delete-person-btn"]') as HTMLElement
+  ).click();
+  flushSync();
+
+  (
+    document.body.querySelector('[data-test-id="confirm-dialog-confirm-btn"]') as HTMLElement
+  ).click();
+  flushSync();
+}
+
+test("renders the person and their cursadas with the commission link", async () => {
+  await mountPage();
 
   expect(apiFetchMock).toHaveBeenCalledWith("/persons/1");
   expect(document.body.textContent).toContain("Juan Pérez");
@@ -110,10 +144,7 @@ test("renders the person and their cursadas with the commission link", async () 
 });
 
 test("shows a cursada without commission as such", async () => {
-  component = mount(PersonDetailPage, { target: document.body });
-  flushSync();
-  await flush();
-  flushSync();
+  await mountPage();
 
   const sinComision = document.body.querySelector(
     '[data-test-id="person-cursada-sin-comision-11"]',
@@ -127,17 +158,14 @@ test("shows the not-found state for an unknown person", async () => {
   mockParams = { id: "999" };
   apiFetchMock.mockRejectedValue(new Error("Person not found"));
 
-  component = mount(PersonDetailPage, { target: document.body });
-  flushSync();
-  await flush();
-  flushSync();
+  await mountPage();
 
   const notFound = document.body.querySelector('[data-test-id="person-detail-not-found"]');
   expect(notFound).not.toBeNull();
   expect(notFound?.textContent).toContain("No encontramos a este alumno");
-  expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')?.textContent).not.toContain(
-    "no pudo cargarse",
-  );
+  expect(
+    document.body.querySelector('[data-test-id="person-detail-not-found"]')?.textContent,
+  ).not.toContain("no pudo cargarse");
 });
 
 test("distinguishes a load failure from a missing person and retries", async () => {
@@ -145,10 +173,7 @@ test("distinguishes a load failure from a missing person and retries", async () 
     .mockRejectedValueOnce(new Error("Simulated server failure"))
     .mockResolvedValueOnce(detail);
 
-  component = mount(PersonDetailPage, { target: document.body });
-  flushSync();
-  await flush();
-  flushSync();
+  await mountPage();
 
   expect(document.body.textContent).toContain("No se pudo cargar el alumno");
   expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')).toBeNull();
@@ -181,10 +206,7 @@ test("edits the person from the registry detail", async () => {
     return Promise.resolve(getCalls === 1 ? detail : updated);
   });
 
-  component = mount(PersonDetailPage, { target: document.body });
-  flushSync();
-  await flush();
-  flushSync();
+  await mountPage();
 
   const editButton = document.body.querySelector('[data-test-id="edit-person-btn"]') as HTMLElement;
   expect(editButton).not.toBeNull();
@@ -212,18 +234,8 @@ test("edits the person from the registry detail", async () => {
   expect(document.body.textContent).toContain("Juan Pérez Editado");
 });
 
-test("deletes the person after confirming and returns to the registry", async () => {
-  apiFetchMock.mockImplementation((path: string, init?: { method?: string }) => {
-    if (init?.method === "DELETE") {
-      return Promise.resolve(undefined);
-    }
-    return Promise.resolve(detail);
-  });
-
-  component = mount(PersonDetailPage, { target: document.body });
-  flushSync();
-  await flush();
-  flushSync();
+test("confirms the deletion before removing the person from the view", async () => {
+  await mountPage();
 
   const deleteButton = document.body.querySelector(
     '[data-test-id="delete-person-btn"]',
@@ -245,15 +257,95 @@ test("deletes the person after confirming and returns to the registry", async ()
 
   const message = document.body.textContent ?? "";
   expect(message).toContain("todas sus cursadas");
+  expect(document.body.textContent).toContain("Juan Pérez");
+  expect(deleteCalls()).toHaveLength(0);
+});
 
-  const confirm = document.body.querySelector(
-    '[data-test-id="confirm-dialog-confirm-btn"]',
-  ) as HTMLElement;
-  confirm.click();
-  flushSync();
-  await flush();
+test("stays on the page during the undo window and leaves only after the commit", async () => {
+  await mountPageWithFakeTimers();
+
+  await confirmDelete();
+
+  expect(deleteCalls()).toHaveLength(0);
+  expect(gotoMock).not.toHaveBeenCalled();
+  expect(document.body.querySelector('[data-test-id="person-detail-deleted"]')).not.toBeNull();
+  expect(document.body.textContent).toContain("Alumno borrado");
+
+  await vi.advanceTimersByTimeAsync(6000);
+  await vi.advanceTimersByTimeAsync(0);
+
+  expect(deleteCalls()).toHaveLength(1);
+  expect(deleteCalls()[0][0]).toBe("/persons/1");
+  expect(gotoMock).toHaveBeenCalledWith("/persons");
+});
+
+test("undo restores the detail without sending a delete request", async () => {
+  await mountPageWithFakeTimers();
+
+  await confirmDelete();
+  expect(notificationsStore.items[0]?.action?.label).toBe("Deshacer");
+
+  (
+    document.body.querySelector('[data-test-id="person-delete-undo-btn"]') as HTMLElement
+  ).click();
   flushSync();
 
-  expect(apiFetchMock).toHaveBeenCalledWith("/persons/1", { method: "DELETE" });
+  expect(document.body.querySelector('[data-test-id="person-detail-deleted"]')).toBeNull();
+  expect(document.body.textContent).toContain("Juan Pérez");
+  expect(document.body.textContent).toContain("Álgebra Lineal");
+
+  await vi.advanceTimersByTimeAsync(6000);
+  await vi.advanceTimersByTimeAsync(0);
+
+  expect(deleteCalls()).toHaveLength(0);
+  expect(gotoMock).not.toHaveBeenCalled();
+});
+
+test("restores the detail after a failed commit and retries through the confirmation", async () => {
+  let deleteAttempts = 0;
+  apiFetchMock.mockImplementation((path: string, init?: { method?: string }) => {
+    if (init?.method === "DELETE") {
+      deleteAttempts += 1;
+      return deleteAttempts === 1
+        ? Promise.reject(new Error("Fallo de red"))
+        : Promise.resolve(undefined);
+    }
+    return Promise.resolve(detail);
+  });
+
+  await mountPageWithFakeTimers();
+  await confirmDelete();
+
+  await vi.advanceTimersByTimeAsync(6000);
+  await vi.advanceTimersByTimeAsync(0);
+  flushSync();
+
+  expect(deleteCalls()).toHaveLength(1);
+  expect(gotoMock).not.toHaveBeenCalled();
+  expect(document.body.querySelector('[data-test-id="person-detail-deleted"]')).toBeNull();
+  expect(document.body.textContent).toContain("Juan Pérez");
+
+  const error = document.body.querySelector('[data-test-id="person-delete-error"]');
+  expect(error).not.toBeNull();
+  expect(error?.textContent).toContain("No se pudo borrar al alumno");
+
+  const retry = [...(error?.querySelectorAll("button") ?? [])].find((button) =>
+    button.textContent?.includes("Reintentar"),
+  );
+  expect(retry).toBeDefined();
+  retry?.click();
+  flushSync();
+
+  // The retry keeps the destructive confirmation before removing the person.
+  expect(document.body.textContent).toContain("¿Borrar a Juan Pérez?");
+  (
+    document.body.querySelector('[data-test-id="confirm-dialog-confirm-btn"]') as HTMLElement
+  ).click();
+  flushSync();
+
+  await vi.advanceTimersByTimeAsync(6000);
+  await vi.advanceTimersByTimeAsync(0);
+
+  expect(deleteCalls()).toHaveLength(2);
   expect(gotoMock).toHaveBeenCalledWith("/persons");
 });

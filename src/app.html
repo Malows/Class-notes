@@ -6,19 +6,20 @@
     <meta name="text-scale" content="scale" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#fbf9f2" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14140f" />
-    <title>Class Notes</title>
     <script>
       (function () {
         try {
-          const theme = localStorage.getItem("theme");
+          const saved = localStorage.getItem("theme");
+          const prefersDark =
+            typeof matchMedia === "function" &&
+            matchMedia("(prefers-color-scheme: dark)").matches;
+          const theme = saved === "dark" || saved === "light" ? saved : prefersDark ? "dark" : "light";
           const root = document.documentElement;
           root.classList.remove("dark");
-          if (theme === "dark") {
-            root.setAttribute("data-theme", "classnotes-dark");
-          } else if (theme === "light") {
-            root.setAttribute("data-theme", "classnotes");
-          }
+          root.setAttribute("data-theme", theme === "dark" ? "classnotes-dark" : "classnotes");
+          // Keep the single, non-media theme-color in sync with the first paint.
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", theme === "dark" ? "#14140f" : "#fbf9f2");
         } catch {
           /* localStorage can be unavailable in private contexts */
         }

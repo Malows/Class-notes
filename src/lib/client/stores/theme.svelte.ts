@@ -97,6 +97,10 @@ export class ThemeStore {
       // class so the two systems never coexist.
       root.classList.remove("dark");
       root.setAttribute("data-theme", this.#currentTheme === "dark" ? "classnotes-dark" : "classnotes");
+      // The browser chrome follows the chosen theme, not the OS preference.
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", this.#currentTheme === "dark" ? "#14140f" : "#fbf9f2");
     }
   }
 }

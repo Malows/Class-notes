@@ -19,7 +19,6 @@
 
 <ResponsiveTable items={faculties}>
   {#snippet header()}
-    <th class="hidden md:table-cell">{$t("layout.id")}</th>
     <th>{$t("layout.name")}</th>
     <th>{$t("layout.actions")}</th>
   {/snippet}

@@ -54,14 +54,12 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   await fireEvent.click(isDeliveredCheckbox);
   flushSync();
 
-  // Test radio buttons (Approved vs Rejected)
-  const approvedRadioOptions = screen.getAllByTestId(
-    "delivery-approved-checkbox",
-  ) as HTMLInputElement[];
-  expect(approvedRadioOptions).toHaveLength(2);
-
-  const approvedRadio = approvedRadioOptions[0]; // value === true
-  const rejectedRadio = approvedRadioOptions[1]; // value === false
+  // Test radio buttons (Approved vs Rejected), each with its own test id
+  const approvedRadio = screen.getByTestId("delivery-approved-radio") as HTMLInputElement;
+  const rejectedRadio = screen.getByTestId("delivery-rejected-radio") as HTMLInputElement;
+  expect(approvedRadio).toBeTruthy();
+  expect(rejectedRadio).toBeTruthy();
+  expect(approvedRadio).not.toBe(rejectedRadio);
 
   await fireEvent.click(approvedRadio);
   flushSync();

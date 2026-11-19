@@ -4,6 +4,8 @@ import type { Faculty } from "$lib/common/types/academic";
 export class FacultiesStore {
   items = $state<Faculty[]>([]);
   loaded = $state(false);
+  // Concurrent cold-load callers share one request.
+  #pending: Promise<void> | null = null;
 
   constructor(private service = facultyService) {}
 
@@ -13,8 +15,15 @@ export class FacultiesStore {
 
   async load(force = false) {
     if (this.loaded && !force) return;
-    this.items = await this.service.getAll();
-    this.loaded = true;
+    this.#pending ??= (async () => {
+      try {
+        this.items = await this.service.getAll();
+        this.loaded = true;
+      } finally {
+        this.#pending = null;
+      }
+    })();
+    return this.#pending;
   }
 
   async create(name: string) {

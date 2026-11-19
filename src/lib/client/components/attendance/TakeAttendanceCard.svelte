@@ -367,7 +367,6 @@
     -webkit-user-select: none;
     -webkit-user-drag: none;
     -webkit-tap-highlight-color: transparent;
-    will-change: transform;
     transition:
       transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
       background-color 120ms ease,
@@ -381,6 +380,18 @@
 
   .take-card.is-flying {
     transition: transform 190ms ease-in;
+  }
+
+  /* Promote only for the length of the gesture; at rest the card stays on the
+     normal layer. */
+  .take-card.is-dragging,
+  .take-card.is-flying {
+    will-change: transform;
+  }
+
+  .take-card.is-dragging .take-stamp,
+  .take-card.is-flying .take-stamp {
+    will-change: opacity;
   }
 
   .take-card.is-present {
@@ -409,14 +420,13 @@
     position: absolute;
     padding: 0.125rem 0.5rem;
     border: 2px solid currentColor;
-    border-radius: 0.375rem;
+    border-radius: var(--radius-field);
     font-family: var(--font-sans);
-    font-size: 0.875rem;
+    font-size: var(--text-body-md);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     pointer-events: none;
-    will-change: opacity;
   }
 
   .take-stamp--present {

@@ -50,7 +50,8 @@
     justify-content: center;
     min-height: 2rem;
     min-width: 2rem;
-    border: 1px solid var(--color-outline-variant);
+    /* Interactive cell: the boundary is a control edge, not a table rule. */
+    border: 1px solid var(--color-outline);
     border-radius: var(--radius-field);
     background-color: var(--color-surface-container-lowest);
     color: var(--color-on-surface);
@@ -65,7 +66,7 @@
   }
 
   .attendance-cell.is-present {
-    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-outline-variant));
+    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-outline));
     background-color: color-mix(
       in srgb,
       var(--color-success) 12%,
@@ -75,7 +76,7 @@
   }
 
   .attendance-cell.is-absent {
-    border-color: color-mix(in srgb, var(--color-error) 35%, var(--color-outline-variant));
+    border-color: color-mix(in srgb, var(--color-error) 35%, var(--color-outline));
     background-color: color-mix(
       in srgb,
       var(--color-error) 12%,

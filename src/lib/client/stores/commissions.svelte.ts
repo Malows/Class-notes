@@ -4,6 +4,8 @@ import type { Commission } from "$lib/common/types/academic";
 export class CommissionsStore {
   items = $state<Commission[]>([]);
   loaded = $state(false);
+  // Concurrent cold-load callers share one request.
+  #pending: Promise<void> | null = null;
 
   constructor(private service = commissionService) {}
 
@@ -19,8 +21,15 @@ export class CommissionsStore {
 
   async load() {
     if (this.loaded) return;
-    this.items = await this.service.getAll();
-    this.loaded = true;
+    this.#pending ??= (async () => {
+      try {
+        this.items = await this.service.getAll();
+        this.loaded = true;
+      } finally {
+        this.#pending = null;
+      }
+    })();
+    return this.#pending;
   }
 
   async create(subjectId: number, periodId: number, name: string) {

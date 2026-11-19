@@ -13,6 +13,7 @@
     onSkip?: () => void;
     gradeTestId?: string;
     approvedTestId?: string;
+    rejectedTestId?: string;
     commentsTestId?: string;
     submitTestId?: string;
     deliveredTestId?: string;
@@ -28,7 +29,8 @@
     onNext,
     onSkip,
     gradeTestId = "delivery-grade-input",
-    approvedTestId = "delivery-approved-checkbox",
+    approvedTestId = "delivery-approved-radio",
+    rejectedTestId,
     commentsTestId = "delivery-comments-textarea",
     submitTestId = "delivery-submit-btn",
     deliveredTestId = "delivery-delivered-checkbox",
@@ -50,6 +52,11 @@
 
   // Use random suffix for IDs to ensure uniqueness
   const idSuffix = Math.random().toString(36).substring(2, 9);
+
+  // Approval and rejection are different controls, so they never share a test id.
+  const rejectedTestIdValue = $derived(
+    rejectedTestId ?? approvedTestId.replace("approved", "rejected"),
+  );
 </script>
 
 <Card>
@@ -102,7 +109,7 @@
           onchange={() => {
             d.workflow_status = DeliveryWorkflowStatus.REJECTED;
           }}
-          data-test-id={approvedTestId}
+          data-test-id={rejectedTestIdValue}
         />
         <span>{$t("assignments.rejected_label")}</span>
       </label>

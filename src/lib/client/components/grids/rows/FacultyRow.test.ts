@@ -24,7 +24,6 @@ test("FacultyRow renders and handles callbacks", async () => {
     props: { faculty, onEdit, onDelete },
   });
 
-  expect(screen.getAllByText("1")[0]).toBeDefined();
   expect(screen.getAllByText("Faculty A")[0]).toBeDefined();
 
   // Test Edit

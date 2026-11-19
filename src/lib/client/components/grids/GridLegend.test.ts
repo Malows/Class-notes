@@ -25,7 +25,7 @@ describe("GridLegend", () => {
     expect(legendText()).toContain("Presente");
     expect(legendText()).toContain("Ausente");
     expect(legendText()).toContain("Sin tomar");
-    expect(legendText()).toContain("3 / 4 = presentes / tomadas");
+    expect(legendText()).toContain("3 / 4 = presentes / registradas");
     expect(legend.querySelectorAll(".grid-legend__mark")).toHaveLength(3);
   });
 
@@ -39,9 +39,9 @@ describe("GridLegend", () => {
     expect(text).toContain("Desaprobado");
     expect(text).toContain("Pendiente de corrección");
     expect(text).toContain("Sin entregar");
-    expect(text).toContain("IA!");
-    expect(text).toContain("IA!!");
-    expect(text).toContain("3 / 4 = presentes / tomadas");
+    expect(text).toContain("Sospecha de IA (IA!)");
+    expect(text).toContain("Certeza de IA (IA!!)");
+    expect(text).not.toContain("3 / 4");
   });
 
   test("uses the same vocabulary in English", async () => {
@@ -52,6 +52,6 @@ describe("GridLegend", () => {
     const text = legendText();
     expect(text).toContain("Legend");
     expect(text).toContain("Not taken");
-    expect(text).toContain("3 / 4 = present / taken");
+    expect(text).toContain("3 / 4 = present / recorded");
   });
 });

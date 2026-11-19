@@ -40,12 +40,12 @@
       <h3 class="help__heading">{$t("help.shortcuts_title")}</h3>
       <ul class="help__shortcuts">
         <li class="help__shortcut">
-          <kbd class="help__key">←</kbd>
-          <span>{$t("help.shortcut_absent")}</span>
-        </li>
-        <li class="help__shortcut">
           <kbd class="help__key">→</kbd>
           <span>{$t("help.shortcut_present")}</span>
+        </li>
+        <li class="help__shortcut">
+          <kbd class="help__key">←</kbd>
+          <span>{$t("help.shortcut_absent")}</span>
         </li>
         <li class="help__shortcut">
           <kbd class="help__key">↑</kbd>
@@ -102,8 +102,8 @@
 
   .help__heading {
     margin: 0;
-    font-size: 1rem;
-    line-height: 1.375rem;
+    font-size: var(--text-headline-sm);
+    line-height: 1.5rem;
   }
 
   .help__text {
@@ -142,7 +142,7 @@
     background-color: var(--color-surface-container-low);
     color: var(--color-on-surface);
     font-family: var(--font-sans);
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1;
   }

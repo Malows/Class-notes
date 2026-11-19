@@ -85,7 +85,7 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   await fireEvent.input(textarea, { target: { value: "Excellent work!" } });
   flushSync();
 
-  // Test navigation buttons
+  // Test navigation buttons: a dirty draft asks before it is discarded
   const prevButton = screen.getByTestId("delivery-prev-btn");
   const skipButton = screen.getByTestId("delivery-skip-btn");
   expect(prevButton).toBeTruthy();
@@ -95,6 +95,12 @@ test("DeliveryForm triggers model updates and callbacks", async () => {
   expect(onPrev).toHaveBeenCalled();
 
   await fireEvent.click(skipButton);
+  expect(onSkip).not.toHaveBeenCalled();
+  expect(screen.getByTestId("delivery-unsaved-guard").textContent).toContain(
+    "Hay cambios sin guardar",
+  );
+
+  await fireEvent.click(screen.getByTestId("delivery-guard-discard"));
   expect(onSkip).toHaveBeenCalled();
 
   // Finally, trigger Save and assert that the gathered model has the correct values
@@ -184,4 +190,68 @@ test("renders next navigation when a following student exists", async () => {
 
   await fireEvent.click(screen.getByTestId("delivery-next-btn"));
   expect(onNext).toHaveBeenCalled();
+});
+
+test("asks before next discards a dirty draft, and lets the teacher keep editing", async () => {
+  const onSave = vi.fn();
+  const onNext = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave, onNext });
+  flushSync();
+
+  const comments = screen.getByTestId("delivery-comments-textarea") as HTMLTextAreaElement;
+  await fireEvent.input(comments, { target: { value: "Revisar la defensa" } });
+  flushSync();
+
+  await fireEvent.click(screen.getByTestId("delivery-next-btn"));
+  flushSync();
+
+  expect(onNext).not.toHaveBeenCalled();
+  const guard = screen.getByTestId("delivery-unsaved-guard");
+  expect(guard.textContent).toContain("Hay cambios sin guardar");
+  expect(guard.contains(document.activeElement)).toBe(true);
+
+  await fireEvent.click(screen.getByTestId("delivery-guard-cancel"));
+  flushSync();
+
+  expect(document.querySelector('[data-test-id="delivery-unsaved-guard"]')).toBeNull();
+  expect(onNext).not.toHaveBeenCalled();
+  expect(comments.value).toBe("Revisar la defensa");
+  expect(document.activeElement?.getAttribute("data-test-id")).toBe("delivery-next-btn");
+
+  await fireEvent.click(screen.getByTestId("delivery-next-btn"));
+  await fireEvent.click(screen.getByTestId("delivery-guard-discard"));
+  expect(onNext).toHaveBeenCalled();
+});
+
+test("lets a clean draft skip without a guard", async () => {
+  const onSave = vi.fn();
+  const onSkip = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave, onSkip });
+  flushSync();
+
+  await fireEvent.click(screen.getByTestId("delivery-skip-btn"));
+  flushSync();
+
+  expect(screen.queryByTestId("delivery-unsaved-guard")).toBeNull();
+  expect(onSkip).toHaveBeenCalled();
+});
+
+test("keeps Guardar as the primary action while the guard is open", async () => {
+  const onSave = vi.fn();
+  const onNext = vi.fn();
+  render(DeliveryForm, { delivery: draft(), onSave, onNext });
+  flushSync();
+
+  const grade = screen.getByTestId("delivery-grade-input") as HTMLInputElement;
+  await fireEvent.input(grade, { target: { value: "8" } });
+  await fireEvent.click(screen.getByTestId("delivery-next-btn"));
+  flushSync();
+
+  const save = screen.getByTestId("delivery-submit-btn");
+  expect(save.classList.contains("btn-primary")).toBe(true);
+  await fireEvent.click(save);
+  flushSync();
+
+  expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ grade: 8 }));
+  expect(onNext).not.toHaveBeenCalled();
 });

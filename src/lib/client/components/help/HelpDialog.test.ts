@@ -64,6 +64,8 @@ test("documents the tri-state, shortcuts, summary, AI levels, paste format and o
   for (const key of ["←", "→", "↑", "Ctrl+Z"]) {
     expect(text).toContain(key);
   }
+  expect(text).toContain("→ Presente");
+  expect(text).toContain("← Ausente");
   expect(text).toContain("3 / 4");
   expect(text).toContain("IA!!");
   expect(text).toContain("un nombre por línea");
@@ -92,6 +94,7 @@ test("switches language with the rest of the interface", async () => {
 
   const text = dialog()?.textContent ?? "";
   expect(text).toContain("Quick guide");
-  expect(text).toContain("Mark absent");
+  expect(text).toContain("→ Present");
+  expect(text).toContain("← Absent");
   expect(text).toContain("Ctrl+Z");
 });

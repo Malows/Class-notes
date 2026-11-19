@@ -32,25 +32,34 @@
           { mark: "✗", label: $t("help.legend_rejected"), tone: "absent" },
           { mark: "…", label: $t("help.legend_pending"), tone: "pending" },
           { mark: "–", label: $t("help.legend_not_delivered"), tone: "empty" },
-          { mark: "IA!", label: $t("help.legend_ai_suspicion"), tone: "ai" },
-          { mark: "IA!!", label: $t("help.legend_ai_certainty"), tone: "ai" },
+          // The label already carries the cell mark, so no second badge is drawn.
+          { mark: "", label: $t("help.legend_ai_suspicion"), tone: "ai" },
+          { mark: "", label: $t("help.legend_ai_certainty"), tone: "ai" },
         ],
   );
+
+  // The 3 / 4 pair only exists on the attendance grid; the grades legend must
+  // not borrow its summary.
+  const summary = $derived(variant === "attendance" ? $t("help.legend_summary") : null);
 
   const titleId = $derived(`${testId}-title`);
 </script>
 
 <section class="grid-legend" aria-labelledby={titleId} data-test-id={testId}>
-  <h3 id={titleId} class="grid-legend__title">{$t("help.legend_title")}</h3>
+  <h2 id={titleId} class="grid-legend__title">{$t("help.legend_title")}</h2>
   <ul class="grid-legend__items">
     {#each items as item (item.label)}
       <li class="grid-legend__item">
-        <span class="grid-legend__mark is-{item.tone}" aria-hidden="true">{item.mark}</span>
+        {#if item.mark}
+          <span class="grid-legend__mark is-{item.tone}" aria-hidden="true">{item.mark}</span>
+        {/if}
         <span class="grid-legend__label">{item.label}</span>
       </li>
     {/each}
   </ul>
-  <p class="grid-legend__summary">{$t("help.legend_summary")}</p>
+  {#if summary}
+    <p class="grid-legend__summary">{summary}</p>
+  {/if}
 </section>
 
 <style>
@@ -103,7 +112,7 @@
     padding: 0 0.125rem;
     border: 1px solid var(--color-outline-variant);
     border-radius: var(--radius-field);
-    font-size: 0.625rem;
+    font-size: var(--text-label-sm);
     font-weight: 600;
     line-height: 1;
   }

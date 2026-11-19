@@ -68,6 +68,7 @@ test("lists the registry and keeps persons without cursadas visible", async () =
   expect(apiFetchMock).toHaveBeenCalledWith("/persons?q=&limit=50&offset=0");
   expect(document.body.textContent).toContain("Ana Martinez");
   expect(document.body.textContent).toContain("Beto Gomez");
+  expect(document.body.textContent).toContain("Algebra Lineal · 2025 · 1º");
 
   const orphan = document.body.querySelector('[data-test-id="person-no-cursadas-2"]');
   expect(orphan).not.toBeNull();

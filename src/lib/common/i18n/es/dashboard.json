@@ -3,7 +3,7 @@
   "lead": "Elegí el cuatrimestre que estás dictando y entrá directo a la asistencia, las notas y lo que falta corregir.",
   "loading": "Cargando tu período…",
   "period_label": "Período lectivo",
-  "period_option": "{{year}} · {{semester}}.º cuatrimestre",
+  "period_option": "{{year}} · {{semester}}º",
   "period_active": "en curso",
   "period_active_empty": "El período en curso todavía no tiene comisiones.",
   "commissions_one": "{{count}} comisión",

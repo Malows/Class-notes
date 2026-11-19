@@ -249,8 +249,8 @@ test("opens the latest term with data and scopes every module to it", async () =
   expect(screen.getByTestId("period-active-note").textContent).toContain(
     "El período en curso",
   );
-  expect(screen.getByTestId("today-scope").textContent).toContain("2026 · 1.º cuatrimestre");
-  expect(screen.getByTestId("pending-scope").textContent).toContain("2026 · 1.º cuatrimestre");
+  expect(screen.getByTestId("today-scope").textContent).toContain("2026 · 1º");
+  expect(screen.getByTestId("pending-scope").textContent).toContain("2026 · 1º");
 
   expect(screen.getByTestId("commission-row-4").textContent).toContain("Física General I");
   expect(screen.getByTestId("commission-row-4").textContent).toContain("Comisión Virtual");
@@ -306,7 +306,7 @@ test("says so when the selected term has no commissions", async () => {
   await fireEvent.change(select, { target: { value: "2026-2" } });
   await settle();
 
-  expect(screen.getByTestId("today-empty").textContent).toContain("Sin comisiones en 2026 · 2.º");
+  expect(screen.getByTestId("today-empty").textContent).toContain("Sin comisiones en 2026 · 2º");
   expect(screen.getByTestId("pending-empty").textContent).toContain(
     "No hay entregas sin corregir",
   );

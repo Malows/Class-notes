@@ -51,16 +51,73 @@
   let d = $state({} as Delivery);
   let gradeInput = $state("");
   let gradeError = $state<"" | GradeErrorCode>("");
+  // The values this delivery arrived with. Navigation away from a dirty draft
+  // asks before dropping the edits instead of doing it silently.
+  let baseline = $state({ grade: "" as number | string, status: "", ai: 0, comments: "" });
+  let pendingAction = $state<"next" | "skip" | null>(null);
+  let guardEl = $state<HTMLElement | null>(null);
+  let guardTrigger = $state<HTMLElement | null>(null);
+
+  /** `8` and `8,0` are the same grade: compare values, not the typed text. */
+  function gradeSignature(raw: string): number | string {
+    const parsed = parseGradeInput(raw);
+    return "value" in parsed ? parsed.value : raw.trim();
+  }
 
   // Sync local state when external delivery prop changes
   $effect(() => {
-    d = {
+    const next: Delivery = {
       ...delivery,
       workflow_status: delivery.workflow_status ?? DeliveryWorkflowStatus.NOT_DICTATED,
     };
-    gradeInput = initialDraft(delivery, $locale || "es").grade;
+    const initialGrade = initialDraft(delivery, $locale || "es").grade;
+    d = next;
+    gradeInput = initialGrade;
     gradeError = "";
+    baseline = {
+      grade: gradeSignature(initialGrade),
+      status: next.workflow_status,
+      ai: Number(next.ai_level) || 0,
+      comments: next.comments ?? "",
+    };
+    pendingAction = null;
   });
+
+  const isDirty = $derived(
+    gradeSignature(gradeInput) !== baseline.grade ||
+      d.workflow_status !== baseline.status ||
+      (Number(d.ai_level) || 0) !== baseline.ai ||
+      (d.comments ?? "") !== baseline.comments,
+  );
+
+  // The guard takes focus so its message is announced before the buttons.
+  $effect(() => {
+    if (pendingAction) {
+      guardEl?.focus();
+    }
+  });
+
+  function requestAdvance(action: "next" | "skip", trigger?: HTMLElement | null) {
+    if (!isDirty) {
+      if (action === "next") onNext?.();
+      else onSkip?.();
+      return;
+    }
+    guardTrigger = trigger ?? null;
+    pendingAction = action;
+  }
+
+  function cancelGuard() {
+    pendingAction = null;
+    guardTrigger?.focus();
+  }
+
+  function discardAndAdvance() {
+    const action = pendingAction;
+    pendingAction = null;
+    if (action === "next") onNext?.();
+    else if (action === "skip") onSkip?.();
+  }
 
   // Use random suffix for IDs to ensure uniqueness
   const idSuffix = Math.random().toString(36).substring(2, 9);
@@ -256,15 +313,51 @@
 
       <hr />
 
+      {#if pendingAction}
+        <div
+          class="delivery-form__guard"
+          role="alert"
+          tabindex="-1"
+          bind:this={guardEl}
+          data-test-id="delivery-unsaved-guard"
+        >
+          <p class="delivery-form__guard-text">{$t("assignments.unsaved_changes")}</p>
+          <div class="flex flex-wrap items-center gap-2">
+            <Button
+              class="btn-error"
+              onclick={discardAndAdvance}
+              testId="delivery-guard-discard"
+            >
+              {$t("assignments.discard_and_continue")}
+            </Button>
+            <Button
+              class="btn-ghost"
+              onclick={cancelGuard}
+              testId="delivery-guard-cancel"
+            >
+              {$t("assignments.keep_editing")}
+            </Button>
+          </div>
+        </div>
+      {/if}
+
       <div class="flex flex-wrap items-center gap-2">
         {#if onPrev}
           <Button class="btn-ghost" onclick={onPrev} testId={prevTestId}>{$t("assignments.previous")}</Button>
         {/if}
         {#if onNext}
-          <Button class="btn-ghost" onclick={onNext} testId={nextTestId}>{$t("assignments.next")}</Button>
+          <Button
+            class="btn-ghost"
+            onclick={(event) => requestAdvance("next", event.currentTarget as HTMLElement | null)}
+            testId={nextTestId}>{$t("assignments.next")}</Button
+          >
         {/if}
         {#if onSkip}
-          <Button class="btn-ghost" onclick={onSkip} testId={skipTestId}>{$t("assignments.skip")}</Button>
+          <Button
+            class="btn-ghost"
+            onclick={(event) => requestAdvance("skip", event.currentTarget as HTMLElement | null)}
+            testId={skipTestId}>{$t("assignments.skip")}</Button
+          >
         {/if}
         <button type="submit" class="btn btn-primary ml-auto" data-test-id={submitTestId}>
           {$t("assignments.save")}
@@ -284,5 +377,30 @@
   .delivery-form :global(input.is-invalid),
   .delivery-form :global(select.is-invalid) {
     border-color: var(--color-error);
+  }
+
+  .delivery-form__guard {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-error) 40%, var(--color-outline));
+    border-radius: var(--radius-box);
+    background-color: color-mix(
+      in srgb,
+      var(--color-error) 6%,
+      var(--color-surface-container-lowest)
+    );
+  }
+
+  .delivery-form__guard:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .delivery-form__guard-text {
+    margin: 0;
+    color: var(--color-on-surface);
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
   }
 </style>

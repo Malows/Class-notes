@@ -401,7 +401,7 @@
 <style>
   .grade-sheet {
     width: 100%;
-    max-width: 40rem;
+    max-width: 48rem;
     margin-inline: auto;
     border: 1px solid var(--color-outline-variant);
     border-radius: var(--radius-box);
@@ -458,27 +458,27 @@
   }
 
   .grade-sheet__col-student {
-    width: 22%;
-  }
-
-  .grade-sheet__col-grade {
-    width: 10%;
-  }
-
-  .grade-sheet__col-result {
     width: 20%;
   }
 
+  .grade-sheet__col-grade {
+    width: 9%;
+  }
+
+  .grade-sheet__col-result {
+    width: 18%;
+  }
+
   .grade-sheet__col-ai {
-    width: 13%;
+    width: 24%;
   }
 
   .grade-sheet__col-comments {
-    width: 23%;
+    width: 19%;
   }
 
   .grade-sheet__col-save {
-    width: 12%;
+    width: 10%;
   }
 
   .grade-sheet__table thead th {

@@ -8,7 +8,7 @@ import DashboardPending from "./DashboardPending.svelte";
 
 configure({ testIdAttribute: "data-test-id" });
 
-const periodLabel = "2025 · 1.º cuatrimestre";
+const periodLabel = "2025 · 1º";
 
 const rows = [
   {
@@ -39,7 +39,7 @@ beforeEach(async () => {
 test("lists the commissions with pending corrections and their scope", () => {
   render(DashboardPending, { rows, periodLabel });
 
-  expect(screen.getByTestId("pending-scope").textContent).toContain("2025 · 1.º cuatrimestre");
+  expect(screen.getByTestId("pending-scope").textContent).toContain("2025 · 1º");
   expect(screen.getByTestId("pending-row-4").textContent).toContain("Álgebra Lineal");
   expect(screen.getByTestId("pending-row-4").textContent).toContain("5");
   expect(screen.getByTestId("pending-row-5").textContent).toContain("2");

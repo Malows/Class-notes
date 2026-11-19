@@ -60,7 +60,7 @@
     place-items: center;
     color: var(--color-unmarked-ink);
     font-family: var(--font-sans);
-    font-size: 1rem;
+    font-size: var(--text-headline-sm);
     line-height: 1;
   }
 </style>

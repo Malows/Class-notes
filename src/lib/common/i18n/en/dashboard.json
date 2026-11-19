@@ -3,7 +3,7 @@
   "lead": "Pick the term you are teaching and go straight to attendance, grades and what still needs correcting.",
   "loading": "Loading your term…",
   "period_label": "Academic term",
-  "period_option": "{{year}} · semester {{semester}}",
+  "period_option": "{{year}} · Term {{semester}}",
   "period_active": "current",
   "period_active_empty": "The current term has no commissions yet.",
   "commissions_one": "{{count}} commission",

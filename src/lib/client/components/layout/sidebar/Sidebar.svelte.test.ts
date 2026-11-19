@@ -117,9 +117,9 @@ test("Sidebar renders the editorial brand and static navigation", async () => {
   const aside = document.body.querySelector("aside");
   expect(aside).toBeTruthy();
   expect(document.body.querySelector('[data-test-id="sidebar-brand"]')).toBeTruthy();
-  expect(document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')).toBeTruthy();
+  expect(document.body.querySelector('[data-test-id="sidebar-item-in-class"]')).toBeTruthy();
   expect(
-    document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')?.getAttribute("href"),
+    document.body.querySelector('[data-test-id="sidebar-item-in-class"]')?.getAttribute("href"),
   ).toBe("/");
 });
 

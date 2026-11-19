@@ -20,7 +20,15 @@
   {/snippet}
 
   {#snippet footer()}
-    <button type="button" class="btn btn-ghost" onclick={onStay} data-test-id="unsaved-stay-btn">
+    <!-- Safe action first: focus lands on the non-destructive choice. -->
+    <!-- svelte-ignore a11y_autofocus -->
+    <button
+      type="button"
+      class="btn btn-ghost"
+      autofocus
+      onclick={onStay}
+      data-test-id="unsaved-stay-btn"
+    >
       {$t("common.keep_editing")}
     </button>
     <button

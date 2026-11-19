@@ -2,6 +2,8 @@
   import type { Toast } from "$lib/common/types/layout";
   import { t } from "$lib/common/i18n/config";
 
+  import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+
   interface Props {
     toast: Toast;
     onDismiss: (id: number) => void;
@@ -20,6 +22,12 @@
   role={toast.type === "error" ? "alert" : "status"}
   aria-live={toast.type === "error" ? "assertive" : "polite"}
   data-test-id={`toast-card-${toast.id}`}
+  onfocusin={() => notificationsStore.pause(toast.id)}
+  onfocusout={(event) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      notificationsStore.resume(toast.id);
+    }
+  }}
 >
   <div class="toast-body">
     <p class="toast-text" data-test-id={`toast-text-${toast.id}`}>{toast.message}</p>

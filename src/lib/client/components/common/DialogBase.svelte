@@ -93,8 +93,16 @@
     margin: auto;
   }
 
+  /* Native modal scroll containment: gestures over the backdrop or inside the
+     dialog must not chain to the page behind it. */
+  dialog.native-dialog:modal {
+    overscroll-behavior: contain;
+  }
+
   dialog.native-dialog::backdrop {
     background-color: var(--color-scrim);
+    overflow: hidden;
+    overscroll-behavior: contain;
   }
 
   .modal-header {

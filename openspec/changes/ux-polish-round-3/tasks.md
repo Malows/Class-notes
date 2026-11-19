@@ -50,10 +50,10 @@
 - [x] 7.1 Audit token references and remove only aliases with zero usages, keeping daisyUI role tokens
 - [x] 7.2 Document the ink, scrim and icon-family tokens in `DESIGN.md`; keep the compact map
 - [x] 7.3 Refresh `.impeccable/design.json` with the `document` workflow after the code lands
-- [ ] 7.4 Verify both themes and the detector after the cleanup
+- [x] 7.4 Verify both themes and the detector after the cleanup
 
 ## 8. Verification
 
 - [x] 8.1 Run `pnpm check`, `pnpm lint`, `pnpm validate:i18n`, `pnpm test:server`, `pnpm test:client` and `pnpm build`
-- [ ] 8.2 Verify at 390/1440 light and dark: guard on Back, undo window, summary aggregates, compact registry, term link
-- [ ] 8.3 Run a final Impeccable pass and record the updated score
+- [x] 8.2 Verify at 390/1440 light and dark: guard on Back, undo window, summary aggregates, compact registry, term link
+- [x] 8.3 Run a final Impeccable pass and record the updated score

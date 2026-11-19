@@ -4,8 +4,8 @@
 
 - [x] 1.1 Extend the toast store and container with an optional action button (label + callback) without changing existing toasts
 - [x] 1.2 Add a `deferredDelete` client helper with a ~6 s timer, `undo()`, flush, failure callback and cleanup
-- [ ] 1.3 Add a `useNavigationGuard` composable built on `beforeNavigate` + `beforeunload`, with cancel/confirm and a save-first path
-- [ ] 1.4 Unit-test the helper and composable with fake timers: undo, timeout commit, flush, save failure, clean form bypass
+- [x] 1.3 Add a `useNavigationGuard` composable built on `beforeNavigate` + `beforeunload`, with cancel/confirm and a save-first path
+- [x] 1.4 Unit-test the helper and composable with fake timers: undo, timeout commit, flush, save failure, clean form bypass
 
 ## 2. Unsaved-changes guard
 

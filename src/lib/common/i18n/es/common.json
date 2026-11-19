@@ -19,5 +19,10 @@
   "error_code": "Error {{code}}",
   "error_not_found": "No encontramos esa página.",
   "error_generic": "Algo salió mal al cargar esta página.",
-  "go_dashboard": "Ir al inicio"
+  "go_dashboard": "Ir al inicio",
+  "unsaved_title": "Hay cambios sin guardar",
+  "unsaved_message": "Si salís ahora, los cambios que no guardaste se pierden.",
+  "save_and_leave": "Guardar y salir",
+  "discard_and_leave": "Descartar y salir",
+  "keep_editing": "Seguir editando"
 }

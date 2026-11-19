@@ -14,6 +14,7 @@
     buildCommissionItems,
     buildPeriodItems,
     buildSubjectItems,
+    currentTermHref,
     termToSemester,
     type SidebarContextLink,
   } from "./sidebar-context";
@@ -41,6 +42,14 @@
       year: periodData.year,
       semester: termToSemester(periodData.term),
     } as never)}`;
+  });
+
+  // The active term is global, so the shortcut opens the period's subject list
+  // rather than an arbitrary subject's period index.
+  const currentTermLink = $derived.by(() => {
+    const periodData = metadataContext?.periodData;
+    if (!periodData) return null;
+    return currentTermHref(periodData.year, termToSemester(periodData.term));
   });
 
   // Trigger guarded loads for the current context so empty stores populated
@@ -77,18 +86,6 @@
       }
     }
   });
-
-  const metadataSubjectItems = $derived(
-    metadataContext?.subjects?.length
-      ? metadataContext.subjects.map((subject) => ({
-          id: Number(subject.id),
-          href: subject.href,
-          label: subject.name,
-          shortLabel: subject.name.substring(0, 2).toUpperCase(),
-          isActive: false,
-        }))
-      : [],
-  );
 
   const subjectItems = $derived(
     context.facultySlug
@@ -207,10 +204,6 @@
       : [],
   );
 
-  const activeMetadataSubjects = $derived(
-    metadataContext?.subjects?.length ? metadataSubjectItems : [],
-  );
-
   const hasMetadataContext = $derived(
     Boolean(metadataContext?.periodData || metadataContext?.subjects?.length),
   );
@@ -232,16 +225,28 @@
       />
     {/if}
 
-    {#if activeMetadataSubjects.length > 0}
+    {#if currentTermLink}
       <div
         class={locationItems.length > 0 ? "border-t border-base-300 pt-3" : ""}
         data-test-id="sidebar-current-term"
       >
-        <SidebarContextSection
-          heading={currentTermHeading}
-          isCollapsed={false}
-          items={activeMetadataSubjects}
-        />
+        <p
+          class="m-0 px-2 text-label-sm uppercase tracking-[0.04em] text-on-surface-variant"
+          data-test-id="sidebar-current-term-label"
+        >
+          {$t("layout.active_term")}
+        </p>
+        <a
+          href={currentTermLink}
+          title={currentTermHeading}
+          class="mt-1 flex items-center gap-2 rounded-[var(--radius-field)] px-2 py-1.5 text-body-sm text-on-surface-variant transition-colors hover:bg-base-200 hover:text-base-content"
+          data-test-id="sidebar-current-term-link"
+        >
+          <span class="material-symbols-outlined shrink-0 text-[18px]" aria-hidden="true">
+            arrow_forward
+          </span>
+          <span class="min-w-0 truncate">{currentTermHeading}</span>
+        </a>
       </div>
     {:else if context.facultySlug}
       <SidebarContextSection

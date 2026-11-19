@@ -41,9 +41,9 @@
 
 ## 6. Term context
 
-- [ ] 6.1 Move the dashboard fallback note directly under the period picker
-- [ ] 6.2 Point the sidebar current-term shortcut at `/periods/{year}/{semester}/subjects` and keep it outside the viewed-context trail
-- [ ] 6.3 Test the shortcut target and the note placement in both locales
+- [x] 6.1 Move the dashboard fallback note directly under the period picker
+- [x] 6.2 Point the sidebar current-term shortcut at `/periods/{year}/{semester}/subjects` and keep it outside the viewed-context trail
+- [x] 6.3 Test the shortcut target and the note placement in both locales
 
 ## 7. Design system and docs
 

@@ -5,7 +5,7 @@
   "period_label": "Academic term",
   "period_option": "{{year}} · Term {{semester}}",
   "period_active": "current",
-  "period_active_empty": "The current term has no commissions yet.",
+  "period_active_empty": "The current term has no commissions. Showing {{period}}.",
   "commissions_one": "{{count}} commission",
   "commissions_other": "{{count}} commissions",
   "students_one": "{{count}} student",

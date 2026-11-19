@@ -177,7 +177,7 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
   expect(apiFetchMock).toHaveBeenCalledWith("/commissions");
 });
 
-test("Sidebar renders metadata context when available", async () => {
+test("Sidebar links the current term to the global period view", async () => {
   await loadTranslations("en", "/");
   metadataStore.initializeStore({
     periodData: { year: 2026, term: "Cuatrimestre I" },
@@ -188,11 +188,17 @@ test("Sidebar renders metadata context when available", async () => {
   flushSync();
 
   expect(document.body.textContent).toContain("Go to current term · 2026 · Term 1");
-  const subjectLink = document.body.querySelector(
-    'a[href="/faculties/1/subjects/1/periods"]',
+  const shortcut = document.body.querySelector(
+    '[data-test-id="sidebar-current-term-link"]',
   ) as HTMLAnchorElement;
-  expect(subjectLink).not.toBeNull();
-  expect(subjectLink.textContent).toContain("Algoritmos");
+  expect(shortcut).not.toBeNull();
+  expect(shortcut.getAttribute("href")).toBe("/periods/2026/1/subjects");
+  expect(shortcut.getAttribute("aria-current")).toBeNull();
+  expect(shortcut.textContent).toContain("Go to current term · 2026 · Term 1");
+  // The metadata subject entry is not a destination of the shortcut any more.
+  expect(
+    document.body.querySelector('a[href="/faculties/1/subjects/1/periods"]'),
+  ).toBeNull();
 });
 
 test("Sidebar reacts to metadata initialized after mount", async () => {
@@ -202,6 +208,7 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   flushSync();
 
   expect(document.body.textContent).not.toContain("Go to current term");
+  expect(document.body.querySelector('[data-test-id="sidebar-current-term-link"]')).toBeNull();
 
   metadataStore.initializeStore({
     periodData: { year: 2026, term: "Cuatrimestre II" },
@@ -210,6 +217,11 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   flushSync();
 
   expect(document.body.textContent).toContain("Go to current term · 2026 · Term 2");
+  expect(
+    document.body.querySelector('[data-test-id="sidebar-current-term-link"]')?.getAttribute(
+      "href",
+    ),
+  ).toBe("/periods/2026/2/subjects");
 });
 
 function sectionLinks(headingText: string): HTMLAnchorElement[] {
@@ -262,5 +274,10 @@ test("Sidebar mirrors the viewed cursada and keeps the current-term shortcut sep
   const shortcut = document.body.querySelector('[data-test-id="sidebar-current-term"]');
   expect(shortcut?.className).toContain("border-t");
   expect(shortcut?.textContent).toContain("Go to current term · 2026 · Term 2");
+  const shortcutLink = shortcut?.querySelector(
+    '[data-test-id="sidebar-current-term-link"]',
+  ) as HTMLAnchorElement;
+  expect(shortcutLink.getAttribute("href")).toBe("/periods/2026/2/subjects");
+  expect(shortcutLink.hasAttribute("aria-current")).toBe(false);
   expect(location.some((link) => link.textContent?.trim() === "Algoritmos")).toBe(false);
 });

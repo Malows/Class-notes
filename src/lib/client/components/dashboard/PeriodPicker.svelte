@@ -16,6 +16,17 @@
   const showActiveNote = $derived(
     active !== null && !active.hasData && selected?.key !== active.key,
   );
+  const selectedLabel = $derived(
+    selected
+      ? $t("dashboard.period_option", {
+          year: selected.year,
+          semester: selected.semester,
+        } as never)
+      : "",
+  );
+  const activeNote = $derived(
+    $t("dashboard.period_active_empty", { period: selectedLabel } as never),
+  );
 </script>
 
 <section
@@ -47,6 +58,14 @@
         </option>
       {/each}
     </select>
+    {#if showActiveNote}
+      <p
+        class="m-0 mt-1 max-w-prose text-body-sm text-on-surface-variant"
+        data-test-id="period-active-note"
+      >
+        {activeNote}
+      </p>
+    {/if}
   </div>
 
   <div class="flex min-w-0 flex-col gap-1 md:items-end md:text-right">
@@ -59,11 +78,6 @@
         {selected.studentCount === 1
           ? $t("dashboard.students_one", { count: selected.studentCount } as never)
           : $t("dashboard.students_other", { count: selected.studentCount } as never)}
-      </p>
-    {/if}
-    {#if showActiveNote}
-      <p class="m-0 text-body-sm text-on-surface-variant" data-test-id="period-active-note">
-        {$t("dashboard.period_active_empty")}
       </p>
     {/if}
   </div>

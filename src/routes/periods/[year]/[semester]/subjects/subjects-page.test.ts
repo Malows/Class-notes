@@ -70,7 +70,7 @@ describe("period subjects page", () => {
     await flush();
     flushSync();
 
-    expect(document.body.textContent).toContain("Periodo: 2026 / 1");
+    expect(document.body.textContent).toContain("2026 · 1º");
     expect(document.body.textContent).toContain("Física General I");
     expect(getByYearSemesterMock).toHaveBeenCalledWith(2026, 1);
     expect(getByPeriodMock).toHaveBeenCalledWith(4);

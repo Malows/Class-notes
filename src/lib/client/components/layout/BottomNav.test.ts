@@ -39,6 +39,7 @@ test("renders the four primary destinations", () => {
     "/periods",
     "/persons",
   ]);
+  expect(document.body.textContent).toContain("In class");
   expect(document.body.textContent).toContain("Faculties");
   expect(document.body.textContent).toContain("Students");
 });

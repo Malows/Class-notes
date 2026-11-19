@@ -43,7 +43,6 @@
 
 {#if grid.length === 0}
   <EmptyState
-    icon="👤"
     title={$t("commissions.no_students_message")}
     testId="empty-students-card"
   >
@@ -69,7 +68,6 @@
   </EmptyState>
 {:else if assignments.length === 0}
   <EmptyState
-    icon="✏️"
     title={$t("commissions.no_assignments_message")}
     testId="empty-assignments-card"
   >

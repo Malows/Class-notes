@@ -69,6 +69,11 @@ const config = {
       loader: async () => (await import("./en/layout.json")).default,
     },
     {
+      locale: "en",
+      key: "help",
+      loader: async () => (await import("./en/help.json")).default,
+    },
+    {
       locale: "es",
       key: "common",
       loader: async () => (await import("./es/common.json")).default,
@@ -132,6 +137,11 @@ const config = {
       locale: "es",
       key: "layout",
       loader: async () => (await import("./es/layout.json")).default,
+    },
+    {
+      locale: "es",
+      key: "help",
+      loader: async () => (await import("./es/help.json")).default,
     },
   ],
 };

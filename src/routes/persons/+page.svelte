@@ -75,7 +75,10 @@
 
   const lastCursada = (row: PersonRegistryRow) =>
     row.last_subject_name
-      ? `${row.last_subject_name} · ${row.last_period_year}-${row.last_period_semester}`
+      ? `${row.last_subject_name} · ${$t("layout.period_short", {
+          year: row.last_period_year,
+          semester: row.last_period_semester,
+        } as never)}`
       : null;
 
   onMount(() => load());

@@ -11,11 +11,13 @@
 -->
 <button
   type="button"
-  class="btn btn-ghost btn-sm btn-circle"
+  class="btn btn-ghost btn-sm px-1.5"
   onclick={themeStore.toggleLanguage}
   aria-label={$t("layout.language_spanish")}
   aria-pressed={$locale === "es"}
   data-test-id="language-toggle-btn"
 >
-  <span class="text-sm leading-none">{$locale === "es" ? themeStore.esFlag : "🇬🇧"}</span>
+  <span class="text-[0.8125rem] leading-none tracking-[-0.12em]" aria-hidden="true"
+    >{$locale === "es" ? "🇦🇷🇨🇴" : "🇬🇧"}</span
+  >
 </button>

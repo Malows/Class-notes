@@ -67,6 +67,9 @@ test("renders the commission grid with cells and summaries", async () => {
   render(AttendanceGrid, { grid: baseGrid(), canEdit: false });
 
   expect(screen.getByTestId("attendance-grid")).toBeTruthy();
+  expect(screen.getByTestId("attendance-grid").textContent).toContain("Presentes / registradas");
+  expect(screen.getByTestId("attendance-legend")).toBeTruthy();
+  expect(screen.getByTestId("attendance-legend").textContent).toContain("Sin tomar");
   expect(screen.getByText("Ana Martínez")).toBeTruthy();
   expect(screen.getByTestId("attendance-cell-1-10").textContent?.trim()).toBe("✓");
   expect(screen.getByTestId("attendance-cell-1-11").textContent?.trim()).toBe("–");

@@ -4,6 +4,7 @@
   import Breadcrumbs from "./Breadcrumbs.svelte";
   import ThemeToggle from "./ThemeToggle.svelte";
   import LanguageToggle from "./LanguageToggle.svelte";
+  import HelpDialog from "$lib/client/components/help/HelpDialog.svelte";
 </script>
 
 <header
@@ -21,6 +22,7 @@
   </div>
 
   <div class="flex shrink-0 items-center gap-1">
+    <HelpDialog />
     <LanguageToggle />
     <ThemeToggle />
   </div>

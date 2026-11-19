@@ -5,6 +5,7 @@
   import Button from "$lib/client/components/common/Button.svelte";
   import MobileCard from "$lib/client/components/common/MobileCard.svelte";
   import ResponsiveTable from "$lib/client/components/common/ResponsiveTable.svelte";
+  import RowActions from "$lib/client/components/common/RowActions.svelte";
   import StudentRow from "../rows/StudentRow.svelte";
 
   interface Props {
@@ -33,13 +34,17 @@
       testId="student-card-{enrollment.id}"
     >
       {#snippet actions()}
-        <Button
-          class="btn-ghost btn-sm"
-          onclick={() => onDelete(enrollment)}
-          testId="mobile-delete-btn-{enrollment.id}"
-        >
-          {$t("common.delete")}
-        </Button>
+        <RowActions label={enrollment.name} testId="student-card-actions-{enrollment.id}">
+          {#snippet destructive()}
+            <Button
+              onclick={() => onDelete(enrollment)}
+              testId="mobile-delete-btn-{enrollment.id}"
+              withHover
+            >
+              {$t("common.delete")}
+            </Button>
+          {/snippet}
+        </RowActions>
       {/snippet}
     </MobileCard>
   {/snippet}

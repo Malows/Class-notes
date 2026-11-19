@@ -30,11 +30,10 @@ test("navStore.breadcrumbs renders root Home breadcrumb by default", async () =>
   await loadTranslations("en", "/");
 
   expect(navStore.breadcrumbs).toHaveLength(1);
-  expect(navStore.breadcrumbs[0]?.key).toBe("layout.home");
-  expect(navStore.breadcrumbs[0]?.href).toBe("/");
+  expect(navStore.breadcrumbs[0]).toEqual({ kind: "home", key: "layout.home", href: "/" });
 });
 
-test("navStore.breadcrumbs dynamically builds static index breadcrumbs", async () => {
+test("navStore.breadcrumbs names every level of the cursada instead of route types", async () => {
   await loadTranslations("en", "/");
 
   mockParams = {
@@ -50,35 +49,82 @@ test("navStore.breadcrumbs dynamically builds static index breadcrumbs", async (
 
   const crumbs = navStore.breadcrumbs;
 
-  expect(crumbs).toHaveLength(6);
-  expect(crumbs[0]).toEqual({ key: "layout.home", href: "/" });
-  expect(crumbs[1]).toEqual({ key: "layout.faculties", href: "/faculties" });
-  expect(crumbs[2]).toEqual({
-    key: "layout.subjects",
+  expect(crumbs).toHaveLength(5);
+  expect(crumbs[0]).toEqual({
+    kind: "faculty",
+    key: "layout.faculty",
+    slug: "facultad-de-ingenieria",
     href: "/faculties/facultad-de-ingenieria/subjects",
   });
-  expect(crumbs[3]).toEqual({
-    key: "layout.periods",
+  expect(crumbs[1]).toEqual({
+    kind: "subject",
+    key: "layout.subject",
+    slug: "algebra-lineal",
     href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods",
   });
-  expect(crumbs[4]).toEqual({
-    key: "layout.commissions",
+  expect(crumbs[2]).toEqual({
+    kind: "period",
+    key: "layout.period",
+    year: 2026,
+    semester: 1,
     href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions",
   });
-  expect(crumbs[5]).toEqual({
+  expect(crumbs[3]).toEqual({
+    kind: "commission",
+    key: "layout.commission",
+    slug: "comision-manana",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/overview",
+  });
+  expect(crumbs[4]).toEqual({
+    kind: "section",
     key: "layout.overview",
     href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/overview",
   });
 });
 
-test("navStore.breadcrumbs includes faculties subpath step when faculties is present", async () => {
+test("navStore.breadcrumbs collapses to the faculty name on the faculty index", async () => {
   await loadTranslations("en", "/");
 
   mockUrl = new URL("http://localhost/faculties");
 
   const crumbs = navStore.breadcrumbs;
   expect(crumbs).toHaveLength(2);
-  expect(crumbs[1]).toEqual({ key: "layout.faculties", href: "/faculties" });
+  expect(crumbs[0]).toEqual({ kind: "home", key: "layout.home", href: "/" });
+  expect(crumbs[1]).toEqual({ kind: "section", key: "layout.faculties", href: "/faculties" });
+});
+
+test("navStore.breadcrumbs names the faculty and the subjects section on its index", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = { faculty: "facultad-de-ingenieria" };
+  mockUrl = new URL("http://localhost/faculties/facultad-de-ingenieria/subjects");
+
+  const crumbs = navStore.breadcrumbs;
+  expect(crumbs).toHaveLength(2);
+  expect(crumbs[0]?.kind).toBe("faculty");
+  expect(crumbs[0]?.slug).toBe("facultad-de-ingenieria");
+  expect(crumbs[1]).toEqual({
+    kind: "section",
+    key: "layout.subjects",
+    href: "/faculties/facultad-de-ingenieria/subjects",
+  });
+});
+
+test("navStore.breadcrumbs names the subject and the periods section", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = { faculty: "facultad-de-ingenieria", subject: "algebra-lineal" };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods",
+  );
+
+  const crumbs = navStore.breadcrumbs;
+  expect(crumbs.map((crumb) => crumb.kind)).toEqual(["faculty", "subject", "section"]);
+  expect(crumbs.at(-1)).toEqual({
+    kind: "section",
+    key: "layout.periods",
+    href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods",
+  });
 });
 
 test("navStore.breadcrumbs names the commission attendance view", async () => {
@@ -95,8 +141,16 @@ test("navStore.breadcrumbs names the commission attendance view", async () => {
     "http://localhost/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/attendance",
   );
 
-  const last = navStore.breadcrumbs.at(-1);
-  expect(last).toEqual({
+  const crumbs = navStore.breadcrumbs;
+  expect(crumbs.map((crumb) => crumb.kind)).toEqual([
+    "faculty",
+    "subject",
+    "period",
+    "commission",
+    "section",
+  ]);
+  expect(crumbs.at(-1)).toEqual({
+    kind: "section",
     key: "attendance.commission_title",
     href: "/faculties/facultad-de-ingenieria/subjects/algebra-lineal/periods/2026/1/commissions/comision-manana/attendance",
   });
@@ -149,11 +203,30 @@ test("navStore.breadcrumbs names the students registry and a person detail", asy
   await loadTranslations("en", "/");
 
   mockUrl = new URL("http://localhost/persons");
+  expect(navStore.breadcrumbs[0]).toEqual({ kind: "home", key: "layout.home", href: "/" });
   expect(navStore.breadcrumbs.at(-1)).toEqual({
+    kind: "section",
     key: "persons.index_title",
     href: "/persons",
   });
 
   mockUrl = new URL("http://localhost/persons/7");
   expect(navStore.breadcrumbs.at(-1)?.key).toBe("persons.detail_title");
+});
+
+test("navStore.breadcrumbs labels a global period with its year and semester", async () => {
+  await loadTranslations("en", "/");
+
+  mockParams = { year: "2026", semester: "2" };
+  mockUrl = new URL("http://localhost/periods/2026/2/subjects");
+
+  const crumbs = navStore.breadcrumbs;
+  expect(crumbs.map((crumb) => crumb.kind)).toEqual(["home", "section", "period"]);
+  expect(crumbs.at(-1)).toEqual({
+    kind: "period",
+    key: "layout.period",
+    year: 2026,
+    semester: 2,
+    href: "/periods/2026/2/subjects",
+  });
 });

@@ -30,7 +30,7 @@
     <MobileCard title={`${period.year} · ${period.semester}º`} testId="period-card-{period.id}">
       {#snippet actions()}
         <RowActions
-          label={`${period.year} - ${period.semester}º`}
+          label={`${period.year} · ${period.semester}º`}
           testId="period-card-actions-{period.id}"
         >
           {#snippet primary()}

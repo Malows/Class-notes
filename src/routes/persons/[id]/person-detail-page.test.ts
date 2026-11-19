@@ -97,6 +97,8 @@ test("renders the person and their cursadas with the commission link", async () 
   expect(document.body.textContent).toContain("Juan Pérez");
   expect(document.body.textContent).toContain("ING-001");
   expect(document.body.textContent).toContain("Álgebra Lineal");
+  expect(document.body.textContent).toContain("2025 · 1º");
+  expect(document.body.textContent).not.toContain("2025 - 1º");
 
   const link = document.body.querySelector(
     '[data-test-id="person-cursada-link-10"]',
@@ -132,7 +134,37 @@ test("shows the not-found state for an unknown person", async () => {
 
   const notFound = document.body.querySelector('[data-test-id="person-detail-not-found"]');
   expect(notFound).not.toBeNull();
-  expect(document.body.textContent).toContain("no existe");
+  expect(notFound?.textContent).toContain("No encontramos a este alumno");
+  expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')?.textContent).not.toContain(
+    "no pudo cargarse",
+  );
+});
+
+test("distinguishes a load failure from a missing person and retries", async () => {
+  apiFetchMock
+    .mockRejectedValueOnce(new Error("Simulated server failure"))
+    .mockResolvedValueOnce(detail);
+
+  component = mount(PersonDetailPage, { target: document.body });
+  flushSync();
+  await flush();
+  flushSync();
+
+  expect(document.body.textContent).toContain("No se pudo cargar el alumno");
+  expect(document.body.querySelector('[data-test-id="person-detail-not-found"]')).toBeNull();
+
+  const retry = [...document.body.querySelectorAll("button")].find((button) =>
+    button.textContent?.includes("Reintentar"),
+  );
+  expect(retry).toBeDefined();
+  retry?.click();
+  flushSync();
+  await flush();
+  flushSync();
+
+  expect(apiFetchMock).toHaveBeenCalledTimes(2);
+  expect(document.body.textContent).toContain("Juan Pérez");
+  expect(document.body.textContent).not.toContain("No se pudo cargar el alumno");
 });
 
 test("edits the person from the registry detail", async () => {
@@ -197,6 +229,17 @@ test("deletes the person after confirming and returns to the registry", async ()
     '[data-test-id="delete-person-btn"]',
   ) as HTMLElement;
   expect(deleteButton).not.toBeNull();
+
+  // Delete is behind the page's disclosure, not a filled page-level button.
+  const actions = document.body.querySelector(
+    '[data-test-id="person-actions"]',
+  ) as HTMLDetailsElement;
+  expect(actions).not.toBeNull();
+  expect(actions.open).toBe(false);
+  expect(deleteButton.closest("details")).toBe(actions);
+  expect(deleteButton.className).not.toContain("btn-error");
+
+  actions.open = true;
   deleteButton.click();
   flushSync();
 

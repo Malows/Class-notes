@@ -6,6 +6,7 @@
   import { abbreviateTitle } from "$lib/client/utils/abbreviate-title";
   import Button from "$lib/client/components/common/Button.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
+  import GridLegend from "$lib/client/components/grids/GridLegend.svelte";
 
   import AttendanceCell from "./AttendanceCell.svelte";
 
@@ -37,7 +38,6 @@
 
 {#if grid.rows.length === 0}
   <EmptyState
-    icon="👤"
     title={$t("attendance.empty_students")}
     testId="attendance-empty-students"
   >
@@ -63,7 +63,6 @@
   </EmptyState>
 {:else if grid.assignments.length === 0}
   <EmptyState
-    icon="✏️"
     title={$t("attendance.empty_assignments")}
     testId="attendance-empty-assignments"
   >
@@ -157,6 +156,7 @@
       <div></div>
     </div>
   </div>
+  <GridLegend variant="attendance" testId="attendance-legend" />
 {/if}
 
 <style>
@@ -164,7 +164,7 @@
     display: grid;
     grid-template-columns:
       clamp(148px, 40vw, 192px) repeat(var(--cols, 1), clamp(2.75rem, 3.2rem, 96px))
-      clamp(3.5rem, 4.5rem, 96px);
+      clamp(4.5rem, 5.5rem, 96px);
     gap: 0.25rem;
     width: 100%;
     overflow-x: auto;
@@ -192,13 +192,23 @@
     text-transform: uppercase;
   }
 
-  .attendance-grid__assignment-head,
-  .attendance-grid__summary-head {
+  .attendance-grid__assignment-head {
     overflow: hidden;
     text-align: center;
     font-size: 0.6875rem;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  /* The summary header names the pair it reports (present / recorded), so it
+     wraps instead of truncating into a bare "taken". */
+  .attendance-grid__summary-head {
+    overflow: hidden;
+    text-align: center;
+    font-size: 0.6875rem;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
   }
 
   .attendance-grid__take {

@@ -94,11 +94,7 @@
   }
 
   dialog.native-dialog::backdrop {
-    background-color: rgba(28, 28, 26, 0.4);
-  }
-
-  :global([data-theme="classnotes-dark"]) dialog.native-dialog::backdrop {
-    background-color: rgba(5, 5, 3, 0.72);
+    background-color: var(--color-scrim);
   }
 
   .modal-header {

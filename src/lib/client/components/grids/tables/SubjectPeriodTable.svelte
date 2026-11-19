@@ -35,7 +35,7 @@
     >
       {#snippet actions()}
         <RowActions
-          label={`${period.year} - ${period.semester}º`}
+          label={`${period.year} · ${period.semester}º`}
           testId="subject-period-card-actions-{period.id}"
         >
           {#snippet primary()}

@@ -59,27 +59,29 @@
         <RowActions label={commission.name} testId="commission-card-actions-{commission.id}">
           {#snippet primary()}
             <Button
+              href="{rootPath(commission)}/attendance"
+              testId="mobile-view-attendance-btn-{commission.id}"
+              withHover
+              class="btn-primary"
+            >
+              {$t("attendance.commission_title")}
+            </Button>
+            <Button
+              href="{rootPath(commission)}/overview"
+              testId="mobile-view-overview-btn-{commission.id}"
+              withHover
+              class="btn-ghost"
+            >
+              {$t("layout.overview")}
+            </Button>
+          {/snippet}
+          {#snippet overflow()}
+            <Button
               href="{rootPath(commission)}/students"
               testId="mobile-view-students-btn-{commission.id}"
               withHover
             >
               {$t("layout.students_list")}
-            </Button>
-          {/snippet}
-          {#snippet overflow()}
-            <Button
-              href="{rootPath(commission)}/overview"
-              testId="mobile-view-overview-btn-{commission.id}"
-              withHover
-            >
-              {$t("layout.overview")}
-            </Button>
-            <Button
-              href="{rootPath(commission)}/attendance"
-              testId="mobile-view-attendance-btn-{commission.id}"
-              withHover
-            >
-              {$t("attendance.commission_title")}
             </Button>
             <Button
               onclick={() => onEdit(commission)}

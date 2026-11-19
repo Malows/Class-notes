@@ -26,6 +26,17 @@ colors:
   ink-secondary-night: "#b9b7ab"
   ink-muted-night: "#8b8a7e"
   ink-blue-night: "#b5c4ff"
+  success-ink: "#0b5f36"
+  error-ink: "#9e1b18"
+  warning-ink: "#7a4300"
+  success-ink-night: "#7ee6a2"
+  error-ink-night: "#ffc6bf"
+  warning-ink-night: "#ffd08d"
+  unmarked-ink-night: "#b9b7ab"
+  # Text selection reuses primary-fixed / on-primary-fixed in both themes
+  # (Blue Wash #dce1ff on Deep Ink #00164e; night #16408f with #dce1ff).
+  scrim: "rgba(28, 28, 26, 0.4)"
+  scrim-night: "rgba(5, 5, 3, 0.72)"
 typography:
   display:
     fontFamily: "Newsreader Variable, Newsreader, ui-serif, Georgia, serif"
@@ -89,6 +100,12 @@ typography:
     fontWeight: 600
     lineHeight: "0.875rem"
     letterSpacing: "0.04em"
+  icon:
+    fontFamily: "Material Symbols Outlined"
+    fontSize: "24px"
+    fontWeight: 400
+    lineHeight: "1"
+    fontVariationSettings: "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24"
 rounded:
   field: "0.25rem"
   box: "0.5rem"
@@ -157,8 +174,8 @@ components:
 
 <!-- impeccable:design-map -->
 Name: Class Notes
-Colors: primary: ink-blue #2f5fe0; secondary: emerald-mark #006d3a; tertiary: info-blue #0045c5; neutral: paper-canvas #fbf9f2; primary: ink-blue-wash #dce1ff; primary: ink-blue-deep #00164e (+18 more in the sidecar)
-Fonts: Newsreader Variable (display, display-mobile, headline-lg, headline-md, headline-sm); Inter Variable (title-md, body-lg, body-md, body-sm, label-md, label-sm)
+Colors: primary: ink-blue #2f5fe0; secondary: emerald-mark #006d3a; tertiary: info-blue #0045c5; neutral: paper-canvas #fbf9f2; primary: ink-blue-wash #dce1ff; primary: ink-blue-deep #00164e (+28 more in the sidecar)
+Fonts: Newsreader Variable (display, display-mobile, headline-lg, headline-md, headline-sm); Inter Variable (title-md, body-lg, body-md, body-sm, label-md, label-sm); Material Symbols Outlined (icon)
 Spacing: 1 0.25rem, 2 0.5rem, 3 0.75rem, 4 1rem, 6 1.5rem, 8 2rem, 9 2.25rem
 Radius: field 0.25rem, box 0.5rem, circle 9999px
 North Star: "The Academic Notebook"

@@ -117,8 +117,10 @@ test("Sidebar renders the editorial brand and static navigation", async () => {
   const aside = document.body.querySelector("aside");
   expect(aside).toBeTruthy();
   expect(document.body.querySelector('[data-test-id="sidebar-brand"]')).toBeTruthy();
-  expect(document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')).toBeTruthy();
-  expect(document.body.querySelector('[data-test-id="sidebar-item-dashboard"]')?.getAttribute("href")).toBe("/");
+  expect(document.body.querySelector('[data-test-id="sidebar-item-in-class"]')).toBeTruthy();
+  expect(
+    document.body.querySelector('[data-test-id="sidebar-item-in-class"]')?.getAttribute("href"),
+  ).toBe("/");
 });
 
 test("Sidebar loads context stores and renders real sibling items as links", async () => {
@@ -154,11 +156,13 @@ test("Sidebar loads context stores and renders real sibling items as links", asy
   expect(subjectLink.textContent).toContain("Análisis Matemático I");
 
   // Period of the subject with a direct link
-  const periodLink = document.body.querySelector(
-    'a[href="/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions"]',
-  ) as HTMLAnchorElement;
-  expect(periodLink).not.toBeNull();
-  expect(periodLink.textContent).toContain("2026 - 1º");
+  const periodLink = sectionLinks("Periods").find(
+    (link) =>
+      link.getAttribute("href") ===
+      "/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions",
+  );
+  expect(periodLink).not.toBeUndefined();
+  expect(periodLink?.textContent).toContain("2026 · Term 1");
 
   // Commission with a direct link
   const commissionLink = document.body.querySelector(
@@ -183,7 +187,7 @@ test("Sidebar renders metadata context when available", async () => {
   mountWithContext();
   flushSync();
 
-  expect(document.body.textContent).toContain("Active term (2026 - Cuatrimestre I)");
+  expect(document.body.textContent).toContain("Go to current term · 2026 · Term 1");
   const subjectLink = document.body.querySelector(
     'a[href="/faculties/1/subjects/1/periods"]',
   ) as HTMLAnchorElement;
@@ -197,7 +201,7 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   mountWithContext();
   flushSync();
 
-  expect(document.body.textContent).not.toContain("Active term");
+  expect(document.body.textContent).not.toContain("Go to current term");
 
   metadataStore.initializeStore({
     periodData: { year: 2026, term: "Cuatrimestre II" },
@@ -205,5 +209,58 @@ test("Sidebar reacts to metadata initialized after mount", async () => {
   });
   flushSync();
 
-  expect(document.body.textContent).toContain("Active term (2026 - Cuatrimestre II)");
+  expect(document.body.textContent).toContain("Go to current term · 2026 · Term 2");
+});
+
+function sectionLinks(headingText: string): HTMLAnchorElement[] {
+  const heading = Array.from(
+    document.body.querySelectorAll('[data-test-id="sidebar-context-heading"]'),
+  ).find((item) => item.textContent?.trim() === headingText);
+  const section = heading?.parentElement;
+  return Array.from(section?.querySelectorAll("a") ?? []) as HTMLAnchorElement[];
+}
+
+test("Sidebar mirrors the viewed cursada and keeps the current-term shortcut separate", async () => {
+  await loadTranslations("en", "/");
+  metadataStore.initializeStore({
+    periodData: { year: 2026, term: "Cuatrimestre II" },
+    subjects: [{ id: "1", name: "Algoritmos", href: "/faculties/1/subjects/1/periods" }],
+  });
+
+  mockParams = {
+    faculty: "facultad-de-ingenieria",
+    subject: "analisis-matematico-i",
+    year: "2026",
+    semester: "1",
+    commission: "comision-a",
+  };
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions/comision-a/attendance",
+  );
+
+  mountWithContext();
+  flushSync();
+  await flush();
+  flushSync();
+
+  const location = sectionLinks("You are viewing");
+  expect(location.map((link) => link.textContent?.trim())).toEqual([
+    "Facultad de Ingeniería",
+    "Análisis Matemático I",
+    "2026 · Term 1",
+    "Comisión A",
+  ]);
+
+  const commissionLink = location.at(-1);
+  expect(commissionLink?.getAttribute("href")).toBe(
+    "/faculties/facultad-de-ingenieria/subjects/analisis-matematico-i/periods/2026/1/commissions/comision-a/overview",
+  );
+  expect(commissionLink?.getAttribute("aria-current")).toBe("true");
+
+  // The active-term shortcut is its own labelled block with a divider, and it
+  // never becomes part of the "You are viewing" trail.
+  const shortcut = document.body.querySelector('[data-test-id="sidebar-current-term"]');
+  expect(shortcut?.className).toContain("border-t");
+  expect(shortcut?.textContent).toContain("Go to current term · 2026 · Term 2");
+  expect(location.some((link) => link.textContent?.trim() === "Algoritmos")).toBe(false);
 });

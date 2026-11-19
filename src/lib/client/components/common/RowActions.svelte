@@ -4,7 +4,7 @@
   import { t } from "$lib/common/i18n/config";
 
   interface Props {
-    /** The single action a row shows directly. */
+    /** The action(s) a row shows directly; keep this to the one or two daily actions. */
     primary?: Snippet;
     /** Non-destructive actions shown inside the disclosure. */
     overflow?: Snippet;

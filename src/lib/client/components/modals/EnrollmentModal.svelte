@@ -23,6 +23,7 @@
   let results = $state<Person[]>([]);
   let selected = $state<Person | null>(null);
   let error = $state("");
+  let errorField = $state<"name" | "legajo" | "bulk" | "form" | null>(null);
 
   $effect(() => {
     if (isOpen) {
@@ -33,20 +34,34 @@
       results = [];
       selected = null;
       error = "";
+      errorField = null;
     }
   });
+
+  function clearError() {
+    error = "";
+    errorField = null;
+  }
 
   async function handleSearch(value: string) {
     name = value;
     selected = null;
+    clearError();
 
     if (value.trim().length < 2) {
       results = [];
       return;
     }
 
-    const matches = await searchPersons(value.trim());
-    results = matches.slice(0, 5);
+    try {
+      const matches = await searchPersons(value.trim());
+      results = matches.slice(0, 5);
+    } catch {
+      // A failed lookup must not look like an empty result set.
+      results = [];
+      error = "enrollments.search_failed";
+      errorField = "name";
+    }
   }
 
   function pickPerson(person: Person) {
@@ -63,7 +78,7 @@
   }
 
   function handleSaveClick() {
-    error = "";
+    clearError();
 
     if (activeTab === "bulk") {
       const entries = bulkNames
@@ -73,7 +88,8 @@
         .map((line) => ({ name: line }));
 
       if (entries.length === 0) {
-        error = $t("validation.at_least_one_name_required");
+        error = "validation.at_least_one_name_required";
+        errorField = "bulk";
         return;
       }
 
@@ -83,7 +99,9 @@
 
     const parsed = EnrollmentEntrySchema.safeParse({ name, legajo });
     if (!parsed.success) {
-      error = parsed.error.issues[0]?.message ?? "";
+      const issue = parsed.error.issues[0];
+      error = issue?.message ?? "";
+      errorField = issue?.path[0] === "legajo" ? "legajo" : "name";
       return;
     }
 
@@ -107,7 +125,7 @@
         aria-pressed={activeTab === "single"}
         onclick={() => {
           activeTab = "single";
-          error = "";
+          clearError();
         }}
       >
         {$t("students.single_name_label")}
@@ -117,7 +135,7 @@
         aria-pressed={activeTab === "bulk"}
         onclick={() => {
           activeTab = "bulk";
-          error = "";
+          clearError();
         }}
       >
         {$t("students.upload_students_title")}
@@ -134,10 +152,15 @@
           oninput={(event) => handleSearch((event.currentTarget as HTMLInputElement).value)}
           placeholder={$t("enrollments.search_placeholder")}
           class="input-block"
-          aria-invalid={!!error}
-          aria-describedby={error ? "error-enrollment" : undefined}
+          aria-invalid={errorField === "name" && !!error}
+          aria-describedby={
+            errorField === "name" && error ? "error-enrollment" : undefined
+          }
           data-test-id="enrollment-search-input"
         />
+        {#if errorField === "name"}
+          <ErrorSpan message={error} id="error-enrollment" testId="enrollment-error" />
+        {/if}
         {#if results.length > 0}
           <ul class="m-0 mt-2 flex list-none flex-col gap-1 p-0" data-test-id="enrollment-search-results">
             {#each results as person (person.id)}
@@ -172,10 +195,16 @@
           bind:value={legajo}
           placeholder={$t("students.external_id_placeholder")}
           class="input-block"
-          aria-invalid={!!error}
-          aria-describedby={error ? "error-enrollment" : undefined}
+          aria-invalid={errorField === "legajo" && !!error}
+          aria-describedby={
+            errorField === "legajo" && error ? "error-enrollment" : undefined
+          }
+          oninput={() => errorField === "legajo" && clearError()}
           data-test-id="student-external-id-input"
         />
+        {#if errorField === "legajo"}
+          <ErrorSpan message={error} id="error-enrollment" testId="enrollment-error" />
+        {/if}
       </div>
     {:else}
       <div class="form-group">
@@ -185,14 +214,20 @@
           bind:value={bulkNames}
           rows="5"
           class="input-block"
-          aria-invalid={!!error}
-          aria-describedby={error ? "error-enrollment" : undefined}
+          aria-invalid={errorField === "bulk" && !!error}
+          aria-describedby={errorField === "bulk" && error ? "error-enrollment" : undefined}
+          oninput={() => errorField === "bulk" && clearError()}
           data-test-id="student-bulk-textarea"
         ></textarea>
+        {#if errorField === "bulk"}
+          <ErrorSpan message={error} id="error-enrollment" testId="enrollment-error" />
+        {/if}
       </div>
     {/if}
 
-    <ErrorSpan message={error} id="error-enrollment" testId="enrollment-error" />
+    {#if errorField === "form"}
+      <ErrorSpan message={error} id="error-enrollment" testId="enrollment-error" />
+    {/if}
   {/snippet}
 
   {#snippet footer()}

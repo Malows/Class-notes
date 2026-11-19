@@ -69,8 +69,9 @@
 
   .toast-text {
     margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    /* On the type ramp: transient copy reads at Body LG, not an off-ramp 14px. */
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
     font-weight: 500;
     word-break: break-word;
   }

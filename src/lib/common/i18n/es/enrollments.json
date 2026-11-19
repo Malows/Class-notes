@@ -3,6 +3,7 @@
   "new_title": "Inscribir alumno",
   "search_label": "Buscar un alumno existente",
   "search_placeholder": "Nombre o legajo",
+  "search_failed": "No se pudo completar la búsqueda de alumnos. Reintentá.",
   "reuse_hint": "Este alumno ya existe en el registro y se lo va a inscribir.",
   "new_hint": "No se eligió una coincidencia: se va a crear un alumno nuevo.",
   "paste_list_label": "Pegar lista (un nombre por línea):",

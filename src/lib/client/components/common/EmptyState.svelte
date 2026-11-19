@@ -2,7 +2,10 @@
   import type { Snippet } from "svelte";
 
   interface Props {
-    /** Decorative glyph that hints at the missing resource. */
+    /**
+     * @deprecated Legacy decorative hint left by callers. The primitive now
+     * draws the quiet "not taken" mark itself, so the emoji is not rendered.
+     */
     icon?: string;
     title: string;
     description?: string;
@@ -11,7 +14,7 @@
     actions?: Snippet;
   }
 
-  let { icon, title, description, testId, actions }: Props = $props();
+  let { title, description, testId, actions }: Props = $props();
 </script>
 
 <div
@@ -19,9 +22,12 @@
   data-test-id={testId}
 >
   <div class="flex flex-col items-center gap-2">
-    {#if icon}
-      <p class="m-0 text-2xl leading-none" aria-hidden="true">{icon}</p>
-    {/if}
+    <!--
+      The empty state borrows the grid's quiet third state: a sunken cell with
+      a muted en dash. It says "nothing recorded yet" without an emoji or an
+      icon in a system that has neither.
+    -->
+    <span class="empty-state__mark" aria-hidden="true" data-test-id="empty-state-mark"></span>
     <h2 class="m-0 font-serif text-headline-md">{title}</h2>
     {#if description}
       <p class="m-0 text-body-md text-on-surface-variant">{description}</p>
@@ -33,3 +39,28 @@
     {/if}
   </div>
 </div>
+
+<style>
+  .empty-state__mark {
+    position: relative;
+    display: inline-block;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: 0.25rem;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-low);
+  }
+
+  .empty-state__mark::before {
+    content: "–";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-unmarked-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-headline-sm);
+    line-height: 1;
+  }
+</style>

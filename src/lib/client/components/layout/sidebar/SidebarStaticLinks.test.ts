@@ -36,7 +36,7 @@ test("Links renderizan", async () => {
     props: { isCollapsed: false },
   });
   flushSync();
-  expect(document.body.textContent).toContain("Dashboard");
+  expect(document.body.textContent).toContain("In class");
   expect(document.body.textContent).toContain("Periods");
 });
 

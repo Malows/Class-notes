@@ -8,6 +8,8 @@
 
   import Button from "$lib/client/components/common/Button.svelte";
   import ConfirmDialog from "$lib/client/components/common/ConfirmDialog.svelte";
+  import LoadError from "$lib/client/components/common/LoadError.svelte";
+  import RowActions from "$lib/client/components/common/RowActions.svelte";
   import PageHeader from "$lib/client/components/layout/PageHeader.svelte";
   import PersonModal from "$lib/client/components/modals/PersonModal.svelte";
   import { ModalManager } from "$lib/client/composables/useModal.svelte";
@@ -18,6 +20,7 @@
 
   let detail = $state<PersonDetail | null>(null);
   let loading = $state(true);
+  let failure = $state<"not-found" | "error" | null>(null);
 
   const personID = Number(page.params.id);
 
@@ -25,15 +28,22 @@
     `/faculties/${cursada.faculty_slug}/subjects/${cursada.subject_slug}/periods/${cursada.period_year}/${cursada.period_semester}/commissions/${cursada.commission_slug}/overview`;
 
   async function load() {
+    loading = true;
+    failure = null;
+
     try {
       if (!Number.isFinite(personID) || personID <= 0) {
         detail = null;
+        failure = "not-found";
         return;
       }
       detail = await personService.getById(personID);
     } catch (e) {
-      console.error(e);
       detail = null;
+      // apiFetch throws the API's message, not a status: a missing person is the
+      // one 404 this endpoint has, and it arrives as "Person not found".
+      failure = e instanceof Error && /not found/i.test(e.message) ? "not-found" : "error";
+      if (failure === "error") console.error(e);
     } finally {
       loading = false;
     }
@@ -73,33 +83,54 @@
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
   <p>{$t("persons.loading")}</p>
+{:else if failure === "not-found"}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
+  <div role="status" data-test-id="person-detail-not-found">
+    <p class="font-serif text-headline-sm">{$t("persons.not_found_title")}</p>
+    <p class="text-on-surface-variant">{$t("persons.not_found_body")}</p>
+  </div>
+{:else if failure === "error"}
+  <PageHeader title={$t("persons.detail_title")}>
+    {#snippet secondary()}{@render backLink()}{/snippet}
+  </PageHeader>
+  <LoadError message={$t("persons.load_failed")} onRetry={load} />
 {:else if !detail}
   <PageHeader title={$t("persons.detail_title")}>
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
-  <p data-test-id="person-detail-not-found">{$t("persons.not_found")}</p>
+  <p data-test-id="person-detail-not-found">{$t("persons.not_found_title")}</p>
 {:else}
   <PageHeader title={detail.person.name} testId="person-detail-name">
+    {#snippet primary()}
+      <RowActions label={detail?.person.name ?? ""} testId="person-actions">
+        {#snippet primary()}
+          <Button
+            testId="edit-person-btn"
+            onclick={() => detail && modal.openEdit(detail.person)}
+            withHover
+          >
+            {$t("common.edit")}
+          </Button>
+        {/snippet}
+        {#snippet destructive()}
+          <Button
+            testId="delete-person-btn"
+            onclick={() => detail && modal.openDelete(detail.person)}
+            withHover
+          >
+            {$t("common.delete")}
+          </Button>
+        {/snippet}
+      </RowActions>
+    {/snippet}
     {#snippet secondary()}{@render backLink()}{/snippet}
   </PageHeader>
   <p>
     {$t("persons.legajo_label")}:
     <span data-test-id="person-detail-legajo">{detail.person.legajo ?? "—"}</span>
   </p>
-
-  <div class="mb-4 flex flex-wrap gap-2">
-    <Button testId="edit-person-btn" onclick={() => detail && modal.openEdit(detail.person)} withHover>
-      {$t("common.edit")}
-    </Button>
-    <Button
-      testId="delete-person-btn"
-      onclick={() => detail && modal.openDelete(detail.person)}
-      withHover
-      class="btn-danger"
-    >
-      {$t("common.delete")}
-    </Button>
-  </div>
 
   <h2>{$t("persons.cursadas_title")}</h2>
 
@@ -108,15 +139,18 @@
   {:else}
     <ul class="cursada-list">
       {#each detail.enrollments as cursada (cursada.id)}
-        <li data-test-id="person-cursada-{cursada.id}">
+        <li class="cursada-list__item" data-test-id="person-cursada-{cursada.id}">
           <strong>{cursada.subject_name}</strong>
-          <span class="text-body-sm">
-            · {cursada.period_year} - {cursada.period_semester}º
+          <span class="text-body-sm" data-test-id="person-cursada-period-{cursada.id}">
+            {$t("layout.period_short", {
+              year: cursada.period_year,
+              semester: cursada.period_semester,
+            } as never)}
           </span>
           <span class="cursada-list__commission">
             {#if cursada.commission_slug && cursada.commission_name}
               <a
-                class="link-editorial"
+                class="link-editorial text-body-sm"
                 href={commissionHref(cursada)}
                 data-test-id="person-cursada-link-{cursada.id}"
               >
@@ -162,7 +196,10 @@
     gap: 0.5rem;
   }
 
-  .cursada-list__commission {
-    margin-left: 0.5rem;
+  .cursada-list__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
   }
 </style>

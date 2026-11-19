@@ -64,4 +64,58 @@ describe("NotificationsStore", () => {
     notificationsStore.dismiss(targetId);
     expect(notificationsStore.items).toHaveLength(0);
   });
+
+  it("runs an action toast once and dismisses it", () => {
+    const onAction = vi.fn();
+    notificationsStore.addAction("Deleted", { label: "Undo", onAction });
+
+    const toast = notificationsStore.items[0];
+    expect(toast.action?.label).toBe("Undo");
+    expect(toast.autoDismiss).toBe(true);
+
+    toast.action?.onAction();
+    toast.action?.onAction();
+
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(notificationsStore.items).toHaveLength(0);
+  });
+
+  it("pauses auto-dismiss while the toast has focus", () => {
+    notificationsStore.addSuccess("Saved");
+    const id = notificationsStore.items[0].id;
+
+    notificationsStore.pause(id);
+    vi.advanceTimersByTime(10000);
+    expect(notificationsStore.items).toHaveLength(1);
+
+    notificationsStore.resume(id);
+    vi.advanceTimersByTime(5000);
+    expect(notificationsStore.items).toHaveLength(0);
+  });
+
+  it("shows a persistent error with a recovery action", () => {
+    const onRetry = vi.fn();
+    notificationsStore.addErrorAction("No se pudo borrar", { label: "Reintentar", onAction: onRetry });
+
+    const toast = notificationsStore.items[0];
+    expect(toast.type).toBe("error");
+    expect(toast.autoDismiss).toBe(false);
+    expect(toast.action?.label).toBe("Reintentar");
+
+    toast.action?.onAction();
+    expect(onRetry).toHaveBeenCalledTimes(1);
+    expect(notificationsStore.items).toHaveLength(0);
+  });
+
+  it("auto-dismisses an action toast after its window", () => {
+    const onAction = vi.fn();
+    notificationsStore.addAction("Deleted", { label: "Undo", onAction }, 6000);
+
+    vi.advanceTimersByTime(5999);
+    expect(notificationsStore.items).toHaveLength(1);
+
+    vi.advanceTimersByTime(1);
+    expect(notificationsStore.items).toHaveLength(0);
+    expect(onAction).not.toHaveBeenCalled();
+  });
 });

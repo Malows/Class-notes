@@ -47,7 +47,7 @@
 <section class="grid-legend" aria-labelledby={titleId} data-test-id={testId}>
   <h2 id={titleId} class="grid-legend__title">{$t("help.legend_title")}</h2>
   <ul class="grid-legend__items">
-    {#each items as item (item.label)}
+    {#each items as item, index (index)}
       <li class="grid-legend__item">
         {#if item.mark}
           <span class="grid-legend__mark is-{item.tone}" aria-hidden="true">{item.mark}</span>

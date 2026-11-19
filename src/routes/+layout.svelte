@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { afterNavigate } from "$app/navigation";
+  import { afterNavigate, beforeNavigate } from "$app/navigation";
   import { page } from "$app/state";
   import { onMount } from "svelte";
 
@@ -14,6 +14,7 @@
   import { initStoreContext } from "$lib/client/stores/context-initializer";
   import ToastContainer from "$lib/client/components/common/ToastContainer.svelte";
   import { metadataStore } from "$lib/client/stores/metadata.svelte";
+  import { flushPendingDeletions } from "$lib/client/utils/deferred-delete";
 
   import "../app.css";
 
@@ -37,6 +38,18 @@
   onMount(() => {
     initSentryClient();
     void trackPageView(window.location.href, document.referrer || undefined);
+
+    // Best effort: a tab close or reload is not a SvelteKit navigation, so the
+    // pending DELETEs are fired here too. The browser may end the request.
+    const flushBeforeHide = () => flushPendingDeletions();
+    window.addEventListener("pagehide", flushBeforeHide);
+    return () => window.removeEventListener("pagehide", flushBeforeHide);
+  });
+
+  // Leaving the view commits pending deletions instead of silently dropping
+  // them. Navigation is never blocked: the request continues in the background.
+  beforeNavigate(() => {
+    flushPendingDeletions();
   });
 
   afterNavigate(({ to, from }) => {
@@ -80,7 +93,8 @@
 
   {#if isDashboard}
     <div
-      class="fixed inset-x-0 bottom-20 z-30 border-t border-base-300 bg-surface px-4 py-2 md:bottom-0 md:left-60 md:px-9"
+      class="fixed inset-x-0 bottom-[calc(var(--bottom-nav-height)+env(safe-area-inset-bottom,0px))] z-30 border-t border-base-300 bg-surface px-4 py-2 md:bottom-0 md:left-60 md:px-9"
+      data-test-id="dashboard-footer"
     >
       <ClassNoteFooter />
     </div>

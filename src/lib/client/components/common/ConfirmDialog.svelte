@@ -36,9 +36,12 @@
   {/snippet}
 
   {#snippet footer()}
+    <!-- Safe action first: focus lands on the non-destructive choice. -->
+    <!-- svelte-ignore a11y_autofocus -->
     <button
       type="button"
       class="btn btn-ghost"
+      autofocus
       onclick={onClose}
       data-test-id="confirm-dialog-cancel-btn">{cancelLabel}</button
     >

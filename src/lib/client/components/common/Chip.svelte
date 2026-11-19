@@ -14,9 +14,9 @@
   const toneClass: Record<Tone, string> = {
     neutral: "border-base-300 bg-base-200 text-base-content/80",
     primary: "border-primary/30 bg-primary/10 text-primary",
-    success: "border-success/30 bg-success/10 text-success",
-    warning: "border-warning/30 bg-warning/10 text-warning",
-    error: "border-error/30 bg-error/10 text-error",
+    success: "border-success/30 bg-success/10 text-[var(--color-success-ink)]",
+    warning: "border-warning/30 bg-warning/10 text-[var(--color-warning-ink)]",
+    error: "border-error/30 bg-error/10 text-[var(--color-error-ink)]",
     info: "border-info/30 bg-info/10 text-info",
     pending: "border-base-300 bg-base-200 text-base-content/70",
   };

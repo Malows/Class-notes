@@ -14,7 +14,7 @@ test("LanguageToggle renders and triggers store toggles on click", async () => {
 
   const toggleBtn = screen.getByTestId("language-toggle-btn") as HTMLButtonElement;
   expect(toggleBtn).toBeTruthy();
-  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
+  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧 EN");
 
   // Stable name for the Spanish option; the state lives in aria-pressed, so the
   // accessible name never announces the opposite language.

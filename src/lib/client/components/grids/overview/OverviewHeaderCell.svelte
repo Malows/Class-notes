@@ -35,6 +35,7 @@
   <span
     class="w-full overflow-hidden text-ellipsis whitespace-nowrap text-label-sm font-semibold text-on-surface-variant"
     title={fullTitle}
+    role="img"
     aria-label={`${abbreviated} — ${fullTitle}`}
     data-test-id="overview-header-assignment-title-{assignment.id}"
   >

@@ -13,6 +13,15 @@ export function termToSemester(term: string): number {
   return term.trim().endsWith("II") ? 2 : 1;
 }
 
+/**
+ * The active term is global: its subject list lives on the period page, not on
+ * any one subject's period index. The sidebar shortcut is a destination, so it
+ * must not borrow a subject's route.
+ */
+export function currentTermHref(year: number, semester: number): string {
+  return `/periods/${year}/${semester}/subjects`;
+}
+
 type SubjectContext = {
   facultySlug: string;
   activeSubjectSlug?: string;

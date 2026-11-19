@@ -28,7 +28,7 @@
     <a
       href={destination.href}
       aria-current={currentFor(destination.href)}
-      class="flex min-h-[64px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-[min(0.6875rem,11px)] font-medium uppercase tracking-[0.04em] transition-colors {isSection(
+      class="flex min-h-[var(--bottom-nav-height)] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 px-1 text-label-sm font-medium uppercase tracking-[0.04em] transition-colors {isSection(
         destination.href,
       )
         ? 'text-primary'

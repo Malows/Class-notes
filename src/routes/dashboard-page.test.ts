@@ -246,9 +246,14 @@ test("opens the latest term with data and scopes every module to it", async () =
 
   const select = screen.getByTestId("period-select") as HTMLSelectElement;
   expect(select.value).toBe("2026-1");
-  expect(screen.getByTestId("period-active-note").textContent).toContain(
-    "El período en curso",
-  );
+  const note = screen.getByTestId("period-active-note");
+  expect(screen.getByTestId("period-picker")).toContainElement(note);
+  expect(note.parentElement).toBe(select.parentElement);
+  expect(
+    select.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+  expect(note).toHaveTextContent("El período en curso no tiene comisiones");
+  expect(note).toHaveTextContent("Mostrando 2026 · 1º");
   expect(screen.getByTestId("today-scope").textContent).toContain("2026 · 1º");
   expect(screen.getByTestId("pending-scope").textContent).toContain("2026 · 1º");
 

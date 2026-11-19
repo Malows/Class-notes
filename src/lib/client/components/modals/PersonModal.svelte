@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { tick } from "svelte";
+
   import { t } from "$lib/common/i18n/config";
   import { EnrollmentEntrySchema } from "$lib/common/schemas";
   import type { Person } from "$lib/common/types/enrollment";
@@ -44,6 +46,8 @@
       const issue = parsed.error.issues[0];
       errorField = issue?.path[0] === "legajo" ? "legajo" : "name";
       validationError = issue?.message ?? "";
+      await tick();
+      document.getElementById(errorField === "legajo" ? "person-legajo" : "person-name")?.focus();
       return;
     }
 

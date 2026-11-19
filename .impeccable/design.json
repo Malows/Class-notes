@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-18T23:36:12Z",
+  "generatedAt": "2026-11-19T18:32:14Z",
   "title": "Design System: Class Notes",
   "extensions": {
     "colorMeta": {
@@ -147,6 +147,60 @@
         "displayName": "Ink Blue at Night",
         "canonical": "#b5c4ff",
         "tonalRamp": ["#0c1845", "#001b85", "#0025b8", "#0030eb", "#1f4cff", "#5275ff", "#8fa6ff", "#d4dbf7"]
+      },
+      "success-ink": {
+        "role": "secondary",
+        "displayName": "Success Ink",
+        "canonical": "#0b5f36",
+        "tonalRamp": ["#022110", "#044123", "#116239", "#398357", "#5fa077", "#8bbb9b", "#b6d3bf", "#dfece3"]
+      },
+      "error-ink": {
+        "role": "secondary",
+        "displayName": "Error Ink",
+        "canonical": "#9e1b18",
+        "tonalRamp": ["#380303", "#690506", "#9a1514", "#bf3f36", "#db665a", "#ed9186", "#f5bab1", "#fbe1dd"]
+      },
+      "warning-ink": {
+        "role": "secondary",
+        "displayName": "Warning Ink",
+        "canonical": "#7a4300",
+        "tonalRamp": ["#2b1400", "#522a00", "#7a4300", "#9c622b", "#b88253", "#cfa481", "#e0c5af", "#f1e5dc"]
+      },
+      "success-ink-night": {
+        "role": "secondary",
+        "displayName": "Success Ink at Night",
+        "canonical": "#7ee6a2",
+        "tonalRamp": ["#00230a", "#004418", "#00672b", "#09884a", "#49a56b", "#7ec093", "#aed6ba", "#dcede0"]
+      },
+      "error-ink-night": {
+        "role": "secondary",
+        "displayName": "Error Ink at Night",
+        "canonical": "#ffc6bf",
+        "tonalRamp": ["#281412", "#4d2b27", "#73443f", "#95635d", "#b1827c", "#c9a49f", "#dcc4c1", "#f0e5e4"]
+      },
+      "warning-ink-night": {
+        "role": "secondary",
+        "displayName": "Warning Ink at Night",
+        "canonical": "#ffd08d",
+        "tonalRamp": ["#281700", "#4c2e00", "#714900", "#936823", "#af874e", "#c7a97e", "#dbc7ad", "#efe7db"]
+      },
+      "unmarked-ink-night": {
+        "role": "neutral",
+        "displayName": "Unmarked Ink at Night",
+        "canonical": "#b9b7ab",
+        "tonalRamp": ["#1b1b16", "#37362e", "#555348", "#747267", "#918f85", "#afaea6", "#cbcbc5", "#e8e8e6"]
+      },
+      "scrim": {
+        "role": "neutral",
+        "displayName": "Dialog Scrim",
+        "canonical": "rgba(28, 28, 26, 0.4)",
+        "tonalRamp": ["#1b1b1a", "#353534", "#535350", "#72726f", "#8f8f8d", "#aeaeac", "#cacac9", "#e8e8e7"]
+      },
+      "scrim-night": {
+        "role": "neutral",
+        "displayName": "Dialog Scrim at Night",
+        "canonical": "rgba(5, 5, 3, 0.72)",
+        "tonalRamp": ["#1b1b19", "#363632", "#53534e", "#72726d", "#8f8f8b", "#aeaeaa", "#cacbc8", "#e8e8e7"]
       }
     },
     "typographyMeta": {
@@ -160,14 +214,12 @@
       "body-md": { "displayName": "Body MD", "purpose": "Default table, button and field text." },
       "body-sm": { "displayName": "Body SM", "purpose": "Secondary metadata, legends, mobile labels." },
       "label-md": { "displayName": "Label MD", "purpose": "Form labels and field captions." },
-      "label-sm": { "displayName": "Label SM", "purpose": "Uppercase micro-labels: table headers, chips, nav, breadcrumbs." }
+      "label-sm": { "displayName": "Label SM", "purpose": "Uppercase micro-labels: table headers, chips, nav, breadcrumbs." },
+      "icon": { "displayName": "Icon", "purpose": "Material Symbols Outlined glyphs at 24px (wght 400, FILL 0, opsz 24) for nav, actions and status marks; rendered inline as SVG in the sidecar snippets." }
     },
     "shadows": [
-      {
-        "name": "take-card",
-        "value": "0 10px 30px -18px rgba(27, 28, 24, 0.4)",
-        "purpose": "The only elevation in the system: the floating take-attendance card in take mode."
-      }
+      { "name": "take-card", "value": "0 10px 30px -18px color-mix(in srgb, var(--color-on-surface) 40%, transparent)", "purpose": "The only elevation in the system: the floating take-attendance card in take mode." },
+      { "name": "everything-else", "value": "none", "purpose": "Cards, menus, dialogs, toasts and the sidebar stay flat; hairlines and surface steps carry separation." }
     ],
     "motion": [
       { "name": "state-tint", "value": "background-color 0.15s ease", "purpose": "Grid cells, nav items and control hover; the state never moves the element." },
@@ -192,7 +244,7 @@
       "refersTo": "button-primary",
       "description": "The single action a screen or dialog is asking for.",
       "html": "<button class=\"ds-btn-primary\" type=\"button\">Guardar cambios</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2rem; min-height: 2rem; padding: 0 0.75rem; border: 1px solid transparent; border-radius: var(--radius-field, 0.25rem); background-color: var(--color-primary, #2f5fe0); color: #ffffff; font: 400 0.8125rem/1.25rem \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-primary:hover { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 88%, #000); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-on-surface, #1b1c18); outline-offset: 3px; } @media (pointer: coarse) { .ds-btn-primary { min-height: 44px; min-width: 44px; } }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2rem; min-height: 2rem; padding: 0 0.75rem; border: 1px solid transparent; border-radius: var(--radius-field, 0.25rem); background-color: var(--color-primary, #2f5fe0); color: var(--color-primary-content, #ffffff); font: 400 0.8125rem/1.25rem \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-primary:hover { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 88%, #000); } .ds-btn-primary:active { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 80%, #000); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-on-surface, #1b1c18); outline-offset: 3px; } @media (pointer: coarse) { .ds-btn-primary { min-height: 44px; min-width: 44px; } }"
     },
     {
       "name": "Ghost Icon Button",
@@ -200,7 +252,7 @@
       "refersTo": "button-ghost",
       "description": "Header, dialog and row utility actions; always carries an accessible name.",
       "html": "<button class=\"ds-btn-ghost\" type=\"button\" aria-label=\"Cambiar a modo oscuro\" aria-pressed=\"false\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Zm0-2a11 11 0 1 1-9 17.3A9 9 0 0 0 12 1Z\"/></svg></button>",
-      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid transparent; border-radius: 9999px; background-color: transparent; color: var(--color-on-surface-variant, #434654); cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; } .ds-btn-ghost:hover { background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-on-surface, #1b1c18); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; } @media (pointer: coarse) { .ds-btn-ghost { min-width: 44px; min-height: 44px; } }"
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; padding: 0; border: 1px solid transparent; border-radius: 9999px; background-color: transparent; color: var(--color-on-surface-variant, #434654); cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; } .ds-btn-ghost:hover { background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-on-surface, #1b1c18); } .ds-btn-ghost[aria-pressed=\"true\"] { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 10%, transparent); color: var(--color-primary, #2f5fe0); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; } @media (pointer: coarse) { .ds-btn-ghost { min-width: 44px; min-height: 44px; } }"
     },
     {
       "name": "Outline Button",
@@ -208,7 +260,15 @@
       "refersTo": "button-outline",
       "description": "A second, non-destructive action that must not compete with the primary.",
       "html": "<button class=\"ds-btn-outline\" type=\"button\">Ver materias</button>",
-      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2rem; min-height: 2rem; padding: 0 0.75rem; border: 1px solid color-mix(in srgb, var(--color-primary, #2f5fe0) 45%, transparent); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-primary, #2f5fe0); font: 500 0.8125rem/1.25rem \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; } .ds-btn-outline:hover { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 10%, #ffffff); border-color: var(--color-primary, #2f5fe0); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; }"
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2rem; min-height: 2rem; padding: 0 0.75rem; border: 1px solid color-mix(in srgb, var(--color-primary, #2f5fe0) 45%, transparent); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-primary, #2f5fe0); font: 500 0.8125rem/1.25rem \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; } .ds-btn-outline:hover { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 8%, transparent); border-color: var(--color-primary, #2f5fe0); } .ds-btn-outline:active { background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 14%, transparent); } .ds-btn-outline:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; } @media (pointer: coarse) { .ds-btn-outline { min-height: 44px; min-width: 44px; } }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "The confirming destructive action inside a ConfirmDialog, never a row default.",
+      "html": "<button class=\"ds-btn-danger\" type=\"button\">Eliminar</button>",
+      "css": ".ds-btn-danger { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; height: 2rem; min-height: 2rem; padding: 0 0.75rem; border: 1px solid transparent; border-radius: var(--radius-field, 0.25rem); background-color: var(--color-error, #c5221f); color: var(--color-error-content, #ffffff); font: 400 0.8125rem/1.25rem \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-danger:hover { background-color: color-mix(in srgb, var(--color-error, #c5221f) 88%, #000); } .ds-btn-danger:active { background-color: color-mix(in srgb, var(--color-error, #c5221f) 80%, #000); } .ds-btn-danger:focus-visible { outline: 2px solid var(--color-on-surface, #1b1c18); outline-offset: 3px; } @media (pointer: coarse) { .ds-btn-danger { min-height: 44px; min-width: 44px; } }"
     },
     {
       "name": "Text Field",
@@ -216,7 +276,7 @@
       "refersTo": "input-text",
       "description": "Labelled 32px input for rosters, legajos and grades.",
       "html": "<label class=\"ds-field\"> <span class=\"ds-field__label\">Legajo</span> <input class=\"ds-input\" type=\"text\" placeholder=\"1234/5\" /> <span class=\"ds-field__error\">El legajo ya está en uso</span> </label>",
-      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.25rem; max-width: 20rem; font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; } .ds-field__label { font-size: 0.75rem; line-height: 1rem; font-weight: 500; color: var(--color-on-surface-variant, #434654); } .ds-input { width: 100%; min-height: 2rem; padding: 0.25rem 0.75rem; border: 1px solid var(--color-outline, #747686); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-on-surface, #1b1c18); font-size: 0.8125rem; line-height: 1.25rem; } .ds-input::placeholder { color: var(--color-muted, #5f6a73); } .ds-input:focus-visible { outline: none; border-color: var(--color-primary, #2f5fe0); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #2f5fe0) 22%, transparent); } .ds-field__error { color: var(--color-error, #c5221f); font-size: 0.75rem; line-height: 1rem; }"
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.25rem; max-width: 20rem; font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; } .ds-field__label { font-size: 0.75rem; line-height: 1rem; font-weight: 500; color: var(--color-on-surface-variant, #434654); } .ds-input { width: 100%; min-height: 2rem; padding: 0.25rem 0.75rem; border: 1px solid var(--color-outline, #747686); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-on-surface, #1b1c18); font-size: 0.8125rem; line-height: 1.25rem; } .ds-input::placeholder { color: var(--color-muted, #5f6a73); } .ds-input:focus-visible { outline: none; border-color: var(--color-primary, #2f5fe0); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #2f5fe0) 22%, transparent); } .ds-field__error { color: var(--color-error-ink, #9e1b18); font-size: 0.75rem; line-height: 1rem; }"
     },
     {
       "name": "Editorial Card",
@@ -231,8 +291,8 @@
       "kind": "card",
       "refersTo": "metric-card",
       "description": "One number per card for the dashboard totals.",
-      "html": "<div class=\"ds-metric\"> <div class=\"ds-metric__head\"><p class=\"ds-metric__label\">Tasa Aprobación</p><span class=\"ds-metric__icon\" aria-hidden=\"true\">trending_up</span></div> <p class=\"ds-metric__value\">63%</p> <p class=\"ds-metric__sub\">Sobre entregas corregidas</p> </div>",
-      "css": ".ds-metric { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; border: 1px solid var(--color-outline-variant, #c3c5d7); border-radius: var(--radius-box, 0.5rem); background-color: var(--color-surface-container-lowest, #ffffff); font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; } .ds-metric__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; } .ds-metric__label { margin: 0; font-size: 0.6875rem; line-height: 0.875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-on-surface-variant, #434654); } .ds-metric__icon { font-size: 18px; color: var(--color-on-surface-variant, #434654); } .ds-metric__value { margin: 0; font-size: 1.25rem; line-height: 1.75rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--color-on-surface, #1b1c18); } .ds-metric__sub { margin: 0; font-size: 0.75rem; line-height: 1rem; color: var(--color-on-surface-variant, #434654); }"
+      "html": "<div class=\"ds-metric\"> <div class=\"ds-metric__head\"><p class=\"ds-metric__label\">Tasa Aprobación</p><span class=\"ds-metric__icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\"><path fill=\"currentColor\" d=\"M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z\"/></svg></span></div> <p class=\"ds-metric__value\">63%</p> <p class=\"ds-metric__sub\">Sobre entregas corregidas</p> </div>",
+      "css": ".ds-metric { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; border: 1px solid var(--color-outline-variant, #c3c5d7); border-radius: var(--radius-box, 0.5rem); background-color: var(--color-surface-container-lowest, #ffffff); font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; } .ds-metric__head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; } .ds-metric__label { margin: 0; font-size: 0.6875rem; line-height: 0.875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-on-surface-variant, #434654); } .ds-metric__icon { display: inline-flex; color: var(--color-on-surface-variant, #434654); } .ds-metric__icon svg { width: 18px; height: 18px; display: block; } .ds-metric__value { margin: 0; font-size: 1.25rem; line-height: 1.75rem; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--color-on-surface, #1b1c18); } .ds-metric__sub { margin: 0; font-size: 0.75rem; line-height: 1rem; color: var(--color-on-surface-variant, #434654); }"
     },
     {
       "name": "Editorial Table",
@@ -248,7 +308,7 @@
       "refersTo": "chip",
       "description": "Micro-label stamp for a state; the pending variant is the quiet third state.",
       "html": "<div style=\"display:flex;gap:8px;flex-wrap:wrap\"> <span class=\"ds-chip ds-chip--success\"><span class=\"ds-chip__dot\" aria-hidden=\"true\"></span>Aprobado</span> <span class=\"ds-chip ds-chip--pending\"><span class=\"ds-chip__dot\" aria-hidden=\"true\"></span>Sin tomar</span> </div>",
-      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem; border: 1px solid color-mix(in srgb, var(--color-outline-variant, #c3c5d7) 100%, transparent); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-on-surface-variant, #434654); font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.6875rem; line-height: 0.875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; } .ds-chip__dot { width: 6px; height: 6px; border-radius: 9999px; background-color: currentColor; } .ds-chip--success { border-color: color-mix(in srgb, #1b8049 30%, transparent); background-color: color-mix(in srgb, #1b8049 10%, #ffffff); color: #1b8049; } .ds-chip--warning { border-color: color-mix(in srgb, #b26200 30%, transparent); background-color: color-mix(in srgb, #b26200 10%, #ffffff); color: #b26200; } .ds-chip--error { border-color: color-mix(in srgb, #c5221f 30%, transparent); background-color: color-mix(in srgb, #c5221f 10%, #ffffff); color: #c5221f; } .ds-chip--pending { border-color: var(--color-outline-variant, #c3c5d7); background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-on-surface-variant, #434654); }"
+      "css": ".ds-chip { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.125rem 0.5rem; border: 1px solid var(--color-outline-variant, #c3c5d7); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-on-surface-variant, #434654); font-family: \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; font-size: 0.6875rem; line-height: 0.875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; } .ds-chip__dot { width: 6px; height: 6px; border-radius: 9999px; background-color: currentColor; } .ds-chip--primary { border-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 30%, transparent); background-color: color-mix(in srgb, var(--color-primary, #2f5fe0) 10%, #ffffff); color: var(--color-primary, #2f5fe0); } .ds-chip--success { border-color: color-mix(in srgb, var(--color-success, #1b8049) 30%, transparent); background-color: color-mix(in srgb, var(--color-success, #1b8049) 10%, #ffffff); color: var(--color-success, #1b8049); } .ds-chip--warning { border-color: color-mix(in srgb, var(--color-warning, #b26200) 30%, transparent); background-color: color-mix(in srgb, var(--color-warning, #b26200) 10%, #ffffff); color: var(--color-warning-ink, #7a4300); } .ds-chip--error { border-color: color-mix(in srgb, var(--color-error, #c5221f) 30%, transparent); background-color: color-mix(in srgb, var(--color-error, #c5221f) 10%, #ffffff); color: var(--color-error-ink, #9e1b18); } .ds-chip--info { border-color: color-mix(in srgb, var(--color-info, #0045c5) 30%, transparent); background-color: color-mix(in srgb, var(--color-info, #0045c5) 10%, #ffffff); color: var(--color-info, #0045c5); } .ds-chip--pending { border-color: var(--color-outline-variant, #c3c5d7); background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-muted, #5f6a73); }"
     },
     {
       "name": "Sidebar Nav Item",
@@ -264,7 +324,7 @@
       "refersTo": null,
       "description": "The signature tri-state mark of the attendance grid: present, absent, or not taken.",
       "html": "<div style=\"display:flex;gap:4px;padding:8px;background:var(--color-surface-container-lowest,#fff)\"> <button class=\"ds-att-cell is-present\" type=\"button\" aria-label=\"Presente · Ana Martínez — TP1\">✓</button> <button class=\"ds-att-cell is-absent\" type=\"button\" aria-label=\"Ausente · Ana Martínez — TP1\">✗</button> <button class=\"ds-att-cell is-unmarked\" type=\"button\" aria-label=\"Sin tomar · Ana Martínez — TP1\">–</button> </div>",
-      "css": ".ds-att-cell { display: flex; align-items: center; justify-content: center; aspect-ratio: 1 / 1; min-width: 2rem; min-height: 2rem; border: 1px solid var(--color-outline-variant, #c3c5d7); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-on-surface, #1b1c18); font: 600 0.8125rem/1 \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease; } .ds-att-cell + .ds-att-cell { margin-left: 4px; } .ds-att-cell.is-present { border-color: color-mix(in srgb, #1b8049 35%, #c3c5d7); background-color: color-mix(in srgb, #1b8049 12%, #ffffff); color: #1b8049; } .ds-att-cell.is-absent { border-color: color-mix(in srgb, #c5221f 35%, #c3c5d7); background-color: color-mix(in srgb, #c5221f 12%, #ffffff); color: #c5221f; } .ds-att-cell.is-unmarked { background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-muted, #5f6a73); } .ds-att-cell:hover { background-color: var(--color-surface-container-low, #f5f4ed); } .ds-att-cell:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; } @media (pointer: coarse) { .ds-att-cell { min-width: 3rem; min-height: 3rem; } }"
+      "css": ".ds-att-cell { display: flex; align-items: center; justify-content: center; aspect-ratio: 1 / 1; min-width: 2rem; min-height: 2rem; border: 1px solid var(--color-outline, #747686); border-radius: var(--radius-field, 0.25rem); background-color: var(--color-surface-container-lowest, #ffffff); color: var(--color-on-surface, #1b1c18); font: 600 0.8125rem/1 \"Inter Variable\", Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 0.15s ease; } .ds-att-cell + .ds-att-cell { margin-left: 4px; } .ds-att-cell.is-present { border-color: color-mix(in srgb, var(--color-success, #1b8049) 35%, var(--color-outline, #747686)); background-color: color-mix(in srgb, var(--color-success, #1b8049) 12%, var(--color-surface-container-lowest, #ffffff)); color: var(--color-success-ink, #0b5f36); } .ds-att-cell.is-absent { border-color: color-mix(in srgb, var(--color-error, #c5221f) 35%, var(--color-outline, #747686)); background-color: color-mix(in srgb, var(--color-error, #c5221f) 12%, var(--color-surface-container-lowest, #ffffff)); color: var(--color-error-ink, #9e1b18); } .ds-att-cell.is-unmarked { background-color: var(--color-surface-container-low, #f5f4ed); color: var(--color-unmarked-ink, #5f6a73); } .ds-att-cell:hover { background-color: var(--color-surface-container-low, #f5f4ed); } .ds-att-cell:focus-visible { outline: 2px solid var(--color-primary, #2f5fe0); outline-offset: 2px; } @media (pointer: coarse) { .ds-att-cell { min-width: 3rem; min-height: 3rem; } }"
     }
   ],
   "narrative": {

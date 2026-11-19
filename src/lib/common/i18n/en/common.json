@@ -19,5 +19,11 @@
   "error_code": "Error {{code}}",
   "error_not_found": "We couldn't find that page.",
   "error_generic": "Something went wrong while loading this page.",
-  "go_dashboard": "Go to dashboard"
+  "go_dashboard": "Go to dashboard",
+  "unsaved_title": "Unsaved changes",
+  "unsaved_message": "If you leave now, the changes you have not saved will be lost.",
+  "save_and_leave": "Save and leave",
+  "discard_and_leave": "Discard and leave",
+  "keep_editing": "Keep editing",
+  "undo": "Undo"
 }

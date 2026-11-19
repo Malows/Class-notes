@@ -30,5 +30,6 @@
   "deleted_success": "Student deleted",
   "edit_title": "Edit student",
   "delete_confirm_title": "Delete student",
-  "delete_confirm_message": "Delete {{name}}? They will be removed from all of their cursadas and the legajo will become available again."
+  "delete_confirm_message": "Delete {{name}}? They will be removed from all of their cursadas and the legajo will become available again.",
+  "delete_failed": "The student could not be deleted. Check your connection and try again."
 }

@@ -17,6 +17,7 @@
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
+  import { scheduleDeferredDelete } from "$lib/client/utils/deferred-delete";
 
   const facultiesStore = getContext<FacultiesStore>(StoreKey.FACULTIES);
   const subjectsStore = getContext<SubjectsStore>(StoreKey.SUBJECTS);
@@ -28,6 +29,11 @@
 
   let loading = $state(true);
   let failed = $state(false);
+  // Rows removed from the view while their server deletion waits for the undo window.
+  let pendingDeletes = $state<number[]>([]);
+  const visiblePeriods = $derived(
+    periodsStore.items.filter((period) => !pendingDeletes.includes(period.id)),
+  );
 
   const modal = new ModalManager<Period>();
 
@@ -60,15 +66,31 @@
     modal.close();
   }
 
-  async function handleDelete() {
-    if (!modal.target) return;
-    try {
-      await periodsStore.deleteItem(modal.target.id);
-      notificationsStore.addSuccess($t("periods.deleted_success"));
-      modal.close();
-    } catch (e: any) {
-      notificationsStore.addError(e.message || e);
-    }
+  async function handleDelete(pendingTarget = modal.target) {
+    const target = pendingTarget;
+    if (!target) return;
+    if (modal.target === target) modal.close();
+
+    pendingDeletes = [...pendingDeletes, target.id];
+    scheduleDeferredDelete({
+      commit: async () => {
+        await periodsStore.deleteItem(target.id);
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      restore: () => {
+        pendingDeletes = pendingDeletes.filter((id) => id !== target.id);
+      },
+      message: $t("periods.deleted_success"),
+      undoLabel: $t("common.undo"),
+      onError: (error) => {
+        const detail =
+          error instanceof Error && error.message ? error.message : $t("common.error_generic");
+        notificationsStore.addErrorAction(`${target.year} · ${target.semester}º — ${detail}`, {
+          label: $t("common.retry"),
+          onAction: () => void handleDelete(target),
+        });
+      },
+    });
   }
 
   onMount(loadData);
@@ -95,7 +117,7 @@
     <LoadError onRetry={loadData} />
   {:else}
     <SubjectPeriodTable
-      periods={periodsStore.items}
+      periods={visiblePeriods}
       {facultySlug}
       {subjectSlug}
       onEdit={(p) => modal.openEdit(p)}
@@ -119,7 +141,7 @@
       year: modal.target?.year || "",
       semester: modal.target?.semester || "",
     } as never)}
-    onConfirm={handleDelete}
+    onConfirm={() => handleDelete()}
     onClose={() => modal.close()}
   />
 </PageWithAdd>

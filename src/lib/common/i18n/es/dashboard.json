@@ -5,7 +5,7 @@
   "period_label": "Período lectivo",
   "period_option": "{{year}} · {{semester}}º",
   "period_active": "en curso",
-  "period_active_empty": "El período en curso todavía no tiene comisiones.",
+  "period_active_empty": "El período en curso no tiene comisiones. Mostrando {{period}}.",
   "commissions_one": "{{count}} comisión",
   "commissions_other": "{{count}} comisiones",
   "students_one": "{{count}} alumno",

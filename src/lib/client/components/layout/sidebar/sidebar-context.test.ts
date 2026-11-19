@@ -3,6 +3,7 @@ import {
   buildSubjectItems,
   buildPeriodItems,
   buildCommissionItems,
+  currentTermHref,
   termToSemester,
 } from "./sidebar-context";
 import type { Subject, Period, Commission } from "$lib/common";
@@ -20,6 +21,11 @@ test("termToSemester maps metadata terms to the period semester number", () => {
   expect(termToSemester("Cuatrimestre I")).toBe(1);
   expect(termToSemester("Cuatrimestre II")).toBe(2);
   expect(termToSemester(" Cuatrimestre II ")).toBe(2);
+});
+
+test("currentTermHref points at the global period view, not a subject's index", () => {
+  expect(currentTermHref(2026, 1)).toBe("/periods/2026/1/subjects");
+  expect(currentTermHref(2026, 2)).toBe("/periods/2026/2/subjects");
 });
 
 test("buildSubjectItems filters and maps subjects correctly", () => {

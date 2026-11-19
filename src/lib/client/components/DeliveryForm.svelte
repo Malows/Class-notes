@@ -14,6 +14,8 @@
   interface Props {
     delivery: Delivery;
     onSave: (d: Delivery) => void;
+    /** Saves without navigating; used by the unsaved-changes guard. */
+    onSaveForLeave?: (d: Delivery) => Promise<boolean>;
     onPrev?: () => void;
     onNext?: () => void;
     onSkip?: () => void;
@@ -32,6 +34,7 @@
   let {
     delivery,
     onSave,
+    onSaveForLeave,
     onPrev,
     onNext,
     onSkip,
@@ -167,18 +170,37 @@
     return true;
   }
 
-  function submit() {
-    if (!isValid()) return;
-
+  function buildPayload(): Delivery {
     const parsed = parseGradeInput(gradeInput);
     const grade = "value" in parsed ? parsed.value : 0;
-
-    onSave({
+    return {
       ...d,
       grade,
       ai_level: Number(d.ai_level) || 0,
       comments: d.comments ?? "",
-    });
+    };
+  }
+
+  function submit() {
+    if (!isValid()) return;
+    onSave(buildPayload());
+  }
+
+  /** Read by the page's navigation guard. */
+  export function getIsDirty(): boolean {
+    return isDirty;
+  }
+
+  /**
+   * Validates and saves without navigating. Resolves false when the form is
+   * invalid or the save fails, so the guard can stay on the page.
+   */
+  export async function saveForLeave(): Promise<boolean> {
+    if (!isValid()) return false;
+    const payload = buildPayload();
+    if (onSaveForLeave) return onSaveForLeave(payload);
+    onSave(payload);
+    return true;
   }
 
   // Enter saves from any single-line field through the form's submit event;

@@ -21,6 +21,17 @@
     if (isOpen) {
       if (dialogElement && !dialogElement.open) {
         dialogElement.showModal();
+        // Data-entry dialogs open on their first field; a dialog that marks a
+        // safe action with autofocus (confirmations) keeps that target.
+        queueMicrotask(() => {
+          const root = dialogElement;
+          if (!root || root.querySelector("[autofocus]")) return;
+          root
+            .querySelector<HTMLElement>(
+              'input:not([type="hidden"]):not([disabled]), textarea:not([disabled]), select:not([disabled])',
+            )
+            ?.focus();
+        });
       }
     } else {
       if (dialogElement && dialogElement.open) {
@@ -93,8 +104,16 @@
     margin: auto;
   }
 
+  /* Native modal scroll containment: gestures over the backdrop or inside the
+     dialog must not chain to the page behind it. */
+  dialog.native-dialog:modal {
+    overscroll-behavior: contain;
+  }
+
   dialog.native-dialog::backdrop {
     background-color: var(--color-scrim);
+    overflow: hidden;
+    overscroll-behavior: contain;
   }
 
   .modal-header {

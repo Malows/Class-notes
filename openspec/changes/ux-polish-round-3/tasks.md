@@ -9,11 +9,11 @@
 
 ## 2. Unsaved-changes guard
 
-- [ ] 2.1 Expose dirty state and a save entry point from `DeliveryForm` to the correction page (no duplicate validation)
-- [ ] 2.2 Register the guard on the correction page and show the editorial Save / Discard / Keep editing dialog on links, breadcrumb and browser Back
-- [ ] 2.3 Add the native unload warning only while the form is dirty
-- [ ] 2.4 Ensure Save-first navigates only after a successful save and restores focus on Keep editing
-- [ ] 2.5 Test dirty/clean navigation, Save success/failure, Discard and Back interception
+- [x] 2.1 Expose dirty state and a save entry point from `DeliveryForm` to the correction page (no duplicate validation)
+- [x] 2.2 Register the guard on the correction page and show the editorial Save / Discard / Keep editing dialog on links, breadcrumb and browser Back
+- [x] 2.3 Add the native unload warning only while the form is dirty
+- [x] 2.4 Ensure Save-first navigates only after a successful save and restores focus on Keep editing
+- [x] 2.5 Test dirty/clean navigation, Save success/failure, Discard and Back interception
 
 ## 3. Undoable deletions
 

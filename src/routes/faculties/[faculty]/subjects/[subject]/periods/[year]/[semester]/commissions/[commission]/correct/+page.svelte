@@ -8,6 +8,7 @@
   import { t } from "$lib/common/i18n/config";
 
   import Button from "$lib/client/components/common/Button.svelte";
+  import UnsavedChangesDialog from "$lib/client/components/common/UnsavedChangesDialog.svelte";
   import DeliveryForm from "$lib/client/components/DeliveryForm.svelte";
   import GradeSheet from "$lib/client/components/grading/GradeSheet.svelte";
   import EmptyState from "$lib/client/components/common/EmptyState.svelte";
@@ -18,6 +19,7 @@
   import type { FacultiesStore } from "$lib/client/stores/faculties.svelte";
   import type { PeriodsStore } from "$lib/client/stores/periods.svelte";
   import type { SubjectsStore } from "$lib/client/stores/subjects.svelte";
+  import { useNavigationGuard } from "$lib/client/composables/useNavigationGuard.svelte";
   import { assignmentService } from "$lib/client/services/assignment.service";
   import { correctionService } from "$lib/client/services/correction.service";
   import { notificationsStore } from "$lib/client/stores/notifications.svelte";
@@ -36,6 +38,15 @@
   let currentIndex = $state(0);
   let loading = $state(true);
   let failed = $state(false);
+  let deliveryForm = $state<{
+    getIsDirty: () => boolean;
+    saveForLeave: () => Promise<boolean>;
+  } | null>(null);
+
+  const guard = useNavigationGuard({
+    isDirty: () => deliveryForm?.getIsDirty() ?? false,
+    save: () => deliveryForm?.saveForLeave() ?? Promise.resolve(true),
+  });
 
   const facultySlug = $derived(page.params.faculty ?? "");
   const subjectSlug = $derived(page.params.subject ?? "");
@@ -145,6 +156,17 @@
       return;
     }
     delivery = (await correctionService.getOne(assignmentID, enrollment.id)) ?? null;
+  }
+
+  async function saveWithoutNavigating(d: Delivery): Promise<boolean> {
+    try {
+      await correctionService.save(d);
+      notificationsStore.addSuccess($t("common.correction_saved"));
+      return true;
+    } catch (e: any) {
+      notificationsStore.addError(e.message || e);
+      return false;
+    }
   }
 
   async function saveDelivery(d: Delivery) {
@@ -300,11 +322,21 @@
 {:else}
   <div class="mt-6">
     <DeliveryForm
+      bind:this={deliveryForm}
       {delivery}
       onSave={saveDelivery}
+      onSaveForLeave={saveWithoutNavigating}
       onPrev={currentIndex > 0 ? prev : undefined}
       onNext={canGoNext ? next : undefined}
       onSkip={skip}
     />
   </div>
 {/if}
+
+<UnsavedChangesDialog
+  isOpen={guard.open}
+  saving={guard.saving}
+  onSave={() => void guard.saveAndLeave()}
+  onDiscard={guard.discardAndLeave}
+  onStay={guard.stay}
+/>

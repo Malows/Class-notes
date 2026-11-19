@@ -43,7 +43,7 @@ export function useNavigationGuard(options: NavigationGuardOptions) {
     target = null;
     if (!href) return;
     bypass = true;
-    void goto(href).finally(() => {
+    void Promise.resolve(goto(href)).finally(() => {
       bypass = false;
     });
   }

@@ -85,7 +85,7 @@ export function scheduleDeferredDelete(config: DeferredDeleteConfig): DeferredDe
 
 /** Commits every deletion still waiting for its window (used on navigation). */
 export function flushPendingDeletions() {
-  for (const entry of [...pending]) {
+  for (const entry of pending) {
     void commitNow(entry);
   }
 }

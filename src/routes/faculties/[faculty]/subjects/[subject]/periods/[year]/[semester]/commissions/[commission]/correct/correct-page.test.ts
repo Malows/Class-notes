@@ -27,7 +27,15 @@ vi.mock("$app/state", () => {
   };
 });
 
-vi.mock("$app/navigation", () => ({ goto: vi.fn() }));
+const nav = vi.hoisted(() => ({
+  goto: vi.fn(),
+  beforeNavigate: vi.fn(),
+}));
+
+vi.mock("$app/navigation", () => ({
+  goto: nav.goto,
+  beforeNavigate: (callback: unknown) => nav.beforeNavigate(callback),
+}));
 
 const { apiFetchMock } = vi.hoisted(() => ({ apiFetchMock: vi.fn() }));
 
@@ -110,6 +118,14 @@ const routes: Array<[string, unknown]> = [
 ];
 
 beforeEach(async () => {
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+  Element.prototype.animate = vi.fn(() => ({
+    cancel: vi.fn(),
+    finish: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+  })) as never;
   await loadTranslations("es", "/");
   mockParams = {
     faculty: "facultad-de-ingenieria",
@@ -240,4 +256,116 @@ test("keeps the detailed form as the fallback with next and a link to the sheet"
   expect(sheetLink.getAttribute("href")).toBe(
     "/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4",
   );
+});
+
+async function mountSingleForm() {
+  mockUrl = new URL(
+    "http://localhost/faculties/facultad-de-ingenieria/subjects/fisica-general-i/periods/2026/1/commissions/comision-virtual/correct?assignment_id=4&enrollment_id=15&mode=single",
+  );
+  apiFetchMock.mockImplementation((path: string) => {
+    if (path === "/correct?assignment_id=4&enrollment_id=15") {
+      return Promise.resolve({
+        assignment_id: 4,
+        enrollment_id: 15,
+        grade: 8,
+        ai_level: 0,
+        comments: "",
+        workflow_status: "WAITING_FOR_CORRECTION",
+      });
+    }
+    const match = routes.find(([prefix]) => path.startsWith(prefix));
+    return Promise.resolve(match ? match[1] : []);
+  });
+
+  component = mount(CorrectionPage, { target: document.body, context: buildContext() });
+  flushSync();
+  await flush();
+  flushSync();
+}
+
+function typeGrade(value: string) {
+  const input = document.querySelector('[data-test-id="delivery-grade-input"]') as HTMLInputElement;
+  input.value = value;
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  flushSync();
+}
+
+function tryLeave() {
+  const callback = nav.beforeNavigate.mock.calls.at(-1)?.[0] as (args: {
+    to: { url: URL };
+    cancel: () => void;
+  }) => void;
+  const cancel = vi.fn();
+  callback({ to: { url: new URL("http://localhost/faculties/other") }, cancel });
+  flushSync();
+  return cancel;
+}
+
+test("guards a dirty form and keeps editing on request", async () => {
+  await mountSingleForm();
+  typeGrade("9");
+
+  const cancel = tryLeave();
+  expect(cancel).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('[data-test-id="unsaved-save-btn"]')).toBeTruthy();
+
+  (document.querySelector('[data-test-id="unsaved-stay-btn"]') as HTMLButtonElement).click();
+  flushSync();
+  await flush();
+  flushSync();
+
+  // Staying must not navigate; the dialog close is covered by the composable test.
+  expect(nav.goto).not.toHaveBeenCalled();
+});
+
+test("does not guard a clean form", async () => {
+  await mountSingleForm();
+
+  const cancel = tryLeave();
+  expect(cancel).not.toHaveBeenCalled();
+  expect(document.querySelector('[data-test-id="unsaved-save-btn"]')).toBeNull();
+});
+
+test("discards the draft and continues", async () => {
+  await mountSingleForm();
+  typeGrade("9");
+  tryLeave();
+
+  (document.querySelector('[data-test-id="unsaved-discard-btn"]') as HTMLButtonElement).click();
+  flushSync();
+
+  expect(nav.goto).toHaveBeenCalledWith("http://localhost/faculties/other");
+});
+
+test("saves before leaving", async () => {
+  await mountSingleForm();
+  typeGrade("9");
+  tryLeave();
+
+  (document.querySelector('[data-test-id="unsaved-save-btn"]') as HTMLButtonElement).click();
+  await flush();
+  flushSync();
+
+  expect(apiFetchMock).toHaveBeenCalledWith("/correct", expect.objectContaining({ method: "POST" }));
+  expect(nav.goto).toHaveBeenCalledWith("http://localhost/faculties/other");
+});
+
+test("stays when the save fails", async () => {
+  await mountSingleForm();
+  typeGrade("9");
+  tryLeave();
+
+  apiFetchMock.mockImplementation((path: string, init?: { method?: string }) => {
+    if (path === "/correct" && init?.method === "POST") {
+      return Promise.reject(new Error("save failed"));
+    }
+    return Promise.resolve([]);
+  });
+
+  (document.querySelector('[data-test-id="unsaved-save-btn"]') as HTMLButtonElement).click();
+  await flush();
+  flushSync();
+
+  expect(nav.goto).not.toHaveBeenCalled();
+  expect(document.querySelector('[data-test-id="unsaved-save-btn"]')).toBeTruthy();
 });

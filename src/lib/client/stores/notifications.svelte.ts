@@ -49,6 +49,7 @@ export class NotificationsStore {
       },
     });
     setTimeout(() => this.dismiss(id), duration);
+    return id;
   }
 
   dismiss(id: number) {

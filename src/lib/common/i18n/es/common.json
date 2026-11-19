@@ -24,5 +24,6 @@
   "unsaved_message": "Si salís ahora, los cambios que no guardaste se pierden.",
   "save_and_leave": "Guardar y salir",
   "discard_and_leave": "Descartar y salir",
-  "keep_editing": "Seguir editando"
+  "keep_editing": "Seguir editando",
+  "undo": "Deshacer"
 }

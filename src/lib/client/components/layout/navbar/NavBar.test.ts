@@ -41,7 +41,7 @@ test("NavBar renderiza el selector de idioma con las banderas de Argentina y Col
   expect(toggleBtn).toBeTruthy();
 
   // Inverted logic: If in English, the button displays only the UK flag!
-  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
+  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧 EN");
 
   // Spanish always shows both flags: the wink is Argentina + Colombia together.
   await fireEvent.click(toggleBtn);
@@ -49,7 +49,7 @@ test("NavBar renderiza el selector de idioma con las banderas de Argentina y Col
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴");
+  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴 ES");
 
   // Second click: Spanish -> English
   await fireEvent.click(toggleBtn);
@@ -57,7 +57,7 @@ test("NavBar renderiza el selector de idioma con las banderas de Argentina y Col
   flushSync();
 
   expect(currentLocale).toBe("en");
-  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧");
+  expect(toggleBtn.textContent?.trim()).toBe("🇬🇧 EN");
 
   // Returning to Spanish shows the pair again.
   await fireEvent.click(toggleBtn);
@@ -65,7 +65,7 @@ test("NavBar renderiza el selector de idioma con las banderas de Argentina y Col
   flushSync();
 
   expect(currentLocale).toBe("es");
-  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴");
+  expect(toggleBtn.textContent?.trim()).toBe("🇦🇷🇨🇴 ES");
 
   unsubscribe();
 });

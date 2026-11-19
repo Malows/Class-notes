@@ -536,7 +536,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
+    /* Keep colour feedback (a mark was set) while removing movement. */
+    transition-property: background-color, border-color, color, opacity !important;
+    transition-duration: 150ms !important;
   }
 }
 

@@ -360,11 +360,11 @@
     margin: 0;
     color: var(--color-on-surface);
     font-family: var(--font-serif);
-    font-size: 2rem;
+    font-size: var(--text-display-lg-mobile);
     font-variant-numeric: tabular-nums;
     font-weight: 500;
     letter-spacing: -0.02em;
-    line-height: 2.25rem;
+    line-height: var(--text-display-lg-mobile--line-height);
   }
 
   .commission-summary__detail {

@@ -23,6 +23,7 @@ export class ThemeStore {
       const savedLocale = localStorage.getItem("preferred-locale") as "es" | "en";
       if (savedLocale === "es" || savedLocale === "en") {
         this.#currentLocale = savedLocale;
+        this.#writeLocaleCookie(savedLocale);
       } else if (typeof navigator !== "undefined") {
         const browserLang = navigator.language.split("-")[0];
         if (browserLang === "es") {
@@ -87,8 +88,14 @@ export class ThemeStore {
 
     if (typeof window !== "undefined") {
       localStorage.setItem("preferred-locale", next);
+      this.#writeLocaleCookie(next);
     }
   };
+
+  #writeLocaleCookie(locale: "es" | "en") {
+    if (typeof document === "undefined") return;
+    document.cookie = `preferred-locale=${locale}; path=/; max-age=31536000; samesite=lax`;
+  }
 
   #updateDOMTheme() {
     if (typeof document !== "undefined") {

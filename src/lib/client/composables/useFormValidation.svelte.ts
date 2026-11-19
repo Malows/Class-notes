@@ -25,7 +25,10 @@ export class FormValidationManager<T extends z.ZodType<any, any, any>> {
     // A11y: Programmatic focus shift to the first invalid element
     if (typeof document !== "undefined") {
       setTimeout(() => {
-        const invalidEl = document.querySelector('[aria-invalid="true"]') as HTMLElement | null;
+        // Stay inside the open dialog when one is present, so a second form on
+        // the page cannot receive the focus jump.
+        const root = document.querySelector("dialog[open]") ?? document;
+        const invalidEl = root.querySelector('[aria-invalid="true"]') as HTMLElement | null;
         if (invalidEl) {
           invalidEl.focus();
         }

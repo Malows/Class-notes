@@ -94,6 +94,7 @@
   {#if isDashboard}
     <div
       class="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom,0px))] z-30 border-t border-base-300 bg-surface px-4 py-2 md:bottom-0 md:left-60 md:px-9"
+      data-test-id="dashboard-footer"
     >
       <ClassNoteFooter />
     </div>

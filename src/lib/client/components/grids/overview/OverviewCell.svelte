@@ -12,11 +12,6 @@
 
   let { href, status, aiLevel = 0, label = "", contextLabel, testId = "" }: Props = $props();
 
-  const aiEmoji = {
-    1: "⚠",
-    2: "🤖",
-  } as const;
-
   const statusIcon = {
     [OverviewDeliveryStatus.APPROVED]: "✅",
     [OverviewDeliveryStatus.REJECTED]: "❌",
@@ -24,9 +19,10 @@
     [OverviewDeliveryStatus.PENDING_DELIVERY]: "-",
   } as const;
 
-  // The status glyph stays the primary mark; the AI level is a corner marker
-  // so a graded cell never loses its approved/rejected reading.
-  const aiMark = $derived(aiLevel > 0 ? (aiEmoji[aiLevel as keyof typeof aiEmoji] ?? "") : "");
+  // The status glyph stays the primary mark; the AI level is a corner chip
+  // so a graded cell never loses its approved/rejected reading, and the
+  // marker stays legible in both themes.
+  const aiMark = $derived(aiLevel > 0 ? (aiLevel >= 2 ? "IA!!" : "IA!") : "");
 
   const accessibleLabel = $derived(
     contextLabel
@@ -98,11 +94,23 @@
   /* Secondary, corner-placed AI marker: the status glyph keeps the centre. */
   .overview-cell__ai {
     position: absolute;
-    top: 0;
-    right: 1px;
-    font-size: 0.6875rem;
+    top: 2px;
+    right: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 12px;
+    min-width: 12px;
+    padding: 0 1px;
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-field);
+    background-color: var(--color-surface-container-low);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     line-height: 1;
-    font-weight: 400;
   }
 
   .overview-cell:hover {

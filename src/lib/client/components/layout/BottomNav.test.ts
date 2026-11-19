@@ -55,6 +55,17 @@ test("marks the current destination for assistive technology", () => {
     '[data-test-id="bottom-nav-dashboard"]',
   ) as HTMLAnchorElement;
 
-  expect(faculties.getAttribute("aria-current")).toBe("page");
+  expect(faculties.getAttribute("aria-current")).toBe("true");
   expect(dashboard.getAttribute("aria-current")).toBeNull();
+
+  unmount(component);
+  document.body.innerHTML = "";
+  mockUrl = new URL("http://localhost/faculties");
+  component = mount(BottomNav, { target: document.body });
+  flushSync();
+
+  const exact = document.body.querySelector(
+    '[data-test-id="bottom-nav-faculties"]',
+  ) as HTMLAnchorElement;
+  expect(exact.getAttribute("aria-current")).toBe("page");
 });

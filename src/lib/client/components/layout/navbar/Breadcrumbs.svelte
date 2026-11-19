@@ -15,7 +15,7 @@
   <ol class="m-0 flex list-none items-center gap-1 overflow-hidden whitespace-nowrap p-0">
     {#each breadcrumbs as crumb, i (crumb.href)}
       <li
-        class="flex min-w-0 items-center gap-1 text-label-md text-on-surface-variant"
+        class="flex min-w-0 items-center gap-1 text-[min(0.75rem,12px)] text-on-surface-variant"
         data-test-id="breadcrumb-step-{i}"
       >
         {#if i > 0}

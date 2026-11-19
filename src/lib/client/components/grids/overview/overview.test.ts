@@ -55,7 +55,7 @@ describe("overview components", () => {
     expect(cell).toHaveClass("is-approved");
     expect(cell).toHaveAttribute("aria-label", "approved");
     expect(cell.textContent).toContain("✅");
-    expect(cell.textContent).toContain("🤖");
+    expect(cell.textContent).toContain("IA!!");
   });
 
   test("OverviewRow renders the student name and delivery cells", async () => {

@@ -160,7 +160,7 @@
       />
     {/if}
 
-    {#if context.periodYear !== undefined && context.periodSemester !== undefined}
+    {#if context.periodYear !== undefined && context.periodSemester !== undefined && commissionItems.length > 0}
       <SidebarContextSection
         heading={$t("layout.commissions")}
         isCollapsed={false}

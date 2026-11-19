@@ -2,6 +2,11 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/newsreader";
 
+:root {
+  /* Shared shell measurement: the footer docks to exactly this height. */
+  --bottom-nav-height: 64px;
+}
+
 @font-face {
   font-family: "Material Symbols Outlined";
   font-style: normal;
@@ -564,6 +569,6 @@
 
   [data-test-id="dashboard-footer"] {
     left: 0;
-    bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
   }
 }

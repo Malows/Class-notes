@@ -59,14 +59,9 @@ export function initializeDatabase(
 
 const db = new Database(dbPath, { verbose: console.log });
 export const drizzleDb = drizzle({ client: db, schema, relations } as any);
-const isDev = Boolean(
-  process.env.NODE_ENV === "development" ||
-  (typeof import.meta !== "undefined" && import.meta.env?.DEV),
-);
-
-if (isDev || isTest) {
-  initializeDatabase(db, { isTest, shouldSeed: true });
-}
+// Inicializa también en producción: el build de Docker no corre `pnpm dev`,
+// así que sin esto la base queda vacía y todas las consultas fallan.
+initializeDatabase(db, { isTest, shouldSeed: true });
 
 // Example function to get all faculties (will be moved to repository)
 export function getAllFaculties() {

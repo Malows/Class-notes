@@ -1,10 +1,25 @@
-version: "3.8"
 services:
   app:
     build: .
+    image: class-notes:local
     ports:
       - "3000:3000"
     volumes:
       - ./data:/app/data
     environment:
-      - DATABASE_NAME=/app/data/class-notes.db
+      NODE_ENV: production
+      DATABASE_PATH: /app/data/class-notes.db
+      MIGRATIONS_DIR: /app/migrations
+    # Keep the bind mount writable by the image user (uid/gid 1000).
+    user: "1000:1000"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

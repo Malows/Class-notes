@@ -9,12 +9,12 @@ Everything lives in one navigable academic hierarchy and reads as a grid.
 
 The app is built around two axes that cross:
 
-- **Academic structure**: Faculty → Subject → *cursada* (subject × period, e.g. `2025 · 1st`) →
+- **Academic structure**: Faculty → Subject → _cursada_ (subject × period, e.g. `2025 · 1st`) →
   Commission (the group/room).
-- **People**: a person exists once (name + optional *legajo* / student ID), and an **enrollment**
+- **People**: a person exists once (name + optional _legajo_ / student ID), and an **enrollment**
   records that they take a subject in a period, optionally assigned to a commission.
 
-Practical assignments (TPs) belong to the *cursada*, so every commission sees the same list.
+Practical assignments (TPs) belong to the _cursada_, so every commission sees the same list.
 Deliveries and attendance hang off enrollments.
 
 It is **not** an institutional student-records system: there is no official registry, no student
@@ -36,19 +36,19 @@ for a detailed, screen-by-screen description (in Spanish).
 
 ## Screens
 
-| Screen | Route |
-|---|---|
-| Dashboard | `/` |
-| Faculties / subjects in a faculty | `/faculties`, `/faculties/{faculty}/subjects` |
-| Periods of a subject | `/faculties/{faculty}/subjects/{subject}/periods` |
-| Assignments of a cursada | `.../periods/{year}/{semester}/assignments` |
-| Commissions of a cursada | `.../periods/{year}/{semester}/commissions` |
-| Commission roster | `.../commissions/{commission}/students` |
-| Delivery grid (commission / cursada) | `.../overview` |
-| Correction | `.../commissions/{commission}/correct` |
+| Screen                                        | Route                                                                                                                                 |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Dashboard                                     | `/`                                                                                                                                   |
+| Faculties / subjects in a faculty             | `/faculties`, `/faculties/{faculty}/subjects`                                                                                         |
+| Periods of a subject                          | `/faculties/{faculty}/subjects/{subject}/periods`                                                                                     |
+| Assignments of a cursada                      | `.../periods/{year}/{semester}/assignments`                                                                                           |
+| Commissions of a cursada                      | `.../periods/{year}/{semester}/commissions`                                                                                           |
+| Commission roster                             | `.../commissions/{commission}/students`                                                                                               |
+| Delivery grid (commission / cursada)          | `.../overview`                                                                                                                        |
+| Correction                                    | `.../commissions/{commission}/correct`                                                                                                |
 | Attendance (commission / cursada / take mode) | `.../commissions/{commission}/attendance`, `.../periods/{year}/{semester}/attendance`, `.../commissions/{commission}/attendance/take` |
-| Students registry | `/persons`, `/persons/{id}` |
-| All periods | `/periods`, `/periods/{year}/{semester}/subjects` |
+| Students registry                             | `/persons`, `/persons/{id}`                                                                                                           |
+| All periods                                   | `/periods`, `/periods/{year}/{semester}/subjects`                                                                                     |
 
 ## Tech stack
 
@@ -109,12 +109,51 @@ pnpm exec vitest run path/to/file.test.ts
 ### Database
 
 SQLite, schema in `src/lib/server/database/schema.ts`, migrations under
-`src/lib/server/database/migrations/`. Migrations and seed run **only when the database is created
-from scratch**, so after a schema change delete `class-notes.db*` and restart `pnpm dev`.
+`src/lib/server/database/migrations/`.
+
+Migrations are **tracked** in the `schema_migrations` table: every deploy applies only what is
+pending, so an existing database is upgraded instead of wiped. The path comes from `DATABASE_PATH`
+(development defaults to `./class-notes.db`).
 
 ```bash
 pnpm db:generate   # generate a migration from the schema (review it by hand)
+pnpm db:seed       # explicit demo fixtures (migrations first); development seeds a new file automatically
 ```
+
+Demo fixtures are never inserted by a production build: they need `SEED_DEMO_DATA="true"` (or the
+`pnpm db:seed` command) and a non-production target. Startup logs one line per phase; set
+`DB_VERBOSE="true"` to log every SQL statement.
+
+## Deployment (Docker)
+
+The image runs three explicit phases: **build** (multi-stage, Node 26 LTS + pnpm 12.23.0 pinned),
+**migrate** (`build/migrate.js`, never seeds) and **serve** (`build/index.js`). A failed migration
+stops the container; it never serves a half-migrated database.
+
+```bash
+mkdir -p data && sudo chown -R 1000:1000 data   # the container runs as uid/gid 1000
+docker compose up --build -d
+
+docker compose logs -f app                      # expect "[migrate] applied N migration(s)"
+docker compose exec app node build/migrate.js   # optional: check for pending migrations
+curl -fsS http://localhost:3000/ >/dev/null && echo healthy
+```
+
+The SQLite file lives in `/app/data/class-notes.db` (`./data` on the host, mounted from
+`DATABASE_PATH`), so recreating or upgrading the container keeps the data. The production image
+never seeds demo data; for a demo server, seed from a checkout against the same file
+(`DATABASE_PATH=./data/class-notes.db pnpm db:seed`) before starting it, or set
+`SEED_DEMO_DATA="true"` in a non-production image. A production image started with
+`NODE_ENV=development` still will not seed.
+
+**Backups:** with WAL enabled, copy the database safely instead of copying the `.db` file by hand:
+
+```bash
+docker compose exec app node -e "const D=require('better-sqlite3');new D(process.env.DATABASE_PATH).backup('/app/data/backup.db').then(()=>console.log('ok'))"
+```
+
+**Rollback:** migrations are forward-only. Tag images, take a backup before a deploy that ships
+migrations, and redeploy the previous tag if the app must go back.
 
 ## Observability
 

@@ -138,10 +138,10 @@ class PersonRepositoryImpl implements PersonRepository {
         id: persons.id,
         name: persons.name,
         legajo: persons.legajo,
-        enrollment_count: sql<number>`COUNT(${enrollments.id})`,
+        enrollment_count: sql<number>`COUNT(${enrollments.id})`.mapWith(Number),
         last_subject_name: lastCursada("s.name"),
-        last_period_year: lastCursada("p.year"),
-        last_period_semester: lastCursada("p.semester"),
+        last_period_year: lastCursada("p.year").mapWith(Number),
+        last_period_semester: lastCursada("p.semester").mapWith(Number),
       })
       .from(persons)
       .leftJoin(
@@ -156,7 +156,7 @@ class PersonRepositoryImpl implements PersonRepository {
       .all() as PersonRegistryRow[];
 
     const total = drizzleDb
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
       .from(persons)
       .where(where)
       .get() as { count: number };

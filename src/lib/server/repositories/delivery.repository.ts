@@ -307,7 +307,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
         period_id: periods.id,
         period_year: periods.year,
         period_semester: periods.semester,
-        pending_count: pendingCount,
+        pending_count: pendingCount.mapWith(Number),
       })
       .from(commissions)
       .innerJoin(periods, eq(commissions.periodId, periods.id))
@@ -337,17 +337,17 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
 
   getGlobalStats(): any {
     const totalStudents = drizzleDb
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
       .from(enrollments)
       .where(isNull(enrollments.deletedAt))
       .get() as { count: number };
     const totalSubjects = drizzleDb
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
       .from(subjects)
       .where(isNull(subjects.deletedAt))
       .get() as { count: number };
     const totalDeliveries = drizzleDb
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
       .from(deliveries)
       .where(
         and(
@@ -357,7 +357,7 @@ class DeliveryRepositoryImpl implements DeliveryRepository {
       )
       .get() as { count: number };
     const approvedDeliveries = drizzleDb
-      .select({ count: sql<number>`COUNT(*)` })
+      .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
       .from(deliveries)
       .where(and(isNull(deliveries.deletedAt), eq(deliveries.workflowStatus, "APPROVED")))
       .get() as { count: number };

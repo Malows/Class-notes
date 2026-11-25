@@ -7,7 +7,8 @@
     "check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
     "validate:i18n": "tsx scripts/validate-i18n-keys.ts",
     "dev": "vite dev",
-    "build": "pnpm validate:i18n && vite build",
+    "build": "pnpm validate:i18n && vite build && pnpm build:migrate",
+    "build:migrate": "esbuild src/lib/server/database/migrate-cli.ts --bundle --platform=node --format=esm --target=node22 --external:better-sqlite3 --outfile=build/migrate.js && rm -rf build/migrations && cp -R src/lib/server/database/migrations build/migrations",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "test": "vitest",
@@ -17,6 +18,7 @@
     "test:coverage:client": "vitest run --coverage --coverage.reportsDirectory ./coverage/client src/lib/client",
     "test:coverage:server": "vitest run --coverage --coverage.reportsDirectory ./coverage/server src/lib/server",
     "db:generate": "drizzle-kit generate",
+    "db:seed": "tsx scripts/db-seed.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "lint": "oxlint .",
@@ -42,8 +44,9 @@
     "@testing-library/svelte": "^5.3.1",
     "@types/node": "^24.12.0",
     "@vitest/coverage-v8": "4.1.8",
-    "drizzle-kit": "1.0.0-rc.4",
-    "drizzle-orm": "1.0.0-rc.4",
+    "drizzle-kit": "1.0.0-rc.6",
+    "drizzle-orm": "1.0.0-rc.6",
+    "esbuild": "0.28.0",
     "fontkit": "^3.0.0",
     "jsdom": "^29.1.1",
     "oxfmt": "^0.53.0",
@@ -54,5 +57,6 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.7",
     "vitest": "^4.1.8"
-  }
+  },
+  "packageManager": "pnpm@12.23.0"
 }

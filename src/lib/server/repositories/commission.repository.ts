@@ -137,7 +137,7 @@ class CommissionRepositoryImpl implements CommissionRepository {
 
       if (updatedCommission) {
         const countResult = drizzleDb
-          .select({ count: sql<number>`COUNT(*)` })
+          .select({ count: sql<number>`COUNT(*)`.mapWith(Number) })
           .from(enrollments)
           .where(and(eq(enrollments.commissionId, id), isNull(enrollments.deletedAt)))
           .get() as { count: number };

@@ -32,10 +32,14 @@
 ## Database (SQLite + Drizzle)
 
 - Schema in `database/schema.ts` + `relations.ts`; one folder per migration (`<timestamp>_<name>/migration.sql`); `applyDrizzleMigrations` also reads legacy flat `*.sql`.
-- **Migrations only run when the database is created from scratch** (`initializeDatabase` looks for the `faculties` table). Any schema change therefore requires deleting `class-notes.db*` and restarting — with real data that destroys it. No migrations-tracking table exists yet.
+- **Migrations are tracked** in `schema_migrations` (`src/lib/server/database/migrate.ts`): each deploy applies only pending versions, so schema changes no longer require deleting `class-notes.db*`. A legacy database (tracked table absent, `faculties` present) is baselined instead of re-run. `MIGRATIONS_DIR` overrides where the SQL is read from (the image copies it to `/app/migrations`).
+- `DATABASE_PATH` is read at **runtime** (`$env/dynamic/private`); the old `DATABASE_NAME` was build-inlined and is gone. Production refuses to start without it, and the server refuses to boot against an unmigrated file.
+- Demo fixtures (`seed.ts`) are a development convenience: a new file hydrates automatically in `vite dev`; a production build only seeds with `SEED_DEMO_DATA="true"` or `pnpm db:seed`. `NODE_ENV=development` in a production image does not seed.
+- `pnpm build` also compiles `build/migrate.js` and copies `build/migrations`; the container entrypoint runs it before starting the server.
 - `pnpm db:generate` output must be hand-checked: SQLite table rebuilds can emit `ALTER ... ADD NOT NULL` without a default (invalid), and drizzle-kit asks for `--hints` when it cannot tell a rename from a create. Rename the generated folder to `<timestamp>_<feature>`.
 - Everything is soft-deleted: queries filter `deletedAt IS NULL`, deletes set it. Partial unique indexes free values on delete — **except** `periods(year, semester)`, which is not partial, so a soft-deleted period blocks recreating that pair.
 - Repository tests run against a real in-memory SQLite built from the migrations and seed, so they are integration tests.
+- Drizzle 1.0 codecs: raw `sql` expressions bypass column codecs, so better-sqlite3 hands back `bigint` for integer results (`COUNT(*)`, scalar subqueries, `pending_count`). Every raw numeric aggregate must end in `.mapWith(Number)` (or use drizzle's `count()` helper) before it reaches a `number` field, otherwise the API throws on `JSON.stringify`.
 
 ## Testing quirks
 

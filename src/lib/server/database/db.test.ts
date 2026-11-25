@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 import Database from "better-sqlite3";
-import { initializeDatabase, withTransaction } from "./db";
+import db, { initializeDatabase, withTransaction } from "./db";
 
 describe("database initialization", () => {
+  it("hydrates the default connection when the database is created now", () => {
+    expect(db.prepare("SELECT COUNT(*) as count FROM faculties").get()).toEqual({ count: 3 });
+    expect(db.prepare("SELECT COUNT(*) as count FROM schema_migrations").get()).toEqual({
+      count: 3,
+    });
+  });
+
   it("creates schema and seed data from migrations on a fresh database", () => {
     const sqlite = new Database(":memory:");
 

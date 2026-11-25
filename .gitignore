@@ -29,6 +29,9 @@ vite.config.ts.timestamp-*
 *.db-shm
 *.db-wal
 
+# Docker bind mount for the production database
+/data
+
 coverage
 coverage.out
 
